@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login | KARTEJI</title>
+
+  <!-- Tailwind CLI output -->
+  <link rel="stylesheet" href="../dist/assets/css/app.css">
+
+  <link rel="icon" href="./assets/img/logo.png">
+</head>
+
+<body class="min-h-full bg-slate-950 text-slate-100 flex items-center justify-center px-6">
+
+  <div class="w-full max-w-md">
+    <div class="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl p-6">
+
+      <!-- Header -->
+      <div class="flex items-center gap-3">
+        <img
+          src="./assets/img/logo.png"
+          alt="Logo"
+          class="h-12 w-12 rounded-2xl border border-white/10 object-cover"
+          onerror="this.src='https://via.placeholder.com/80'"
+        />
+        <div>
+          <h1 class="text-xl font-extrabold tracking-tight">KARTEJI</h1>
+          <p class="text-xs text-slate-400">Login akun</p>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="mt-6 space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            placeholder="nama@email.com"
+            class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            placeholder="••••••••"
+            class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20"
+          />
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span id="msg"></span>
+          <!-- future: forgot password -->
+        </div>
+
+        <button
+          id="loginBtn"
+          class="w-full rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-emerald-300 active:scale-[.99]"
+        >
+          Login
+        </button>
+      </div>
+
+      <!-- Divider -->
+      <div class="my-6 flex items-center gap-3">
+        <div class="h-px flex-1 bg-white/10"></div>
+        <span class="text-xs text-slate-400">atau</span>
+        <div class="h-px flex-1 bg-white/10"></div>
+      </div>
+
+      <!-- Register -->
+      <div class="text-center">
+        <p class="text-xs text-slate-400">
+          Belum punya akun?
+        </p>
+        <a
+          href="./register.html"
+          class="mt-2 inline-block text-sm font-semibold text-emerald-400 hover:text-emerald-300"
+        >
+          Daftar sebagai anggota
+        </a>
+      </div>
+
+      <!-- Back -->
+      <div class="mt-6 text-center">
+        <a href="./index.html" class="text-xs text-slate-400 hover:text-slate-200">
+          ← Kembali ke beranda
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase Login Logic -->
+  <script type="module">
+    // Firebase SDK
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+    // Firebase config (punyamu)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
+      authDomain: "katar-9cac3.firebaseapp.com",
+      projectId: "katar-9cac3",
+      storageBucket: "katar-9cac3.firebasestorage.app",
+      messagingSenderId: "1017734829960",
+      appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d",
+      measurementId: "G-M4F9J10TTE"
+    };
+
+    // Init Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+
+    // Elements
+    const emailEl = document.getElementById("email");
+    const passEl = document.getElementById("password");
+    const msgEl = document.getElementById("msg");
+    const btn = document.getElementById("loginBtn");
+
+    // Login handler
+    btn.addEventListener("click", async () => {
+      const email = emailEl.value.trim();
+      const password = passEl.value;
+
+      if (!email || !password) {
+        msgEl.textContent = "Email dan password wajib diisi";
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Memproses...";
+      msgEl.textContent = "";
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = "./dashboard.html";
+      } catch (err) {
+        msgEl.textContent = "Login gagal. Email atau password salah.";
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Login";
+      }
+    });
+  </script>
+
+</body>
+</html>
