@@ -1,0 +1,219 @@
+<!-- public/index.html -->
+<!doctype html>
+<html lang="id" class="h-full scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>KARTEJI</title>
+
+  <!-- Tailwind CLI output -->
+  <link rel="stylesheet" href="../dist/assets/css/app.css">
+
+  <!-- Optional: favicon -->
+  <link rel="icon" href="./assets/img/logo.png" />
+</head>
+
+<body class="min-h-full bg-slate-950 text-slate-100 selection:bg-emerald-500/30 selection:text-white">
+
+  <!-- SPLASH -->
+  <section id="splash" class="min-h-screen flex flex-col items-center justify-center px-6">
+    <div class="w-full max-w-sm">
+      <div class="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl p-8 text-center">
+        <img
+          src="./assets/img/logo.png"
+          alt="Logo"
+          class="mx-auto h-28 w-28 rounded-3xl border border-white/10 object-cover shadow-lg"
+          onerror="this.src='https://via.placeholder.com/200'"
+        />
+        <h1 class="mt-4 text-3xl font-extrabold tracking-tight">KARTEJI</h1>
+        <p class="mt-2 text-sm text-slate-300">Platform digital Karang Taruna</p>
+
+        <div class="mt-6 flex items-center justify-center gap-2 text-xs text-slate-400">
+          <span class="inline-block h-2 w-2 animate-pulse rounded-full bg-emerald-400"></span>
+          <span>Memuat…</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ONBOARDING -->
+  <section id="onboarding" class="hidden min-h-screen flex items-center justify-center px-6">
+    <div class="w-full max-w-md">
+      <div class="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl p-6">
+        <!-- Header -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <img
+              src="./assets/img/logo.png"
+              class="h-10 w-10 rounded-2xl border border-white/10 object-cover"
+              alt="Logo kecil"
+              onerror="this.src='https://via.placeholder.com/80'"
+            />
+            <div>
+              <div class="text-sm font-extrabold tracking-wide">KARTEJI</div>
+              <div class="text-xs text-slate-400">Onboarding</div>
+            </div>
+          </div>
+
+          <button id="skipBtn"
+            class="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-slate-200 hover:bg-white/10 active:scale-[.99]">
+            Lewati
+          </button>
+        </div>
+
+        <!-- Slides -->
+        <div class="mt-6">
+          <div class="slide">
+            <h2 class="text-2xl font-extrabold tracking-tight">Aplikasi ini untuk apa?</h2>
+            <p class="mt-2 text-sm text-slate-300 leading-relaxed">
+              KARTEJI membantu Karang Taruna mengelola kegiatan, informasi, dokumentasi, dan transparansi kas secara rapi.
+            </p>
+          </div>
+
+          <div class="slide hidden">
+            <h2 class="text-2xl font-extrabold tracking-tight">Kegiatan lebih tertata</h2>
+            <p class="mt-2 text-sm text-slate-300 leading-relaxed">
+              Buat kegiatan, daftar peserta, absensi, dokumentasi galeri, dan kalender organisasi dalam satu sistem.
+            </p>
+          </div>
+
+          <div class="slide hidden">
+            <h2 class="text-2xl font-extrabold tracking-tight">Transparansi & bukti</h2>
+            <p class="mt-2 text-sm text-slate-300 leading-relaxed">
+              Timeline kas masuk/keluar lengkap dengan bukti transaksi, serta alur persetujuan (approval) yang jelas.
+            </p>
+          </div>
+
+          <div class="slide hidden">
+            <h2 class="text-2xl font-extrabold tracking-tight">Dashboard sesuai role</h2>
+            <p class="mt-2 text-sm text-slate-300 leading-relaxed">
+              Setiap peran punya akses sesuai tugas. Data anggota ditampilkan nama + status online/offline (tanpa bisa edit).
+            </p>
+          </div>
+        </div>
+
+        <!-- Dots -->
+        <div class="mt-6 flex items-center justify-center gap-2" id="dots">
+          <span class="dot h-2 w-2 rounded-full bg-emerald-400"></span>
+          <span class="dot h-2 w-2 rounded-full bg-white/20"></span>
+          <span class="dot h-2 w-2 rounded-full bg-white/20"></span>
+          <span class="dot h-2 w-2 rounded-full bg-white/20"></span>
+        </div>
+
+        <!-- Actions -->
+        <div class="mt-6 flex gap-3">
+          <button id="backBtn"
+            class="w-1/2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-100 hover:bg-white/10 active:scale-[.99] disabled:opacity-40 disabled:cursor-not-allowed"
+            disabled>
+            Back
+          </button>
+
+          <button id="nextBtn"
+            class="w-1/2 rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-emerald-300 active:scale-[.99]">
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA (LOGIN / REGISTER) -->
+  <section id="cta" class="hidden min-h-screen flex items-center justify-center px-6">
+    <div class="w-full max-w-md">
+      <div class="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl p-6 text-center">
+        <img
+          src="./assets/img/logo.png"
+          alt="Logo"
+          class="mx-auto h-16 w-16 rounded-2xl border border-white/10 object-cover"
+          onerror="this.src='https://via.placeholder.com/120'"
+        />
+        <h2 class="mt-4 text-2xl font-extrabold tracking-tight">Mulai Sekarang</h2>
+        <p class="mt-2 text-sm text-slate-300">
+          Login atau daftar untuk masuk ke dashboard sesuai role.
+        </p>
+
+        <div class="mt-6 grid grid-cols-1 gap-3">
+          <a href="./login.html"
+            class="rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-emerald-300 active:scale-[.99]">
+            Login
+          </a>
+          <a href="./register.html"
+            class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-100 hover:bg-white/10 active:scale-[.99]">
+            Daftar
+          </a>
+        </div>
+
+        <button id="replayBtn"
+          class="mt-4 text-xs text-slate-400 hover:text-slate-200">
+          Lihat onboarding lagi
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const splash = document.getElementById("splash");
+    const onboarding = document.getElementById("onboarding");
+    const cta = document.getElementById("cta");
+
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const dots = Array.from(document.querySelectorAll("#dots .dot"));
+
+    const nextBtn = document.getElementById("nextBtn");
+    const backBtn = document.getElementById("backBtn");
+    const skipBtn = document.getElementById("skipBtn");
+    const replayBtn = document.getElementById("replayBtn");
+
+    let idx = 0;
+
+    function render() {
+      slides.forEach((s, i) => s.classList.toggle("hidden", i !== idx));
+      dots.forEach((d, i) => {
+        d.classList.toggle("bg-emerald-400", i === idx);
+        d.classList.toggle("bg-white/20", i !== idx);
+      });
+
+      backBtn.disabled = idx === 0;
+      nextBtn.textContent = (idx === slides.length - 1) ? "Mulai" : "Next";
+    }
+
+    function goCTA() {
+      localStorage.setItem("onboarded", "1");
+      onboarding.classList.add("hidden");
+      cta.classList.remove("hidden");
+    }
+
+    // Splash -> Onboarding/CTA
+    setTimeout(() => {
+      splash.classList.add("hidden");
+      const done = localStorage.getItem("onboarded") === "1";
+      (done ? cta : onboarding).classList.remove("hidden");
+      render();
+    }, 1500);
+
+    nextBtn.addEventListener("click", () => {
+      if (idx < slides.length - 1) {
+        idx++;
+        render();
+      } else {
+        goCTA();
+      }
+    });
+
+    backBtn.addEventListener("click", () => {
+      idx = Math.max(0, idx - 1);
+      render();
+    });
+
+    skipBtn.addEventListener("click", goCTA);
+
+    replayBtn.addEventListener("click", () => {
+      localStorage.removeItem("onboarded");
+      idx = 0;
+      cta.classList.add("hidden");
+      onboarding.classList.remove("hidden");
+      render();
+    });
+  </script>
+</body>
+</html>
