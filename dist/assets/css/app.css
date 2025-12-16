@@ -1,0 +1,247 @@
+/* ======================================================
+   KARTEJI APP CSS
+   Generated (Tailwind-like utilities + components)
+   ====================================================== */
+
+/* ===== RESET & BASE ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter",
+    "Segoe UI", Roboto, Arial, sans-serif;
+  background-color: #020617; /* slate-950 */
+  color: #e5e7eb; /* slate-200 */
+}
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* ===== LAYOUT ===== */
+.container-app {
+  max-width: 72rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+/* ===== GLASS / PANEL ===== */
+.glass-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(2, 6, 23, 0.7);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.panel {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+}
+.panel-pad {
+  padding: 1.5rem;
+}
+
+/* ===== TYPOGRAPHY ===== */
+.h-title {
+  font-size: 1.125rem;
+  font-weight: 800;
+}
+.p-sub {
+  font-size: 0.875rem;
+  color: #cbd5f5;
+}
+.p-muted {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+  border-radius: 1rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 800;
+  transition: background-color 0.2s ease, transform 0.05s ease;
+}
+.btn:active {
+  transform: scale(0.98);
+}
+.btn-sm {
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.btn-primary {
+  background-color: #34d399;
+  color: #022c22;
+}
+.btn-primary:hover {
+  background-color: #6ee7b7;
+}
+
+.btn-danger {
+  background-color: #ef4444;
+  color: #fff;
+}
+.btn-danger:hover {
+  background-color: #f87171;
+}
+
+.btn-ghost {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.btn-ghost:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.btn-soft {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.btn-soft:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.btn-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ===== FORM ===== */
+.label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  border-radius: 1rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e5e7eb;
+  outline: none;
+}
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: #34d399;
+}
+
+/* ===== LIST / TABLE ===== */
+.list-wrap {
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.list-head {
+  display: grid;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.list-body {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.list-row {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ===== BADGE ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.625rem;
+  font-weight: 800;
+  border: 1px solid transparent;
+}
+.badge-ok {
+  background: rgba(52, 211, 153, 0.12);
+  border-color: rgba(52, 211, 153, 0.25);
+  color: #6ee7b7;
+}
+.badge-warn {
+  background: rgba(251, 191, 36, 0.12);
+  border-color: rgba(251, 191, 36, 0.25);
+  color: #fde68a;
+}
+.badge-bad {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+}
+.badge-soft {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #e5e7eb;
+}
+
+/* ===== TABS ===== */
+.tabbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.tab {
+  border-radius: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.tab:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.tab-active {
+  background-color: #34d399;
+  color: #022c22;
+  font-weight: 800;
+}
+
+/* ===== UTIL ===== */
+.hidden {
+  display: none !important;
+}
+.text-center {
+  text-align: center;
+}
+.flex {
+  display: flex;
+}
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-6 { margin-top: 1.5rem; }
+
+/* ===== END ===== */
