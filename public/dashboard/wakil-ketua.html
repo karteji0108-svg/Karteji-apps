@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Wakil Ketua | KARTEJI</title>
+
+  <link rel="stylesheet" href="../../dist/assets/css/app.css">
+  <link rel="icon" href="../assets/img/logo.png">
+</head>
+
+<body class="min-h-full bg-slate-950 text-slate-100">
+
+<header class="sticky top-0 z-20 border-b border-white/10 bg-slate-950/70 backdrop-blur-xl">
+  <div class="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <img src="../assets/img/logo.png" class="h-10 w-10 rounded-2xl border border-white/10" alt="Logo">
+      <div>
+        <div class="text-sm font-extrabold">KARTEJI</div>
+        <div class="text-xs text-slate-400">Dashboard Wakil Ketua</div>
+      </div>
+    </div>
+
+    <button id="logoutBtn"
+      class="rounded-2xl bg-rose-500 px-4 py-2 text-xs font-extrabold hover:bg-rose-400 active:scale-[.99]">
+      Logout
+    </button>
+  </div>
+</header>
+
+<main class="mx-auto max-w-6xl px-6 py-6 space-y-6">
+
+  <!-- Gate -->
+  <section id="gate" class="hidden">
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl">
+      <h1 class="text-xl font-extrabold">Akses ditolak</h1>
+      <p class="mt-2 text-sm text-slate-300" id="gateMsg">Halaman ini khusus Wakil Ketua.</p>
+      <div class="mt-5 flex gap-3">
+        <a href="../login.html" class="rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-emerald-300">
+          Login
+        </a>
+        <a href="../index.html" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold hover:bg-white/10">
+          Kembali
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <section id="content" class="hidden space-y-6">
+
+    <!-- Profile -->
+    <section class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 class="text-lg font-extrabold">Profil Wakil Ketua</h2>
+          <p class="text-sm text-slate-300">Ubah nama & foto profil.</p>
+          <p class="mt-1 text-xs text-slate-400" id="statusMsg"></p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <img id="mePhoto" class="h-14 w-14 rounded-2xl border border-white/10 object-cover" src="https://via.placeholder.com/120" alt="Foto">
+          <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+            <div class="text-xs text-slate-400">Login sebagai</div>
+            <div class="text-sm font-extrabold" id="meNameText">-</div>
+            <div class="text-xs text-slate-400" id="meEmail">-</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5 grid gap-3 sm:grid-cols-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Nama</label>
+          <input id="meName"
+            class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-emerald-400"
+            placeholder="Nama"/>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Foto Profil (Cloudinary)</label>
+          <input id="mePhotoInput" type="file" accept="image/*"
+            class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none" />
+        </div>
+
+        <div class="flex items-end">
+          <button id="saveProfileBtn"
+            class="w-full rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-emerald-300 active:scale-[.99]">
+            Simpan Profil
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tabs -->
+    <section class="rounded-3xl border border-white/10 bg-white/5 p-4 shadow-2xl">
+      <div class="flex flex-wrap gap-2">
+        <button class="tabBtn rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold hover:bg-white/10"
+          data-tab="struktur">Struktur</button>
+
+        <button class="tabBtn rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold hover:bg-white/10"
+          data-tab="kegiatan">Kegiatan</button>
+
+        <button class="tabBtn rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold hover:bg-white/10"
+          data-tab="finance">Finance</button>
+
+        <button id="refreshBtn"
+          class="ml-auto rounded-2xl bg-white/10 px-4 py-2 text-xs font-extrabold hover:bg-white/15 active:scale-[.99]">
+          Refresh
+        </button>
+      </div>
+    </section>
+
+    <!-- Struktur -->
+    <section id="tab-struktur" class="tabPanel rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl">
+      <h3 class="text-lg font-extrabold">Struktur Pengurus</h3>
+      <p class="text-sm text-slate-300 mt-1">
+        Wakil Ketua bisa ubah role pengurus (kecuali <b>super_admin</b> & <b>ketua</b>).
+      </p>
+
+      <div class="mt-4 overflow-hidden rounded-2xl border border-white/10">
+        <div class="grid grid-cols-12 bg-white/5 px-4 py-3 text-xs font-semibold text-slate-200">
+          <div class="col-span-5">Nama</div>
+          <div class="col-span-3 hidden sm:block">Email</div>
+          <div class="col-span-2">Role</div>
+          <div class="col-span-2 text-right">Aksi</div>
+        </div>
+        <div id="userList" class="divide-y divide-white/10"></div>
+      </div>
+    </section>
+
+    <!-- Kegiatan -->
+    <section id="tab-kegiatan" class="tabPanel hidden rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl space-y-4">
+      <h3 class="text-lg font-extrabold">Kegiatan</h3>
+
+      <div class="grid gap-3 sm:grid-cols-4">
+        <input id="actTitle"
+          class="sm:col-span-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-emerald-400"
+          placeholder="Judul kegiatan" />
+
+        <input id="actDate"
+          class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-emerald-400"
+          placeholder="YYYY-MM-DD" />
+
+        <input id="actLoc"
+          class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-emerald-400"
+          placeholder="Lokasi" />
+
+        <input id="actDesc"
+          class="sm:col-span-3 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-emerald-400"
+          placeholder="Deskripsi singkat" />
+
+        <input id="actCover" type="file" accept="image/*"
+          class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none" />
+
+        <button id="actCreateBtn"
+          class="sm:col-span-4 rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-emerald-300 active:scale-[.99]">
+          Buat Kegiatan
+        </button>
+      </div>
+
+      <div class="mt-3 overflow-hidden rounded-2xl border border-white/10">
+        <div class="grid grid-cols-12 bg-white/5 px-4 py-3 text-xs font-semibold text-slate-200">
+          <div class="col-span-7">Kegiatan</div>
+          <div class="col-span-2">Status</div>
+          <div class="col-span-3 text-right">Aksi</div>
+        </div>
+        <div id="actList" class="divide-y divide-white/10"></div>
+      </div>
+    </section>
+
+    <!-- Finance -->
+    <section id="tab-finance" class="tabPanel hidden rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl space-y-4">
+      <h3 class="text-lg font-extrabold">Finance (Approval)</h3>
+      <p class="text-sm text-slate-300">Approve/Reject transaksi (kas masuk/keluar).</p>
+
+      <div class="mt-2 overflow-hidden rounded-2xl border border-white/10">
+        <div class="grid grid-cols-12 bg-white/5 px-4 py-3 text-xs font-semibold text-slate-200">
+          <div class="col-span-7">Transaksi</div>
+          <div class="col-span-2">Status</div>
+          <div class="col-span-3 text-right">Aksi</div>
+        </div>
+        <div id="finList" class="divide-y divide-white/10"></div>
+      </div>
+    </section>
+
+  </section>
+</main>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+  import {
+    getFirestore,
+    doc, getDoc, updateDoc,
+    collection, addDoc, getDocs,
+    query, orderBy, limit,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+  // Firebase config (punyamu)
+  const firebaseConfig = {
+    apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
+    authDomain: "katar-9cac3.firebaseapp.com",
+    projectId: "katar-9cac3",
+    storageBucket: "katar-9cac3.firebasestorage.app",
+    messagingSenderId: "1017734829960",
+    appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d",
+    measurementId: "G-M4F9J10TTE"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // Cloudinary (punyamu)
+  const CLOUD_NAME = "dbxktcwug";
+  const PRESET_PROFILE = "Karteji";
+  const PRESET_GALLERY = "Karteji Galeri";
+
+  async function uploadToCloudinary(file, preset, folder="karteji") {
+    const endpoint = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`;
+    const form = new FormData();
+    form.append("file", file);
+    form.append("upload_preset", preset);
+    form.append("folder", folder);
+
+    const res = await fetch(endpoint, { method: "POST", body: form });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data?.error?.message || "Upload Cloudinary gagal");
+
+    return { url: data.secure_url, publicId: data.public_id, bytes: data.bytes, format: data.format };
+  }
+
+  // UI helpers
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (m)=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
+  const setStatus = (t) => $("statusMsg").textContent = t || "";
+
+  // Tabs
+  function openTab(name) {
+    document.querySelectorAll(".tabPanel").forEach(p => p.classList.add("hidden"));
+    document.querySelectorAll(".tabBtn").forEach(b => b.classList.remove("bg-emerald-400","text-slate-950","font-extrabold"));
+    $(`tab-${name}`).classList.remove("hidden");
+    document.querySelector(`.tabBtn[data-tab="${name}"]`).classList.add("bg-emerald-400","text-slate-950","font-extrabold");
+  }
+  document.querySelectorAll(".tabBtn").forEach(btn => btn.addEventListener("click", ()=>openTab(btn.dataset.tab)));
+  $("refreshBtn").addEventListener("click", async ()=>{
+    await Promise.allSettled([loadUsers(), loadActivities(), loadFinance()]);
+    setStatus("Refresh selesai ✅");
+  });
+
+  // Auth gate
+  let ME_UID = null;
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return deny("Belum login.");
+
+    const snap = await getDoc(doc(db, "users", user.uid));
+    if (!snap.exists()) return deny("Profil tidak ditemukan.");
+
+    const me = snap.data();
+    if (me?.role !== "wakil_ketua") return deny("Khusus Wakil Ketua.");
+
+    ME_UID = user.uid;
+
+    $("gate").classList.add("hidden");
+    $("content").classList.remove("hidden");
+
+    $("meNameText").textContent = me?.name || "Wakil Ketua";
+    $("meEmail").textContent = me?.email || user.email || "-";
+    $("meName").value = me?.name || "";
+    $("mePhoto").src = me?.photo?.url || "https://via.placeholder.com/120";
+
+    openTab("struktur");
+    await Promise.allSettled([loadUsers(), loadActivities(), loadFinance()]);
+    setStatus("Siap ✅");
+  });
+
+  function deny(msg){
+    $("content").classList.add("hidden");
+    $("gate").classList.remove("hidden");
+    $("gateMsg").textContent = msg || "Akses ditolak.";
+  }
+
+  // Logout
+  $("logoutBtn").addEventListener("click", async ()=>{
+    await signOut(auth);
+    location.href = "../login.html";
+  });
+
+  // Profile save
+  $("saveProfileBtn").addEventListener("click", async ()=>{
+    try{
+      setStatus("Menyimpan profil...");
+      const newName = $("meName").value.trim();
+      const file = $("mePhotoInput").files?.[0];
+
+      const payload = {};
+      if (newName) payload.name = newName;
+
+      if (file) {
+        const media = await uploadToCloudinary(file, PRESET_PROFILE, `karteji/users/${ME_UID}`);
+        payload.photo = media;
+        $("mePhoto").src = media.url;
+      }
+
+      if (!Object.keys(payload).length) return setStatus("Tidak ada perubahan.");
+      await updateDoc(doc(db, "users", ME_UID), payload);
+
+      $("meNameText").textContent = payload.name || $("meNameText").textContent;
+      setStatus("Profil tersimpan ✅");
+    } catch(e){
+      setStatus(e.message || "Gagal simpan profil");
+    }
+  });
+
+  // ===== Struktur (Role management) =====
+  const ROLE_OPTIONS = ["wakil_ketua","sekretaris","bendahara","koordinator","anggota"];
+  // Wakil Ketua tidak boleh ubah: super_admin & ketua
+  function canEditRole(userRole){
+    return userRole !== "super_admin" && userRole !== "ketua";
+  }
+
+  async function loadUsers(){
+    const wrap = $("userList");
+    wrap.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Loading...</div>`;
+
+    const q = query(collection(db, "users"), orderBy("name","asc"), limit(200));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      wrap.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Belum ada user.</div>`;
+      return;
+    }
+
+    wrap.innerHTML = "";
+    snap.forEach((d)=>{
+      const uid = d.id;
+      const u = d.data();
+      const editable = canEditRole(u.role);
+
+      const row = document.createElement("div");
+      row.className = "grid grid-cols-12 items-center gap-2 px-4 py-3";
+      row.innerHTML = `
+        <div class="col-span-5">
+          <div class="text-sm font-extrabold">${esc(u.name || "-")}</div>
+          <div class="text-xs text-slate-400 sm:hidden">${esc(u.email || "")}</div>
+        </div>
+        <div class="col-span-3 hidden sm:block text-xs text-slate-300">${esc(u.email || "")}</div>
+        <div class="col-span-2">
+          ${editable ? `
+            <select class="roleSel w-full rounded-xl border border-white/10 bg-slate-950/40 px-2 py-2 text-xs outline-none focus:border-emerald-400" data-uid="${esc(uid)}">
+              ${ROLE_OPTIONS.map(r => `<option value="${r}" ${u.role===r?"selected":""}>${r}</option>`).join("")}
+            </select>
+          ` : `
+            <div class="text-xs font-semibold ${u.role==="ketua"?"text-emerald-300":"text-slate-300"}">${esc(u.role)}</div>
+          `}
+        </div>
+        <div class="col-span-2 text-right">
+          ${editable ? `
+            <button class="saveRoleBtn rounded-xl bg-emerald-400 px-3 py-2 text-xs font-extrabold text-slate-950 hover:bg-emerald-300"
+              data-uid="${esc(uid)}">
+              Simpan
+            </button>
+          ` : `<span class="text-xs text-slate-500">locked</span>`}
+        </div>
+      `;
+      wrap.appendChild(row);
+    });
+
+    document.querySelectorAll(".saveRoleBtn").forEach(btn=>{
+      btn.addEventListener("click", async ()=>{
+        const uid = btn.dataset.uid;
+        const sel = document.querySelector(`.roleSel[data-uid="${uid}"]`);
+        const newRole = sel.value;
+
+        btn.disabled = true;
+        const old = btn.textContent; btn.textContent = "…";
+        try{
+          await updateDoc(doc(db,"users",uid), { role: newRole });
+          setStatus(`Role diperbarui ✅ (${uid} → ${newRole})`);
+        }catch(e){
+          setStatus("Gagal ubah role (cek rules).");
+        }finally{
+          btn.disabled = false; btn.textContent = old;
+        }
+      });
+    });
+  }
+
+  // ===== Kegiatan (CRUD + approval) =====
+  async function loadActivities(){
+    const list = $("actList");
+    list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Loading...</div>`;
+
+    const q = query(collection(db,"activities"), orderBy("createdAt","desc"), limit(50));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Belum ada kegiatan.</div>`;
+      return;
+    }
+
+    list.innerHTML = "";
+    snap.forEach((d)=>{
+      const id = d.id;
+      const x = d.data();
+      const status = x.status || "pending";
+
+      const row = document.createElement("div");
+      row.className = "px-4 py-3";
+      row.innerHTML = `
+        <div class="grid grid-cols-12 items-center gap-2">
+          <div class="col-span-7">
+            <div class="text-sm font-extrabold">${esc(x.title || "-")}</div>
+            <div class="text-xs text-slate-400">${esc(x.date || "")} • ${esc(x.location || "")}</div>
+            ${x.cover?.url ? `<div class="text-xs text-slate-400 mt-1">Cover: <a class="text-emerald-300 hover:underline" target="_blank" rel="noreferrer" href="${x.cover.url}">lihat</a></div>` : ``}
+          </div>
+          <div class="col-span-2">
+            <span class="text-xs font-semibold ${status==="approved"?"text-emerald-300":status==="rejected"?"text-rose-300":"text-slate-300"}">${esc(status)}</span>
+          </div>
+          <div class="col-span-3 flex justify-end gap-2">
+            <button class="actApprove rounded-xl bg-emerald-400 px-3 py-2 text-xs font-extrabold text-slate-950 hover:bg-emerald-300" data-id="${esc(id)}">Approve</button>
+            <button class="actReject rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-extrabold hover:bg-white/10" data-id="${esc(id)}">Reject</button>
+          </div>
+        </div>
+      `;
+      list.appendChild(row);
+    });
+
+    document.querySelectorAll(".actApprove").forEach(b => b.addEventListener("click", async ()=>{
+      await updateDoc(doc(db,"activities",b.dataset.id), { status:"approved" });
+      setStatus("Kegiatan approved ✅");
+      await loadActivities();
+    }));
+    document.querySelectorAll(".actReject").forEach(b => b.addEventListener("click", async ()=>{
+      await updateDoc(doc(db,"activities",b.dataset.id), { status:"rejected" });
+      setStatus("Kegiatan rejected ✅");
+      await loadActivities();
+    }));
+  }
+
+  $("actCreateBtn").addEventListener("click", async ()=>{
+    try{
+      const title = $("actTitle").value.trim();
+      const date = $("actDate").value.trim();
+      const location = $("actLoc").value.trim();
+      const description = $("actDesc").value.trim();
+      const coverFile = $("actCover").files?.[0];
+
+      if(!title) return setStatus("Judul wajib diisi.");
+
+      setStatus("Membuat kegiatan...");
+      let cover = null;
+      if (coverFile) cover = await uploadToCloudinary(coverFile, PRESET_GALLERY, "karteji/activities");
+
+      await addDoc(collection(db,"activities"), {
+        title, date, location, description,
+        status: "pending",
+        cover,
+        createdByUid: ME_UID,
+        createdAt: serverTimestamp()
+      });
+
+      $("actTitle").value = ""; $("actDate").value=""; $("actLoc").value=""; $("actDesc").value=""; $("actCover").value="";
+      setStatus("Kegiatan dibuat ✅");
+      await loadActivities();
+    }catch(e){
+      setStatus(e.message || "Gagal buat kegiatan");
+    }
+  });
+
+  // ===== Finance (approval) =====
+  async function loadFinance(){
+    const list = $("finList");
+    list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Loading...</div>`;
+
+    const q = query(collection(db,"financial_records"), orderBy("createdAt","desc"), limit(50));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Belum ada transaksi.</div>`;
+      return;
+    }
+
+    list.innerHTML = "";
+    snap.forEach((d)=>{
+      const id = d.id;
+      const x = d.data();
+      const status = x.status || "pending";
+
+      const row = document.createElement("div");
+      row.className = "px-4 py-3";
+      row.innerHTML = `
+        <div class="grid grid-cols-12 items-center gap-2">
+          <div class="col-span-7">
+            <div class="text-sm font-extrabold">
+              ${x.type==="income" ? "Kas Masuk" : "Kas Keluar"} • Rp ${(Number(x.amount||0)).toLocaleString("id-ID")}
+            </div>
+            <div class="text-xs text-slate-400">${esc(x.category || "-")} • ${esc(x.note || "")}</div>
+            ${x.proof?.url ? `<div class="text-xs text-slate-400 mt-1">Bukti: <a class="text-emerald-300 hover:underline" target="_blank" rel="noreferrer" href="${x.proof.url}">lihat</a></div>` : ``}
+          </div>
+          <div class="col-span-2">
+            <span class="text-xs font-semibold ${status==="approved"?"text-emerald-300":status==="rejected"?"text-rose-300":"text-slate-300"}">${esc(status)}</span>
+          </div>
+          <div class="col-span-3 flex justify-end gap-2">
+            <button class="finApprove rounded-xl bg-emerald-400 px-3 py-2 text-xs font-extrabold text-slate-950 hover:bg-emerald-300" data-id="${esc(id)}">Approve</button>
+            <button class="finReject rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-extrabold hover:bg-white/10" data-id="${esc(id)}">Reject</button>
+          </div>
+        </div>
+      `;
+      list.appendChild(row);
+    });
+
+    document.querySelectorAll(".finApprove").forEach(b => b.addEventListener("click", async ()=>{
+      await updateDoc(doc(db,"financial_records",b.dataset.id), { status:"approved" });
+      setStatus("Finance approved ✅");
+      await loadFinance();
+    }));
+    document.querySelectorAll(".finReject").forEach(b => b.addEventListener("click", async ()=>{
+      await updateDoc(doc(db,"financial_records",b.dataset.id), { status:"rejected" });
+      setStatus("Finance rejected ✅");
+      await loadFinance();
+    }));
+  }
+</script>
+
+</body>
+</html>
