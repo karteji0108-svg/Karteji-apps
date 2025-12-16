@@ -1,64 +1,126 @@
-<!doctype html>
-<html lang="id" class="h-full">
+<!DOCTYPE html>
+<html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Super Admin | KARTEJI</title>
 
-  <link rel="stylesheet" href="../../dist/assets/css/app.css">
+  <!-- Tailwind CDN (biar 1 gaya Opsi A) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Icons & Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+
   <link rel="icon" href="../assets/img/logo.png">
+
+  <style>
+    body { font-family: 'Outfit', sans-serif; }
+
+    /* Background Animation (identik) */
+    .bg-gradient-animate {
+      background: linear-gradient(-45deg, #020617, #020617, #022c22, #020617);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Animations */
+    .fade-in { animation: fadeIn 0.8s ease-out forwards; }
+    .fade-out { animation: fadeOut 0.5s ease-in forwards; }
+    .slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    /* Glass */
+    .glass {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+  </style>
 </head>
 
-<body class="min-h-full bg-slate-950 text-slate-100">
-  <header class="sticky top-0 z-20 border-b border-white/10 bg-slate-950/70 backdrop-blur-xl">
-    <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-6 py-4">
-      <div class="flex items-center gap-3">
-        <img
-          id="brandLogo"
-          src="../assets/img/logo.png"
-          alt="Logo"
-          class="h-10 w-10 rounded-2xl border border-white/10 object-cover"
-          onerror="this.src='https://via.placeholder.com/80'"
-        />
-        <div>
-          <div class="text-sm font-extrabold tracking-wide">KARTEJI</div>
-          <div class="text-xs text-slate-400">Super Admin (CRUD)</div>
-        </div>
-      </div>
+<body class="min-h-screen bg-slate-950 text-white relative overflow-x-hidden bg-gradient-animate">
 
-      <div class="flex items-center gap-2">
-        <a href="../index.html"
-           class="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold hover:bg-white/10">
-          Beranda
-        </a>
-        <button id="logoutBtn"
-          class="rounded-2xl bg-rose-500 px-4 py-2 text-xs font-extrabold text-white hover:bg-rose-400 active:scale-[.99]">
-          Logout
-        </button>
+  <!-- glow layers -->
+  <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-emerald-900/20 to-transparent pointer-events-none"></div>
+  <div class="absolute top-20 left-1/2 -translate-x-1/2 w-[520px] h-[520px] bg-emerald-500/15 blur-[140px] rounded-full pointer-events-none"></div>
+
+  <!-- TOP BAR (samakan feel seperti layar lain) -->
+  <header class="sticky top-0 z-30">
+    <div class="mx-auto max-w-6xl px-6 pt-8 pb-4">
+      <div class="glass rounded-3xl px-5 py-4 flex items-center justify-between gap-4 slide-up">
+        <div class="flex items-center gap-3">
+          <img
+            id="brandLogo"
+            src="../assets/img/logo.png"
+            alt="Logo"
+            class="h-11 w-11 rounded-2xl border border-white/10 object-cover"
+            onerror="this.src='https://via.placeholder.com/80'"
+          />
+          <div>
+            <div class="text-sm font-extrabold tracking-wide">KARTEJI</div>
+            <div class="text-xs text-slate-300 flex items-center gap-2">
+              <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 border border-emerald-400/20 px-3 py-1">
+                <span class="material-symbols-rounded text-sm text-emerald-300">admin_panel_settings</span>
+                <span class="font-semibold text-emerald-200">Super Admin</span>
+              </span>
+              <span class="text-slate-400 hidden sm:inline">CRUD Panel</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <a href="../index.html"
+            class="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold hover:bg-white/10 active:scale-[.99] flex items-center gap-2">
+            <span class="material-symbols-rounded text-base">home</span>
+            Beranda
+          </a>
+          <button id="logoutBtn"
+            class="rounded-2xl bg-rose-500 px-4 py-2 text-xs font-extrabold text-white hover:bg-rose-400 active:scale-[.99] flex items-center gap-2">
+            <span class="material-symbols-rounded text-base">logout</span>
+            Logout
+          </button>
+        </div>
       </div>
     </div>
   </header>
 
-  <main class="mx-auto max-w-6xl px-6 py-6">
+  <main class="mx-auto max-w-6xl px-6 pb-10">
+    <!-- GATE -->
     <section id="gate" class="hidden">
-      <div class="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 shadow-2xl">
-        <h1 class="text-xl font-extrabold">Akses ditolak</h1>
+      <div class="glass rounded-3xl p-8 shadow-2xl slide-up">
+        <div class="inline-flex items-center justify-center p-3 bg-slate-800/50 rounded-2xl mb-4 ring-1 ring-slate-700">
+          <span class="material-symbols-rounded text-3xl text-rose-300">gpp_bad</span>
+        </div>
+        <h1 class="text-2xl font-extrabold">Akses ditolak</h1>
         <p class="mt-2 text-sm text-slate-300" id="gateMsg">Kamu tidak punya izin.</p>
-        <div class="mt-5 flex gap-3">
+        <div class="mt-6 flex flex-wrap gap-3">
           <a href="../login.html"
-             class="rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-emerald-300">
+             class="rounded-2xl bg-emerald-400 px-5 py-3 text-sm font-extrabold text-slate-950 hover:bg-emerald-300">
             Login
           </a>
           <a href="../index.html"
-             class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold hover:bg-white/10">
+             class="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold hover:bg-white/10">
             Kembali
           </a>
         </div>
       </div>
     </section>
 
+    <!-- CONTENT -->
     <section id="content" class="hidden space-y-6">
-      <div class="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 shadow-2xl">
+
+      <!-- Profile Card -->
+      <div class="glass rounded-3xl p-6 shadow-2xl slide-up">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 class="text-2xl font-extrabold tracking-tight">Super Admin Panel</h1>
@@ -96,14 +158,16 @@
 
           <div class="sm:col-span-1 flex items-end gap-2">
             <button id="saveProfileBtn"
-              class="w-full rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-emerald-300 active:scale-[.99]">
-              Simpan Profil
+              class="w-full rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-emerald-300 active:scale-[.99] flex items-center justify-center gap-2">
+              <span class="material-symbols-rounded text-lg">save</span>
+              <span>Simpan Profil</span>
             </button>
           </div>
         </div>
       </div>
 
-      <div class="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-4 shadow-2xl">
+      <!-- Tabs -->
+      <div class="glass rounded-3xl p-4 shadow-2xl slide-up">
         <div class="flex flex-wrap gap-2">
           <button class="tabBtn px-4 py-2 rounded-2xl border border-white/10 bg-white/5 text-xs font-semibold hover:bg-white/10"
             data-tab="users">Users</button>
@@ -119,14 +183,16 @@
             data-tab="logs">Logs</button>
 
           <button id="refreshAllBtn"
-            class="ml-auto px-4 py-2 rounded-2xl bg-white/10 text-xs font-extrabold hover:bg-white/15 active:scale-[.99]">
+            class="ml-auto px-4 py-2 rounded-2xl bg-white/10 text-xs font-extrabold hover:bg-white/15 active:scale-[.99] flex items-center gap-2">
+            <span class="material-symbols-rounded text-base">refresh</span>
             Refresh
           </button>
         </div>
       </div>
 
+      <!-- USERS -->
       <section id="tab-users" class="tabPanel space-y-4">
-        <div class="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 shadow-2xl">
+        <div class="glass rounded-3xl p-6 shadow-2xl slide-up">
           <h2 class="text-lg font-extrabold">Users (CRUD)</h2>
           <p class="mt-1 text-sm text-slate-300">Ubah role atau hapus dokumen user.</p>
 
@@ -142,8 +208,9 @@
         </div>
       </section>
 
+      <!-- ACTIVITIES -->
       <section id="tab-activities" class="tabPanel hidden space-y-4">
-        <div class="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 shadow-2xl">
+        <div class="glass rounded-3xl p-6 shadow-2xl slide-up">
           <h2 class="text-lg font-extrabold">Activities (CRUD)</h2>
           <div class="mt-4 grid gap-3 sm:grid-cols-4">
             <input id="actTitle" class="sm:col-span-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-emerald-400"
@@ -173,8 +240,9 @@
         </div>
       </section>
 
+      <!-- FINANCE -->
       <section id="tab-finance" class="tabPanel hidden space-y-4">
-        <div class="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 shadow-2xl">
+        <div class="glass rounded-3xl p-6 shadow-2xl slide-up">
           <h2 class="text-lg font-extrabold">Finance (CRUD)</h2>
           <div class="mt-4 grid gap-3 sm:grid-cols-6">
             <select id="finType"
@@ -210,8 +278,9 @@
         </div>
       </section>
 
+      <!-- NOTIFICATIONS -->
       <section id="tab-notifications" class="tabPanel hidden space-y-4">
-        <div class="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 shadow-2xl">
+        <div class="glass rounded-3xl p-6 shadow-2xl slide-up">
           <h2 class="text-lg font-extrabold">Notifications (CRUD)</h2>
           <div class="mt-4 grid gap-3 sm:grid-cols-4">
             <input id="nTitle"
@@ -241,8 +310,9 @@
         </div>
       </section>
 
+      <!-- ARCHIVES -->
       <section id="tab-archives" class="tabPanel hidden space-y-4">
-        <div class="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 shadow-2xl">
+        <div class="glass rounded-3xl p-6 shadow-2xl slide-up">
           <h2 class="text-lg font-extrabold">Archives (CRUD)</h2>
           <div class="mt-4 grid gap-3 sm:grid-cols-4">
             <input id="arTitle"
@@ -266,8 +336,9 @@
         </div>
       </section>
 
+      <!-- LOGS -->
       <section id="tab-logs" class="tabPanel hidden space-y-4">
-        <div class="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 shadow-2xl">
+        <div class="glass rounded-3xl p-6 shadow-2xl slide-up">
           <h2 class="text-lg font-extrabold">Logs (Read)</h2>
           <p class="mt-1 text-sm text-slate-300">Log sederhana aktivitas sistem.</p>
 
@@ -284,20 +355,19 @@
     </section>
   </main>
 
+  <!-- ========= SCRIPT ASLI KAMU (FITUR TETAP) ========= -->
   <script type="module">
-    // Firebase SDK
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
     import {
       getFirestore,
-      doc, getDoc, setDoc, updateDoc, deleteDoc,
+      doc, getDoc, updateDoc, deleteDoc,
       collection, addDoc, getDocs,
       query, orderBy, limit,
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    // ========= Firebase config (punyamu) =========
     const firebaseConfig = {
       apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
       authDomain: "katar-9cac3.firebaseapp.com",
@@ -313,26 +383,19 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // ===================================================
-    // ========= Cloudinary (KONFIGURASI BARU) =========
-    // ===================================================
-    const CLOUD_NAME = "dbxktcwug"; // Sudah diisi
-    
-    // Definisikan semua preset Anda sesuai tujuan upload:
-    const UPLOAD_PRESET_PROFILE = "Karteji"; // untuk foto profil
-    const UPLOAD_PRESET_ACTIVITY = "Karteji Galeri"; // untuk cover kegiatan
-    const UPLOAD_PRESET_FINANCE = "Karteji Finance"; // untuk bukti transaksi keuangan
-    const UPLOAD_PRESET_ARCHIVE = "Karteji Galeri"; // diasumsikan untuk arsip/dokumen
+    // Cloudinary config (sesuai punyamu)
+    const CLOUD_NAME = "dbxktcwug";
+    const UPLOAD_PRESET_PROFILE = "Karteji";
+    const UPLOAD_PRESET_ACTIVITY = "Karteji Galeri";
+    const UPLOAD_PRESET_FINANCE = "Karteji Finance";
+    const UPLOAD_PRESET_ARCHIVE = "Karteji Galeri";
 
-    // Fungsi uploadToCloudinary diubah untuk menerima uploadPreset sebagai argumen
     async function uploadToCloudinary(file, uploadPreset, folder="karteji/misc") {
-      if (CLOUD_NAME.startsWith("ISI_") || !uploadPreset) {
-        throw new Error("Cloudinary belum diset atau Preset kosong. Isi CLOUD_NAME & Preset di super-admin.html");
-      }
+      if (!CLOUD_NAME || !uploadPreset) throw new Error("Cloudinary belum diset / preset kosong.");
       const endpoint = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`;
       const form = new FormData();
       form.append("file", file);
-      form.append("upload_preset", uploadPreset); // Menggunakan preset yang spesifik
+      form.append("upload_preset", uploadPreset);
       form.append("folder", folder);
 
       const res = await fetch(endpoint, { method: "POST", body: form });
@@ -348,7 +411,6 @@
       };
     }
 
-    // ========= Helpers =========
     const $ = (id) => document.getElementById(id);
     const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (m)=>({
       "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
@@ -359,9 +421,7 @@
     const ROLES = ["super_admin","ketua","wakil_ketua","sekretaris","bendahara","koordinator","anggota"];
 
     async function log(action, meta = {}) {
-      try {
-        await addDoc(collection(db, "logs"), { action, meta, at: serverTimestamp() });
-      } catch {}
+      try { await addDoc(collection(db, "logs"), { action, meta, at: serverTimestamp() }); } catch {}
     }
 
     function showGate(message) {
@@ -369,13 +429,11 @@
       $("gate").classList.remove("hidden");
       $("gateMsg").textContent = message || "Akses ditolak.";
     }
-
     function showContent() {
       $("gate").classList.add("hidden");
       $("content").classList.remove("hidden");
     }
 
-    // ========= Tabs =========
     function openTab(name) {
       document.querySelectorAll(".tabPanel").forEach(p => p.classList.add("hidden"));
       document.querySelectorAll(".tabBtn").forEach(b => b.classList.remove("bg-emerald-400","text-slate-950","font-extrabold"));
@@ -384,19 +442,14 @@
       document.querySelector(`.tabBtn[data-tab="${name}"]`)
         .classList.add("bg-emerald-400","text-slate-950","font-extrabold");
     }
-
-    document.querySelectorAll(".tabBtn").forEach(btn => {
-      btn.addEventListener("click", () => openTab(btn.dataset.tab));
-    });
+    document.querySelectorAll(".tabBtn").forEach(btn => btn.addEventListener("click", () => openTab(btn.dataset.tab)));
 
     $("refreshAllBtn").addEventListener("click", async () => {
       await Promise.allSettled([loadUsers(), loadActivities(), loadFinance(), loadNotifications(), loadArchives(), loadLogs()]);
       setStatus("Refresh selesai ✅");
     });
 
-    // ========= Auth Gate =========
     let ME_UID = null;
-    let ME_PROFILE = null;
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) return showGate("Belum login. Silakan login.");
@@ -408,7 +461,6 @@
         if (me?.role !== "super_admin") return showGate("Khusus Super Admin.");
 
         ME_UID = user.uid;
-        ME_PROFILE = me;
 
         $("meName").textContent = me?.name || "Super Admin";
         $("meEmail").textContent = me?.email || user.email || "-";
@@ -417,6 +469,7 @@
 
         showContent();
         openTab("users");
+
         await Promise.allSettled([loadUsers(), loadActivities(), loadFinance(), loadNotifications(), loadArchives(), loadLogs()]);
         setStatus("Siap ✅");
       } catch (e) {
@@ -429,7 +482,6 @@
       location.href = "../login.html";
     });
 
-    // ========= PROFILE (update name + photo) =========
     $("saveProfileBtn").addEventListener("click", async () => {
       try {
         setStatus("Menyimpan profil...");
@@ -440,17 +492,12 @@
         if (newName) payload.name = newName;
 
         if (photoFile) {
-          // Menggunakan UPLOAD_PRESET_PROFILE
           const media = await uploadToCloudinary(photoFile, UPLOAD_PRESET_PROFILE, `karteji/users/${ME_UID}/photo`);
           payload.photo = media;
           $("mePhoto").src = media.url;
         }
 
-        if (Object.keys(payload).length === 0) {
-          setStatus("Tidak ada perubahan.");
-          return;
-        }
-
+        if (Object.keys(payload).length === 0) return setStatus("Tidak ada perubahan.");
         await updateDoc(doc(db, "users", ME_UID), payload);
         await log("profile.update", { uid: ME_UID, keys: Object.keys(payload) });
         setStatus("Profil tersimpan ✅");
@@ -459,13 +506,13 @@
       }
     });
 
-    // ========= USERS CRUD =========
+    // USERS
     async function loadUsers() {
       const list = $("userList");
       list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Loading...</div>`;
 
-      const q = query(collection(db, "users"), orderBy("name","asc"), limit(200));
-      const snap = await getDocs(q);
+      const qy = query(collection(db, "users"), orderBy("name","asc"), limit(200));
+      const snap = await getDocs(qy);
 
       if (snap.empty) {
         list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Belum ada user.</div>`;
@@ -476,7 +523,6 @@
       snap.forEach((d) => {
         const uid = d.id;
         const u = d.data();
-
         const row = document.createElement("div");
         row.className = "grid grid-cols-12 items-center gap-0 px-4 py-3";
         row.innerHTML = `
@@ -501,7 +547,6 @@
         list.appendChild(row);
       });
 
-      // bind
       document.querySelectorAll(".saveRoleBtn").forEach(btn => {
         btn.addEventListener("click", async () => {
           const uid = btn.dataset.uid;
@@ -513,7 +558,7 @@
             await updateDoc(doc(db, "users", uid), { role: newRole });
             await log("role.update", { uid, role: newRole });
             setStatus(`Role user diubah: ${uid} → ${newRole}`);
-          } catch (e) {
+          } catch {
             setStatus("Gagal ubah role (cek rules).");
           } finally {
             btn.disabled = false; btn.textContent = old;
@@ -532,7 +577,7 @@
             await log("user.deleteDoc", { uid });
             setStatus(`Dokumen user dihapus: ${uid}`);
             await loadUsers();
-          } catch (e) {
+          } catch {
             setStatus("Gagal hapus user doc.");
           } finally {
             btn.disabled = false; btn.textContent = old;
@@ -541,13 +586,13 @@
       });
     }
 
-    // ========= ACTIVITIES CRUD =========
+    // ACTIVITIES
     async function loadActivities() {
       const list = $("actList");
       list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Loading...</div>`;
 
-      const q = query(collection(db, "activities"), orderBy("createdAt","desc"), limit(50));
-      const snap = await getDocs(q);
+      const qy = query(collection(db, "activities"), orderBy("createdAt","desc"), limit(50));
+      const snap = await getDocs(qy);
 
       if (snap.empty) {
         list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Belum ada kegiatan.</div>`;
@@ -558,7 +603,6 @@
       snap.forEach((d) => {
         const id = d.id;
         const x = d.data();
-
         const row = document.createElement("div");
         row.className = "px-4 py-3";
         row.innerHTML = `
@@ -614,15 +658,11 @@
         const location = $("actLoc").value.trim();
         const description = $("actDesc").value.trim();
         const coverFile = $("actCover").files?.[0];
-
         if(!title) return setStatus("Judul wajib diisi.");
 
         setStatus("Membuat kegiatan...");
         let cover = null;
-        if (coverFile) {
-          // Menggunakan UPLOAD_PRESET_ACTIVITY
-          cover = await uploadToCloudinary(coverFile, UPLOAD_PRESET_ACTIVITY, "karteji/activities/cover");
-        }
+        if (coverFile) cover = await uploadToCloudinary(coverFile, UPLOAD_PRESET_ACTIVITY, "karteji/activities/cover");
 
         await addDoc(collection(db, "activities"), {
           title, date, location, description,
@@ -641,13 +681,13 @@
       }
     });
 
-    // ========= FINANCE CRUD =========
+    // FINANCE
     async function loadFinance() {
       const list = $("finList");
       list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Loading...</div>`;
 
-      const q = query(collection(db, "financial_records"), orderBy("createdAt","desc"), limit(50));
-      const snap = await getDocs(q);
+      const qy = query(collection(db, "financial_records"), orderBy("createdAt","desc"), limit(50));
+      const snap = await getDocs(qy);
 
       if (snap.empty) {
         list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Belum ada transaksi.</div>`;
@@ -658,7 +698,6 @@
       snap.forEach((d) => {
         const id = d.id;
         const x = d.data();
-
         const row = document.createElement("div");
         row.className = "px-4 py-3";
         row.innerHTML = `
@@ -716,15 +755,11 @@
         const category = $("finCat").value.trim();
         const note = $("finNote").value.trim();
         const proofFile = $("finProof").files?.[0];
-
         if (!amount || amount <= 0) return setStatus("Nominal wajib > 0.");
 
         setStatus("Menambah transaksi...");
         let proof = null;
-        if (proofFile) {
-          // Menggunakan UPLOAD_PRESET_FINANCE
-          proof = await uploadToCloudinary(proofFile, UPLOAD_PRESET_FINANCE, "karteji/finance/proof");
-        }
+        if (proofFile) proof = await uploadToCloudinary(proofFile, UPLOAD_PRESET_FINANCE, "karteji/finance/proof");
 
         await addDoc(collection(db, "financial_records"), {
           type, amount, category, note,
@@ -743,13 +778,13 @@
       }
     });
 
-    // ========= NOTIFICATIONS CRUD =========
+    // NOTIFICATIONS
     async function loadNotifications() {
       const list = $("nList");
       list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Loading...</div>`;
 
-      const q = query(collection(db, "notifications"), orderBy("createdAt","desc"), limit(50));
-      const snap = await getDocs(q);
+      const qy = query(collection(db, "notifications"), orderBy("createdAt","desc"), limit(50));
+      const snap = await getDocs(qy);
 
       if (snap.empty) {
         list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Belum ada notifikasi.</div>`;
@@ -787,11 +822,10 @@
     }
 
     $("nCreateBtn").addEventListener("click", async () => {
-      try{
+      try {
         const title = $("nTitle").value.trim();
         const body = $("nBody").value.trim();
         const level = $("nLevel").value;
-
         if(!title) return setStatus("Judul wajib diisi.");
 
         setStatus("Mengirim notifikasi...");
@@ -805,18 +839,18 @@
         $("nTitle").value = ""; $("nBody").value = ""; $("nLevel").value = "normal";
         setStatus("Notifikasi terkirim ✅");
         await loadNotifications();
-      }catch(e){
+      } catch (e) {
         setStatus(e.message || "Gagal kirim notifikasi");
       }
     });
 
-    // ========= ARCHIVES CRUD =========
+    // ARCHIVES
     async function loadArchives() {
       const list = $("arList");
       list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Loading...</div>`;
 
-      const q = query(collection(db, "archives"), orderBy("createdAt","desc"), limit(100));
-      const snap = await getDocs(q);
+      const qy = query(collection(db, "archives"), orderBy("createdAt","desc"), limit(100));
+      const snap = await getDocs(qy);
 
       if (snap.empty) {
         list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Belum ada arsip.</div>`;
@@ -856,15 +890,15 @@
     }
 
     $("arUploadBtn").addEventListener("click", async () => {
-      try{
+      try {
         const title = $("arTitle").value.trim();
         const file = $("arFile").files?.[0];
         if(!title) return setStatus("Judul arsip wajib diisi.");
         if(!file) return setStatus("Pilih file dulu.");
 
         setStatus("Upload arsip...");
-        // Menggunakan UPLOAD_PRESET_ARCHIVE
         const media = await uploadToCloudinary(file, UPLOAD_PRESET_ARCHIVE, "karteji/archives");
+
         await addDoc(collection(db, "archives"), {
           title,
           file: media,
@@ -876,18 +910,18 @@
         $("arTitle").value = ""; $("arFile").value = "";
         setStatus("Arsip terupload ✅");
         await loadArchives();
-      }catch(e){
+      } catch (e) {
         setStatus(e.message || "Gagal upload arsip");
       }
     });
 
-    // ========= LOGS (read) =========
+    // LOGS
     async function loadLogs() {
       const list = $("logList");
       list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Loading...</div>`;
 
-      const q = query(collection(db, "logs"), orderBy("at","desc"), limit(50));
-      const snap = await getDocs(q);
+      const qy = query(collection(db, "logs"), orderBy("at","desc"), limit(50));
+      const snap = await getDocs(qy);
 
       if (snap.empty) {
         list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Belum ada log.</div>`;
@@ -910,8 +944,6 @@
         list.appendChild(row);
       });
     }
-
-    // initial load functions are called after auth gate success
   </script>
 </body>
 </html>
