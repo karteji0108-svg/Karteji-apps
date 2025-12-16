@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Daftar | KARTEJI</title>
+
+  <!-- Tailwind CLI output -->
+  <link rel="stylesheet" href="../dist/assets/css/app.css">
+
+  <link rel="icon" href="./assets/img/logo.png">
+</head>
+
+<body class="min-h-full bg-slate-950 text-slate-100 flex items-center justify-center px-6">
+
+  <div class="w-full max-w-md">
+    <div class="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl p-6">
+
+      <!-- Header -->
+      <div class="flex items-center gap-3">
+        <img
+          src="./assets/img/logo.png"
+          alt="Logo"
+          class="h-12 w-12 rounded-2xl border border-white/10 object-cover"
+          onerror="this.src='https://via.placeholder.com/80'"
+        />
+        <div>
+          <h1 class="text-xl font-extrabold tracking-tight">Daftar Anggota</h1>
+          <p class="text-xs text-slate-400">Role default: <b>anggota</b></p>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="mt-6 space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">
+            Nama Lengkap
+          </label>
+          <input
+            id="name"
+            type="text"
+            placeholder="Contoh: Wisnu Kukuh Bagus Prasetyo"
+            class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            placeholder="nama@email.com"
+            class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            placeholder="Minimal 6 karakter"
+            class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20"
+          />
+          <p class="mt-2 text-xs text-slate-400">Password minimal 6 karakter.</p>
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span id="msg"></span>
+        </div>
+
+        <button
+          id="registerBtn"
+          class="w-full rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-emerald-300 active:scale-[.99]"
+        >
+          Daftar
+        </button>
+      </div>
+
+      <!-- Divider -->
+      <div class="my-6 flex items-center gap-3">
+        <div class="h-px flex-1 bg-white/10"></div>
+        <span class="text-xs text-slate-400">atau</span>
+        <div class="h-px flex-1 bg-white/10"></div>
+      </div>
+
+      <!-- Login -->
+      <div class="text-center">
+        <p class="text-xs text-slate-400">Sudah punya akun?</p>
+        <a
+          href="./login.html"
+          class="mt-2 inline-block text-sm font-semibold text-emerald-400 hover:text-emerald-300"
+        >
+          Login
+        </a>
+      </div>
+
+      <!-- Back -->
+      <div class="mt-6 text-center">
+        <a href="./index.html" class="text-xs text-slate-400 hover:text-slate-200">
+          ← Kembali ke beranda
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Firebase Register Logic + Firestore user doc -->
+  <script type="module">
+    // Firebase SDK (modular)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    // Firebase config (punyamu)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
+      authDomain: "katar-9cac3.firebaseapp.com",
+      projectId: "katar-9cac3",
+      storageBucket: "katar-9cac3.firebasestorage.app",
+      messagingSenderId: "1017734829960",
+      appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d",
+      measurementId: "G-M4F9J10TTE"
+    };
+
+    // Init
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Elements
+    const nameEl = document.getElementById("name");
+    const emailEl = document.getElementById("email");
+    const passEl = document.getElementById("password");
+    const msgEl = document.getElementById("msg");
+    const btn = document.getElementById("registerBtn");
+
+    function setMsg(text) {
+      msgEl.textContent = text || "";
+    }
+
+    btn.addEventListener("click", async () => {
+      const name = nameEl.value.trim();
+      const email = emailEl.value.trim();
+      const password = passEl.value;
+
+      if (!name) return setMsg("Nama wajib diisi");
+      if (!email) return setMsg("Email wajib diisi");
+      if (!password || password.length < 6) return setMsg("Password minimal 6 karakter");
+
+      btn.disabled = true;
+      btn.textContent = "Memproses...";
+      setMsg("");
+
+      try {
+        // 1) Create Auth user
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        const uid = cred.user.uid;
+
+        // 2) Create Firestore user profile
+        await setDoc(doc(db, "users", uid), {
+          name,
+          email,
+          role: "anggota",
+          photo: null,              // nanti isi url Cloudinary avatar
+          onlineState: "offline",   // realtime status via RTDB (nanti)
+          lastActiveAt: serverTimestamp(),
+          createdAt: serverTimestamp()
+        });
+
+        // 3) Redirect
+        window.location.href = "./dashboard.html";
+      } catch (err) {
+        // Pesan error yang lebih manusiawi
+        const code = err?.code || "";
+        if (code.includes("auth/email-already-in-use")) setMsg("Email sudah terdaftar. Silakan login.");
+        else if (code.includes("auth/invalid-email")) setMsg("Format email tidak valid.");
+        else if (code.includes("auth/weak-password")) setMsg("Password terlalu lemah. Minimal 6 karakter.");
+        else setMsg("Gagal daftar. Coba lagi.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Daftar";
+      }
+    });
+  </script>
+
+</body>
+</html>
