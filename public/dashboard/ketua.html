@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ketua | KARTEJI</title>
+
+  <link rel="stylesheet" href="../../dist/assets/css/app.css">
+  <link rel="icon" href="../assets/img/logo.png">
+</head>
+
+<body class="min-h-full bg-slate-950 text-slate-100">
+
+<!-- HEADER -->
+<header class="sticky top-0 z-20 border-b border-white/10 bg-slate-950/70 backdrop-blur-xl">
+  <div class="mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <img src="../assets/img/logo.png" class="h-10 w-10 rounded-2xl border border-white/10">
+      <div>
+        <div class="font-extrabold">KARTEJI</div>
+        <div class="text-xs text-slate-400">Dashboard Ketua</div>
+      </div>
+    </div>
+    <button id="logoutBtn"
+      class="rounded-2xl bg-rose-500 px-4 py-2 text-xs font-extrabold hover:bg-rose-400">
+      Logout
+    </button>
+  </div>
+</header>
+
+<main class="mx-auto max-w-6xl px-6 py-6 space-y-6">
+
+<!-- GATE -->
+<section id="gate" class="hidden">
+  <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
+    <h2 class="text-xl font-extrabold">Akses Ditolak</h2>
+    <p class="text-sm text-slate-300 mt-2">Halaman ini khusus Ketua.</p>
+    <a href="../login.html" class="inline-block mt-4 text-emerald-400">Kembali ke Login</a>
+  </div>
+</section>
+
+<!-- CONTENT -->
+<section id="content" class="hidden space-y-6">
+
+<!-- PROFIL -->
+<div class="rounded-3xl border border-white/10 bg-white/5 p-6">
+  <h2 class="text-lg font-extrabold">Profil Ketua</h2>
+
+  <div class="mt-4 grid sm:grid-cols-4 gap-4">
+    <img id="mePhoto" class="h-20 w-20 rounded-2xl border border-white/10 object-cover"
+      src="https://via.placeholder.com/120">
+
+    <div class="sm:col-span-2">
+      <label class="text-xs text-slate-400">Nama</label>
+      <input id="meName"
+        class="w-full mt-1 rounded-2xl bg-white/5 border border-white/10 px-4 py-3">
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <input id="mePhotoInput" type="file" accept="image/*"
+        class="rounded-2xl bg-white/5 border border-white/10 px-3 py-2 text-xs">
+      <button id="saveProfileBtn"
+        class="rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-extrabold text-slate-950">
+        Simpan Profil
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="flex gap-2 flex-wrap">
+  <button class="tabBtn btn-tab" data-tab="users">Struktur</button>
+  <button class="tabBtn btn-tab" data-tab="activities">Kegiatan</button>
+  <button class="tabBtn btn-tab" data-tab="finance">Keuangan</button>
+</div>
+
+<!-- STRUKTUR -->
+<section id="tab-users" class="tabPanel">
+  <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
+    <h3 class="font-extrabold">Struktur Pengurus</h3>
+
+    <div id="userList" class="mt-4 divide-y divide-white/10"></div>
+  </div>
+</section>
+
+<!-- KEGIATAN -->
+<section id="tab-activities" class="tabPanel hidden">
+  <div class="rounded-3xl border border-white/10 bg-white/5 p-6 space-y-4">
+    <h3 class="font-extrabold">Kegiatan</h3>
+
+    <input id="actTitle" placeholder="Judul kegiatan"
+      class="w-full rounded-2xl bg-white/5 border border-white/10 px-4 py-3">
+
+    <input id="actCover" type="file" accept="image/*"
+      class="w-full rounded-2xl bg-white/5 border border-white/10 px-4 py-3">
+
+    <button id="addActBtn"
+      class="rounded-2xl bg-emerald-400 px-4 py-3 font-extrabold text-slate-950">
+      Tambah Kegiatan
+    </button>
+
+    <div id="actList" class="divide-y divide-white/10"></div>
+  </div>
+</section>
+
+<!-- FINANCE -->
+<section id="tab-finance" class="tabPanel hidden">
+  <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
+    <h3 class="font-extrabold">Persetujuan Keuangan</h3>
+    <div id="finList" class="divide-y divide-white/10 mt-4"></div>
+  </div>
+</section>
+
+</section>
+</main>
+
+<script type="module">
+/* ========= FIREBASE ========= */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, updateDoc,
+  collection, getDocs, addDoc, query, orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
+  authDomain: "katar-9cac3.firebaseapp.com",
+  projectId: "katar-9cac3",
+  storageBucket: "katar-9cac3.firebasestorage.app",
+  messagingSenderId: "1017734829960",
+  appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* ========= CLOUDINARY ========= */
+const CLOUD_NAME = "dbxktcwug";
+const PRESET_PROFILE = "Karteji";
+const PRESET_GALLERY = "Karteji Galeri";
+
+async function upload(file, preset, folder){
+  const fd = new FormData();
+  fd.append("file", file);
+  fd.append("upload_preset", preset);
+  fd.append("folder", folder);
+
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,{
+    method:"POST", body:fd
+  });
+  const data = await res.json();
+  return { url:data.secure_url, publicId:data.public_id };
+}
+
+/* ========= UI ========= */
+const $ = id => document.getElementById(id);
+document.querySelectorAll(".btn-tab").forEach(b=>{
+  b.classList.add("rounded-2xl","px-4","py-2","bg-white/5","border","border-white/10","text-xs");
+});
+
+function openTab(n){
+  document.querySelectorAll(".tabPanel").forEach(p=>p.classList.add("hidden"));
+  $(`tab-${n}`).classList.remove("hidden");
+}
+document.querySelectorAll(".tabBtn").forEach(b=>{
+  b.onclick=()=>openTab(b.dataset.tab);
+});
+
+/* ========= AUTH GATE ========= */
+let UID=null;
+onAuthStateChanged(auth, async user=>{
+  if(!user) return $("gate").classList.remove("hidden");
+
+  const snap = await getDoc(doc(db,"users",user.uid));
+  if(!snap.exists() || snap.data().role!=="ketua"){
+    return $("gate").classList.remove("hidden");
+  }
+
+  UID=user.uid;
+  $("content").classList.remove("hidden");
+  $("meName").value=snap.data().name||"";
+  $("mePhoto").src=snap.data().photo?.url||"https://via.placeholder.com/120";
+
+  loadUsers(); loadActivities(); loadFinance();
+});
+
+/* ========= LOGOUT ========= */
+$("logoutBtn").onclick=async()=>{ await signOut(auth); location.href="../login.html"; };
+
+/* ========= PROFILE ========= */
+$("saveProfileBtn").onclick=async()=>{
+  const name=$("meName").value.trim();
+  const file=$("mePhotoInput").files[0];
+  const payload={ name };
+
+  if(file){
+    payload.photo=await upload(file,PRESET_PROFILE,`karteji/users/${UID}`);
+    $("mePhoto").src=payload.photo.url;
+  }
+  await updateDoc(doc(db,"users",UID),payload);
+};
+
+/* ========= USERS ========= */
+async function loadUsers(){
+  const q=query(collection(db,"users"),orderBy("name"));
+  const snap=await getDocs(q);
+  $("userList").innerHTML="";
+  snap.forEach(d=>{
+    if(d.data().role==="super_admin") return;
+    $("userList").innerHTML+=`
+      <div class="py-3 flex justify-between items-center">
+        <div>
+          <div class="font-bold">${d.data().name}</div>
+          <div class="text-xs text-slate-400">${d.data().role}</div>
+        </div>
+      </div>`;
+  });
+}
+
+/* ========= ACTIVITIES ========= */
+async function loadActivities(){
+  const q=query(collection(db,"activities"),orderBy("createdAt","desc"));
+  const snap=await getDocs(q);
+  $("actList").innerHTML="";
+  snap.forEach(d=>{
+    $("actList").innerHTML+=`
+      <div class="py-3 flex justify-between">
+        <div>${d.data().title}</div>
+        <div class="text-xs">${d.data().status||"pending"}</div>
+      </div>`;
+  });
+}
+
+$("addActBtn").onclick=async()=>{
+  const title=$("actTitle").value.trim();
+  const file=$("actCover").files[0];
+  let cover=null;
+  if(file) cover=await upload(file,PRESET_GALLERY,"karteji/activities");
+
+  await addDoc(collection(db,"activities"),{
+    title, cover, status:"pending", createdAt:new Date()
+  });
+  loadActivities();
+};
+
+/* ========= FINANCE ========= */
+async function loadFinance(){
+  const q=query(collection(db,"financial_records"),orderBy("createdAt","desc"));
+  const snap=await getDocs(q);
+  $("finList").innerHTML="";
+  snap.forEach(d=>{
+    $("finList").innerHTML+=`
+      <div class="py-3 flex justify-between">
+        <div>Rp ${d.data().amount}</div>
+        <div class="text-xs">${d.data().status}</div>
+      </div>`;
+  });
+}
+</script>
+</body>
+</html>
