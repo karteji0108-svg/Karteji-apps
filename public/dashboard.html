@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard | KARTEJI</title>
+
+  <!-- Tailwind CLI output -->
+  <link rel="stylesheet" href="../dist/assets/css/app.css">
+  <link rel="icon" href="./assets/img/logo.png">
+</head>
+
+<body class="min-h-full bg-slate-950 text-slate-100 flex items-center justify-center px-6">
+  <div class="w-full max-w-md">
+    <div class="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl p-6 text-center">
+      <img
+        src="./assets/img/logo.png"
+        alt="Logo"
+        class="mx-auto h-16 w-16 rounded-2xl border border-white/10 object-cover"
+        onerror="this.src='https://via.placeholder.com/120'"
+      />
+      <h1 class="mt-4 text-xl font-extrabold tracking-tight">Mengalihkan dashboard…</h1>
+      <p class="mt-2 text-sm text-slate-300">Sistem sedang mengecek role akun kamu.</p>
+
+      <div class="mt-6 flex items-center justify-center gap-2 text-xs text-slate-400">
+        <span class="inline-block h-2 w-2 animate-pulse rounded-full bg-emerald-400"></span>
+        <span id="msg">Memuat data user…</span>
+      </div>
+
+      <button id="backBtn"
+        class="mt-6 hidden w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-100 hover:bg-white/10 active:scale-[.99]">
+        Kembali ke Login
+      </button>
+    </div>
+  </div>
+
+  <script type="module">
+    // Firebase SDK
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
+      authDomain: "katar-9cac3.firebaseapp.com",
+      projectId: "katar-9cac3",
+      storageBucket: "katar-9cac3.firebasestorage.app",
+      messagingSenderId: "1017734829960",
+      appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d",
+      measurementId: "G-M4F9J10TTE"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const msgEl = document.getElementById("msg");
+    const backBtn = document.getElementById("backBtn");
+
+    // mapping role -> dashboard page
+    const routeByRole = {
+      "super_admin": "./dashboards/super-admin.html",
+      "ketua": "./dashboards/ketua.html",
+      "wakil_ketua": "./dashboards/wakil-ketua.html",
+      "sekretaris": "./dashboards/sekretaris.html",
+      "bendahara": "./dashboards/bendahara.html",
+      "koordinator": "./dashboards/koordinator.html",
+      "anggota": "./dashboards/anggota.html"
+    };
+
+    function showBack(message) {
+      msgEl.textContent = message || "Tidak bisa lanjut. Silakan login ulang.";
+      backBtn.classList.remove("hidden");
+      backBtn.onclick = async () => {
+        try { await signOut(auth); } catch {}
+        window.location.href = "./login.html";
+      };
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        return showBack("Belum login. Silakan login.");
+      }
+
+      try {
+        msgEl.textContent = "Mengecek role…";
+
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (!snap.exists()) {
+          // kalau user Auth ada tapi doc Firestore belum ada
+          return showBack("Profil user tidak ditemukan. Silakan daftar ulang atau hubungi admin.");
+        }
+
+        const profile = snap.data();
+        const role = profile?.role || "anggota";
+        const target = routeByRole[role] || routeByRole["anggota"];
+
+        msgEl.textContent = `Masuk sebagai: ${role}…`;
+        window.location.replace(target);
+      } catch (e) {
+        showBack("Gagal memuat role. Coba lagi.");
+      }
+    });
+  </script>
+</body>
+</html>
