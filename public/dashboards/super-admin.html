@@ -5,945 +5,446 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Super Admin | KARTEJI</title>
 
-  <!-- Tailwind CDN (biar 1 gaya Opsi A) -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Icons & Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0" />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-
   <link rel="icon" href="../assets/img/logo.png">
 
   <style>
     body { font-family: 'Outfit', sans-serif; }
-
-    /* Background Animation (identik) */
     .bg-gradient-animate {
       background: linear-gradient(-45deg, #020617, #020617, #022c22, #020617);
       background-size: 400% 400%;
       animation: gradientBG 15s ease infinite;
     }
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+    @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+    
+    /* Loader Spinner */
+    #globalLoader { display: none; transition: all 0.3s; }
+    #globalLoader.active { display: flex; opacity: 1; }
 
-    /* Animations */
-    .fade-in { animation: fadeIn 0.8s ease-out forwards; }
-    .fade-out { animation: fadeOut 0.5s ease-in forwards; }
-    .slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    /* Modal Animation */
+    .modal-enter { animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
-    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-    /* Glass */
-    .glass {
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.1);
-    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
   </style>
 </head>
 
 <body class="min-h-screen bg-slate-950 text-white relative overflow-x-hidden bg-gradient-animate">
 
-  <!-- glow layers -->
-  <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-emerald-900/20 to-transparent pointer-events-none"></div>
-  <div class="absolute top-20 left-1/2 -translate-x-1/2 w-[520px] h-[520px] bg-emerald-500/15 blur-[140px] rounded-full pointer-events-none"></div>
+  <div id="globalLoader" class="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-md items-center justify-center flex-col gap-4 opacity-0">
+    <div class="w-14 h-14 border-4 border-emerald-400/20 border-t-emerald-400 rounded-full animate-spin shadow-[0_0_20px_rgba(52,211,153,0.3)]"></div>
+    <div class="text-center">
+        <p class="text-emerald-400 font-black text-lg tracking-widest animate-pulse">MEMPROSES</p>
+        <p id="loaderMsg" class="text-slate-400 text-xs mt-1 italic">Mohon tunggu sebentar...</p>
+    </div>
+  </div>
 
-  <!-- TOP BAR (samakan feel seperti layar lain) -->
-  <header class="sticky top-0 z-30">
-    <div class="mx-auto max-w-6xl px-6 pt-8 pb-4">
-      <div class="glass rounded-3xl px-5 py-4 flex items-center justify-between gap-4 slide-up">
-        <div class="flex items-center gap-3">
-          <img
-            id="brandLogo"
-            src="../assets/img/logo.png"
-            alt="Logo"
-            class="h-11 w-11 rounded-2xl border border-white/10 object-cover"
-            onerror="this.src='https://via.placeholder.com/80'"
-          />
-          <div>
-            <div class="text-sm font-extrabold tracking-wide">KARTEJI</div>
-            <div class="text-xs text-slate-300 flex items-center gap-2">
-              <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 border border-emerald-400/20 px-3 py-1">
-                <span class="material-symbols-rounded text-sm text-emerald-300">admin_panel_settings</span>
-                <span class="font-semibold text-emerald-200">Super Admin</span>
-              </span>
-              <span class="text-slate-400 hidden sm:inline">CRUD Panel</span>
-            </div>
-          </div>
+  <div id="crudModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+    <div class="glass w-full max-w-lg rounded-[2.5rem] p-8 modal-enter relative shadow-2xl border-white/20">
+      <button id="closeModalBtn" class="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors">
+        <span class="material-symbols-rounded text-3xl">cancel</span>
+      </button>
+      
+      <div class="flex items-center gap-3 mb-6">
+          <div class="w-2 h-8 bg-emerald-400 rounded-full"></div>
+          <h2 id="modalTitle" class="text-2xl font-black tracking-tight">Judul Modal</h2>
+      </div>
+
+      <div id="modalBody" class="space-y-5 max-h-[60vh] overflow-y-auto no-scrollbar pr-1">
         </div>
 
-        <div class="flex items-center gap-2">
-          <a href="../index.html"
-            class="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold hover:bg-white/10 active:scale-[.99] flex items-center gap-2">
-            <span class="material-symbols-rounded text-base">home</span>
-            Beranda
-          </a>
-          <button id="logoutBtn"
-            class="rounded-2xl bg-rose-500 px-4 py-2 text-xs font-extrabold text-white hover:bg-rose-400 active:scale-[.99] flex items-center gap-2">
-            <span class="material-symbols-rounded text-base">logout</span>
-            Logout
-          </button>
-        </div>
+      <div id="modalFooter" class="mt-8">
+        <button id="modalSubmitBtn" class="w-full rounded-2xl bg-emerald-400 py-4 text-sm font-black text-slate-950 hover:bg-emerald-300 transition-all active:scale-95 shadow-[0_10px_20px_rgba(52,211,153,0.2)]">
+          KONFIRMASI DATA
+        </button>
       </div>
     </div>
+  </div>
+
+  <header class="sticky top-0 z-30 px-6 py-6">
+      <div class="mx-auto max-w-6xl glass rounded-3xl p-4 flex justify-between items-center shadow-2xl border-white/10">
+          <div class="flex items-center gap-3">
+              <div class="bg-emerald-400 p-2 rounded-2xl">
+                  <span class="material-symbols-rounded text-slate-950">shield_person</span>
+              </div>
+              <div class="hidden sm:block">
+                  <p class="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">Panel Kontrol</p>
+                  <h1 class="text-lg font-extrabold leading-none">SUPER ADMIN</h1>
+              </div>
+          </div>
+          
+          <div class="flex items-center gap-3">
+              <button id="refreshAllBtn" class="p-3 rounded-2xl bg-white/5 hover:bg-white/10 text-emerald-400 transition-all">
+                  <span class="material-symbols-rounded">sync</span>
+              </button>
+              <button id="logoutBtn" class="rounded-2xl bg-rose-500/10 text-rose-400 border border-rose-500/20 px-6 py-3 text-xs font-black hover:bg-rose-500 hover:text-white transition-all">
+                  LOGOUT
+              </button>
+          </div>
+      </div>
   </header>
 
-  <main class="mx-auto max-w-6xl px-6 pb-10">
-    <!-- GATE -->
-    <section id="gate" class="hidden">
-      <div class="glass rounded-3xl p-8 shadow-2xl slide-up">
-        <div class="inline-flex items-center justify-center p-3 bg-slate-800/50 rounded-2xl mb-4 ring-1 ring-slate-700">
-          <span class="material-symbols-rounded text-3xl text-rose-300">gpp_bad</span>
-        </div>
-        <h1 class="text-2xl font-extrabold">Akses ditolak</h1>
-        <p class="mt-2 text-sm text-slate-300" id="gateMsg">Kamu tidak punya izin.</p>
-        <div class="mt-6 flex flex-wrap gap-3">
-          <a href="../login.html"
-             class="rounded-2xl bg-emerald-400 px-5 py-3 text-sm font-extrabold text-slate-950 hover:bg-emerald-300">
-            Login
-          </a>
-          <a href="../index.html"
-             class="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold hover:bg-white/10">
-            Kembali
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTENT -->
-    <section id="content" class="hidden space-y-6">
-
-      <!-- Profile Card -->
-      <div class="glass rounded-3xl p-6 shadow-2xl slide-up">
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 class="text-2xl font-extrabold tracking-tight">Super Admin Panel</h1>
-            <p class="mt-1 text-sm text-slate-300">Kelola sistem (CRUD) + profil.</p>
-            <p class="mt-1 text-xs text-slate-400" id="statusMsg"></p>
+  <main class="mx-auto max-w-6xl px-6 pb-24">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
+          <div class="md:col-span-1 glass rounded-[2rem] p-6 flex flex-col items-center text-center">
+              <img id="mePhoto" class="h-20 w-20 rounded-3xl border-4 border-emerald-400/20 object-cover mb-3" src="https://via.placeholder.com/150">
+              <h3 id="meName" class="font-black text-lg line-clamp-1">-</h3>
+              <p id="meEmail" class="text-[10px] text-slate-500 mb-4">-</p>
+              <button onclick="openProfileModal()" class="w-full py-2 rounded-xl bg-white/5 border border-white/10 text-[10px] font-bold hover:bg-emerald-400 hover:text-slate-950 transition-all">EDIT PROFIL</button>
           </div>
-
-          <div class="flex items-center gap-3">
-            <img id="mePhoto"
-              class="h-14 w-14 rounded-2xl border border-white/10 object-cover"
-              src="https://via.placeholder.com/120"
-              alt="Foto"
-            />
-            <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-              <div class="text-xs text-slate-400">Login sebagai</div>
-              <div class="text-sm font-extrabold" id="meName">-</div>
-              <div class="text-xs text-slate-400" id="meEmail">-</div>
-            </div>
+          
+          <div class="md:col-span-3 glass rounded-[2rem] p-6">
+              <p class="text-xs font-black text-emerald-400 mb-4 uppercase tracking-widest">Navigasi CRUD</p>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <button class="tabBtn group flex flex-col items-center p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-emerald-400/50 transition-all" data-tab="users">
+                      <span class="material-symbols-rounded text-3xl mb-1 group-hover:scale-110 transition-transform">group</span>
+                      <span class="text-[10px] font-black">USERS</span>
+                  </button>
+                  <button class="tabBtn group flex flex-col items-center p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-emerald-400/50 transition-all" data-tab="activities">
+                      <span class="material-symbols-rounded text-3xl mb-1 group-hover:scale-110 transition-transform">event_available</span>
+                      <span class="text-[10px] font-black">ACTIVITIES</span>
+                  </button>
+                  <button class="tabBtn group flex flex-col items-center p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-emerald-400/50 transition-all" data-tab="finance">
+                      <span class="material-symbols-rounded text-3xl mb-1 group-hover:scale-110 transition-transform">account_balance_wallet</span>
+                      <span class="text-[10px] font-black">FINANCE</span>
+                  </button>
+                  <button class="tabBtn group flex flex-col items-center p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-emerald-400/50 transition-all" data-tab="archives">
+                      <span class="material-symbols-rounded text-3xl mb-1 group-hover:scale-110 transition-transform">folder_open</span>
+                      <span class="text-[10px] font-black">ARCHIVES</span>
+                  </button>
+              </div>
           </div>
-        </div>
-
-        <div class="mt-5 grid gap-3 sm:grid-cols-3">
-          <div class="sm:col-span-1">
-            <label class="block text-xs font-medium text-slate-400 mb-1">Ubah Nama</label>
-            <input id="profileName"
-              class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20"
-              placeholder="Nama baru"/>
-          </div>
-
-          <div class="sm:col-span-1">
-            <label class="block text-xs font-medium text-slate-400 mb-1">Foto Profil (Cloudinary)</label>
-            <input id="profilePhoto" type="file" accept="image/*"
-              class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-200 outline-none" />
-          </div>
-
-          <div class="sm:col-span-1 flex items-end gap-2">
-            <button id="saveProfileBtn"
-              class="w-full rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-emerald-300 active:scale-[.99] flex items-center justify-center gap-2">
-              <span class="material-symbols-rounded text-lg">save</span>
-              <span>Simpan Profil</span>
-            </button>
-          </div>
-        </div>
       </div>
 
-      <!-- Tabs -->
-      <div class="glass rounded-3xl p-4 shadow-2xl slide-up">
-        <div class="flex flex-wrap gap-2">
-          <button class="tabBtn px-4 py-2 rounded-2xl border border-white/10 bg-white/5 text-xs font-semibold hover:bg-white/10"
-            data-tab="users">Users</button>
-          <button class="tabBtn px-4 py-2 rounded-2xl border border-white/10 bg-white/5 text-xs font-semibold hover:bg-white/10"
-            data-tab="activities">Activities</button>
-          <button class="tabBtn px-4 py-2 rounded-2xl border border-white/10 bg-white/5 text-xs font-semibold hover:bg-white/10"
-            data-tab="finance">Finance</button>
-          <button class="tabBtn px-4 py-2 rounded-2xl border border-white/10 bg-white/5 text-xs font-semibold hover:bg-white/10"
-            data-tab="notifications">Notifications</button>
-          <button class="tabBtn px-4 py-2 rounded-2xl border border-white/10 bg-white/5 text-xs font-semibold hover:bg-white/10"
-            data-tab="archives">Archives</button>
-          <button class="tabBtn px-4 py-2 rounded-2xl border border-white/10 bg-white/5 text-xs font-semibold hover:bg-white/10"
-            data-tab="logs">Logs</button>
-
-          <button id="refreshAllBtn"
-            class="ml-auto px-4 py-2 rounded-2xl bg-white/10 text-xs font-extrabold hover:bg-white/15 active:scale-[.99] flex items-center gap-2">
-            <span class="material-symbols-rounded text-base">refresh</span>
-            Refresh
-          </button>
-        </div>
+      <div id="tab-users" class="tabPanel hidden space-y-4">
+          <div class="flex justify-between items-end mb-4">
+              <div>
+                  <h2 class="text-3xl font-black italic tracking-tighter">USER DATABASE</h2>
+                  <p class="text-xs text-slate-500">Kelola hak akses dan akun anggota.</p>
+              </div>
+          </div>
+          <div class="glass rounded-[2rem] overflow-hidden border-white/5">
+              <div id="userList" class="divide-y divide-white/5"></div>
+          </div>
       </div>
 
-      <!-- USERS -->
-      <section id="tab-users" class="tabPanel space-y-4">
-        <div class="glass rounded-3xl p-6 shadow-2xl slide-up">
-          <h2 class="text-lg font-extrabold">Users (CRUD)</h2>
-          <p class="mt-1 text-sm text-slate-300">Ubah role atau hapus dokumen user.</p>
-
-          <div class="mt-4 overflow-hidden rounded-2xl border border-white/10">
-            <div class="grid grid-cols-12 gap-0 bg-white/5 px-4 py-3 text-xs font-semibold text-slate-200">
-              <div class="col-span-4">Nama</div>
-              <div class="col-span-4 hidden sm:block">Email</div>
-              <div class="col-span-2">Role</div>
-              <div class="col-span-2 text-right">Aksi</div>
-            </div>
-            <div id="userList" class="divide-y divide-white/10"></div>
+      <div id="tab-activities" class="tabPanel hidden space-y-4">
+          <div class="flex justify-between items-end mb-4">
+              <div>
+                  <h2 class="text-3xl font-black italic tracking-tighter">ACTIVITIES</h2>
+                  <p class="text-xs text-slate-500">Buat dan setujui agenda kegiatan.</p>
+              </div>
+              <button onclick="openActivityModal()" class="bg-emerald-400 text-slate-950 px-6 py-3 rounded-2xl text-xs font-black shadow-lg">+ BARU</button>
           </div>
-        </div>
-      </section>
+          <div id="actList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </div>
 
-      <!-- ACTIVITIES -->
-      <section id="tab-activities" class="tabPanel hidden space-y-4">
-        <div class="glass rounded-3xl p-6 shadow-2xl slide-up">
-          <h2 class="text-lg font-extrabold">Activities (CRUD)</h2>
-          <div class="mt-4 grid gap-3 sm:grid-cols-4">
-            <input id="actTitle" class="sm:col-span-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-emerald-400"
-              placeholder="Judul kegiatan" />
-            <input id="actDate" class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-emerald-400"
-              placeholder="YYYY-MM-DD" />
-            <input id="actLoc" class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-emerald-400"
-              placeholder="Lokasi" />
-            <input id="actDesc" class="sm:col-span-3 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-emerald-400"
-              placeholder="Deskripsi singkat" />
-            <input id="actCover" type="file" accept="image/*"
-              class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none" />
-            <button id="actCreateBtn"
-              class="sm:col-span-4 rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-emerald-300">
-              Buat Kegiatan
-            </button>
+      <div id="tab-finance" class="tabPanel hidden space-y-4">
+          <div class="flex justify-between items-end mb-4">
+              <div>
+                  <h2 class="text-3xl font-black italic tracking-tighter">FINANCE</h2>
+                  <p class="text-xs text-slate-500">Monitoring kas masuk dan keluar.</p>
+              </div>
+              <button onclick="openFinanceModal()" class="bg-emerald-400 text-slate-950 px-6 py-3 rounded-2xl text-xs font-black shadow-lg">+ TRANSAKSI</button>
           </div>
+          <div id="finList" class="space-y-3"></div>
+      </div>
 
-          <div class="mt-5 overflow-hidden rounded-2xl border border-white/10">
-            <div class="grid grid-cols-12 gap-0 bg-white/5 px-4 py-3 text-xs font-semibold text-slate-200">
-              <div class="col-span-6">Kegiatan</div>
-              <div class="col-span-2">Status</div>
-              <div class="col-span-4 text-right">Aksi</div>
-            </div>
-            <div id="actList" class="divide-y divide-white/10"></div>
+      <div id="tab-archives" class="tabPanel hidden space-y-4">
+          <div class="flex justify-between items-end mb-4">
+              <div>
+                  <h2 class="text-3xl font-black italic tracking-tighter">DIGITAL ARCHIVES</h2>
+                  <p class="text-xs text-slate-500">Penyimpanan dokumen penting.</p>
+              </div>
+              <button onclick="openArchiveModal()" class="bg-emerald-400 text-slate-950 px-6 py-3 rounded-2xl text-xs font-black shadow-lg">+ UPLOAD</button>
           </div>
-        </div>
-      </section>
-
-      <!-- FINANCE -->
-      <section id="tab-finance" class="tabPanel hidden space-y-4">
-        <div class="glass rounded-3xl p-6 shadow-2xl slide-up">
-          <h2 class="text-lg font-extrabold">Finance (CRUD)</h2>
-          <div class="mt-4 grid gap-3 sm:grid-cols-6">
-            <select id="finType"
-              class="sm:col-span-1 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-emerald-400">
-              <option value="income">Kas Masuk</option>
-              <option value="expense">Kas Keluar</option>
-            </select>
-            <input id="finAmt" type="number"
-              class="sm:col-span-1 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-emerald-400"
-              placeholder="Nominal" />
-            <input id="finCat"
-              class="sm:col-span-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-emerald-400"
-              placeholder="Kategori (Operasional/Event/Donasi)" />
-            <input id="finNote"
-              class="sm:col-span-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-emerald-400"
-              placeholder="Catatan" />
-            <input id="finProof" type="file"
-              class="sm:col-span-4 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none" />
-            <button id="finCreateBtn"
-              class="sm:col-span-2 rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-emerald-300">
-              Tambah Transaksi
-            </button>
-          </div>
-
-          <div class="mt-5 overflow-hidden rounded-2xl border border-white/10">
-            <div class="grid grid-cols-12 gap-0 bg-white/5 px-4 py-3 text-xs font-semibold text-slate-200">
-              <div class="col-span-6">Transaksi</div>
-              <div class="col-span-2">Status</div>
-              <div class="col-span-4 text-right">Aksi</div>
-            </div>
-            <div id="finList" class="divide-y divide-white/10"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- NOTIFICATIONS -->
-      <section id="tab-notifications" class="tabPanel hidden space-y-4">
-        <div class="glass rounded-3xl p-6 shadow-2xl slide-up">
-          <h2 class="text-lg font-extrabold">Notifications (CRUD)</h2>
-          <div class="mt-4 grid gap-3 sm:grid-cols-4">
-            <input id="nTitle"
-              class="sm:col-span-1 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-emerald-400"
-              placeholder="Judul" />
-            <input id="nBody"
-              class="sm:col-span-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-emerald-400"
-              placeholder="Isi notifikasi" />
-            <select id="nLevel"
-              class="sm:col-span-1 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-emerald-400">
-              <option value="normal">normal</option>
-              <option value="important">important</option>
-            </select>
-            <button id="nCreateBtn"
-              class="sm:col-span-4 rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-emerald-300">
-              Kirim Notifikasi
-            </button>
-          </div>
-
-          <div class="mt-5 overflow-hidden rounded-2xl border border-white/10">
-            <div class="grid grid-cols-12 gap-0 bg-white/5 px-4 py-3 text-xs font-semibold text-slate-200">
-              <div class="col-span-8">Notifikasi</div>
-              <div class="col-span-4 text-right">Aksi</div>
-            </div>
-            <div id="nList" class="divide-y divide-white/10"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ARCHIVES -->
-      <section id="tab-archives" class="tabPanel hidden space-y-4">
-        <div class="glass rounded-3xl p-6 shadow-2xl slide-up">
-          <h2 class="text-lg font-extrabold">Archives (CRUD)</h2>
-          <div class="mt-4 grid gap-3 sm:grid-cols-4">
-            <input id="arTitle"
-              class="sm:col-span-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-emerald-400"
-              placeholder="Judul dokumen" />
-            <input id="arFile" type="file"
-              class="sm:col-span-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none" />
-            <button id="arUploadBtn"
-              class="sm:col-span-4 rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-emerald-300">
-              Upload Arsip
-            </button>
-          </div>
-
-          <div class="mt-5 overflow-hidden rounded-2xl border border-white/10">
-            <div class="grid grid-cols-12 gap-0 bg-white/5 px-4 py-3 text-xs font-semibold text-slate-200">
-              <div class="col-span-8">Arsip</div>
-              <div class="col-span-4 text-right">Aksi</div>
-            </div>
-            <div id="arList" class="divide-y divide-white/10"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- LOGS -->
-      <section id="tab-logs" class="tabPanel hidden space-y-4">
-        <div class="glass rounded-3xl p-6 shadow-2xl slide-up">
-          <h2 class="text-lg font-extrabold">Logs (Read)</h2>
-          <p class="mt-1 text-sm text-slate-300">Log sederhana aktivitas sistem.</p>
-
-          <div class="mt-5 overflow-hidden rounded-2xl border border-white/10">
-            <div class="grid grid-cols-12 gap-0 bg-white/5 px-4 py-3 text-xs font-semibold text-slate-200">
-              <div class="col-span-8">Action</div>
-              <div class="col-span-4">Waktu</div>
-            </div>
-            <div id="logList" class="divide-y divide-white/10"></div>
-          </div>
-        </div>
-      </section>
-
-    </section>
+          <div id="arList" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+      </div>
   </main>
 
-  <!-- ========= SCRIPT ASLI KAMU (FITUR TETAP) ========= -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import {
-      getFirestore,
-      doc, getDoc, updateDoc, deleteDoc,
-      collection, addDoc, getDocs,
-      query, orderBy, limit,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
+    // --- CONFIG (Gunakan milik Anda) ---
     const firebaseConfig = {
       apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
       authDomain: "katar-9cac3.firebaseapp.com",
       projectId: "katar-9cac3",
       storageBucket: "katar-9cac3.firebasestorage.app",
       messagingSenderId: "1017734829960",
-      appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d",
-      measurementId: "G-M4F9J10TTE"
+      appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d"
     };
-
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Cloudinary config (sesuai punyamu)
     const CLOUD_NAME = "dbxktcwug";
-    const UPLOAD_PRESET_PROFILE = "Karteji";
-    const UPLOAD_PRESET_ACTIVITY = "Karteji Galeri";
-    const UPLOAD_PRESET_FINANCE = "Karteji Finance";
-    const UPLOAD_PRESET_ARCHIVE = "Karteji Galeri";
-
-    async function uploadToCloudinary(file, uploadPreset, folder="karteji/misc") {
-      if (!CLOUD_NAME || !uploadPreset) throw new Error("Cloudinary belum diset / preset kosong.");
-      const endpoint = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`;
-      const form = new FormData();
-      form.append("file", file);
-      form.append("upload_preset", uploadPreset);
-      form.append("folder", folder);
-
-      const res = await fetch(endpoint, { method: "POST", body: form });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error?.message || "Upload Cloudinary gagal");
-      return {
-        url: data.secure_url,
-        publicId: data.public_id,
-        bytes: data.bytes,
-        resourceType: data.resource_type,
-        format: data.format,
-        createdAt: data.created_at
-      };
-    }
+    const UPLOAD_PRESET = "Karteji";
 
     const $ = (id) => document.getElementById(id);
-    const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (m)=>({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-    }[m]));
-    const fmtIDR = (n) => Number(n||0).toLocaleString("id-ID");
-    const setStatus = (t) => $("statusMsg").textContent = t || "";
-
-    const ROLES = ["super_admin","ketua","wakil_ketua","sekretaris","bendahara","koordinator","anggota"];
-
-    async function log(action, meta = {}) {
-      try { await addDoc(collection(db, "logs"), { action, meta, at: serverTimestamp() }); } catch {}
-    }
-
-    function showGate(message) {
-      $("content").classList.add("hidden");
-      $("gate").classList.remove("hidden");
-      $("gateMsg").textContent = message || "Akses ditolak.";
-    }
-    function showContent() {
-      $("gate").classList.add("hidden");
-      $("content").classList.remove("hidden");
-    }
-
-    function openTab(name) {
-      document.querySelectorAll(".tabPanel").forEach(p => p.classList.add("hidden"));
-      document.querySelectorAll(".tabBtn").forEach(b => b.classList.remove("bg-emerald-400","text-slate-950","font-extrabold"));
-
-      $(`tab-${name}`).classList.remove("hidden");
-      document.querySelector(`.tabBtn[data-tab="${name}"]`)
-        .classList.add("bg-emerald-400","text-slate-950","font-extrabold");
-    }
-    document.querySelectorAll(".tabBtn").forEach(btn => btn.addEventListener("click", () => openTab(btn.dataset.tab)));
-
-    $("refreshAllBtn").addEventListener("click", async () => {
-      await Promise.allSettled([loadUsers(), loadActivities(), loadFinance(), loadNotifications(), loadArchives(), loadLogs()]);
-      setStatus("Refresh selesai ✅");
-    });
-
     let ME_UID = null;
 
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) return showGate("Belum login. Silakan login.");
-
-      try {
-        const snap = await getDoc(doc(db, "users", user.uid));
-        if (!snap.exists()) return showGate("Profil user tidak ditemukan.");
-        const me = snap.data();
-        if (me?.role !== "super_admin") return showGate("Khusus Super Admin.");
-
-        ME_UID = user.uid;
-
-        $("meName").textContent = me?.name || "Super Admin";
-        $("meEmail").textContent = me?.email || user.email || "-";
-        $("profileName").value = me?.name || "";
-        $("mePhoto").src = me?.photo?.url || "https://via.placeholder.com/120";
-
-        showContent();
-        openTab("users");
-
-        await Promise.allSettled([loadUsers(), loadActivities(), loadFinance(), loadNotifications(), loadArchives(), loadLogs()]);
-        setStatus("Siap ✅");
-      } catch (e) {
-        showGate("Gagal memuat data.");
-      }
-    });
-
-    $("logoutBtn").addEventListener("click", async () => {
-      await signOut(auth);
-      location.href = "../login.html";
-    });
-
-    $("saveProfileBtn").addEventListener("click", async () => {
-      try {
-        setStatus("Menyimpan profil...");
-        const newName = $("profileName").value.trim();
-        const photoFile = $("profilePhoto").files?.[0];
-
-        const payload = {};
-        if (newName) payload.name = newName;
-
-        if (photoFile) {
-          const media = await uploadToCloudinary(photoFile, UPLOAD_PRESET_PROFILE, `karteji/users/${ME_UID}/photo`);
-          payload.photo = media;
-          $("mePhoto").src = media.url;
+    // --- CORE UI ENGINE ---
+    window.toggleLoader = (show, msg = "Memproses...") => {
+        $("loaderMsg").textContent = msg;
+        if(show) {
+            $("globalLoader").classList.add('active');
+            $("globalLoader").style.opacity = "1";
+        } else {
+            $("globalLoader").style.opacity = "0";
+            setTimeout(() => $("globalLoader").classList.remove('active'), 300);
         }
+    };
 
-        if (Object.keys(payload).length === 0) return setStatus("Tidak ada perubahan.");
-        await updateDoc(doc(db, "users", ME_UID), payload);
-        await log("profile.update", { uid: ME_UID, keys: Object.keys(payload) });
-        setStatus("Profil tersimpan ✅");
-      } catch (e) {
-        setStatus(e.message || "Gagal simpan profil");
+    window.closeModal = () => {
+        $("crudModal").classList.add('hidden');
+        $("crudModal").classList.remove('flex');
+    };
+    $("closeModalBtn").onclick = closeModal;
+
+    window.showModal = (title, bodyHtml, onSave) => {
+        $("modalTitle").textContent = title;
+        $("modalBody").innerHTML = bodyHtml;
+        $("crudModal").classList.remove('hidden');
+        $("crudModal").classList.add('flex');
+        $("modalSubmitBtn").onclick = onSave;
+    };
+
+    // --- CLOUDINARY ENGINE ---
+    async function uploadImg(file) {
+        if(!file) return null;
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", UPLOAD_PRESET);
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: "POST", body: formData });
+        const data = await res.json();
+        return { url: data.secure_url, publicId: data.public_id };
+    }
+
+    // --- AUTH OBSERVER ---
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) return window.location.href = "../login.html";
+      ME_UID = user.uid;
+      toggleLoader(true, "Sinkronisasi Akun...");
+      
+      const snap = await getDoc(doc(db, "users", user.uid));
+      if(snap.exists()){
+          const d = snap.data();
+          $("meName").textContent = d.name || "User";
+          $("meEmail").textContent = d.email;
+          $("mePhoto").src = d.photo?.url || "https://via.placeholder.com/150";
       }
+      
+      await refreshAll();
+      openTab('users');
+      toggleLoader(false);
     });
 
-    // USERS
-    async function loadUsers() {
-      const list = $("userList");
-      list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Loading...</div>`;
+    // --- MODAL GENERATORS (CRUD POPUPS) ---
 
-      const qy = query(collection(db, "users"), orderBy("name","asc"), limit(200));
-      const snap = await getDocs(qy);
+    // 1. Popup Profil
+    window.openProfileModal = () => {
+        const html = `
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold text-slate-500 ml-2">NAMA LENGKAP</label>
+                <input id="updName" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 focus:border-emerald-400 outline-none" value="${$("meName").textContent}">
+            </div>
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold text-slate-500 ml-2">FOTO BARU</label>
+                <input id="updFile" type="file" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-emerald-400/10 file:text-emerald-400 hover:file:bg-emerald-400/20 cursor-pointer">
+            </div>
+        `;
+        showModal("PENGATURAN PROFIL", html, async () => {
+            const name = $("updName").value;
+            const file = $("updFile").files[0];
+            toggleLoader(true, "Mengupdate Profil...");
+            try {
+                let photoData = null;
+                if(file) photoData = await uploadImg(file);
+                const payload = { name };
+                if(photoData) payload.photo = photoData;
+                await updateDoc(doc(db, "users", ME_UID), payload);
+                location.reload();
+            } catch(e) { alert("Gagal update"); toggleLoader(false); }
+        });
+    };
 
-      if (snap.empty) {
-        list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Belum ada user.</div>`;
-        return;
-      }
+    // 2. Popup Activity
+    window.openActivityModal = () => {
+        const html = `
+            <input id="addActTitle" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10" placeholder="Judul Kegiatan">
+            <div class="grid grid-cols-2 gap-3">
+                <input id="addActDate" type="date" class="p-4 rounded-2xl bg-white/5 border border-white/10 text-xs">
+                <input id="addActLoc" class="p-4 rounded-2xl bg-white/5 border border-white/10 text-xs" placeholder="Lokasi">
+            </div>
+            <textarea id="addActDesc" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 h-32 text-sm" placeholder="Detail kegiatan..."></textarea>
+            <input id="addActFile" type="file" class="text-xs">
+        `;
+        showModal("TAMBAH KEGIATAN", html, async () => {
+            const title = $("addActTitle").value;
+            const file = $("addActFile").files[0];
+            if(!title) return alert("Minimal isi judul!");
+            
+            toggleLoader(true, "Memposting Kegiatan...");
+            try {
+                const cover = await uploadImg(file);
+                await addDoc(collection(db, "activities"), {
+                    title, 
+                    date: $("addActDate").value,
+                    location: $("addActLoc").value,
+                    desc: $("addActDesc").value,
+                    cover,
+                    status: "pending",
+                    createdAt: serverTimestamp()
+                });
+                closeModal();
+                await loadActivities();
+            } finally { toggleLoader(false); }
+        });
+    };
 
-      list.innerHTML = "";
-      snap.forEach((d) => {
-        const uid = d.id;
-        const u = d.data();
-        const row = document.createElement("div");
-        row.className = "grid grid-cols-12 items-center gap-0 px-4 py-3";
-        row.innerHTML = `
-          <div class="col-span-4">
-            <div class="text-sm font-extrabold">${esc(u.name || "-")}</div>
-            <div class="text-xs text-slate-400 sm:hidden">${esc(u.email || "")}</div>
-          </div>
-          <div class="col-span-4 hidden sm:block text-xs text-slate-300">${esc(u.email || "")}</div>
-          <div class="col-span-2">
-            <select class="roleSelect w-full rounded-xl border border-white/10 bg-slate-950/40 px-2 py-2 text-xs text-slate-100 outline-none focus:border-emerald-400"
-              data-uid="${esc(uid)}">
-              ${ROLES.map(r => `<option value="${r}" ${u.role===r?"selected":""}>${r}</option>`).join("")}
+    // 3. Popup Finance
+    window.openFinanceModal = () => {
+        const html = `
+            <select id="finType" class="w-full p-4 rounded-2xl bg-slate-900 border border-white/10">
+                <option value="income">KAS MASUK (INCOME)</option>
+                <option value="expense">KAS KELUAR (EXPENSE)</option>
             </select>
-          </div>
-          <div class="col-span-2 flex justify-end gap-2">
-            <button class="saveRoleBtn rounded-xl bg-emerald-400 px-3 py-2 text-xs font-extrabold text-slate-950 hover:bg-emerald-300"
-              data-uid="${esc(uid)}">Simpan</button>
-            <button class="delUserBtn rounded-xl bg-rose-500 px-3 py-2 text-xs font-extrabold text-white hover:bg-rose-400"
-              data-uid="${esc(uid)}">Hapus</button>
-          </div>
+            <input id="finAmt" type="number" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-xl font-black text-emerald-400" placeholder="Rp 0">
+            <input id="finNote" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10" placeholder="Keterangan / Keperluan">
         `;
-        list.appendChild(row);
-      });
-
-      document.querySelectorAll(".saveRoleBtn").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const uid = btn.dataset.uid;
-          const sel = document.querySelector(`.roleSelect[data-uid="${uid}"]`);
-          const newRole = sel.value;
-
-          btn.disabled = true; const old = btn.textContent; btn.textContent = "…";
-          try {
-            await updateDoc(doc(db, "users", uid), { role: newRole });
-            await log("role.update", { uid, role: newRole });
-            setStatus(`Role user diubah: ${uid} → ${newRole}`);
-          } catch {
-            setStatus("Gagal ubah role (cek rules).");
-          } finally {
-            btn.disabled = false; btn.textContent = old;
-          }
+        showModal("CATAT KEUANGAN", html, async () => {
+            const amount = $("finAmt").value;
+            if(!amount) return alert("Isi nominal!");
+            toggleLoader(true, "Menyimpan Transaksi...");
+            try {
+                await addDoc(collection(db, "financial_records"), {
+                    type: $("finType").value,
+                    amount: parseInt(amount),
+                    note: $("finNote").value,
+                    status: "approved",
+                    createdAt: serverTimestamp()
+                });
+                closeModal();
+                await loadFinance();
+            } finally { toggleLoader(false); }
         });
-      });
+    };
 
-      document.querySelectorAll(".delUserBtn").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const uid = btn.dataset.uid;
-          if (!confirm("Hapus dokumen user ini? (Auth user tidak terhapus otomatis)")) return;
-
-          btn.disabled = true; const old = btn.textContent; btn.textContent = "…";
-          try {
-            await deleteDoc(doc(db, "users", uid));
-            await log("user.deleteDoc", { uid });
-            setStatus(`Dokumen user dihapus: ${uid}`);
-            await loadUsers();
-          } catch {
-            setStatus("Gagal hapus user doc.");
-          } finally {
-            btn.disabled = false; btn.textContent = old;
-          }
+    // --- DATA LOADERS ---
+    async function loadUsers() {
+        const list = $("userList");
+        list.innerHTML = `<div class="p-10 text-center animate-pulse text-slate-500">Memuat database...</div>`;
+        const snap = await getDocs(query(collection(db, "users"), limit(100)));
+        list.innerHTML = "";
+        snap.forEach(d => {
+            const u = d.data();
+            const div = document.createElement("div");
+            div.className = "flex items-center justify-between p-5 hover:bg-emerald-400/5 transition-all group";
+            div.innerHTML = `
+                <div class="flex items-center gap-4">
+                    <img src="${u.photo?.url || 'https://via.placeholder.com/80'}" class="h-12 w-12 rounded-2xl object-cover grayscale group-hover:grayscale-0 transition-all">
+                    <div>
+                        <p class="font-black text-sm tracking-tight">${u.name || 'ANONYMOUS'}</p>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">${u.role || 'Anggota'}</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="deleteDocData('users','${d.id}')" class="p-2 rounded-xl text-rose-500 hover:bg-rose-500/10"><span class="material-symbols-rounded">delete</span></button>
+                </div>
+            `;
+            list.appendChild(div);
         });
-      });
     }
 
-    // ACTIVITIES
     async function loadActivities() {
-      const list = $("actList");
-      list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Loading...</div>`;
-
-      const qy = query(collection(db, "activities"), orderBy("createdAt","desc"), limit(50));
-      const snap = await getDocs(qy);
-
-      if (snap.empty) {
-        list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Belum ada kegiatan.</div>`;
-        return;
-      }
-
-      list.innerHTML = "";
-      snap.forEach((d) => {
-        const id = d.id;
-        const x = d.data();
-        const row = document.createElement("div");
-        row.className = "px-4 py-3";
-        row.innerHTML = `
-          <div class="grid grid-cols-12 items-center gap-2">
-            <div class="col-span-6">
-              <div class="text-sm font-extrabold">${esc(x.title || "-")}</div>
-              <div class="text-xs text-slate-400">${esc(x.date || "")} • ${esc(x.location || "")}</div>
-            </div>
-            <div class="col-span-2">
-              <span class="text-xs font-semibold ${x.status==="approved"?"text-emerald-300":x.status==="rejected"?"text-rose-300":"text-slate-300"}">
-                ${esc(x.status || "pending")}
-              </span>
-            </div>
-            <div class="col-span-4 flex justify-end gap-2">
-              <button class="actApprove rounded-xl bg-emerald-400 px-3 py-2 text-xs font-extrabold text-slate-950 hover:bg-emerald-300"
-                data-id="${esc(id)}">Approve</button>
-              <button class="actReject rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-extrabold hover:bg-white/10"
-                data-id="${esc(id)}">Reject</button>
-              <button class="actDel rounded-xl bg-rose-500 px-3 py-2 text-xs font-extrabold text-white hover:bg-rose-400"
-                data-id="${esc(id)}">Delete</button>
-            </div>
-          </div>
-          ${x.cover?.url ? `<div class="mt-2 text-xs text-slate-400">Cover: <a class="text-emerald-300 hover:underline" target="_blank" rel="noreferrer" href="${x.cover.url}">lihat</a></div>` : ``}
-        `;
-        list.appendChild(row);
-      });
-
-      document.querySelectorAll(".actApprove").forEach(b => b.addEventListener("click", async () => {
-        await updateDoc(doc(db,"activities",b.dataset.id), { status:"approved" });
-        await log("activity.approve", { id: b.dataset.id });
-        setStatus("Kegiatan approved ✅");
-        await loadActivities();
-      }));
-      document.querySelectorAll(".actReject").forEach(b => b.addEventListener("click", async () => {
-        await updateDoc(doc(db,"activities",b.dataset.id), { status:"rejected" });
-        await log("activity.reject", { id: b.dataset.id });
-        setStatus("Kegiatan rejected ✅");
-        await loadActivities();
-      }));
-      document.querySelectorAll(".actDel").forEach(b => b.addEventListener("click", async () => {
-        if(!confirm("Hapus kegiatan ini?")) return;
-        await deleteDoc(doc(db,"activities",b.dataset.id));
-        await log("activity.delete", { id: b.dataset.id });
-        setStatus("Kegiatan dihapus ✅");
-        await loadActivities();
-      }));
+        const list = $("actList");
+        const snap = await getDocs(query(collection(db, "activities"), orderBy("createdAt", "desc"), limit(20)));
+        list.innerHTML = "";
+        snap.forEach(d => {
+            const x = d.data();
+            const div = document.createElement("div");
+            div.className = "glass rounded-[2rem] p-5 space-y-4 border-white/5";
+            div.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div class="bg-emerald-400/10 text-emerald-400 text-[10px] font-black px-3 py-1 rounded-full uppercase">${x.status}</div>
+                    <button onclick="deleteDocData('activities','${d.id}')" class="text-rose-500"><span class="material-symbols-rounded text-sm">delete</span></button>
+                </div>
+                <div>
+                    <h4 class="font-black text-lg leading-tight mb-1">${x.title}</h4>
+                    <p class="text-[10px] text-slate-400 flex items-center gap-1"><span class="material-symbols-rounded text-xs">location_on</span> ${x.location || 'No Location'}</p>
+                </div>
+                ${x.cover ? `<img src="${x.cover.url}" class="w-full h-32 object-cover rounded-2xl border border-white/10">` : ''}
+            `;
+            list.appendChild(div);
+        });
     }
 
-    $("actCreateBtn").addEventListener("click", async () => {
-      try {
-        const title = $("actTitle").value.trim();
-        const date = $("actDate").value.trim();
-        const location = $("actLoc").value.trim();
-        const description = $("actDesc").value.trim();
-        const coverFile = $("actCover").files?.[0];
-        if(!title) return setStatus("Judul wajib diisi.");
-
-        setStatus("Membuat kegiatan...");
-        let cover = null;
-        if (coverFile) cover = await uploadToCloudinary(coverFile, UPLOAD_PRESET_ACTIVITY, "karteji/activities/cover");
-
-        await addDoc(collection(db, "activities"), {
-          title, date, location, description,
-          status: "pending",
-          cover,
-          createdByUid: ME_UID,
-          createdAt: serverTimestamp()
-        });
-        await log("activity.create", { title });
-
-        $("actTitle").value = ""; $("actDate").value = ""; $("actLoc").value = ""; $("actDesc").value = ""; $("actCover").value = "";
-        setStatus("Kegiatan dibuat ✅");
-        await loadActivities();
-      } catch (e) {
-        setStatus(e.message || "Gagal buat kegiatan");
-      }
-    });
-
-    // FINANCE
     async function loadFinance() {
-      const list = $("finList");
-      list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Loading...</div>`;
-
-      const qy = query(collection(db, "financial_records"), orderBy("createdAt","desc"), limit(50));
-      const snap = await getDocs(qy);
-
-      if (snap.empty) {
-        list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Belum ada transaksi.</div>`;
-        return;
-      }
-
-      list.innerHTML = "";
-      snap.forEach((d) => {
-        const id = d.id;
-        const x = d.data();
-        const row = document.createElement("div");
-        row.className = "px-4 py-3";
-        row.innerHTML = `
-          <div class="grid grid-cols-12 items-center gap-2">
-            <div class="col-span-6">
-              <div class="text-sm font-extrabold">
-                ${x.type==="income" ? "Kas Masuk" : "Kas Keluar"} • Rp ${fmtIDR(x.amount)}
-              </div>
-              <div class="text-xs text-slate-400">${esc(x.category || "-")} • ${esc(x.note || "")}</div>
-              ${x.proof?.url ? `<div class="text-xs text-slate-400 mt-1">Bukti: <a class="text-emerald-300 hover:underline" target="_blank" rel="noreferrer" href="${x.proof.url}">lihat</a></div>` : ``}
-            </div>
-            <div class="col-span-2">
-              <span class="text-xs font-semibold ${x.status==="approved"?"text-emerald-300":x.status==="rejected"?"text-rose-300":"text-slate-300"}">
-                ${esc(x.status || "pending")}
-              </span>
-            </div>
-            <div class="col-span-4 flex justify-end gap-2">
-              <button class="finApprove rounded-xl bg-emerald-400 px-3 py-2 text-xs font-extrabold text-slate-950 hover:bg-emerald-300"
-                data-id="${esc(id)}">Approve</button>
-              <button class="finReject rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-extrabold hover:bg-white/10"
-                data-id="${esc(id)}">Reject</button>
-              <button class="finDel rounded-xl bg-rose-500 px-3 py-2 text-xs font-extrabold text-white hover:bg-rose-400"
-                data-id="${esc(id)}">Delete</button>
-            </div>
-          </div>
-        `;
-        list.appendChild(row);
-      });
-
-      document.querySelectorAll(".finApprove").forEach(b => b.addEventListener("click", async () => {
-        await updateDoc(doc(db,"financial_records",b.dataset.id), { status:"approved" });
-        await log("finance.approve", { id: b.dataset.id });
-        setStatus("Finance approved ✅");
-        await loadFinance();
-      }));
-      document.querySelectorAll(".finReject").forEach(b => b.addEventListener("click", async () => {
-        await updateDoc(doc(db,"financial_records",b.dataset.id), { status:"rejected" });
-        await log("finance.reject", { id: b.dataset.id });
-        setStatus("Finance rejected ✅");
-        await loadFinance();
-      }));
-      document.querySelectorAll(".finDel").forEach(b => b.addEventListener("click", async () => {
-        if(!confirm("Hapus transaksi ini?")) return;
-        await deleteDoc(doc(db,"financial_records",b.dataset.id));
-        await log("finance.delete", { id: b.dataset.id });
-        setStatus("Transaksi dihapus ✅");
-        await loadFinance();
-      }));
-    }
-
-    $("finCreateBtn").addEventListener("click", async () => {
-      try {
-        const type = $("finType").value;
-        const amount = Number($("finAmt").value || 0);
-        const category = $("finCat").value.trim();
-        const note = $("finNote").value.trim();
-        const proofFile = $("finProof").files?.[0];
-        if (!amount || amount <= 0) return setStatus("Nominal wajib > 0.");
-
-        setStatus("Menambah transaksi...");
-        let proof = null;
-        if (proofFile) proof = await uploadToCloudinary(proofFile, UPLOAD_PRESET_FINANCE, "karteji/finance/proof");
-
-        await addDoc(collection(db, "financial_records"), {
-          type, amount, category, note,
-          proof,
-          status: "pending",
-          createdByUid: ME_UID,
-          createdAt: serverTimestamp()
+        const list = $("finList");
+        const snap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc"), limit(20)));
+        list.innerHTML = "";
+        snap.forEach(d => {
+            const f = d.data();
+            const isInc = f.type === 'income';
+            const div = document.createElement("div");
+            div.className = "glass rounded-2xl p-4 flex justify-between items-center";
+            div.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="p-2 rounded-xl ${isInc ? 'bg-emerald-400/20 text-emerald-400' : 'bg-rose-400/20 text-rose-400'}">
+                        <span class="material-symbols-rounded">${isInc ? 'trending_up' : 'trending_down'}</span>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase">${f.note || 'No Note'}</p>
+                        <p class="font-black ${isInc ? 'text-emerald-400' : 'text-rose-400'}">Rp ${f.amount?.toLocaleString()}</p>
+                    </div>
+                </div>
+                <button onclick="deleteDocData('financial_records','${d.id}')" class="text-slate-600 hover:text-rose-500"><span class="material-symbols-rounded">close</span></button>
+            `;
+            list.appendChild(div);
         });
-        await log("finance.create", { type, amount });
-
-        $("finAmt").value = ""; $("finCat").value = ""; $("finNote").value = ""; $("finProof").value = "";
-        setStatus("Transaksi ditambahkan ✅");
-        await loadFinance();
-      } catch (e) {
-        setStatus(e.message || "Gagal tambah transaksi");
-      }
-    });
-
-    // NOTIFICATIONS
-    async function loadNotifications() {
-      const list = $("nList");
-      list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Loading...</div>`;
-
-      const qy = query(collection(db, "notifications"), orderBy("createdAt","desc"), limit(50));
-      const snap = await getDocs(qy);
-
-      if (snap.empty) {
-        list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Belum ada notifikasi.</div>`;
-        return;
-      }
-
-      list.innerHTML = "";
-      snap.forEach((d) => {
-        const id = d.id;
-        const x = d.data();
-        const row = document.createElement("div");
-        row.className = "px-4 py-3";
-        row.innerHTML = `
-          <div class="grid grid-cols-12 items-center gap-2">
-            <div class="col-span-8">
-              <div class="text-sm font-extrabold">${esc(x.title || "-")}</div>
-              <div class="text-xs text-slate-400">${esc(x.body || "")} • <span class="font-semibold">${esc(x.level || "normal")}</span></div>
-            </div>
-            <div class="col-span-4 flex justify-end">
-              <button class="nDel rounded-xl bg-rose-500 px-3 py-2 text-xs font-extrabold text-white hover:bg-rose-400"
-                data-id="${esc(id)}">Delete</button>
-            </div>
-          </div>
-        `;
-        list.appendChild(row);
-      });
-
-      document.querySelectorAll(".nDel").forEach(b => b.addEventListener("click", async () => {
-        if(!confirm("Hapus notifikasi ini?")) return;
-        await deleteDoc(doc(db,"notifications",b.dataset.id));
-        await log("notify.delete", { id: b.dataset.id });
-        setStatus("Notifikasi dihapus ✅");
-        await loadNotifications();
-      }));
     }
 
-    $("nCreateBtn").addEventListener("click", async () => {
-      try {
-        const title = $("nTitle").value.trim();
-        const body = $("nBody").value.trim();
-        const level = $("nLevel").value;
-        if(!title) return setStatus("Judul wajib diisi.");
+    // --- GLOBAL ACTIONS ---
+    window.deleteDocData = async (col, id) => {
+        if(!confirm("Hapus data ini selamanya?")) return;
+        toggleLoader(true, "Menghapus Data...");
+        await deleteDoc(doc(db, col, id));
+        await refreshAll();
+        toggleLoader(false);
+    }
 
-        setStatus("Mengirim notifikasi...");
-        await addDoc(collection(db, "notifications"), {
-          title, body, level,
-          createdByUid: ME_UID,
-          createdAt: serverTimestamp()
+    async function refreshAll() {
+        await Promise.all([loadUsers(), loadActivities(), loadFinance()]);
+    }
+
+    $("refreshAllBtn").onclick = async () => {
+        toggleLoader(true, "Menyegarkan Database...");
+        await refreshAll();
+        toggleLoader(false);
+    };
+
+    // --- TAB ENGINE ---
+    window.openTab = (id) => {
+        document.querySelectorAll(".tabPanel").forEach(p => p.classList.add("hidden"));
+        document.querySelectorAll(".tabBtn").forEach(b => {
+            b.classList.remove("bg-emerald-400", "text-slate-950", "border-emerald-400");
+            b.classList.add("bg-white/5", "text-white");
         });
-        await log("notify.create", { title, level });
+        
+        $(`tab-${id}`).classList.remove("hidden");
+        const activeBtn = document.querySelector(`[data-tab="${id}"]`);
+        activeBtn.classList.add("bg-emerald-400", "text-slate-950", "border-emerald-400");
+    };
+    document.querySelectorAll(".tabBtn").forEach(btn => btn.onclick = () => openTab(btn.dataset.tab));
 
-        $("nTitle").value = ""; $("nBody").value = ""; $("nLevel").value = "normal";
-        setStatus("Notifikasi terkirim ✅");
-        await loadNotifications();
-      } catch (e) {
-        setStatus(e.message || "Gagal kirim notifikasi");
-      }
-    });
+    $("logoutBtn").onclick = () => signOut(auth).then(() => location.href = "../login.html");
 
-    // ARCHIVES
-    async function loadArchives() {
-      const list = $("arList");
-      list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Loading...</div>`;
-
-      const qy = query(collection(db, "archives"), orderBy("createdAt","desc"), limit(100));
-      const snap = await getDocs(qy);
-
-      if (snap.empty) {
-        list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Belum ada arsip.</div>`;
-        return;
-      }
-
-      list.innerHTML = "";
-      snap.forEach((d) => {
-        const id = d.id;
-        const x = d.data();
-        const row = document.createElement("div");
-        row.className = "px-4 py-3";
-        row.innerHTML = `
-          <div class="grid grid-cols-12 items-center gap-2">
-            <div class="col-span-8">
-              <div class="text-sm font-extrabold">${esc(x.title || "-")}</div>
-              <div class="text-xs text-slate-400">
-                ${x.file?.url ? `<a class="text-emerald-300 hover:underline" target="_blank" rel="noreferrer" href="${x.file.url}">lihat file</a>` : `-`}
-              </div>
-            </div>
-            <div class="col-span-4 flex justify-end gap-2">
-              <button class="arDel rounded-xl bg-rose-500 px-3 py-2 text-xs font-extrabold text-white hover:bg-rose-400"
-                data-id="${esc(id)}">Delete</button>
-            </div>
-          </div>
-        `;
-        list.appendChild(row);
-      });
-
-      document.querySelectorAll(".arDel").forEach(b => b.addEventListener("click", async () => {
-        if(!confirm("Hapus arsip ini?")) return;
-        await deleteDoc(doc(db,"archives",b.dataset.id));
-        await log("archive.delete", { id: b.dataset.id });
-        setStatus("Arsip dihapus ✅");
-        await loadArchives();
-      }));
-    }
-
-    $("arUploadBtn").addEventListener("click", async () => {
-      try {
-        const title = $("arTitle").value.trim();
-        const file = $("arFile").files?.[0];
-        if(!title) return setStatus("Judul arsip wajib diisi.");
-        if(!file) return setStatus("Pilih file dulu.");
-
-        setStatus("Upload arsip...");
-        const media = await uploadToCloudinary(file, UPLOAD_PRESET_ARCHIVE, "karteji/archives");
-
-        await addDoc(collection(db, "archives"), {
-          title,
-          file: media,
-          createdByUid: ME_UID,
-          createdAt: serverTimestamp()
-        });
-        await log("archive.upload", { title, publicId: media.publicId });
-
-        $("arTitle").value = ""; $("arFile").value = "";
-        setStatus("Arsip terupload ✅");
-        await loadArchives();
-      } catch (e) {
-        setStatus(e.message || "Gagal upload arsip");
-      }
-    });
-
-    // LOGS
-    async function loadLogs() {
-      const list = $("logList");
-      list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Loading...</div>`;
-
-      const qy = query(collection(db, "logs"), orderBy("at","desc"), limit(50));
-      const snap = await getDocs(qy);
-
-      if (snap.empty) {
-        list.innerHTML = `<div class="px-4 py-4 text-sm text-slate-300">Belum ada log.</div>`;
-        return;
-      }
-
-      list.innerHTML = "";
-      snap.forEach((d) => {
-        const x = d.data();
-        const when = x.at?.toDate ? x.at.toDate().toLocaleString("id-ID") : "-";
-        const row = document.createElement("div");
-        row.className = "grid grid-cols-12 px-4 py-3";
-        row.innerHTML = `
-          <div class="col-span-8">
-            <div class="text-sm font-extrabold">${esc(x.action || "-")}</div>
-            <div class="text-xs text-slate-400">${esc(JSON.stringify(x.meta || {}))}</div>
-          </div>
-          <div class="col-span-4 text-xs text-slate-300">${esc(when)}</div>
-        `;
-        list.appendChild(row);
-      });
-    }
   </script>
 </body>
 </html>
