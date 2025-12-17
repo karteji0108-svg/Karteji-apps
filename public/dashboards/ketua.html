@@ -7,189 +7,265 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
       theme: {
         extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
           colors: {
-            'bg-main': '#050505',
-            'card-dark': '#121212',
-            'accent-lime': '#D4FC79',
+            brand: {
+              primary: '#0F172A', // Navy Utama
+              light: '#334155',
+            },
+            accent: {
+              DEFAULT: '#F97316', // Orange
+              light: '#FFEDD5',
+            }
           },
-          fontFamily: { sans: ['Outfit', 'sans-serif'] }
+          animation: {
+            'blob': 'blob 10s infinite',
+          },
+          keyframes: {
+            blob: {
+              '0%': { transform: 'translate(0px, 0px) scale(1)' },
+              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+              '100%': { transform: 'translate(0px, 0px) scale(1)' },
+            }
+          }
         }
       }
     }
   </script>
 
   <style>
-    body { background-color: #050505; color: #ffffff; -webkit-tap-highlight-color: transparent; }
+    /* Styling Dasar Light Mode */
+    body { background-color: #F8FAFC; color: #1E293B; -webkit-tap-highlight-color: transparent; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     
-    /* Glass Bottom Nav */
+    /* Glass Effect Navigasi Bawah */
     .glass-nav {
-      background: rgba(18, 18, 18, 0.85);
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(255,255,255,0.08);
+      border-top: 1px solid rgba(15, 23, 42, 0.05);
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.05);
     }
 
     /* Animasi Transisi Halaman */
     .view-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
     .view-section.active { display: block; opacity: 1; transform: translateY(0); }
 
-    /* Nav Icon Active State */
-    .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #D4FC79; }
-    .nav-btn.active p { color: #D4FC79; }
+    /* Tombol Navigasi Aktif */
+    .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #F97316; }
+    .nav-btn.active p { color: #0F172A; font-weight: 700; }
   </style>
 </head>
 
-<body class="min-h-screen relative overflow-x-hidden pb-24">
+<body class="min-h-screen relative overflow-x-hidden pb-32 selection:bg-orange-200 selection:text-orange-900">
 
-  <div id="globalLoader" class="fixed inset-0 bg-black/90 z-[9999] flex items-center justify-center flex-col gap-4 backdrop-blur-xl">
-    <div class="w-12 h-12 border-4 border-gray-800 border-t-accent-lime rounded-full animate-spin"></div>
-    <p id="loaderMsg" class="text-xs text-accent-lime tracking-widest animate-pulse">MEMUAT...</p>
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
+    <div class="absolute top-[20%] right-[-10%] w-96 h-96 bg-orange-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
   </div>
 
-  <div id="gate" class="fixed inset-0 bg-black z-[9998] hidden items-center justify-center p-6 text-center">
-    <span class="material-symbols-rounded text-red-500 text-6xl mb-4">lock</span>
-    <h2 class="text-2xl font-bold text-white mb-2">Akses Ditolak</h2>
-    <p class="text-gray-400 text-sm mb-6">Halaman ini khusus Ketua.</p>
-    <a href="../login.html" class="text-accent-lime font-bold text-sm underline">Kembali ke Login</a>
+  <div id="globalLoader" class="fixed inset-0 bg-white/80 z-[9999] flex items-center justify-center flex-col gap-4 backdrop-blur-md">
+    <div class="w-12 h-12 border-4 border-slate-200 border-t-accent rounded-full animate-spin"></div>
+    <p id="loaderMsg" class="text-xs font-bold text-slate-400 tracking-widest animate-pulse">MEMUAT...</p>
   </div>
 
-  <div id="crudModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
-    <div class="bg-[#121212] border border-white/10 w-full max-w-md rounded-[2rem] p-6 relative shadow-2xl">
-      <div class="flex justify-between items-center mb-6">
-          <h2 id="modalTitle" class="text-xl font-bold text-white uppercase tracking-wider">Judul</h2>
-          <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10"><span class="material-symbols-rounded text-sm">close</span></button>
-      </div>
-      <div id="modalBody" class="space-y-4 max-h-[60vh] overflow-y-auto no-scrollbar"></div>
-      <button id="modalSubmitBtn" class="mt-6 w-full rounded-xl bg-accent-lime text-black py-3 text-sm font-bold hover:brightness-110 transition-all">SIMPAN</button>
+  <div id="gate" class="fixed inset-0 bg-slate-900 z-[9998] hidden items-center justify-center p-6 text-center">
+    <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full">
+        <span class="material-symbols-rounded text-red-500 text-6xl mb-4">lock</span>
+        <h2 class="text-2xl font-extrabold text-brand-primary mb-2">Akses Ditolak</h2>
+        <p class="text-slate-500 text-sm mb-6">Halaman ini khusus untuk Ketua Karang Taruna.</p>
+        <a href="../login.html" class="block w-full bg-brand-primary text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors">Kembali Login</a>
     </div>
   </div>
 
-  <header class="sticky top-0 z-30 px-5 pt-6 pb-2 bg-gradient-to-b from-[#050505] to-transparent">
+  <div id="crudModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-all">
+    <div class="bg-white w-full max-w-md rounded-[2rem] p-6 relative shadow-2xl animate-[slideUp_0.3s_ease-out]">
+      <div class="flex justify-between items-center mb-6">
+          <h2 id="modalTitle" class="text-xl font-extrabold text-brand-primary uppercase tracking-tight">Judul</h2>
+          <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors text-slate-500">
+            <span class="material-symbols-rounded text-xl">close</span>
+          </button>
+      </div>
+      <div id="modalBody" class="space-y-4 max-h-[60vh] overflow-y-auto no-scrollbar"></div>
+      <button id="modalSubmitBtn" class="mt-6 w-full rounded-xl bg-brand-primary text-white py-4 text-sm font-bold shadow-lg shadow-slate-300 hover:bg-slate-800 active:scale-95 transition-all">SIMPAN</button>
+    </div>
+  </div>
+
+  <header class="sticky top-0 z-30 px-6 pt-8 pb-4 bg-gradient-to-b from-[#F8FAFC] via-[#F8FAFC] to-transparent">
       <div class="flex justify-between items-center">
           <div class="flex items-center gap-3">
-              <img id="headerPhoto" src="https://via.placeholder.com/100" class="w-10 h-10 rounded-full border border-white/10 object-cover">
+              <button onclick="switchView('profile')" class="relative group">
+                <img id="headerPhoto" class="w-11 h-11 rounded-full border-2 border-white shadow-md object-cover" src="https://via.placeholder.com/100">
+                <div class="absolute bottom-0 right-0 w-3 h-3 bg-accent border-2 border-white rounded-full"></div>
+              </button>
               <div>
-                  <p class="text-[10px] text-accent-lime uppercase tracking-widest font-bold">Ketua</p>
-                  <h1 id="headerName" class="text-lg font-bold leading-none text-white">...</h1>
+                  <p class="text-[10px] font-bold text-accent uppercase tracking-widest bg-accent-light px-2 py-0.5 rounded-full w-fit mb-0.5">Ketua</p>
+                  <h1 id="headerName" class="text-xl font-extrabold text-brand-primary leading-none">Memuat...</h1>
               </div>
           </div>
-          <button id="logoutBtn" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-red-400 hover:bg-red-500/20"><span class="material-symbols-rounded text-lg">logout</span></button>
+          <button id="logoutBtn" class="w-10 h-10 rounded-full bg-white border border-slate-100 shadow-sm flex items-center justify-center text-red-500 hover:bg-red-50 hover:border-red-100 transition-all">
+            <span class="material-symbols-rounded text-xl">logout</span>
+          </button>
       </div>
   </header>
 
-  <main class="px-4 mt-2">
+  <main class="px-5 mt-2 relative z-10">
 
       <section id="view-home" class="view-section active">
           
-          <div class="w-full bg-accent-lime rounded-[2rem] p-5 text-black relative overflow-hidden shadow-[0_10px_40px_-10px_rgba(212,252,121,0.2)]">
-              <div class="absolute top-0 right-0 p-4 opacity-10"><span class="material-symbols-rounded text-8xl">account_balance_wallet</span></div>
+          <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 group transition-all">
+              <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500 transform group-hover:scale-110"><span class="material-symbols-rounded text-9xl">account_balance_wallet</span></div>
+              <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-accent blur-3xl opacity-20"></div>
               
-              <p class="text-[10px] font-bold uppercase tracking-widest opacity-60 mb-1">Total Kas Organisasi</p>
-              <h2 id="cardBalance" class="text-3xl font-black tracking-tight mb-4">Rp 0</h2>
+              <div class="relative z-10">
+                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Total Kas Organisasi</p>
+                <h2 id="cardBalance" class="text-4xl font-black tracking-tight mb-8">Rp 0</h2>
 
-              <div class="grid grid-cols-2 gap-2 mt-2">
-                  <div class="bg-black/10 rounded-xl p-2.5 backdrop-blur-sm">
-                      <div class="flex items-center gap-1 mb-1">
-                          <span class="material-symbols-rounded text-[10px] bg-white/20 p-0.5 rounded-full">arrow_downward</span>
-                          <span class="text-[9px] font-bold uppercase opacity-60">Masuk Dari</span>
-                      </div>
-                      <p id="lastIncomeNote" class="text-[10px] font-bold leading-tight line-clamp-1">-</p>
-                      <p id="lastIncomeAmt" class="text-[10px] opacity-70 mt-0.5">Rp 0</p>
-                  </div>
-                  <div class="bg-black/10 rounded-xl p-2.5 backdrop-blur-sm">
-                      <div class="flex items-center gap-1 mb-1">
-                          <span class="material-symbols-rounded text-[10px] bg-white/20 p-0.5 rounded-full">arrow_upward</span>
-                          <span class="text-[9px] font-bold uppercase opacity-60">Keluar Untuk</span>
-                      </div>
-                      <p id="lastExpenseNote" class="text-[10px] font-bold leading-tight line-clamp-1">-</p>
-                      <p id="lastExpenseAmt" class="text-[10px] opacity-70 mt-0.5">Rp 0</p>
-                  </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5">
+                        <div class="flex items-center gap-1.5 mb-1">
+                            <div class="bg-green-400/20 p-1 rounded-full"><span class="material-symbols-rounded text-[10px] text-green-300">arrow_downward</span></div>
+                            <span class="text-[9px] font-bold uppercase text-slate-300">Masuk</span>
+                        </div>
+                        <p id="lastIncomeAmt" class="text-sm font-bold text-white leading-tight">Rp 0</p>
+                    </div>
+                    <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5">
+                        <div class="flex items-center gap-1.5 mb-1">
+                            <div class="bg-red-400/20 p-1 rounded-full"><span class="material-symbols-rounded text-[10px] text-red-300">arrow_upward</span></div>
+                            <span class="text-[9px] font-bold uppercase text-slate-300">Keluar</span>
+                        </div>
+                        <p id="lastExpenseAmt" class="text-sm font-bold text-white leading-tight">Rp 0</p>
+                    </div>
+                </div>
               </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-3 mt-3">
-              <div class="bg-[#121212] border border-white/5 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 relative group overflow-hidden" onclick="switchView('activities')">
-                   <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-all"></div>
-                   <div>
-                       <span class="material-symbols-rounded text-blue-400 mb-2">event</span>
-                       <p class="text-[9px] text-gray-500 uppercase font-bold">Agenda Terdekat</p>
+          <div class="grid grid-cols-2 gap-3 mt-6">
+              <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-36 relative group overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer" onclick="switchView('activities')">
+                   <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent opacity-50"></div>
+                   <div class="relative z-10">
+                       <span class="material-symbols-rounded text-blue-500 mb-2 text-2xl">event</span>
+                       <p class="text-[10px] text-slate-400 uppercase font-bold">Agenda</p>
                    </div>
-                   <h3 id="widgetEvent" class="text-xs font-bold text-white line-clamp-2 leading-relaxed mt-1">Belum ada acara</h3>
+                   <h3 id="widgetEvent" class="relative z-10 text-xs font-bold text-brand-primary line-clamp-2 leading-relaxed mt-1">Belum ada acara</h3>
               </div>
 
-              <div class="bg-[#121212] border border-white/5 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 relative group overflow-hidden" onclick="switchView('activities')">
-                   <div class="absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-all"></div>
-                   <div>
-                       <span class="material-symbols-rounded text-red-400 mb-2">campaign</span>
-                       <p class="text-[9px] text-gray-500 uppercase font-bold">Info Penting</p>
+              <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-36 relative group overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer">
+                   <div class="absolute inset-0 bg-gradient-to-br from-orange-50 to-transparent opacity-50"></div>
+                   <div class="relative z-10">
+                       <span class="material-symbols-rounded text-accent mb-2 text-2xl">campaign</span>
+                       <p class="text-[10px] text-slate-400 uppercase font-bold">Info</p>
                    </div>
-                   <h3 id="widgetAlert" class="text-xs font-bold text-white line-clamp-2 leading-relaxed mt-1">Tidak ada info</h3>
+                   <h3 id="widgetAlert" class="relative z-10 text-xs font-bold text-brand-primary line-clamp-2 leading-relaxed mt-1">Tidak ada info</h3>
               </div>
           </div>
-
-          <div class="mt-4">
-              <button onclick="openProfileModal()" class="w-full py-3 rounded-2xl bg-[#121212] border border-white/5 text-xs font-bold flex items-center justify-center gap-2 hover:bg-[#1E1E1E]">
-                  <span class="material-symbols-rounded text-sm">edit</span> Edit Profil Saya
-              </button>
-          </div>
-
       </section>
 
       <section id="view-users" class="view-section">
-          <div class="flex justify-between items-end mb-4 px-1">
-              <h2 class="text-2xl font-bold">Anggota</h2>
-              <span id="userCountBadge" class="bg-white/10 text-[10px] px-2 py-1 rounded-md font-mono">0</span>
+          <div class="bg-white p-4 rounded-3xl shadow-sm border border-slate-100 mb-4 sticky top-24 z-20">
+            <div class="flex justify-between items-center">
+                <div>
+                  <h2 class="text-lg font-bold text-brand-primary">Anggota</h2>
+                  <p class="text-xs text-slate-400">Kelola tim</p>
+                </div>
+                <span id="userCountBadge" class="bg-brand-primary text-white text-xs px-3 py-1.5 rounded-full font-bold">0</span>
+            </div>
           </div>
-          <div id="userList" class="grid grid-cols-1 gap-2"></div>
+          <div id="userList" class="space-y-3 pb-20"></div>
+      </section>
+
+      <section id="view-profile" class="view-section">
+        <div class="flex flex-col items-center pt-4">
+            <div class="relative group cursor-pointer" onclick="$('profileUpload').click()">
+                <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl">
+                <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span class="material-symbols-rounded text-white">photo_camera</span>
+                </div>
+                <div class="absolute bottom-1 right-1 bg-accent p-1.5 rounded-full border-2 border-white shadow-sm">
+                    <span class="material-symbols-rounded text-white text-sm block">edit</span>
+                </div>
+            </div>
+            <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
+            
+            <h2 id="profileNameDisplay" class="text-xl font-bold text-brand-primary mt-4">Nama Ketua</h2>
+            <p id="profileEmailDisplay" class="text-sm text-slate-400">email@user.com</p>
+
+            <div class="w-full mt-8 space-y-4">
+                <div>
+                    <label class="text-xs font-bold text-slate-400 ml-1">NAMA LENGKAP</label>
+                    <input id="editName" type="text" class="w-full p-4 bg-white rounded-2xl border border-slate-200 text-brand-primary outline-none focus:border-accent font-bold mt-1">
+                </div>
+                
+                <button onclick="saveProfile()" class="w-full bg-brand-primary text-white py-4 rounded-2xl font-bold shadow-lg shadow-slate-300 hover:bg-slate-800 transition-all active:scale-95">
+                    SIMPAN PERUBAHAN
+                </button>
+
+                <button onclick="document.getElementById('logoutBtn').click()" class="w-full bg-red-50 text-red-500 py-4 rounded-2xl font-bold hover:bg-red-100 transition-all active:scale-95 flex items-center justify-center gap-2">
+                    <span class="material-symbols-rounded">logout</span>
+                    KELUAR AKUN
+                </button>
+            </div>
+        </div>
       </section>
 
       <section id="view-activities" class="view-section">
-          <div class="flex justify-between items-center mb-4 px-1">
-            <h2 class="text-2xl font-bold">Kegiatan</h2>
-            <button onclick="openAddActivityModal()" class="bg-accent-lime text-black w-10 h-10 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(212,252,121,0.3)]"><span class="material-symbols-rounded">add</span></button>
+          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
+            <div>
+                <h2 class="text-2xl font-bold text-brand-primary">Kegiatan</h2>
+                <p class="text-xs text-slate-400">Jadwal & Acara</p>
+            </div>
+            <button onclick="openAddActivityModal()" class="w-10 h-10 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+                <span class="material-symbols-rounded">add</span>
+            </button>
           </div>
-          <div id="actList" class="grid grid-cols-1 gap-3"></div>
+          <div id="actList" class="grid grid-cols-1 gap-4 pb-20"></div>
       </section>
 
       <section id="view-finance" class="view-section">
-          <h2 class="text-2xl font-bold mb-4 px-1">Riwayat Kas</h2>
-          <div id="finList" class="space-y-2"></div>
+          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
+            <div>
+                <h2 class="text-2xl font-bold text-brand-primary">Laporan Kas</h2>
+                <p class="text-xs text-slate-400">Monitoring dana</p>
+            </div>
+          </div>
+          <div id="finList" class="space-y-3 pb-20"></div>
       </section>
 
   </main>
 
-  <nav class="fixed bottom-0 w-full glass-nav pb-6 pt-3 px-2 z-40">
-      <div class="flex justify-around items-center max-w-md mx-auto">
-          <button onclick="switchView('home')" class="nav-btn active flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="home">
-              <span class="material-symbols-rounded text-2xl text-gray-400 transition-colors">grid_view</span>
-              <p class="text-[9px] font-bold text-gray-500 transition-colors">Home</p>
+  <nav class="fixed bottom-0 w-full glass-nav pb-6 pt-2 px-4 z-50 rounded-t-[2rem]">
+      <div class="flex justify-between items-center max-w-sm mx-auto">
+          <button onclick="switchView('home')" class="nav-btn active flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="home">
+              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">grid_view</span>
+              <p class="text-[10px] font-medium text-slate-400 transition-colors">Home</p>
           </button>
           
-          <button onclick="switchView('users')" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="users">
-              <span class="material-symbols-rounded text-2xl text-gray-400 transition-colors">group</span>
-              <p class="text-[9px] font-bold text-gray-500 transition-colors">User</p>
+          <button onclick="switchView('users')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="users">
+              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">group</span>
+              <p class="text-[10px] font-medium text-slate-400 transition-colors">Anggota</p>
           </button>
 
-          <div class="w-8"></div>
-          <button onclick="openAddActivityModal()" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-14 h-14 bg-accent-lime rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(212,252,121,0.4)] text-black hover:scale-105 transition-all">
-              <span class="material-symbols-rounded text-3xl">add</span>
+          <div class="relative -top-6">
+            <button onclick="switchView('profile')" class="nav-btn w-14 h-14 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-xl shadow-slate-400 hover:scale-105 active:scale-95 transition-all ring-4 ring-white" data-target="profile">
+                <span class="material-symbols-rounded text-3xl">person</span>
+            </button>
+          </div>
+
+          <button onclick="switchView('activities')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="activities">
+              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">calendar_month</span>
+              <p class="text-[10px] font-medium text-slate-400 transition-colors">Acara</p>
           </button>
 
-          <button onclick="switchView('activities')" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="activities">
-              <span class="material-symbols-rounded text-2xl text-gray-400 transition-colors">calendar_month</span>
-              <p class="text-[9px] font-bold text-gray-500 transition-colors">Acara</p>
-          </button>
-
-          <button onclick="switchView('finance')" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="finance">
-              <span class="material-symbols-rounded text-2xl text-gray-400 transition-colors">account_balance_wallet</span>
-              <p class="text-[9px] font-bold text-gray-500 transition-colors">Kas</p>
+          <button onclick="switchView('finance')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="finance">
+              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">account_balance_wallet</span>
+              <p class="text-[10px] font-medium text-slate-400 transition-colors">Kas</p>
           </button>
       </div>
   </nav>
@@ -218,8 +294,9 @@
 
     const $ = (id) => document.getElementById(id);
     let UID = null;
+    let newProfileFile = null;
 
-    // --- UTILITIES ---
+    // --- UTILITIES UI ---
     window.toggleLoader = (show, msg="MEMUAT...") => {
         const l = $("globalLoader");
         $("loaderMsg").textContent = msg;
@@ -252,6 +329,7 @@
         // Refresh specific data
         if(viewId === 'home') loadHomeData();
         if(viewId === 'users') loadUsers();
+        if(viewId === 'profile') loadProfileData();
     };
 
     async function upload(file, preset, folder){
@@ -265,55 +343,48 @@
         return { url:data.secure_url };
     }
 
-    // --- MAIN LOGIC ---
+    // --- AUTH & INIT ---
     onAuthStateChanged(auth, async user => {
-        if(!user) return location.href = "../login.html";
+        if(!user) return location.href = "login.html";
         
         toggleLoader(true, "CEK AKSES...");
         try {
             const snap = await getDoc(doc(db,"users",user.uid));
             if(!snap.exists() || (snap.data().role !== "ketua" && snap.data().role !== "super_admin")){
-                // Izinkan Ketua ATAU Super Admin untuk preview
                 toggleLoader(false);
                 $("gate").classList.remove("hidden");
+                $("gate").classList.add("flex");
                 return;
             }
             UID = user.uid;
-            const me = snap.data();
             
-            $("headerName").textContent = me.name || "Ketua";
-            $("headerPhoto").src = me.photo?.url || "https://via.placeholder.com/100";
-
-            await Promise.all([loadHomeData(), loadUsers(), loadActivities(), loadFinance()]);
+            await Promise.all([loadHomeData(), loadUsers(), loadActivities(), loadFinance(), loadProfileData()]);
         } catch(e) { console.error(e); }
         toggleLoader(false);
     });
 
+    // --- HOME DASHBOARD ---
     async function loadHomeData() {
         const fin = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc")));
         let bal = 0;
-        let lastInc = { note: "-", amount: 0 };
-        let lastExp = { note: "-", amount: 0 };
-        let foundInc = false, foundExp = false;
+        let lastInc = 0, lastExp = 0;
 
         fin.forEach(d => {
             const f = d.data();
             if(f.status === 'approved') {
                 if(f.type === 'income') {
                     bal += Number(f.amount);
-                    if(!foundInc) { lastInc = f; foundInc = true; }
+                    if(lastInc === 0) lastInc = Number(f.amount);
                 } else {
                     bal -= Number(f.amount);
-                    if(!foundExp) { lastExp = f; foundExp = true; }
+                    if(lastExp === 0) lastExp = Number(f.amount);
                 }
             }
         });
 
         $("cardBalance").textContent = "Rp " + bal.toLocaleString('id-ID');
-        $("lastIncomeNote").textContent = lastInc.note || "-";
-        $("lastIncomeAmt").textContent = "Rp " + Number(lastInc.amount).toLocaleString('id-ID');
-        $("lastExpenseNote").textContent = lastExp.note || "-";
-        $("lastExpenseAmt").textContent = "Rp " + Number(lastExp.amount).toLocaleString('id-ID');
+        $("lastIncomeAmt").textContent = "Rp " + lastInc.toLocaleString('id-ID');
+        $("lastExpenseAmt").textContent = "Rp " + lastExp.toLocaleString('id-ID');
 
         const ev = await getDocs(query(collection(db, "activities"), orderBy("createdAt", "desc"), limit(1)));
         if(!ev.empty) $("widgetEvent").textContent = ev.docs[0].data().title;
@@ -323,44 +394,56 @@
         else $("widgetAlert").textContent = "Tidak ada info penting";
     }
 
-    window.openProfileModal = () => {
-        const html = `
-            <input id="editName" class="w-full p-4 rounded-xl bg-white/5 border border-white/10 text-white outline-none mb-2" value="${$("headerName").textContent}">
-            <div class="bg-white/5 p-3 rounded-xl border border-white/10">
-                <p class="text-[10px] text-gray-400 mb-2">Ganti Foto Profil</p>
-                <input id="editFile" type="file" accept="image/*" class="text-xs text-gray-300">
-            </div>
-        `;
-        showModal("EDIT PROFIL", html, async () => {
-            const name = $("editName").value.trim();
-            const file = $("editFile").files?.[0];
-            const payload = {};
+    // --- PROFILE LOGIC ---
+    async function loadProfileData() {
+        const snap = await getDoc(doc(db, "users", UID));
+        if(snap.exists()){
+            const d = snap.data();
+            const photoUrl = d.photo?.url || "https://via.placeholder.com/150";
+            $("headerName").textContent = d.name || "Ketua";
+            $("headerPhoto").src = photoUrl;
             
-            toggleLoader(true);
-            try {
-                if(name) payload.name = name;
-                if(file) payload.photo = await upload(file, PRESET_PROFILE, `karteji/users/${UID}`);
-                
-                if(Object.keys(payload).length){
-                    await updateDoc(doc(db,"users",UID), payload);
-                    location.reload();
-                } else { closeModal(); toggleLoader(false); }
-            } catch(e){ alert("Gagal update"); toggleLoader(false); }
-        });
+            $("profileImage").src = photoUrl;
+            $("profileNameDisplay").textContent = d.name;
+            $("profileEmailDisplay").textContent = d.email;
+            $("editName").value = d.name;
+        }
     }
 
-    /* --- USERS (KETUA BISA GANTI ROLE, KECUALI SUPER ADMIN) --- */
+    window.previewProfileImage = (input) => {
+        if (input.files && input.files[0]) {
+            newProfileFile = input.files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => $("profileImage").src = e.target.result;
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    window.saveProfile = async () => {
+        toggleLoader(true);
+        try {
+            let updateData = { name: $("editName").value };
+            if(newProfileFile) {
+                const uploaded = await upload(newProfileFile, PRESET_PROFILE, `karteji/users/${UID}`);
+                updateData.photo = uploaded;
+            }
+            await updateDoc(doc(db, "users", UID), updateData);
+            alert("Profil berhasil diperbarui!");
+            await loadProfileData();
+        } catch(e) { console.error(e); alert("Gagal update profil"); }
+        toggleLoader(false);
+    }
+
+    // --- USERS MANAGEMENT ---
     async function loadUsers(){
         const list = $("userList"); list.innerHTML = "";
         const snap = await getDocs(query(collection(db,"users"), orderBy("name","asc")));
-        $("userCountBadge").textContent = (snap.size > 0 ? snap.size : 0) + " Users";
+        $("userCountBadge").textContent = (snap.size > 0 ? snap.size : 0);
 
-        // Daftar role yang bisa dipilih Ketua
         const roles = ["anggota", "koordinator", "sekretaris", "bendahara", "wakil_ketua", "ketua"];
 
         snap.forEach(d => {
             const u = d.data();
-            // Skip diri sendiri agar tidak tidak sengaja menghapus akses sendiri
             if(d.id === UID) return;
 
             const isSuper = u.role === "super_admin";
@@ -368,31 +451,31 @@
             let deleteBtnHTML = "";
 
             if(isSuper) {
-                // PROTEKSI SUPER ADMIN
-                controlHTML = `<p class="text-[9px] font-bold text-red-500 bg-red-500/10 px-2 py-0.5 rounded inline-block mt-1">LOCKED</p>`;
-                deleteBtnHTML = `<div class="w-8 h-8"></div>`; // Spacer kosong
+                controlHTML = `<div class="bg-red-50 text-red-500 px-2 py-0.5 rounded text-[10px] font-bold w-fit mt-1 border border-red-100 flex items-center gap-1"><span class="material-symbols-rounded text-[10px]">lock</span> SUPER ADMIN</div>`;
+                deleteBtnHTML = `<div class="w-9 h-9"></div>`; 
             } else {
-                // RENDER DROPDOWN & DELETE
                 let options = roles.map(r => `<option value="${r}" ${u.role===r ? 'selected' : ''}>${r.substr(0,1).toUpperCase()+r.substr(1)}</option>`).join('');
-                
                 controlHTML = `
-                    <select onchange="changeRole('${d.id}', this.value)" class="text-[10px] bg-transparent text-accent-lime outline-none p-0 cursor-pointer uppercase font-bold mt-0.5 border-b border-white/10 w-full pb-0.5">
-                        ${options}
-                    </select>
+                    <div class="flex items-center gap-1 mt-0.5">
+                        <span class="material-symbols-rounded text-xs text-slate-400">admin_panel_settings</span>
+                        <select onchange="changeRole('${d.id}', this.value)" class="text-xs bg-slate-50 text-accent font-bold rounded border-none outline-none cursor-pointer uppercase py-1 px-1">
+                            ${options}
+                        </select>
+                    </div>
                 `;
                 deleteBtnHTML = `
-                    <button onclick="deleteDocData('users','${d.id}')" class="w-8 h-8 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shrink-0">
-                        <span class="material-symbols-rounded text-base">delete</span>
+                    <button onclick="deleteDocData('users','${d.id}')" class="w-9 h-9 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm border border-red-100">
+                        <span class="material-symbols-rounded text-lg">delete</span>
                     </button>
                 `;
             }
             
             list.innerHTML += `
-                <div class="bg-[#121212] p-3 rounded-2xl flex items-center justify-between border border-white/5 overflow-hidden gap-2">
+                <div class="bg-white p-4 rounded-2xl flex items-center justify-between border border-slate-100 shadow-sm">
                      <div class="flex items-center gap-3 overflow-hidden w-full">
-                        <img src="${u.photo?.url || 'https://via.placeholder.com/50'}" class="w-10 h-10 rounded-full object-cover bg-gray-800 flex-shrink-0">
+                        <img src="${u.photo?.url || 'https://via.placeholder.com/50'}" class="w-10 h-10 rounded-full object-cover bg-slate-200 border border-slate-100">
                         <div class="min-w-0 w-full pr-2">
-                            <p class="text-xs font-bold text-white truncate">${u.name || '-'}</p>
+                            <p class="text-sm font-bold text-brand-primary truncate">${u.name || '-'}</p>
                             ${controlHTML}
                         </div>
                      </div>
@@ -408,7 +491,7 @@
         toggleLoader(false);
     }
 
-    /* --- ACTIVITIES (KETUA BISA TAMBAH & HAPUS) --- */
+    // --- ACTIVITIES MANAGEMENT ---
     async function loadActivities(){
         const list = $("actList"); list.innerHTML = "";
         const snap = await getDocs(query(collection(db,"activities"), orderBy("createdAt","desc")));
@@ -416,14 +499,14 @@
         snap.forEach(d => {
             const x = d.data();
             list.innerHTML += `
-                <div class="bg-[#121212] rounded-2xl overflow-hidden border border-white/5 flex h-24 relative group">
-                    <img src="${x.cover?.url || 'https://via.placeholder.com/150'}" class="w-24 h-full object-cover opacity-80">
-                    <div class="p-3 flex flex-col justify-center w-full">
-                        <h3 class="text-sm font-bold text-white line-clamp-1">${x.title}</h3>
-                        <p class="text-[10px] text-gray-400 mt-1">${x.status || 'Active'}</p>
+                <div class="bg-white p-0 rounded-2xl overflow-hidden border border-slate-100 shadow-sm flex h-28 relative group">
+                    <img src="${x.cover?.url || 'https://via.placeholder.com/150'}" class="w-28 h-full object-cover">
+                    <div class="p-4 flex flex-col justify-center w-full">
+                        <h3 class="text-sm font-bold text-brand-primary line-clamp-2 leading-tight">${x.title}</h3>
+                        <p class="text-[10px] text-slate-400 mt-1 bg-slate-100 w-fit px-2 py-0.5 rounded uppercase font-bold tracking-wider">${x.status || 'Active'}</p>
                     </div>
-                    <button onclick="deleteDocData('activities','${d.id}')" class="absolute top-2 right-2 w-7 h-7 bg-red-500/20 text-red-500 rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition-all">
-                        <span class="material-symbols-rounded text-sm">delete</span>
+                    <button onclick="deleteDocData('activities','${d.id}')" class="absolute top-2 right-2 w-8 h-8 bg-white/90 text-red-500 rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm opacity-0 group-hover:opacity-100">
+                        <span class="material-symbols-rounded text-base">delete</span>
                     </button>
                 </div>
             `;
@@ -432,10 +515,10 @@
 
     window.openAddActivityModal = () => {
         const html = `
-            <input id="actTitle" class="w-full p-4 rounded-xl bg-white/5 border border-white/10 text-white outline-none mb-3" placeholder="Judul Kegiatan">
-            <div class="bg-white/5 p-3 rounded-xl border border-white/10">
-                <p class="text-[10px] text-gray-400 mb-2">Upload Cover</p>
-                <input id="actCover" type="file" accept="image/*" class="text-xs text-gray-300">
+            <input id="actTitle" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-brand-primary outline-none mb-3 font-bold placeholder-slate-400" placeholder="Judul Kegiatan">
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 border-dashed">
+                <p class="text-xs text-slate-400 mb-2 font-bold">Upload Cover Foto</p>
+                <input id="actCover" type="file" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-slate-700">
             </div>
         `;
         showModal("TAMBAH KEGIATAN", html, async () => {
@@ -457,7 +540,7 @@
         });
     }
 
-    /* --- FINANCE (READ ONLY) --- */
+    // --- FINANCE (READ ONLY) ---
     async function loadFinance(){
         const list = $("finList"); list.innerHTML = "";
         const snap = await getDocs(query(collection(db,"financial_records"), orderBy("createdAt","desc"), limit(50)));
@@ -466,16 +549,19 @@
             const x = d.data();
             const isInc = x.type === 'income';
             list.innerHTML += `
-                 <div class="bg-[#121212] p-4 rounded-2xl flex justify-between items-center border border-white/5">
+                 <div class="bg-white p-4 rounded-2xl flex justify-between items-center border border-slate-100 shadow-sm">
                     <div class="flex items-center gap-3">
-                         <div class="w-8 h-8 rounded-full ${isInc ? 'bg-accent-lime/20 text-accent-lime' : 'bg-white/10 text-white'} flex items-center justify-center">
-                            <span class="material-symbols-rounded text-lg">${isInc ? 'arrow_downward' : 'arrow_upward'}</span>
+                         <div class="w-10 h-10 rounded-full ${isInc ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'} flex items-center justify-center">
+                            <span class="material-symbols-rounded text-xl">${isInc ? 'arrow_downward' : 'arrow_upward'}</span>
                         </div>
-                        <p class="text-xs font-bold text-white">${x.note || 'Transaksi'}</p>
+                        <div>
+                            <p class="text-sm font-bold text-brand-primary line-clamp-1">${x.note || 'Transaksi'}</p>
+                            <p class="text-[10px] text-slate-400 font-medium">Verified</p>
+                        </div>
                     </div>
                     <div class="text-right">
-                        <p class="text-xs font-bold ${isInc?'text-accent-lime':'text-white'}">${isInc?'+':'-'} Rp ${Number(x.amount).toLocaleString('id-ID')}</p>
-                        </div>
+                        <p class="text-sm font-bold ${isInc?'text-green-600':'text-red-500'}">${isInc?'+':'-'} Rp ${Number(x.amount).toLocaleString('id-ID')}</p>
+                    </div>
                 </div>
             `;
         });
@@ -489,7 +575,6 @@
             await deleteDoc(doc(db, col, id));
             if(col === 'users') loadUsers();
             if(col === 'activities') loadActivities();
-            // Finance tidak ada delete, jadi aman
             await loadHomeData();
         } catch(e) { alert("Gagal hapus"); }
         toggleLoader(false);
@@ -497,7 +582,7 @@
 
     $("logoutBtn").onclick = async () => {
         await signOut(auth);
-        location.href = "../login.html";
+        location.href = "login.html";
     };
   </script>
 </body>
