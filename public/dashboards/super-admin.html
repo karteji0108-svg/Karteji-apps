@@ -13,74 +13,71 @@
   <style>
     body { font-family: 'Outfit', sans-serif; }
     .bg-gradient-animate {
-      background: linear-gradient(-45deg, #020617, #020617, #022c22, #020617);
+      background: linear-gradient(-45deg, #020617, #020617, #1e1b4b, #020617);
       background-size: 400% 400%;
       animation: gradientBG 15s ease infinite;
     }
     @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+    .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.1); }
     
-    /* Loader Spinner */
     #globalLoader { display: none; transition: all 0.3s; }
     #globalLoader.active { display: flex; opacity: 1; }
-
-    /* Modal Animation */
     .modal-enter { animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
     @keyframes modalIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-
     .no-scrollbar::-webkit-scrollbar { display: none; }
+    
+    /* Warna variatif untuk card */
+    .card-blue { border-left: 4px solid #3b82f6; background: linear-gradient(to right, rgba(59, 130, 246, 0.1), transparent); }
+    .card-purple { border-left: 4px solid #a855f7; background: linear-gradient(to right, rgba(168, 85, 247, 0.1), transparent); }
+    .card-emerald { border-left: 4px solid #10b981; background: linear-gradient(to right, rgba(16, 185, 129, 0.1), transparent); }
+    .card-rose { border-left: 4px solid #f43f5e; background: linear-gradient(to right, rgba(244, 63, 94, 0.1), transparent); }
   </style>
 </head>
 
 <body class="min-h-screen bg-slate-950 text-white relative overflow-x-hidden bg-gradient-animate">
 
   <div id="globalLoader" class="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-md items-center justify-center flex-col gap-4 opacity-0">
-    <div class="w-14 h-14 border-4 border-emerald-400/20 border-t-emerald-400 rounded-full animate-spin shadow-[0_0_20px_rgba(52,211,153,0.3)]"></div>
+    <div class="w-14 h-14 border-4 border-emerald-400/20 border-t-emerald-400 rounded-full animate-spin"></div>
     <div class="text-center">
-        <p class="text-emerald-400 font-black text-lg tracking-widest animate-pulse">MEMPROSES</p>
-        <p id="loaderMsg" class="text-slate-400 text-xs mt-1 italic">Mohon tunggu sebentar...</p>
+        <p class="text-emerald-400 font-black text-lg tracking-widest animate-pulse uppercase">Sync Data</p>
+        <p id="loaderMsg" class="text-slate-400 text-xs mt-1 italic">Mohon tunggu...</p>
     </div>
   </div>
 
   <div id="crudModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-    <div class="glass w-full max-w-lg rounded-[2.5rem] p-8 modal-enter relative shadow-2xl border-white/20">
+    <div class="glass w-full max-w-lg rounded-[2.5rem] p-8 modal-enter relative shadow-2xl">
       <button id="closeModalBtn" class="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors">
         <span class="material-symbols-rounded text-3xl">cancel</span>
       </button>
-      
       <div class="flex items-center gap-3 mb-6">
           <div class="w-2 h-8 bg-emerald-400 rounded-full"></div>
-          <h2 id="modalTitle" class="text-2xl font-black tracking-tight">Judul Modal</h2>
+          <h2 id="modalTitle" class="text-2xl font-black tracking-tight italic uppercase">Judul Modal</h2>
       </div>
-
-      <div id="modalBody" class="space-y-5 max-h-[60vh] overflow-y-auto no-scrollbar pr-1">
-        </div>
-
+      <div id="modalBody" class="space-y-5 max-h-[60vh] overflow-y-auto no-scrollbar pr-1"></div>
       <div id="modalFooter" class="mt-8">
-        <button id="modalSubmitBtn" class="w-full rounded-2xl bg-emerald-400 py-4 text-sm font-black text-slate-950 hover:bg-emerald-300 transition-all active:scale-95 shadow-[0_10px_20px_rgba(52,211,153,0.2)]">
-          KONFIRMASI DATA
+        <button id="modalSubmitBtn" class="w-full rounded-2xl bg-emerald-400 py-4 text-sm font-black text-slate-950 hover:bg-emerald-300 transition-all active:scale-95">
+          KONFIRMASI
         </button>
       </div>
     </div>
   </div>
 
   <header class="sticky top-0 z-30 px-6 py-6">
-      <div class="mx-auto max-w-6xl glass rounded-3xl p-4 flex justify-between items-center shadow-2xl border-white/10">
+      <div class="mx-auto max-w-6xl glass rounded-3xl p-4 flex justify-between items-center shadow-2xl">
           <div class="flex items-center gap-3">
-              <div class="bg-emerald-400 p-2 rounded-2xl">
-                  <span class="material-symbols-rounded text-slate-950">shield_person</span>
+              <div class="bg-indigo-500 p-2 rounded-2xl shadow-[0_0_15px_rgba(99,102,241,0.5)]">
+                  <span class="material-symbols-rounded text-white">admin_panel_settings</span>
               </div>
               <div class="hidden sm:block">
-                  <p class="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">Panel Kontrol</p>
-                  <h1 class="text-lg font-extrabold leading-none">SUPER ADMIN</h1>
+                  <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Master Panel</p>
+                  <h1 class="text-lg font-black leading-none italic">KARTEJI</h1>
               </div>
           </div>
-          
           <div class="flex items-center gap-3">
               <button id="refreshAllBtn" class="p-3 rounded-2xl bg-white/5 hover:bg-white/10 text-emerald-400 transition-all">
                   <span class="material-symbols-rounded">sync</span>
               </button>
-              <button id="logoutBtn" class="rounded-2xl bg-rose-500/10 text-rose-400 border border-rose-500/20 px-6 py-3 text-xs font-black hover:bg-rose-500 hover:text-white transition-all">
+              <button id="logoutBtn" class="rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/20 px-6 py-3 text-xs font-black hover:bg-rose-500 hover:text-white transition-all">
                   LOGOUT
               </button>
           </div>
@@ -88,81 +85,95 @@
   </header>
 
   <main class="mx-auto max-w-6xl px-6 pb-24">
+      
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div class="glass p-6 rounded-[2rem] card-emerald">
+              <div class="flex justify-between items-start mb-2">
+                  <span class="material-symbols-rounded text-emerald-400">account_balance_wallet</span>
+                  <span class="text-[9px] font-black px-2 py-1 bg-emerald-400/20 text-emerald-400 rounded-lg">LIVE SALDO</span>
+              </div>
+              <h2 id="liveKas" class="text-2xl font-black italic tracking-tighter">Rp 0</h2>
+              <p class="text-[10px] text-slate-500 mt-1 uppercase font-bold tracking-widest">Kas Organisasi</p>
+          </div>
+
+          <div class="glass p-6 rounded-[2rem] card-blue">
+              <div class="flex justify-between items-start mb-2">
+                  <span class="material-symbols-rounded text-blue-400">campaign</span>
+                  <span class="text-[9px] font-black px-2 py-1 bg-blue-400/20 text-blue-400 rounded-lg">PENGUMUMAN</span>
+              </div>
+              <h2 id="liveNotif" class="text-sm font-bold line-clamp-1 italic">Memuat info...</h2>
+              <p class="text-[10px] text-slate-500 mt-2 uppercase font-bold tracking-widest">Broadcast Terakhir</p>
+          </div>
+
+          <div class="glass p-6 rounded-[2rem] card-purple">
+              <div class="flex justify-between items-start mb-2">
+                  <span class="material-symbols-rounded text-purple-400">event_note</span>
+                  <span class="text-[9px] font-black px-2 py-1 bg-purple-400/20 text-purple-400 rounded-lg">AGENDA</span>
+              </div>
+              <h2 id="liveAct" class="text-sm font-bold line-clamp-1 italic text-purple-200">Tidak ada agenda</h2>
+              <p class="text-[10px] text-slate-500 mt-2 uppercase font-bold tracking-widest">Kegiatan Terdekat</p>
+          </div>
+      </section>
+
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
           <div class="md:col-span-1 glass rounded-[2rem] p-6 flex flex-col items-center text-center">
-              <img id="mePhoto" class="h-20 w-20 rounded-3xl border-4 border-emerald-400/20 object-cover mb-3" src="https://via.placeholder.com/150">
-              <h3 id="meName" class="font-black text-lg line-clamp-1">-</h3>
+              <img id="mePhoto" class="h-20 w-20 rounded-3xl border-4 border-white/5 object-cover mb-3 shadow-xl" src="https://via.placeholder.com/150">
+              <h3 id="meName" class="font-black text-lg italic">-</h3>
               <p id="meEmail" class="text-[10px] text-slate-500 mb-4">-</p>
-              <button onclick="openProfileModal()" class="w-full py-2 rounded-xl bg-white/5 border border-white/10 text-[10px] font-bold hover:bg-emerald-400 hover:text-slate-950 transition-all">EDIT PROFIL</button>
+              <button onclick="openProfileModal()" class="w-full py-3 rounded-2xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[10px] font-black hover:bg-indigo-500 hover:text-white transition-all">EDIT PROFIL</button>
           </div>
           
           <div class="md:col-span-3 glass rounded-[2rem] p-6">
-              <p class="text-xs font-black text-emerald-400 mb-4 uppercase tracking-widest">Navigasi CRUD</p>
+              <p class="text-[10px] font-black text-indigo-400 mb-4 uppercase tracking-[0.3em] italic">Database Navigator</p>
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <button class="tabBtn group flex flex-col items-center p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-emerald-400/50 transition-all" data-tab="users">
-                      <span class="material-symbols-rounded text-3xl mb-1 group-hover:scale-110 transition-transform">group</span>
-                      <span class="text-[10px] font-black">USERS</span>
+                  <button class="tabBtn flex flex-col items-center p-4 rounded-2xl bg-white/5 hover:bg-indigo-500/20 transition-all border border-white/5" data-tab="users">
+                      <span class="material-symbols-rounded text-3xl mb-1 text-blue-400">group</span>
+                      <span class="text-[9px] font-black uppercase">Users</span>
                   </button>
-                  <button class="tabBtn group flex flex-col items-center p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-emerald-400/50 transition-all" data-tab="activities">
-                      <span class="material-symbols-rounded text-3xl mb-1 group-hover:scale-110 transition-transform">event_available</span>
-                      <span class="text-[10px] font-black">ACTIVITIES</span>
+                  <button class="tabBtn flex flex-col items-center p-4 rounded-2xl bg-white/5 hover:bg-indigo-500/20 transition-all border border-white/5" data-tab="activities">
+                      <span class="material-symbols-rounded text-3xl mb-1 text-purple-400">rocket_launch</span>
+                      <span class="text-[9px] font-black uppercase">Activities</span>
                   </button>
-                  <button class="tabBtn group flex flex-col items-center p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-emerald-400/50 transition-all" data-tab="finance">
-                      <span class="material-symbols-rounded text-3xl mb-1 group-hover:scale-110 transition-transform">account_balance_wallet</span>
-                      <span class="text-[10px] font-black">FINANCE</span>
+                  <button class="tabBtn flex flex-col items-center p-4 rounded-2xl bg-white/5 hover:bg-indigo-500/20 transition-all border border-white/5" data-tab="finance">
+                      <span class="material-symbols-rounded text-3xl mb-1 text-emerald-400">receipt_long</span>
+                      <span class="text-[9px] font-black uppercase">Finance</span>
                   </button>
-                  <button class="tabBtn group flex flex-col items-center p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-emerald-400/50 transition-all" data-tab="archives">
-                      <span class="material-symbols-rounded text-3xl mb-1 group-hover:scale-110 transition-transform">folder_open</span>
-                      <span class="text-[10px] font-black">ARCHIVES</span>
+                  <button class="tabBtn flex flex-col items-center p-4 rounded-2xl bg-white/5 hover:bg-indigo-500/20 transition-all border border-white/5" data-tab="notifications">
+                      <span class="material-symbols-rounded text-3xl mb-1 text-rose-400">notifications_active</span>
+                      <span class="text-[9px] font-black uppercase">Alerts</span>
                   </button>
               </div>
           </div>
       </div>
 
-      <div id="tab-users" class="tabPanel hidden space-y-4">
-          <div class="flex justify-between items-end mb-4">
-              <div>
-                  <h2 class="text-3xl font-black italic tracking-tighter">USER DATABASE</h2>
-                  <p class="text-xs text-slate-500">Kelola hak akses dan akun anggota.</p>
-              </div>
-          </div>
-          <div class="glass rounded-[2rem] overflow-hidden border-white/5">
-              <div id="userList" class="divide-y divide-white/5"></div>
-          </div>
-      </div>
+      <section id="tab-users" class="tabPanel hidden space-y-4">
+          <div class="flex justify-between items-center px-4"><h2 class="text-2xl font-black italic tracking-tighter">USER ACCESS</h2></div>
+          <div class="glass rounded-[2rem] overflow-hidden"><div id="userList" class="divide-y divide-white/5"></div></div>
+      </section>
 
-      <div id="tab-activities" class="tabPanel hidden space-y-4">
-          <div class="flex justify-between items-end mb-4">
-              <div>
-                  <h2 class="text-3xl font-black italic tracking-tighter">ACTIVITIES</h2>
-                  <p class="text-xs text-slate-500">Buat dan setujui agenda kegiatan.</p>
-              </div>
-              <button onclick="openActivityModal()" class="bg-emerald-400 text-slate-950 px-6 py-3 rounded-2xl text-xs font-black shadow-lg">+ BARU</button>
+      <section id="tab-activities" class="tabPanel hidden space-y-4">
+          <div class="flex justify-between items-center px-4">
+              <h2 class="text-2xl font-black italic tracking-tighter uppercase">Kegiatan Aktif</h2>
+              <button onclick="openActivityModal()" class="bg-purple-500 text-white px-6 py-3 rounded-2xl text-[10px] font-black shadow-lg shadow-purple-500/20 hover:scale-105 transition-all">+ EVENT</button>
           </div>
           <div id="actList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-      </div>
+      </section>
 
-      <div id="tab-finance" class="tabPanel hidden space-y-4">
-          <div class="flex justify-between items-end mb-4">
-              <div>
-                  <h2 class="text-3xl font-black italic tracking-tighter">FINANCE</h2>
-                  <p class="text-xs text-slate-500">Monitoring kas masuk dan keluar.</p>
-              </div>
-              <button onclick="openFinanceModal()" class="bg-emerald-400 text-slate-950 px-6 py-3 rounded-2xl text-xs font-black shadow-lg">+ TRANSAKSI</button>
+      <section id="tab-finance" class="tabPanel hidden space-y-4">
+          <div class="flex justify-between items-center px-4">
+              <h2 class="text-2xl font-black italic tracking-tighter uppercase">Laporan Kas</h2>
+              <button onclick="openFinanceModal()" class="bg-emerald-500 text-slate-950 px-6 py-3 rounded-2xl text-[10px] font-black shadow-lg shadow-emerald-500/20 hover:scale-105 transition-all">+ TRANSAKSI</button>
           </div>
           <div id="finList" class="space-y-3"></div>
-      </div>
+      </section>
 
-      <div id="tab-archives" class="tabPanel hidden space-y-4">
-          <div class="flex justify-between items-end mb-4">
-              <div>
-                  <h2 class="text-3xl font-black italic tracking-tighter">DIGITAL ARCHIVES</h2>
-                  <p class="text-xs text-slate-500">Penyimpanan dokumen penting.</p>
-              </div>
-              <button onclick="openArchiveModal()" class="bg-emerald-400 text-slate-950 px-6 py-3 rounded-2xl text-xs font-black shadow-lg">+ UPLOAD</button>
+      <section id="tab-notifications" class="tabPanel hidden space-y-4">
+          <div class="flex justify-between items-center px-4">
+              <h2 class="text-2xl font-black italic tracking-tighter uppercase">Pusat Alert</h2>
+              <button onclick="openAlertModal()" class="bg-rose-500 text-white px-6 py-3 rounded-2xl text-[10px] font-black shadow-lg shadow-rose-500/20 hover:scale-105 transition-all">+ PENGUMUMAN</button>
           </div>
-          <div id="arList" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
-      </div>
+          <div id="nList" class="space-y-3"></div>
+      </section>
   </main>
 
   <script type="module">
@@ -170,7 +181,7 @@
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
     import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    // --- CONFIG (Gunakan milik Anda) ---
+    // --- CONFIG FIREBASE ---
     const firebaseConfig = {
       apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
       authDomain: "katar-9cac3.firebaseapp.com",
@@ -183,29 +194,21 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // Cloudinary Config (Hanya Karteji)
     const CLOUD_NAME = "dbxktcwug";
     const UPLOAD_PRESET = "Karteji";
 
     const $ = (id) => document.getElementById(id);
     let ME_UID = null;
 
-    // --- CORE UI ENGINE ---
-    window.toggleLoader = (show, msg = "Memproses...") => {
+    // --- UI ENGINE ---
+    window.toggleLoader = (show, msg = "Syncing...") => {
         $("loaderMsg").textContent = msg;
-        if(show) {
-            $("globalLoader").classList.add('active');
-            $("globalLoader").style.opacity = "1";
-        } else {
-            $("globalLoader").style.opacity = "0";
-            setTimeout(() => $("globalLoader").classList.remove('active'), 300);
-        }
+        if(show) { $("globalLoader").classList.add('active'); $("globalLoader").style.opacity = "1"; }
+        else { $("globalLoader").style.opacity = "0"; setTimeout(() => $("globalLoader").classList.remove('active'), 300); }
     };
 
-    window.closeModal = () => {
-        $("crudModal").classList.add('hidden');
-        $("crudModal").classList.remove('flex');
-    };
-    $("closeModalBtn").onclick = closeModal;
+    window.closeModal = () => $("crudModal").classList.add('hidden');
 
     window.showModal = (title, bodyHtml, onSave) => {
         $("modalTitle").textContent = title;
@@ -215,7 +218,6 @@
         $("modalSubmitBtn").onclick = onSave;
     };
 
-    // --- CLOUDINARY ENGINE ---
     async function uploadImg(file) {
         if(!file) return null;
         const formData = new FormData();
@@ -223,14 +225,39 @@
         formData.append("upload_preset", UPLOAD_PRESET);
         const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: "POST", body: formData });
         const data = await res.json();
-        return { url: data.secure_url, publicId: data.public_id };
+        return { url: data.secure_url };
     }
 
-    // --- AUTH OBSERVER ---
+    // --- LOGIC REFRESH LIVE PANEL ---
+    async function updateLivePanel() {
+        try {
+            // Live Kas
+            const finSnap = await getDocs(collection(db, "financial_records"));
+            let total = 0;
+            finSnap.forEach(d => {
+                const f = d.data();
+                if(f.status === 'approved') {
+                    if(f.type === 'income') total += Number(f.amount);
+                    else total -= Number(f.amount);
+                }
+            });
+            $("liveKas").textContent = "Rp " + total.toLocaleString('id-ID');
+
+            // Live Alert
+            const alertSnap = await getDocs(query(collection(db, "notifications"), orderBy("createdAt", "desc"), limit(1)));
+            if(!alertSnap.empty) $("liveNotif").textContent = alertSnap.docs[0].data().title;
+
+            // Live Agenda
+            const actSnap = await getDocs(query(collection(db, "activities"), orderBy("createdAt", "desc"), limit(1)));
+            if(!actSnap.empty) $("liveAct").textContent = actSnap.docs[0].data().title;
+        } catch (e) { console.error(e); }
+    }
+
+    // --- AUTH & LOAD ---
     onAuthStateChanged(auth, async (user) => {
       if (!user) return window.location.href = "../login.html";
       ME_UID = user.uid;
-      toggleLoader(true, "Sinkronisasi Akun...");
+      toggleLoader(true, "Membangun Dashboard...");
       
       const snap = await getDoc(doc(db, "users", user.uid));
       if(snap.exists()){
@@ -245,205 +272,166 @@
       toggleLoader(false);
     });
 
-    // --- MODAL GENERATORS (CRUD POPUPS) ---
+    // --- POPUPS CRUD ---
+    window.openAlertModal = () => {
+        const html = `
+            <input id="nTitle" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10" placeholder="Judul Pengumuman">
+            <textarea id="nBody" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 h-32" placeholder="Isi pesan..."></textarea>
+            <select id="nLevel" class="w-full p-4 rounded-2xl bg-slate-900 border border-white/10">
+                <option value="normal">NORMAL</option>
+                <option value="important">PENTING (MERAH)</option>
+            </select>
+        `;
+        showModal("BROADCAST PENGUMUMAN", html, async () => {
+            const title = $("nTitle").value;
+            if(!title) return;
+            toggleLoader(true, "Mengirim Alert...");
+            await addDoc(collection(db, "notifications"), { title, body: $("nBody").value, level: $("nLevel").value, createdAt: serverTimestamp() });
+            closeModal(); await loadNotifications(); updateLivePanel(); toggleLoader(false);
+        });
+    };
 
-    // 1. Popup Profil
     window.openProfileModal = () => {
         const html = `
-            <div class="space-y-1">
-                <label class="text-[10px] font-bold text-slate-500 ml-2">NAMA LENGKAP</label>
-                <input id="updName" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 focus:border-emerald-400 outline-none" value="${$("meName").textContent}">
-            </div>
-            <div class="space-y-1">
-                <label class="text-[10px] font-bold text-slate-500 ml-2">FOTO BARU</label>
-                <input id="updFile" type="file" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-emerald-400/10 file:text-emerald-400 hover:file:bg-emerald-400/20 cursor-pointer">
-            </div>
+            <input id="updName" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10" value="${$("meName").textContent}" placeholder="Nama Baru">
+            <input id="updFile" type="file" class="text-xs">
         `;
-        showModal("PENGATURAN PROFIL", html, async () => {
-            const name = $("updName").value;
+        showModal("UPDATE PROFIL", html, async () => {
+            toggleLoader(true, "Menyimpan...");
             const file = $("updFile").files[0];
-            toggleLoader(true, "Mengupdate Profil...");
-            try {
-                let photoData = null;
-                if(file) photoData = await uploadImg(file);
-                const payload = { name };
-                if(photoData) payload.photo = photoData;
-                await updateDoc(doc(db, "users", ME_UID), payload);
-                location.reload();
-            } catch(e) { alert("Gagal update"); toggleLoader(false); }
+            const payload = { name: $("updName").value };
+            if(file) payload.photo = await uploadImg(file);
+            await updateDoc(doc(db, "users", ME_UID), payload);
+            location.reload();
         });
     };
 
-    // 2. Popup Activity
     window.openActivityModal = () => {
         const html = `
-            <input id="addActTitle" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10" placeholder="Judul Kegiatan">
-            <div class="grid grid-cols-2 gap-3">
-                <input id="addActDate" type="date" class="p-4 rounded-2xl bg-white/5 border border-white/10 text-xs">
-                <input id="addActLoc" class="p-4 rounded-2xl bg-white/5 border border-white/10 text-xs" placeholder="Lokasi">
-            </div>
-            <textarea id="addActDesc" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 h-32 text-sm" placeholder="Detail kegiatan..."></textarea>
-            <input id="addActFile" type="file" class="text-xs">
+            <input id="actT" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10" placeholder="Nama Agenda">
+            <input id="actL" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10" placeholder="Lokasi">
+            <input id="actF" type="file" class="text-xs">
         `;
-        showModal("TAMBAH KEGIATAN", html, async () => {
-            const title = $("addActTitle").value;
-            const file = $("addActFile").files[0];
-            if(!title) return alert("Minimal isi judul!");
-            
-            toggleLoader(true, "Memposting Kegiatan...");
-            try {
-                const cover = await uploadImg(file);
-                await addDoc(collection(db, "activities"), {
-                    title, 
-                    date: $("addActDate").value,
-                    location: $("addActLoc").value,
-                    desc: $("addActDesc").value,
-                    cover,
-                    status: "pending",
-                    createdAt: serverTimestamp()
-                });
-                closeModal();
-                await loadActivities();
-            } finally { toggleLoader(false); }
+        showModal("EVENT BARU", html, async () => {
+            toggleLoader(true, "Posting...");
+            const file = $("actF").files[0];
+            const cover = await uploadImg(file);
+            await addDoc(collection(db, "activities"), { title: $("actT").value, location: $("actL").value, cover, status: "approved", createdAt: serverTimestamp() });
+            closeModal(); await loadActivities(); updateLivePanel(); toggleLoader(false);
         });
     };
 
-    // 3. Popup Finance
     window.openFinanceModal = () => {
         const html = `
-            <select id="finType" class="w-full p-4 rounded-2xl bg-slate-900 border border-white/10">
-                <option value="income">KAS MASUK (INCOME)</option>
-                <option value="expense">KAS KELUAR (EXPENSE)</option>
+            <select id="fType" class="w-full p-4 rounded-2xl bg-slate-900 border border-white/10">
+                <option value="income">KAS MASUK</option>
+                <option value="expense">KAS KELUAR</option>
             </select>
-            <input id="finAmt" type="number" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-xl font-black text-emerald-400" placeholder="Rp 0">
-            <input id="finNote" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10" placeholder="Keterangan / Keperluan">
+            <input id="fAmt" type="number" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10" placeholder="Nominal Rp">
+            <input id="fNote" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10" placeholder="Keterangan">
         `;
-        showModal("CATAT KEUANGAN", html, async () => {
-            const amount = $("finAmt").value;
-            if(!amount) return alert("Isi nominal!");
-            toggleLoader(true, "Menyimpan Transaksi...");
-            try {
-                await addDoc(collection(db, "financial_records"), {
-                    type: $("finType").value,
-                    amount: parseInt(amount),
-                    note: $("finNote").value,
-                    status: "approved",
-                    createdAt: serverTimestamp()
-                });
-                closeModal();
-                await loadFinance();
-            } finally { toggleLoader(false); }
+        showModal("CATAT KAS", html, async () => {
+            toggleLoader(true, "Menyimpan...");
+            await addDoc(collection(db, "financial_records"), { type: $("fType").value, amount: Number($("fAmt").value), note: $("fNote").value, status: "approved", createdAt: serverTimestamp() });
+            closeModal(); await loadFinance(); updateLivePanel(); toggleLoader(false);
         });
     };
 
-    // --- DATA LOADERS ---
+    // --- LOADERS ---
     async function loadUsers() {
-        const list = $("userList");
-        list.innerHTML = `<div class="p-10 text-center animate-pulse text-slate-500">Memuat database...</div>`;
-        const snap = await getDocs(query(collection(db, "users"), limit(100)));
+        const list = $("userList"); list.innerHTML = `<p class="p-10 text-center animate-pulse">Syncing Database...</p>`;
+        const snap = await getDocs(query(collection(db, "users"), limit(50)));
         list.innerHTML = "";
         snap.forEach(d => {
             const u = d.data();
             const div = document.createElement("div");
-            div.className = "flex items-center justify-between p-5 hover:bg-emerald-400/5 transition-all group";
+            div.className = "flex items-center justify-between p-5 hover:bg-white/5 transition-all";
             div.innerHTML = `
                 <div class="flex items-center gap-4">
-                    <img src="${u.photo?.url || 'https://via.placeholder.com/80'}" class="h-12 w-12 rounded-2xl object-cover grayscale group-hover:grayscale-0 transition-all">
-                    <div>
-                        <p class="font-black text-sm tracking-tight">${u.name || 'ANONYMOUS'}</p>
-                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">${u.role || 'Anggota'}</p>
-                    </div>
+                    <img src="${u.photo?.url || 'https://via.placeholder.com/80'}" class="h-10 w-10 rounded-xl object-cover">
+                    <div><p class="font-black text-sm uppercase">${u.name}</p><p class="text-[9px] text-slate-500 font-bold uppercase">${u.role}</p></div>
                 </div>
-                <div class="flex gap-2">
-                    <button onclick="deleteDocData('users','${d.id}')" class="p-2 rounded-xl text-rose-500 hover:bg-rose-500/10"><span class="material-symbols-rounded">delete</span></button>
-                </div>
+                <button onclick="deleteDocData('users','${d.id}')" class="p-2 text-rose-500 hover:bg-rose-500/10 rounded-xl"><span class="material-symbols-rounded">delete</span></button>
             `;
             list.appendChild(div);
         });
     }
 
     async function loadActivities() {
-        const list = $("actList");
-        const snap = await getDocs(query(collection(db, "activities"), orderBy("createdAt", "desc"), limit(20)));
+        const list = $("actList"); const snap = await getDocs(query(collection(db, "activities"), orderBy("createdAt", "desc"), limit(10)));
         list.innerHTML = "";
         snap.forEach(d => {
             const x = d.data();
             const div = document.createElement("div");
-            div.className = "glass rounded-[2rem] p-5 space-y-4 border-white/5";
+            div.className = "glass p-5 rounded-[2rem] card-purple";
             div.innerHTML = `
-                <div class="flex justify-between items-start">
-                    <div class="bg-emerald-400/10 text-emerald-400 text-[10px] font-black px-3 py-1 rounded-full uppercase">${x.status}</div>
-                    <button onclick="deleteDocData('activities','${d.id}')" class="text-rose-500"><span class="material-symbols-rounded text-sm">delete</span></button>
+                <div class="flex justify-between items-start mb-3">
+                    <h4 class="font-black italic text-sm uppercase">${x.title}</h4>
+                    <button onclick="deleteDocData('activities','${d.id}')" class="text-rose-500"><span class="material-symbols-rounded text-xs">close</span></button>
                 </div>
-                <div>
-                    <h4 class="font-black text-lg leading-tight mb-1">${x.title}</h4>
-                    <p class="text-[10px] text-slate-400 flex items-center gap-1"><span class="material-symbols-rounded text-xs">location_on</span> ${x.location || 'No Location'}</p>
-                </div>
-                ${x.cover ? `<img src="${x.cover.url}" class="w-full h-32 object-cover rounded-2xl border border-white/10">` : ''}
+                <p class="text-[10px] text-slate-400 mb-3">${x.location || 'No Loc'}</p>
+                ${x.cover?.url ? `<img src="${x.cover.url}" class="w-full h-32 object-cover rounded-2xl border border-white/5">` : ''}
             `;
             list.appendChild(div);
         });
     }
 
     async function loadFinance() {
-        const list = $("finList");
-        const snap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc"), limit(20)));
+        const list = $("finList"); const snap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc"), limit(10)));
         list.innerHTML = "";
         snap.forEach(d => {
-            const f = d.data();
-            const isInc = f.type === 'income';
+            const f = d.data(); const isInc = f.type === 'income';
             const div = document.createElement("div");
-            div.className = "glass rounded-2xl p-4 flex justify-between items-center";
+            div.className = `glass p-4 rounded-2xl flex justify-between items-center ${isInc ? 'card-emerald' : 'card-rose'}`;
             div.innerHTML = `
                 <div class="flex items-center gap-3">
-                    <div class="p-2 rounded-xl ${isInc ? 'bg-emerald-400/20 text-emerald-400' : 'bg-rose-400/20 text-rose-400'}">
-                        <span class="material-symbols-rounded">${isInc ? 'trending_up' : 'trending_down'}</span>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-slate-500 font-bold uppercase">${f.note || 'No Note'}</p>
-                        <p class="font-black ${isInc ? 'text-emerald-400' : 'text-rose-400'}">Rp ${f.amount?.toLocaleString()}</p>
-                    </div>
+                    <span class="material-symbols-rounded ${isInc ? 'text-emerald-400' : 'text-rose-400'}">${isInc ? 'trending_up' : 'trending_down'}</span>
+                    <div><p class="text-[9px] font-black opacity-50 uppercase">${f.note || 'No Note'}</p><p class="font-black">Rp ${f.amount?.toLocaleString()}</p></div>
                 </div>
-                <button onclick="deleteDocData('financial_records','${d.id}')" class="text-slate-600 hover:text-rose-500"><span class="material-symbols-rounded">close</span></button>
+                <button onclick="deleteDocData('financial_records','${d.id}')" class="text-slate-600"><span class="material-symbols-rounded">delete</span></button>
             `;
             list.appendChild(div);
         });
     }
 
-    // --- GLOBAL ACTIONS ---
+    async function loadNotifications() {
+        const list = $("nList"); const snap = await getDocs(query(collection(db, "notifications"), orderBy("createdAt", "desc"), limit(10)));
+        list.innerHTML = "";
+        snap.forEach(d => {
+            const n = d.data(); const isImp = n.level === 'important';
+            const div = document.createElement("div");
+            div.className = `glass p-5 rounded-[2rem] ${isImp ? 'card-rose' : 'card-blue'}`;
+            div.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div><h4 class="font-black text-xs uppercase ${isImp ? 'text-rose-400' : 'text-blue-400'}">${n.title}</h4><p class="text-[11px] text-slate-400 mt-2">${n.body || ''}</p></div>
+                    <button onclick="deleteDocData('notifications','${d.id}')" class="text-slate-600"><span class="material-symbols-rounded text-xs">delete</span></button>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+    }
+
     window.deleteDocData = async (col, id) => {
-        if(!confirm("Hapus data ini selamanya?")) return;
-        toggleLoader(true, "Menghapus Data...");
+        if(!confirm("Hapus data?")) return;
+        toggleLoader(true, "Menghapus...");
         await deleteDoc(doc(db, col, id));
         await refreshAll();
         toggleLoader(false);
     }
 
     async function refreshAll() {
-        await Promise.all([loadUsers(), loadActivities(), loadFinance()]);
+        await Promise.all([loadUsers(), loadActivities(), loadFinance(), loadNotifications(), updateLivePanel()]);
     }
 
-    $("refreshAllBtn").onclick = async () => {
-        toggleLoader(true, "Menyegarkan Database...");
-        await refreshAll();
-        toggleLoader(false);
-    };
-
-    // --- TAB ENGINE ---
     window.openTab = (id) => {
         document.querySelectorAll(".tabPanel").forEach(p => p.classList.add("hidden"));
-        document.querySelectorAll(".tabBtn").forEach(b => {
-            b.classList.remove("bg-emerald-400", "text-slate-950", "border-emerald-400");
-            b.classList.add("bg-white/5", "text-white");
-        });
-        
         $(`tab-${id}`).classList.remove("hidden");
-        const activeBtn = document.querySelector(`[data-tab="${id}"]`);
-        activeBtn.classList.add("bg-emerald-400", "text-slate-950", "border-emerald-400");
     };
-    document.querySelectorAll(".tabBtn").forEach(btn => btn.onclick = () => openTab(btn.dataset.tab));
 
+    $("refreshAllBtn").onclick = async () => { toggleLoader(true); await refreshAll(); toggleLoader(false); };
     $("logoutBtn").onclick = () => signOut(auth).then(() => location.href = "../login.html");
+    $("closeModalBtn").onclick = closeModal;
+    document.querySelectorAll(".tabBtn").forEach(btn => btn.onclick = () => openTab(btn.dataset.tab));
 
   </script>
 </body>
