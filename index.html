@@ -13,7 +13,7 @@
   <style>
     body { font-family: 'Outfit', sans-serif; }
 
-    /* Background Animation (Sama dengan dashboard lain agar konsisten) */
+    /* Background Animation */
     .bg-gradient-animate {
       background: linear-gradient(-45deg, #020617, #0f172a, #1e1b4b, #020617);
       background-size: 400% 400%;
@@ -42,7 +42,7 @@
       border-top: 1px solid rgba(255,255,255,0.1);
     }
 
-    /* Utility untuk slider */
+    /* Slider Utility */
     .slide-hidden-left { transform: translateX(-100%); opacity: 0; pointer-events: none; }
     .slide-hidden-right { transform: translateX(100%); opacity: 0; pointer-events: none; }
     .slide-active { transform: translateX(0); opacity: 1; }
@@ -58,7 +58,7 @@
       <div class="absolute -inset-10 bg-gradient-to-tr from-emerald-500 to-teal-500 rounded-full blur-3xl opacity-20 animate-pulse"></div>
       
       <div class="relative bg-slate-900 p-6 rounded-3xl border border-white/10 shadow-2xl">
-        <img src="./assets/img/logo.png"
+        <img src="assets/img/logo.png"
           onerror="this.src='https://via.placeholder.com/120/10b981/ffffff?text=K'"
           class="w-20 h-20 object-cover rounded-2xl" />
       </div>
@@ -213,7 +213,7 @@
 
     // 1. Splash Screen Logic
     window.addEventListener('load', () => {
-      // Tunggu animasi loading bar CSS selesai (2.5s)
+      // Tunggu animasi loading bar CSS selesai (2.6s)
       setTimeout(() => {
         splashScreen.classList.add('fade-out');
         setTimeout(() => {
