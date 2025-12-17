@@ -36,11 +36,11 @@
       border-top: 1px solid rgba(255,255,255,0.08);
     }
 
-    /* Transitions */
+    /* Animasi Transisi Halaman */
     .view-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
     .view-section.active { display: block; opacity: 1; transform: translateY(0); }
 
-    /* Nav Active State */
+    /* Nav Icon Active State */
     .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #D4FC79; }
     .nav-btn.active p { color: #D4FC79; }
   </style>
@@ -56,7 +56,7 @@
   <div id="gate" class="fixed inset-0 bg-black z-[9998] hidden items-center justify-center p-6 text-center">
     <span class="material-symbols-rounded text-red-500 text-6xl mb-4">lock</span>
     <h2 class="text-2xl font-bold text-white mb-2">Akses Ditolak</h2>
-    <p class="text-gray-400 text-sm mb-6" id="gateMsg">Halaman ini khusus Ketua.</p>
+    <p class="text-gray-400 text-sm mb-6">Halaman ini khusus Ketua.</p>
     <a href="../login.html" class="text-accent-lime font-bold text-sm underline">Kembali ke Login</a>
   </div>
 
@@ -74,10 +74,10 @@
   <header class="sticky top-0 z-30 px-5 pt-6 pb-2 bg-gradient-to-b from-[#050505] to-transparent">
       <div class="flex justify-between items-center">
           <div class="flex items-center gap-3">
-              <img src="../assets/img/logo.png" class="w-10 h-10 rounded-xl border border-white/10">
+              <img id="headerPhoto" src="https://via.placeholder.com/100" class="w-10 h-10 rounded-full border border-white/10 object-cover">
               <div>
                   <p class="text-[10px] text-accent-lime uppercase tracking-widest font-bold">Dashboard</p>
-                  <h1 class="text-lg font-bold leading-none text-white">KETUA</h1>
+                  <h1 id="headerName" class="text-lg font-bold leading-none text-white">...</h1>
               </div>
           </div>
           <button id="logoutBtn" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-red-400 hover:bg-red-500/20"><span class="material-symbols-rounded text-lg">logout</span></button>
@@ -87,59 +87,79 @@
   <main class="px-4 mt-2">
 
       <section id="view-home" class="view-section active">
-          <div class="w-full bg-[#121212] border border-white/5 rounded-[2rem] p-6 relative overflow-hidden group">
-              <div class="absolute inset-0 bg-gradient-to-br from-accent-lime/5 to-transparent"></div>
-              <div class="flex flex-col items-center text-center z-10 relative">
-                  <div class="relative mb-4">
-                      <img id="displayPhoto" class="w-24 h-24 rounded-full object-cover border-4 border-[#1E1E1E] shadow-2xl" src="https://via.placeholder.com/150">
-                      <button onclick="openProfileModal()" class="absolute bottom-0 right-0 bg-accent-lime text-black p-2 rounded-full shadow-lg hover:scale-110 transition-transform">
-                          <span class="material-symbols-rounded text-sm font-bold">edit</span>
-                      </button>
+          
+          <div class="w-full bg-accent-lime rounded-[2rem] p-5 text-black relative overflow-hidden shadow-[0_10px_40px_-10px_rgba(212,252,121,0.2)]">
+              <div class="absolute top-0 right-0 p-4 opacity-10"><span class="material-symbols-rounded text-8xl">account_balance_wallet</span></div>
+              
+              <p class="text-[10px] font-bold uppercase tracking-widest opacity-60 mb-1">Total Kas Organisasi</p>
+              <h2 id="cardBalance" class="text-3xl font-black tracking-tight mb-4">Rp 0</h2>
+
+              <div class="grid grid-cols-2 gap-2 mt-2">
+                  <div class="bg-black/10 rounded-xl p-2.5 backdrop-blur-sm">
+                      <div class="flex items-center gap-1 mb-1">
+                          <span class="material-symbols-rounded text-[10px] bg-white/20 p-0.5 rounded-full">arrow_downward</span>
+                          <span class="text-[9px] font-bold uppercase opacity-60">Masuk Dari</span>
+                      </div>
+                      <p id="lastIncomeNote" class="text-[10px] font-bold leading-tight line-clamp-1">-</p>
+                      <p id="lastIncomeAmt" class="text-[10px] opacity-70 mt-0.5">Rp 0</p>
                   </div>
-                  <h2 id="displayName" class="text-2xl font-bold text-white mb-1">Memuat...</h2>
-                  <p class="text-xs text-gray-500 bg-white/5 px-3 py-1 rounded-full">Ketua Organisasi</p>
+                  <div class="bg-black/10 rounded-xl p-2.5 backdrop-blur-sm">
+                      <div class="flex items-center gap-1 mb-1">
+                          <span class="material-symbols-rounded text-[10px] bg-white/20 p-0.5 rounded-full">arrow_upward</span>
+                          <span class="text-[9px] font-bold uppercase opacity-60">Keluar Untuk</span>
+                      </div>
+                      <p id="lastExpenseNote" class="text-[10px] font-bold leading-tight line-clamp-1">-</p>
+                      <p id="lastExpenseAmt" class="text-[10px] opacity-70 mt-0.5">Rp 0</p>
+                  </div>
               </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-3 mt-4">
-              <div class="bg-accent-lime rounded-[1.5rem] p-4 text-black flex flex-col justify-between h-28" onclick="switchView('activities')">
-                  <span class="material-symbols-rounded text-3xl">event_note</span>
-                  <div>
-                      <h3 class="font-black text-2xl leading-none" id="countAct">0</h3>
-                      <p class="text-[10px] font-bold uppercase opacity-70">Program Kerja</p>
-                  </div>
+          <div class="grid grid-cols-2 gap-3 mt-3">
+              <div class="bg-[#121212] border border-white/5 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 relative group overflow-hidden" onclick="switchView('activities')">
+                   <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-all"></div>
+                   <div>
+                       <span class="material-symbols-rounded text-blue-400 mb-2">event</span>
+                       <p class="text-[9px] text-gray-500 uppercase font-bold">Agenda Terdekat</p>
+                   </div>
+                   <h3 id="widgetEvent" class="text-xs font-bold text-white line-clamp-2 leading-relaxed mt-1">Belum ada acara</h3>
               </div>
-              <div class="bg-[#121212] border border-white/5 rounded-[1.5rem] p-4 flex flex-col justify-between h-28" onclick="switchView('users')">
-                  <span class="material-symbols-rounded text-white/50 text-3xl">groups</span>
-                  <div>
-                      <h3 class="font-black text-2xl leading-none text-white" id="countUsers">0</h3>
-                      <p class="text-[10px] text-gray-500 font-bold uppercase">Total Anggota</p>
-                  </div>
+
+              <div class="bg-[#121212] border border-white/5 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 relative group overflow-hidden" onclick="switchView('activities')">
+                   <div class="absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-all"></div>
+                   <div>
+                       <span class="material-symbols-rounded text-red-400 mb-2">campaign</span>
+                       <p class="text-[9px] text-gray-500 uppercase font-bold">Info Penting</p>
+                   </div>
+                   <h3 id="widgetAlert" class="text-xs font-bold text-white line-clamp-2 leading-relaxed mt-1">Tidak ada info</h3>
               </div>
           </div>
-          
-          <div class="mt-6">
-            <button onclick="openAddActivityModal()" class="w-full py-4 rounded-2xl border border-dashed border-white/20 text-gray-400 hover:border-accent-lime hover:text-accent-lime transition-all flex items-center justify-center gap-2 text-sm font-bold">
-                <span class="material-symbols-rounded">add_circle</span> Tambah Kegiatan Baru
-            </button>
+
+          <div class="mt-4">
+              <button onclick="openProfileModal()" class="w-full py-3 rounded-2xl bg-[#121212] border border-white/5 text-xs font-bold flex items-center justify-center gap-2 hover:bg-[#1E1E1E]">
+                  <span class="material-symbols-rounded text-sm">edit</span> Edit Profil Saya
+              </button>
           </div>
+
       </section>
 
       <section id="view-users" class="view-section">
-          <h2 class="text-2xl font-bold mb-4 px-1">Struktur</h2>
-          <div id="userList" class="grid grid-cols-1 gap-2"></div>
+          <div class="flex justify-between items-end mb-4 px-1">
+              <h2 class="text-2xl font-bold">Anggota</h2>
+              <span id="userCountBadge" class="bg-white/10 text-[10px] px-2 py-1 rounded-md font-mono">0</span>
+          </div>
+          <div id="userList" class="grid grid-cols-2 gap-2"></div>
       </section>
 
       <section id="view-activities" class="view-section">
           <div class="flex justify-between items-center mb-4 px-1">
             <h2 class="text-2xl font-bold">Kegiatan</h2>
-            <button onclick="openAddActivityModal()" class="bg-accent-lime text-black p-2 rounded-full"><span class="material-symbols-rounded">add</span></button>
+            <button onclick="openAddActivityModal()" class="bg-accent-lime text-black w-10 h-10 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(212,252,121,0.3)]"><span class="material-symbols-rounded">add</span></button>
           </div>
           <div id="actList" class="grid grid-cols-1 gap-3"></div>
       </section>
 
       <section id="view-finance" class="view-section">
-          <h2 class="text-2xl font-bold mb-4 px-1">Monitor Keuangan</h2>
+          <h2 class="text-2xl font-bold mb-4 px-1">Riwayat Kas</h2>
           <div id="finList" class="space-y-2"></div>
       </section>
 
@@ -154,23 +174,27 @@
           
           <button onclick="switchView('users')" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="users">
               <span class="material-symbols-rounded text-2xl text-gray-400 transition-colors">group</span>
-              <p class="text-[9px] font-bold text-gray-500 transition-colors">Struktur</p>
+              <p class="text-[9px] font-bold text-gray-500 transition-colors">User</p>
+          </button>
+
+          <div class="w-8"></div>
+          <button onclick="openAddActivityModal()" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-14 h-14 bg-accent-lime rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(212,252,121,0.4)] text-black hover:scale-105 transition-all">
+              <span class="material-symbols-rounded text-3xl">add</span>
           </button>
 
           <button onclick="switchView('activities')" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="activities">
-              <span class="material-symbols-rounded text-2xl text-gray-400 transition-colors">event_available</span>
+              <span class="material-symbols-rounded text-2xl text-gray-400 transition-colors">calendar_month</span>
               <p class="text-[9px] font-bold text-gray-500 transition-colors">Acara</p>
           </button>
 
           <button onclick="switchView('finance')" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="finance">
-              <span class="material-symbols-rounded text-2xl text-gray-400 transition-colors">account_balance</span>
+              <span class="material-symbols-rounded text-2xl text-gray-400 transition-colors">account_balance_wallet</span>
               <p class="text-[9px] font-bold text-gray-500 transition-colors">Kas</p>
           </button>
       </div>
   </nav>
 
   <script type="module">
-    /* ========= CONFIG ========= */
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
     import { getFirestore, doc, getDoc, updateDoc, collection, getDocs, addDoc, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
@@ -195,7 +219,7 @@
     const $ = (id) => document.getElementById(id);
     let UID = null;
 
-    /* ========= UTILS ========= */
+    // --- UTILITIES ---
     window.toggleLoader = (show, msg="MEMUAT...") => {
         const l = $("globalLoader");
         $("loaderMsg").textContent = msg;
@@ -224,6 +248,9 @@
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
         const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`);
         if(activeBtn) activeBtn.classList.add('active');
+        
+        // Refresh specific data
+        if(viewId === 'home') loadHomeData();
     };
 
     async function upload(file, preset, folder){
@@ -237,7 +264,7 @@
         return { url:data.secure_url };
     }
 
-    /* ========= LOGIC ========= */
+    // --- MAIN LOGIC ---
     onAuthStateChanged(auth, async user => {
         if(!user) return location.href = "../login.html";
         
@@ -252,19 +279,54 @@
             UID = user.uid;
             const me = snap.data();
             
-            // Set Header & Profile
-            $("displayName").textContent = me.name || "Ketua";
-            $("displayPhoto").src = me.photo?.url || "https://via.placeholder.com/150";
+            $("headerName").textContent = me.name || "Ketua";
+            $("headerPhoto").src = me.photo?.url || "https://via.placeholder.com/100";
 
-            await Promise.all([loadUsers(), loadActivities(), loadFinance()]);
+            await Promise.all([loadHomeData(), loadUsers(), loadActivities(), loadFinance()]);
         } catch(e) { console.error(e); }
         toggleLoader(false);
     });
 
-    /* --- PROFILE EDIT --- */
+    async function loadHomeData() {
+        // 1. Balance & Detail Widget
+        const fin = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc")));
+        let bal = 0;
+        let lastInc = { note: "-", amount: 0 };
+        let lastExp = { note: "-", amount: 0 };
+        let foundInc = false, foundExp = false;
+
+        fin.forEach(d => {
+            const f = d.data();
+            if(f.status === 'approved') {
+                if(f.type === 'income') {
+                    bal += Number(f.amount);
+                    if(!foundInc) { lastInc = f; foundInc = true; }
+                } else {
+                    bal -= Number(f.amount);
+                    if(!foundExp) { lastExp = f; foundExp = true; }
+                }
+            }
+        });
+
+        $("cardBalance").textContent = "Rp " + bal.toLocaleString('id-ID');
+        $("lastIncomeNote").textContent = lastInc.note || "-";
+        $("lastIncomeAmt").textContent = "Rp " + Number(lastInc.amount).toLocaleString('id-ID');
+        $("lastExpenseNote").textContent = lastExp.note || "-";
+        $("lastExpenseAmt").textContent = "Rp " + Number(lastExp.amount).toLocaleString('id-ID');
+
+        // 2. Event & Info Widget
+        const ev = await getDocs(query(collection(db, "activities"), orderBy("createdAt", "desc"), limit(1)));
+        if(!ev.empty) $("widgetEvent").textContent = ev.docs[0].data().title;
+
+        const notif = await getDocs(query(collection(db, "notifications"), orderBy("createdAt", "desc"), limit(1)));
+        if(!notif.empty) $("widgetAlert").textContent = notif.docs[0].data().title;
+        else $("widgetAlert").textContent = "Tidak ada info penting";
+    }
+
+    /* --- EDIT PROFIL --- */
     window.openProfileModal = () => {
         const html = `
-            <input id="editName" class="w-full p-4 rounded-xl bg-white/5 border border-white/10 text-white outline-none mb-2" value="${$("displayName").textContent}">
+            <input id="editName" class="w-full p-4 rounded-xl bg-white/5 border border-white/10 text-white outline-none mb-2" value="${$("headerName").textContent}">
             <div class="bg-white/5 p-3 rounded-xl border border-white/10">
                 <p class="text-[10px] text-gray-400 mb-2">Ganti Foto Profil</p>
                 <input id="editFile" type="file" accept="image/*" class="text-xs text-gray-300">
@@ -275,7 +337,7 @@
             const file = $("editFile").files?.[0];
             const payload = {};
             
-            toggleLoader(true, "MENYIMPAN...");
+            toggleLoader(true);
             try {
                 if(name) payload.name = name;
                 if(file) payload.photo = await upload(file, PRESET_PROFILE, `karteji/users/${UID}`);
@@ -283,45 +345,37 @@
                 if(Object.keys(payload).length){
                     await updateDoc(doc(db,"users",UID), payload);
                     location.reload();
-                } else {
-                    closeModal();
-                    toggleLoader(false);
-                }
+                } else { closeModal(); toggleLoader(false); }
             } catch(e){ alert("Gagal update"); toggleLoader(false); }
         });
     }
 
-    /* --- USERS --- */
+    /* --- USERS (Compact Grid) --- */
     async function loadUsers(){
         const list = $("userList"); list.innerHTML = "";
         const snap = await getDocs(query(collection(db,"users"), orderBy("name","asc"), limit(200)));
-        $("countUsers").textContent = snap.size > 0 ? snap.size - 1 : 0; // Exclude super_admin usually
+        $("userCountBadge").textContent = (snap.size > 0 ? snap.size - 1 : 0) + " Users";
 
         snap.forEach(d => {
             const u = d.data();
             if(u.role === "super_admin") return;
             
             list.innerHTML += `
-                <div class="bg-[#121212] p-3 rounded-2xl flex items-center justify-between border border-white/5">
-                    <div class="flex items-center gap-3">
-                         <img src="${u.photo?.url || 'https://via.placeholder.com/50'}" class="w-10 h-10 rounded-full object-cover bg-gray-800">
-                         <div>
-                             <p class="text-sm font-bold text-white">${u.name || '-'}</p>
-                             <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded text-gray-400 uppercase">${u.role || 'anggota'}</span>
-                         </div>
-                    </div>
+                <div class="bg-[#121212] p-3 rounded-2xl flex items-center gap-3 border border-white/5 overflow-hidden">
+                     <img src="${u.photo?.url || 'https://via.placeholder.com/50'}" class="w-10 h-10 rounded-full object-cover bg-gray-800 flex-shrink-0">
+                     <div class="min-w-0">
+                         <p class="text-xs font-bold text-white truncate">${u.name || '-'}</p>
+                         <p class="text-[10px] text-gray-500 uppercase truncate">${u.role || 'anggota'}</p>
+                     </div>
                 </div>
             `;
         });
     }
 
-    /* --- ACTIVITIES --- */
+    /* --- ACTIVITIES (Add & List) --- */
     async function loadActivities(){
         const list = $("actList"); list.innerHTML = "";
         const snap = await getDocs(query(collection(db,"activities"), orderBy("createdAt","desc"), limit(50)));
-        $("countAct").textContent = snap.size;
-
-        if(snap.empty) { list.innerHTML = `<p class="text-center text-xs text-gray-500 mt-4">Belum ada kegiatan.</p>`; return; }
 
         snap.forEach(d => {
             const x = d.data();
@@ -330,7 +384,7 @@
                     <img src="${x.cover?.url || 'https://via.placeholder.com/150'}" class="w-24 h-full object-cover opacity-80">
                     <div class="p-3 flex flex-col justify-center w-full">
                         <h3 class="text-sm font-bold text-white line-clamp-1">${x.title}</h3>
-                        <p class="text-[10px] text-accent-lime uppercase font-bold mt-1 tracking-wider">${x.status || 'Pending'}</p>
+                        <p class="text-[10px] text-gray-400 mt-1">${x.status || 'Pending'}</p>
                     </div>
                 </div>
             `;
@@ -345,13 +399,12 @@
                 <input id="actCover" type="file" accept="image/*" class="text-xs text-gray-300">
             </div>
         `;
-        showModal("KEGIATAN BARU", html, async () => {
+        showModal("TAMBAH KEGIATAN", html, async () => {
             const title = $("actTitle").value.trim();
             const file = $("actCover").files?.[0];
-            
             if(!title) return alert("Judul wajib diisi");
             
-            toggleLoader(true, "UPLOAD...");
+            toggleLoader(true);
             try {
                 let cover = null;
                 if(file) cover = await upload(file, PRESET_GALLERY, "karteji/activities");
@@ -359,35 +412,37 @@
                 await addDoc(collection(db,"activities"), {
                     title, cover, status: "pending", createdByUid: UID, createdAt: serverTimestamp()
                 });
-                closeModal();
-                await loadActivities();
+                closeModal(); await loadActivities(); await loadHomeData();
             } catch(e) { alert("Gagal tambah"); }
             toggleLoader(false);
         });
     }
 
-    /* --- FINANCE --- */
+    /* --- FINANCE (Read Only) --- */
     async function loadFinance(){
         const list = $("finList"); list.innerHTML = "";
         const snap = await getDocs(query(collection(db,"financial_records"), orderBy("createdAt","desc"), limit(50)));
         
-        if(snap.empty) { list.innerHTML = `<p class="text-center text-xs text-gray-500 mt-4">Belum ada data keuangan.</p>`; return; }
-
         snap.forEach(d => {
             const x = d.data();
+            const isInc = x.type === 'income';
             list.innerHTML += `
                  <div class="bg-[#121212] p-4 rounded-2xl flex justify-between items-center border border-white/5">
-                    <div>
-                        <p class="text-xs font-bold text-white">Rp ${Number(x.amount).toLocaleString('id-ID')}</p>
-                        <p class="text-[9px] text-gray-500 mt-0.5">Status: ${x.status}</p>
+                    <div class="flex items-center gap-3">
+                         <div class="w-8 h-8 rounded-full ${isInc ? 'bg-accent-lime/20 text-accent-lime' : 'bg-white/10 text-white'} flex items-center justify-center">
+                            <span class="material-symbols-rounded text-lg">${isInc ? 'arrow_downward' : 'arrow_upward'}</span>
+                        </div>
+                        <p class="text-xs font-bold text-white">${x.note || 'Transaksi'}</p>
                     </div>
-                    <div class="w-2 h-2 rounded-full ${x.status==='approved'?'bg-accent-lime':'bg-yellow-500'}"></div>
+                    <div class="text-right">
+                        <p class="text-xs font-bold ${isInc?'text-accent-lime':'text-white'}">${isInc?'+':'-'} Rp ${Number(x.amount).toLocaleString('id-ID')}</p>
+                        <p class="text-[9px] text-gray-500">${x.status}</p>
+                    </div>
                 </div>
             `;
         });
     }
 
-    /* --- GLOBAL --- */
     $("logoutBtn").onclick = async () => {
         await signOut(auth);
         location.href = "../login.html";
