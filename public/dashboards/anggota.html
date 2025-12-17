@@ -2,109 +2,201 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Anggota | KARTEJI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Member Area | KARTEJI</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0" />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="icon" href="../assets/img/logo.png">
 
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'bg-main': '#050505',
+            'card-dark': '#121212',
+            'accent-lime': '#D4FC79',
+          },
+          fontFamily: { sans: ['Outfit', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+
   <style>
-    body { font-family: 'Outfit', sans-serif; }
-    .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-    .tab-active { background: #34d399 !important; color: #020617 !important; font-weight: 900; transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(52, 211, 153, 0.3); }
+    body { background-color: #050505; color: #ffffff; -webkit-tap-highlight-color: transparent; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
-    .fade-in { animation: fadeIn 0.4s ease-out forwards; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    #loader { display: flex; opacity: 1; transition: opacity 0.5s; }
-    #loader.hidden { opacity: 0; pointer-events: none; }
+    
+    /* Glass Effect Bottom Nav */
+    .glass-nav {
+      background: rgba(18, 18, 18, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* Animasi View */
+    .view-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
+    .view-section.active { display: block; opacity: 1; transform: translateY(0); }
+
+    /* Nav Active State */
+    .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #D4FC79; }
+    .nav-btn.active p { color: #D4FC79; }
+
+    /* Loader */
+    #loader { display: flex; transition: opacity 0.3s; }
+    #loader.hidden-loader { opacity: 0; pointer-events: none; }
   </style>
 </head>
 
-<body class="min-h-screen bg-slate-950 text-slate-100">
+<body class="min-h-screen relative overflow-x-hidden pb-24">
 
-  <div id="loader" class="fixed inset-0 z-[100] bg-slate-950 items-center justify-center flex-col gap-4">
-      <div class="w-12 h-12 border-4 border-emerald-400/20 border-t-emerald-400 rounded-full animate-spin"></div>
-      <p class="text-[10px] font-black tracking-widest text-emerald-400 animate-pulse uppercase">Sinkronisasi Data...</p>
+  <div id="loader" class="fixed inset-0 z-[100] bg-[#050505] items-center justify-center flex-col gap-4">
+      <div class="w-12 h-12 border-4 border-gray-800 border-t-accent-lime rounded-full animate-spin"></div>
+      <p class="text-[10px] font-bold tracking-widest text-accent-lime animate-pulse uppercase">Memuat Data...</p>
   </div>
 
-  <section id="gate" class="fixed inset-0 z-50 bg-slate-950 flex items-center justify-center p-6 hidden">
-      <div class="glass max-w-xs w-full rounded-[2.5rem] p-8 text-center space-y-6">
-          <div class="w-16 h-16 bg-rose-500/10 text-rose-500 rounded-3xl flex items-center justify-center mx-auto">
-              <span class="material-symbols-rounded text-4xl">lock</span>
+  <section id="gate" class="fixed inset-0 z-50 bg-[#050505] flex items-center justify-center p-6 hidden">
+      <div class="bg-[#121212] border border-white/10 w-full max-w-xs rounded-[2rem] p-8 text-center">
+          <div class="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="material-symbols-rounded text-3xl">lock</span>
           </div>
-          <div><h2 class="font-black text-xl italic">AKSES DITOLAK</h2><p id="gateMsg" class="text-xs text-slate-500 mt-2">Silahkan login terlebih dahulu.</p></div>
-          <a href="/login.html" class="block w-full py-4 bg-emerald-400 text-slate-950 rounded-2xl font-black text-sm">LOGIN</a>
+          <h2 class="font-bold text-xl text-white">Akses Ditolak</h2>
+          <p class="text-xs text-gray-400 mt-2 mb-6">Silahkan login untuk mengakses area anggota.</p>
+          <a href="/login.html" class="block w-full py-3 bg-accent-lime text-black rounded-xl font-bold text-sm hover:brightness-110 transition-all">LOGIN SEKARANG</a>
       </div>
   </section>
 
-  <header class="sticky top-0 z-30 px-4 py-4">
-    <div class="mx-auto max-w-5xl glass rounded-[2rem] p-3 flex items-center justify-between">
-      <div class="flex items-center gap-3 pl-2">
-        <img src="../assets/img/logo.png" class="h-10 w-10 rounded-xl border border-white/10" alt="Logo">
-        <div class="hidden sm:block">
-          <div class="text-sm font-black tracking-tight">KARTEJI</div>
-          <div class="text-[10px] text-emerald-400 font-bold uppercase">Portal Anggota</div>
+  <div id="profileModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
+      <div class="bg-[#121212] border border-white/10 w-full max-w-sm rounded-[2rem] p-6 relative">
+          <div class="flex justify-between items-center mb-6">
+              <h3 class="text-lg font-bold">Edit Profil</h3>
+              <button onclick="closeProfileModal()" class="text-gray-400 hover:text-white"><span class="material-symbols-rounded">close</span></button>
+          </div>
+          
+          <div class="flex flex-col items-center gap-4 mb-6">
+              <div class="relative group">
+                  <img id="modalMePhoto" src="" class="w-24 h-24 rounded-full object-cover border-4 border-[#1E1E1E]">
+                  <label for="mePhotoInput" class="absolute bottom-0 right-0 bg-accent-lime text-black p-2 rounded-full cursor-pointer hover:scale-110 transition-all">
+                      <span class="material-symbols-rounded text-sm">photo_camera</span>
+                  </label>
+                  <input id="mePhotoInput" type="file" class="hidden" accept="image/*">
+              </div>
+              <p class="text-[10px] text-gray-500">Ketuk ikon kamera untuk ubah foto</p>
+          </div>
+
+          <div class="space-y-4">
+              <div>
+                  <label class="text-[10px] uppercase font-bold text-gray-500 ml-2">Nama Lengkap</label>
+                  <input id="meNameInput" class="w-full bg-[#1E1E1E] border border-white/5 rounded-xl px-4 py-3 text-sm text-white focus:border-accent-lime outline-none transition-all" placeholder="Nama Anda">
+              </div>
+              <button id="saveProfileBtn" class="w-full bg-accent-lime text-black font-bold py-3 rounded-xl hover:brightness-110 transition-all">SIMPAN PERUBAHAN</button>
+          </div>
+      </div>
+  </div>
+
+  <header class="sticky top-0 z-30 px-5 pt-6 pb-2 bg-gradient-to-b from-[#050505] to-transparent">
+    <div class="flex justify-between items-center">
+      <div class="flex items-center gap-3" onclick="openProfileModal()">
+        <img id="headerPhoto" src="https://via.placeholder.com/100" class="h-10 w-10 rounded-full border border-white/20 object-cover bg-gray-800">
+        <div>
+          <div class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Selamat Datang,</div>
+          <div id="headerName" class="text-sm font-bold text-white leading-none">Memuat...</div>
         </div>
       </div>
-      <div class="flex items-center gap-2">
-        <div id="onlineStatus" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-400/10 border border-emerald-400/20">
-            <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span></span>
-            <span class="text-[10px] font-black text-emerald-400">ONLINE</span>
-        </div>
-        <button id="logoutBtn" class="p-2.5 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500 hover:text-white transition-all"><span class="material-symbols-rounded text-sm">logout</span></button>
-      </div>
+      <button id="logoutBtn" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-red-400 hover:bg-red-500/20 transition-all">
+        <span class="material-symbols-rounded text-lg">logout</span>
+      </button>
     </div>
   </header>
 
-  <main id="content" class="hidden mx-auto max-w-5xl px-4 pb-20 space-y-6">
-    <section class="glass rounded-[2.5rem] p-6 sm:p-8 relative overflow-hidden">
-        <div class="flex flex-col sm:flex-row items-center gap-6">
-            <div class="relative group">
-                <img id="mePhoto" class="h-24 w-24 rounded-3xl border-4 border-white/5 object-cover shadow-2xl" src="https://via.placeholder.com/150">
-                <label for="mePhotoInput" class="absolute -bottom-2 -right-2 p-2 bg-emerald-400 text-slate-950 rounded-xl cursor-pointer hover:scale-110 shadow-lg transition-all"><span class="material-symbols-rounded text-sm">photo_camera</span></label>
-                <input id="mePhotoInput" type="file" class="hidden" accept="image/*">
-            </div>
-            <div class="text-center sm:text-left flex-1">
-                <h1 id="meNameText" class="text-2xl font-black tracking-tight">-</h1>
-                <p id="meRoleText" class="text-xs font-bold text-slate-500 uppercase italic tracking-widest mb-4">Anggota</p>
-                <div class="flex flex-wrap justify-center sm:justify-start gap-2">
-                    <input id="meName" class="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-xs outline-none focus:border-emerald-400 w-48" placeholder="Nama Baru">
-                    <button id="saveProfileBtn" class="bg-emerald-400 text-slate-950 px-5 py-2 rounded-xl text-xs font-black hover:bg-emerald-300 transition-all">SAVE</button>
+  <main class="px-4 mt-2">
+
+    <section id="view-home" class="view-section active">
+        <div class="w-full bg-accent-lime rounded-[2rem] p-5 text-black relative overflow-hidden shadow-[0_10px_40px_-10px_rgba(212,252,121,0.2)] mb-4">
+            <div class="absolute top-0 right-0 p-4 opacity-10"><span class="material-symbols-rounded text-8xl">account_balance_wallet</span></div>
+            <div class="relative z-10">
+                <p class="text-[10px] font-bold uppercase tracking-widest opacity-60 mb-1">Saldo Kas Saat Ini</p>
+                <h2 id="cardBalance" class="text-3xl font-black tracking-tight mb-4">Rp 0</h2>
+                <div class="flex gap-2">
+                   <div class="bg-black/10 backdrop-blur-sm px-3 py-2 rounded-xl flex-1">
+                       <p class="text-[9px] uppercase font-bold opacity-60">Pemasukan</p>
+                       <p id="cardIncome" class="text-xs font-bold">Rp 0</p>
+                   </div>
+                   <div class="bg-black/10 backdrop-blur-sm px-3 py-2 rounded-xl flex-1">
+                       <p class="text-[9px] uppercase font-bold opacity-60">Pengeluaran</p>
+                       <p id="cardExpense" class="text-xs font-bold">Rp 0</p>
+                   </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <h3 class="text-lg font-bold mb-3 px-1">Pengumuman Terbaru</h3>
+            <div id="homeNoticeList" class="space-y-3">
+                <p class="text-xs text-gray-500 italic px-2">Belum ada pengumuman.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+            <div onclick="switchView('kegiatan')" class="bg-[#121212] border border-white/5 p-4 rounded-[1.5rem] flex flex-col items-center justify-center gap-2 hover:bg-white/5 active:scale-95 transition-all cursor-pointer">
+                <span class="material-symbols-rounded text-3xl text-blue-400">calendar_month</span>
+                <span class="text-xs font-bold">Lihat Jadwal</span>
+            </div>
+            <div onclick="openProfileModal()" class="bg-[#121212] border border-white/5 p-4 rounded-[1.5rem] flex flex-col items-center justify-center gap-2 hover:bg-white/5 active:scale-95 transition-all cursor-pointer">
+                <span class="material-symbols-rounded text-3xl text-accent-lime">person_edit</span>
+                <span class="text-xs font-bold">Edit Profil</span>
             </div>
         </div>
     </section>
 
-    <nav class="flex overflow-x-auto no-scrollbar gap-2 py-2">
-        <button class="tabBtn whitespace-nowrap px-6 py-3 rounded-2xl glass text-[10px] font-black tracking-widest transition-all" data-tab="kegiatan">KEGIATAN</button>
-        <button class="tabBtn whitespace-nowrap px-6 py-3 rounded-2xl glass text-[10px] font-black tracking-widest transition-all" data-tab="pengumuman">PENGUMUMAN</button>
-        <button class="tabBtn whitespace-nowrap px-6 py-3 rounded-2xl glass text-[10px] font-black tracking-widest transition-all" data-tab="kas">KEUANGAN</button>
-        <button class="tabBtn whitespace-nowrap px-6 py-3 rounded-2xl glass text-[10px] font-black tracking-widest transition-all" data-tab="anggota">MEMBER</button>
-    </nav>
+    <section id="view-kegiatan" class="view-section">
+        <h2 class="text-2xl font-bold mb-4 px-1">Daftar Kegiatan</h2>
+        <div id="actList" class="space-y-4 pb-20"></div>
+    </section>
 
-    <div id="tab-kegiatan" class="tabPanel space-y-4">
-        <div id="actList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-    </div>
+    <section id="view-keuangan" class="view-section">
+        <h2 class="text-2xl font-bold mb-4 px-1">Riwayat Keuangan</h2>
+        <div id="finList" class="space-y-2 pb-20"></div>
+    </section>
 
-    <div id="tab-pengumuman" class="tabPanel hidden space-y-4">
-        <div id="nList" class="space-y-3"></div>
-    </div>
-
-    <div id="tab-kas" class="tabPanel hidden space-y-6">
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center italic font-black uppercase">
-            <div class="glass p-5 rounded-3xl border-l-4 border-emerald-400"><p class="text-[10px] text-slate-500">Masuk</p><h4 id="sumIncome" class="text-xl text-emerald-400">Rp 0</h4></div>
-            <div class="glass p-5 rounded-3xl border-l-4 border-rose-400"><p class="text-[10px] text-slate-500">Keluar</p><h4 id="sumExpense" class="text-xl text-rose-400">Rp 0</h4></div>
-            <div class="glass p-5 rounded-3xl bg-emerald-400 text-slate-950"><p class="text-[10px] opacity-70">Saldo</p><h4 id="sumBalance" class="text-xl">Rp 0</h4></div>
+    <section id="view-anggota" class="view-section">
+        <div class="flex justify-between items-end mb-4 px-1">
+            <h2 class="text-2xl font-bold">Anggota</h2>
+            <div id="onlineBadge" class="text-[10px] bg-green-500/20 text-green-400 px-2 py-1 rounded-md border border-green-500/20">
+                ● Live Status
+            </div>
         </div>
-        <div id="finList" class="space-y-2"></div>
-    </div>
+        <div id="memberList" class="grid grid-cols-3 sm:grid-cols-4 gap-3 pb-20"></div>
+    </section>
 
-    <div id="tab-anggota" class="tabPanel hidden">
-        <div id="memberList" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3"></div>
-    </div>
   </main>
+
+  <nav class="fixed bottom-0 w-full glass-nav pb-6 pt-3 px-2 z-40">
+      <div class="flex justify-around items-center max-w-md mx-auto">
+          <button onclick="switchView('home')" class="nav-btn active flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="home">
+              <span class="material-symbols-rounded text-2xl text-gray-400 transition-colors">home</span>
+              <p class="text-[9px] font-bold text-gray-500 transition-colors">Home</p>
+          </button>
+          
+          <button onclick="switchView('kegiatan')" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="kegiatan">
+              <span class="material-symbols-rounded text-2xl text-gray-400 transition-colors">event_note</span>
+              <p class="text-[9px] font-bold text-gray-500 transition-colors">Acara</p>
+          </button>
+
+          <button onclick="switchView('keuangan')" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="keuangan">
+              <span class="material-symbols-rounded text-2xl text-gray-400 transition-colors">account_balance_wallet</span>
+              <p class="text-[9px] font-bold text-gray-500 transition-colors">Kas</p>
+          </button>
+
+          <button onclick="switchView('anggota')" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="anggota">
+              <span class="material-symbols-rounded text-2xl text-gray-400 transition-colors">groups</span>
+              <p class="text-[9px] font-bold text-gray-500 transition-colors">Grup</p>
+          </button>
+      </div>
+  </nav>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
@@ -128,43 +220,57 @@
 
     const $ = (id) => document.getElementById(id);
     let ME_UID = null;
-
-    // --- UTILS ---
     const fmtIDR = (n) => Number(n||0).toLocaleString("id-ID");
 
-    window.openTab = (name) => {
-      document.querySelectorAll(".tabPanel").forEach(p => p.classList.add("hidden"));
-      document.querySelectorAll(".tabBtn").forEach(b => b.classList.remove("tab-active"));
-      $(`tab-${name}`).classList.remove("hidden");
-      $(`tab-${name}`).classList.add("fade-in");
-      document.querySelector(`.tabBtn[data-tab="${name}"]`).classList.add("tab-active");
+    // --- NAVIGATION ---
+    window.switchView = (viewId) => {
+        document.querySelectorAll('.view-section').forEach(el => {
+            el.classList.remove('active');
+            setTimeout(() => { if(!el.classList.contains('active')) el.style.display = 'none'; }, 200);
+        });
+        
+        const target = $(`view-${viewId}`);
+        target.style.display = 'block';
+        setTimeout(() => target.classList.add('active'), 10);
+
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`);
+        if(activeBtn) activeBtn.classList.add('active');
     };
 
-    // --- AUTH ---
+    // --- MODAL PROFILE ---
+    window.openProfileModal = () => {
+        $("profileModal").classList.remove("hidden");
+        $("profileModal").classList.add("flex");
+    };
+    window.closeProfileModal = () => {
+        $("profileModal").classList.add("hidden");
+        $("profileModal").classList.remove("flex");
+    };
+
+    // --- AUTH & INIT ---
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
           $("gate").classList.remove("hidden");
-          $("loader").classList.add("hidden");
+          $("loader").classList.add("hidden-loader");
           return;
       }
       
       ME_UID = user.uid;
       const snap = await getDoc(doc(db, "users", user.uid));
-      if (!snap.exists()) {
-          alert("User tidak terdaftar!");
-          return;
-      }
+      if (!snap.exists()) { alert("User tidak terdaftar!"); return; }
 
       const me = snap.data();
-      $("content").classList.remove("hidden");
-      $("loader").classList.add("hidden");
+      $("loader").classList.add("hidden-loader");
       
-      $("meNameText").textContent = me.name || "User";
-      $("meRoleText").textContent = me.role || "anggota";
-      $("meName").value = me.name || "";
-      $("mePhoto").src = me.photo?.url || "https://via.placeholder.com/150";
+      // Fill Header & Modal Data
+      const pUrl = me.photo?.url || "https://via.placeholder.com/150";
+      $("headerName").textContent = me.name || "Anggota";
+      $("headerPhoto").src = pUrl;
+      
+      $("modalMePhoto").src = pUrl;
+      $("meNameInput").value = me.name || "";
 
-      openTab("kegiatan");
       refreshAll();
       setInterval(() => updateDoc(doc(db, "users", ME_UID), { lastSeen: serverTimestamp() }), 60000);
     });
@@ -176,38 +282,39 @@
     // --- DATA LOADERS ---
     async function loadActivities() {
       const list = $("actList");
-      list.innerHTML = `<p class="p-5 text-xs animate-pulse">Loading...</p>`;
       const snap = await getDocs(query(collection(db, "activities"), where("status","==","approved"), orderBy("createdAt","desc")));
       list.innerHTML = "";
+      if(snap.empty) { list.innerHTML = `<p class="text-center text-xs text-gray-500 py-10">Belum ada kegiatan.</p>`; return; }
+      
       snap.forEach(d => {
         const x = d.data();
-        const div = document.createElement("div");
-        div.className = "glass p-4 rounded-3xl space-y-3";
-        div.innerHTML = `
-          ${x.cover?.url ? `<img src="${x.cover.url}" class="w-full h-32 object-cover rounded-2xl">` : ''}
-          <h4 class="font-black text-sm uppercase italic">${x.title}</h4>
-          <p class="text-[10px] text-slate-500">${x.date || ''} • ${x.location || ''}</p>
+        list.innerHTML += `
+          <div class="bg-[#121212] border border-white/5 rounded-[1.5rem] overflow-hidden group">
+              ${x.cover?.url ? `<div class="h-32 w-full overflow-hidden"><img src="${x.cover.url}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div>` : ''}
+              <div class="p-4">
+                  <span class="text-[10px] text-accent-lime font-bold uppercase tracking-wider bg-accent-lime/10 px-2 py-1 rounded-md">${x.date || 'Segera'}</span>
+                  <h4 class="font-bold text-lg text-white mt-2 leading-tight">${x.title}</h4>
+                  <p class="text-[11px] text-gray-400 mt-1 flex items-center gap-1"><span class="material-symbols-rounded text-xs">location_on</span> ${x.location || '-'}</p>
+              </div>
+          </div>
         `;
-        list.appendChild(div);
       });
     }
 
     async function loadNotifications() {
-      const list = $("nList");
-      const snap = await getDocs(query(collection(db, "notifications"), orderBy("createdAt","desc"), limit(10)));
+      const list = $("homeNoticeList");
+      const snap = await getDocs(query(collection(db, "notifications"), orderBy("createdAt","desc"), limit(3)));
       list.innerHTML = "";
+      if(snap.empty) { list.innerHTML = `<p class="text-xs text-gray-500 italic">Tidak ada info baru.</p>`; return; }
+
       snap.forEach(d => {
         const x = d.data();
-        const div = document.createElement("div");
-        div.className = "glass p-5 rounded-[2rem]";
-        div.innerHTML = `
-            <div class="flex items-center gap-2 mb-2">
-                <span class="w-1.5 h-4 bg-emerald-400 rounded-full"></span>
-                <h4 class="font-black text-xs uppercase">${x.title}</h4>
+        list.innerHTML += `
+            <div class="bg-[#121212] border border-white/5 p-4 rounded-2xl border-l-4 ${x.level==='important'?'border-red-500':'border-accent-lime'}">
+                <h4 class="font-bold text-xs uppercase text-white mb-1">${x.title}</h4>
+                <p class="text-xs text-gray-400 line-clamp-2">${x.body || ''}</p>
             </div>
-            <p class="text-xs text-slate-400">${x.body || ''}</p>
         `;
-        list.appendChild(div);
       });
     }
 
@@ -216,20 +323,31 @@
       const snap = await getDocs(query(collection(db, "financial_records"), where("status","==","approved"), orderBy("createdAt","desc")));
       let inc = 0, exp = 0;
       list.innerHTML = "";
+      
       snap.forEach(d => {
         const f = d.data();
         if(f.type === "income") inc += Number(f.amount); else exp += Number(f.amount);
-        const div = document.createElement("div");
-        div.className = "glass p-4 rounded-2xl flex justify-between items-center text-[11px]";
-        div.innerHTML = `
-            <span class="font-bold text-slate-400 uppercase tracking-tighter">${f.note || 'Transaksi'}</span>
-            <span class="font-black ${f.type==='income' ? 'text-emerald-400' : 'text-rose-400'}">Rp ${fmtIDR(f.amount)}</span>
+        
+        const isInc = f.type === 'income';
+        list.innerHTML += `
+            <div class="bg-[#121212] border border-white/5 p-4 rounded-2xl flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full ${isInc ? 'bg-accent-lime/20 text-accent-lime' : 'bg-white/10 text-white'} flex items-center justify-center">
+                        <span class="material-symbols-rounded text-sm">${isInc ? 'arrow_downward' : 'arrow_upward'}</span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-white uppercase">${f.note || 'Transaksi'}</p>
+                        <p class="text-[10px] text-gray-500">${new Date(f.createdAt?.seconds*1000).toLocaleDateString()}</p>
+                    </div>
+                </div>
+                <span class="font-bold text-xs ${isInc?'text-accent-lime':'text-white'}">${isInc?'+':'-'} Rp ${fmtIDR(f.amount)}</span>
+            </div>
         `;
-        list.appendChild(div);
       });
-      $("sumIncome").textContent = `Rp ${fmtIDR(inc)}`;
-      $("sumExpense").textContent = `Rp ${fmtIDR(exp)}`;
-      $("sumBalance").textContent = `Rp ${fmtIDR(inc - exp)}`;
+      // Update Card
+      $("cardBalance").textContent = `Rp ${fmtIDR(inc - exp)}`;
+      $("cardIncome").textContent = `Rp ${fmtIDR(inc)}`;
+      $("cardExpense").textContent = `Rp ${fmtIDR(exp)}`;
     }
 
     async function loadMembers() {
@@ -237,31 +355,32 @@
       const snap = await getDocs(query(collection(db, "users"), orderBy("name","asc")));
       list.innerHTML = "";
       const now = Date.now();
+      
       snap.forEach(d => {
         const u = d.data();
         const last = u.lastSeen?.toDate ? u.lastSeen.toDate().getTime() : 0;
-        const isOnline = last && (now - last) <= (120000);
-        const div = document.createElement("div");
-        div.className = "glass p-3 rounded-[2rem] flex flex-col items-center gap-2";
-        div.innerHTML = `
-            <div class="relative">
-                <img src="${u.photo?.url || 'https://via.placeholder.com/100'}" class="h-10 w-10 rounded-2xl object-cover ${!isOnline && 'grayscale'}">
-                ${isOnline ? '<span class="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 border-2 border-slate-950 rounded-full"></span>' : ''}
+        const isOnline = last && (now - last) <= (120000); // 2 menit
+        
+        list.innerHTML += `
+            <div class="bg-[#121212] border border-white/5 p-3 rounded-2xl flex flex-col items-center gap-2 relative group">
+                <div class="relative">
+                    <img src="${u.photo?.url || 'https://via.placeholder.com/100'}" class="h-12 w-12 rounded-full object-cover ${!isOnline && 'grayscale opacity-60'}">
+                    ${isOnline ? '<span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#121212] rounded-full animate-pulse"></span>' : ''}
+                </div>
+                <p class="text-[10px] font-bold text-white uppercase truncate w-full text-center">${u.name || 'User'}</p>
             </div>
-            <p class="text-[9px] font-black uppercase truncate w-full text-center">${u.name || 'User'}</p>
         `;
-        list.appendChild(div);
       });
     }
 
-    // --- INTERACTION ---
-    document.querySelectorAll(".tabBtn").forEach(b => b.onclick = () => openTab(b.dataset.tab));
-    $("logoutBtn").onclick = () => signOut(auth).then(() => location.href = "/login.html");
-
+    // --- ACTIONS ---
     $("saveProfileBtn").onclick = async () => {
-        const name = $("meName").value;
+        const name = $("meNameInput").value;
         const file = $("mePhotoInput").files[0];
-        $("loader").classList.remove("hidden");
+        
+        $("saveProfileBtn").textContent = "Menyimpan...";
+        $("saveProfileBtn").disabled = true;
+
         try {
             let photo = null;
             if(file) {
@@ -276,10 +395,10 @@
             if(photo) up.photo = photo;
             await updateDoc(doc(db, "users", ME_UID), up);
             location.reload();
-        } catch(e) { alert("Gagal update"); }
-        $("loader").classList.add("hidden");
+        } catch(e) { alert("Gagal update profil"); $("saveProfileBtn").textContent = "SIMPAN PERUBAHAN"; $("saveProfileBtn").disabled = false; }
     };
 
+    $("logoutBtn").onclick = () => signOut(auth).then(() => location.href = "/login.html");
   </script>
 </body>
 </html>
