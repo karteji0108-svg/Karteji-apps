@@ -2,111 +2,102 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard | KARTEJI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Memuat Dashboard | KARTEJI</title>
 
-  <!-- Tailwind CDN (biar 1 gaya dengan welcome/login/register) -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Icons & Font -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0" />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-
-  <link rel="icon" href="./assets/img/logo.png">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+          colors: {
+            brand: {
+              primary: '#0F172A', // Navy Utama
+            },
+            accent: {
+              DEFAULT: '#F97316', // Orange
+            }
+          },
+          animation: {
+            'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            'blob': 'blob 10s infinite',
+            'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            slideUp: {
+              'from': { transform: 'translateY(40px)', opacity: '0' },
+              'to': { transform: 'translateY(0)', opacity: '1' }
+            },
+            blob: {
+              '0%': { transform: 'translate(0px, 0px) scale(1)' },
+              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+              '100%': { transform: 'translate(0px, 0px) scale(1)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
 
   <style>
-    body { font-family: 'Outfit', sans-serif; }
-
-    /* Background Animation (identik) */
-    .bg-gradient-animate {
-      background: linear-gradient(-45deg, #020617, #020617, #022c22, #020617);
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
-    }
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* Animations */
-    .fade-in { animation: fadeIn 0.8s ease-out forwards; }
-    .fade-out { animation: fadeOut 0.5s ease-in forwards; }
-    .slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
-    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-    /* Glass */
-    .glass {
-      background: rgba(255,255,255,0.05);
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.1);
     }
+    body::-webkit-scrollbar { display: none; }
   </style>
 </head>
 
-<body class="bg-slate-950 text-white h-screen w-screen overflow-hidden relative bg-gradient-animate">
+<body class="bg-slate-50 text-slate-800 h-screen w-screen overflow-hidden relative">
 
-  <!-- glow layers -->
-  <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-emerald-900/20 to-transparent pointer-events-none"></div>
-  <div class="absolute top-20 left-1/2 -translate-x-1/2 w-72 h-72 bg-emerald-500/20 blur-[110px] rounded-full pointer-events-none"></div>
-
-  <!-- TOP BAR -->
-  <div class="absolute top-0 left-0 right-0 z-40 pt-10 px-6 flex items-center justify-between">
-    <a id="backTop" href="./login.html" class="text-slate-400 text-sm hover:text-white transition-colors flex items-center gap-2 hidden">
-      <span class="material-symbols-rounded text-lg">arrow_back</span>
-      Login
-    </a>
-
-    <div class="flex items-center gap-2 text-slate-400 text-sm ml-auto">
-      <img src="./assets/img/logo.png" onerror="this.src='https://via.placeholder.com/64'"
-        class="w-7 h-7 rounded-xl border border-white/10 object-cover" alt="logo">
-      <span class="tracking-wide">KARTEJI</span>
-    </div>
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-orange-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
   </div>
 
-  <!-- LOADING SHEET -->
-  <section class="absolute inset-0 z-30 flex flex-col justify-end">
-    <div class="glass rounded-t-[2.5rem] p-8 pb-10 w-full border-b-0 slide-up">
-
-      <div class="text-center mb-6">
-        <div class="inline-flex items-center justify-center p-3 bg-slate-800/50 rounded-2xl mb-4 ring-1 ring-slate-700">
-          <span class="material-symbols-rounded text-3xl text-emerald-400">shield_lock</span>
+  <section class="absolute inset-0 z-30 flex flex-col justify-center items-center px-6">
+    
+    <div class="glass-card w-full max-w-[340px] rounded-3xl p-8 text-center animate-slide-up relative z-10">
+      
+      <div class="relative w-20 h-20 mx-auto mb-6">
+        <div class="absolute inset-0 bg-blue-100 rounded-full animate-ping opacity-75"></div>
+        <div class="relative w-full h-full bg-white rounded-full flex items-center justify-center shadow-md border border-slate-100">
+            <span class="material-symbols-rounded text-4xl text-brand-primary animate-pulse-fast">shield_lock</span>
         </div>
-        <h1 class="text-3xl font-bold mb-2">Mengalihkan Dashboard…</h1>
-        <p class="text-slate-400 text-sm">Sistem sedang mengecek akun & role kamu.</p>
       </div>
 
-      <!-- Status -->
-      <div class="flex items-center justify-center gap-2 text-sm text-slate-300">
-        <span class="inline-block h-2 w-2 animate-pulse rounded-full bg-emerald-400"></span>
-        <span id="msg">Memuat data user…</span>
+      <h1 class="text-xl font-bold text-brand-primary mb-2">Memuat Data...</h1>
+      <p class="text-slate-500 text-sm mb-6">Sistem sedang mengecek hak akses Anda.</p>
+
+      <div class="flex items-center justify-center gap-2 mb-4">
+        <div class="w-2 h-2 bg-accent rounded-full animate-bounce"></div>
+        <span id="msg" class="text-xs font-semibold text-slate-600">Menghubungkan...</span>
       </div>
 
-      <!-- Loading bar (biar kerasa seperti splash) -->
-      <div class="mt-6 h-1 w-full bg-white/10 rounded-full overflow-hidden">
-        <div id="loadingBar" class="h-full bg-emerald-500" style="width:0%"></div>
+      <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+        <div id="loadingBar" class="h-full bg-brand-primary rounded-full transition-all duration-500 ease-out" style="width:5%"></div>
       </div>
 
-      <!-- Back button (error state) -->
-      <button id="backBtn"
-        class="mt-7 hidden w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-4 rounded-xl border border-slate-700 transition-transform active:scale-95 flex items-center justify-center gap-2">
-        <span class="material-symbols-rounded">logout</span>
-        <span>Kembali ke Login</span>
+      <button id="backBtn" class="hidden mt-6 w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 rounded-xl transition-all text-sm flex items-center justify-center gap-2">
+        <span class="material-symbols-rounded text-lg">logout</span>
+        <span>Kembali Login</span>
       </button>
 
-      <p class="text-center text-xs text-slate-500 mt-8">
-        © 2025 Karang Taruna Cilosari Barat
-      </p>
     </div>
+
+    <p class="absolute bottom-10 text-[10px] text-slate-400 font-medium">KARTEJI SECURITY CHECK</p>
   </section>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
@@ -121,98 +112,87 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
     const msgEl = document.getElementById("msg");
     const backBtn = document.getElementById("backBtn");
-    const backTop = document.getElementById("backTop");
     const loadingBar = document.getElementById("loadingBar");
 
-    // animasi progress
     function setProgress(pct) {
-      loadingBar.style.transition = "width 450ms ease";
       loadingBar.style.width = `${pct}%`;
     }
 
-    // mapping role -> dashboard page
+    // Mapping Halaman (Sesuaikan nama folder/file Anda nanti)
     const routeByRole = {
-      "super_admin": "./dashboards/super-admin.html",
-      "ketua": "./dashboards/ketua.html",
-      "wakil_ketua": "./dashboards/wakil-ketua.html",
-      "sekretaris": "./dashboards/sekretaris.html",
-      "bendahara": "./dashboards/bendahara.html",
-      "koordinator": "./dashboards/koordinator.html",
-      "anggota": "./dashboards/anggota.html"
+      "super_admin": "dashboards/super-admin.html",
+      "ketua": "dashboards/ketua.html",
+      "wakil_ketua": "dashboards/wakil-ketua.html",
+      "sekretaris": "dashboards/sekretaris.html",
+      "bendahara": "dashboards/bendahara.html",
+      "koordinator": "dashboards/koordinator.html",
+      "anggota": "dashboards/anggota.html"
     };
 
-    // normalisasi biar aman dari variasi input role
     function normalizeRole(role) {
-      const r = String(role || "")
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, "_")     // "super admin" -> "super_admin"
-        .replace(/-/g, "_");      // "wakil-ketua" -> "wakil_ketua"
-
-      // alias tambahan kalau ada yang beda penulisan
+      const r = String(role || "").trim().toLowerCase().replace(/[\s-]/g, "_");
+      // Fallback jika ada typo di database
       const alias = {
         "superadmin": "super_admin",
-        "super_admin": "super_admin",
-        "ketua": "ketua",
         "wakilketua": "wakil_ketua",
-        "wakil_ketua": "wakil_ketua",
-        "sekretaris": "sekretaris",
-        "bendahara": "bendahara",
-        "koordinator": "koordinator",
-        "anggota": "anggota"
+        "wakil": "wakil_ketua"
       };
-
       return alias[r] || r || "anggota";
     }
 
     async function showBack(message) {
-      msgEl.textContent = message || "Tidak bisa lanjut. Silakan login ulang.";
+      msgEl.textContent = message || "Gagal masuk.";
+      msgEl.classList.add("text-red-500");
       backBtn.classList.remove("hidden");
-      backTop.classList.remove("hidden");
       setProgress(100);
-
+      loadingBar.classList.add("bg-red-500");
+      
       backBtn.onclick = async () => {
-        try { await signOut(auth); } catch {}
-        window.location.href = "./login.html";
+        await signOut(auth);
+        window.location.href = "login.html";
       };
     }
 
-    // kickstart progress
-    setProgress(18);
+    // Mulai Loading
+    setProgress(20);
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        return showBack("Belum login. Silakan login dulu.");
+        return showBack("Sesi habis. Silakan login ulang.");
       }
 
       try {
-        msgEl.textContent = "Mengecek role…";
-        setProgress(45);
+        msgEl.textContent = "Verifikasi Profil...";
+        setProgress(50);
 
         const snap = await getDoc(doc(db, "users", user.uid));
+        
         if (!snap.exists()) {
-          return showBack("Profil user tidak ditemukan. Silakan daftar ulang atau hubungi admin.");
+          return showBack("Profil user tidak ditemukan di database.");
         }
 
-        setProgress(75);
-
+        setProgress(80);
         const profile = snap.data();
-        const role = normalizeRole(profile?.role || "anggota");
-        const target = routeByRole[role] || routeByRole["anggota"];
-
-        msgEl.textContent = `Masuk sebagai: ${role}…`;
+        const role = normalizeRole(profile?.role);
+        
+        // Cek halaman tujuan
+        const targetPage = routeByRole[role] || routeByRole["anggota"];
+        
+        msgEl.textContent = `Dialihkan ke Dashboard ${role.replace('_', ' ')}...`;
         setProgress(100);
 
-        // redirect (replace biar gak bisa back ke halaman loader)
-        window.location.replace(target);
+        setTimeout(() => {
+            window.location.replace(targetPage);
+        }, 800); // Delay dikit biar animasi loading selesai
+        
       } catch (e) {
-        showBack("Gagal memuat role. Coba lagi.");
+        console.error(e);
+        showBack("Terjadi kesalahan sistem.");
       }
     });
   </script>
