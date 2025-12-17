@@ -2,105 +2,252 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bendahara | KARTEJI Finance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Bendahara | KARTEJI</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0" />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-  <link rel="icon" href="../assets/img/logo.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+          colors: {
+            brand: {
+              primary: '#0F172A', // Navy Utama
+              light: '#334155',
+            },
+            accent: {
+              DEFAULT: '#F97316', // Orange
+              light: '#FFEDD5',
+            }
+          },
+          animation: {
+            'blob': 'blob 10s infinite',
+          },
+          keyframes: {
+            blob: {
+              '0%': { transform: 'translate(0px, 0px) scale(1)' },
+              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+              '100%': { transform: 'translate(0px, 0px) scale(1)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
 
   <style>
-    body { font-family: 'Outfit', sans-serif; }
-    .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-    .bg-gradient-animate {
-      background: linear-gradient(-45deg, #020617, #020617, #06201a, #020617);
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
+    /* Styling Dasar Light Mode */
+    body { background-color: #F8FAFC; color: #1E293B; -webkit-tap-highlight-color: transparent; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    
+    /* Glass Effect Navigasi Bawah */
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(15, 23, 42, 0.05);
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.05);
     }
-    @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-    #loader { display: none; }
-    #loader.active { display: flex; }
-    .modal-enter { animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-    @keyframes modalIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+    /* Animasi Transisi Halaman */
+    .view-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
+    .view-section.active { display: block; opacity: 1; transform: translateY(0); }
+
+    /* Tombol Navigasi Aktif */
+    .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #F97316; }
+    .nav-btn.active p { color: #0F172A; font-weight: 700; }
   </style>
 </head>
 
-<body class="min-h-screen bg-slate-950 text-slate-100 bg-gradient-animate selection:bg-emerald-400">
+<body class="min-h-screen relative overflow-x-hidden pb-32 selection:bg-orange-200 selection:text-orange-900">
 
-  <div id="loader" class="fixed inset-0 z-[100] bg-slate-950/90 flex items-center justify-center flex-col gap-4">
-      <div class="w-12 h-12 border-4 border-emerald-400/20 border-t-emerald-400 rounded-full animate-spin"></div>
-      <p class="text-[10px] font-black tracking-widest text-emerald-400 animate-pulse uppercase">Memproses Transaksi...</p>
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
+    <div class="absolute top-[20%] right-[-10%] w-96 h-96 bg-orange-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
   </div>
 
-  <div id="crudModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-    <div class="glass w-full max-w-lg rounded-[2.5rem] p-8 modal-enter relative shadow-2xl">
-      <button id="closeModalBtn" class="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors">
-        <span class="material-symbols-rounded text-2xl">close</span>
-      </button>
-      <h2 id="modalTitle" class="text-xl font-black mb-6 text-emerald-400 italic uppercase">Input Kas</h2>
-      <div id="modalBody" class="space-y-4">
-        </div>
-      <div id="modalFooter" class="mt-8">
-        <button id="modalSubmitBtn" class="w-full rounded-2xl bg-emerald-400 py-4 text-sm font-black text-slate-950 hover:bg-emerald-300 transition-all active:scale-95">
-          SIMPAN TRANSAKSI
-        </button>
-      </div>
+  <div id="globalLoader" class="fixed inset-0 bg-white/80 z-[9999] flex items-center justify-center flex-col gap-4 backdrop-blur-md">
+    <div class="w-12 h-12 border-4 border-slate-200 border-t-accent rounded-full animate-spin"></div>
+    <p id="loaderMsg" class="text-xs font-bold text-slate-400 tracking-widest animate-pulse">MEMUAT...</p>
+  </div>
+
+  <div id="gate" class="fixed inset-0 bg-slate-900 z-[9998] hidden items-center justify-center p-6 text-center">
+    <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full">
+        <span class="material-symbols-rounded text-red-500 text-6xl mb-4">lock</span>
+        <h2 class="text-2xl font-extrabold text-brand-primary mb-2">Akses Ditolak</h2>
+        <p class="text-slate-500 text-sm mb-6">Halaman ini khusus untuk Bendahara.</p>
+        <a href="../login.html" class="block w-full bg-brand-primary text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors">Kembali Login</a>
     </div>
   </div>
 
-  <header class="sticky top-0 z-30 px-4 py-4">
-    <div class="mx-auto max-w-5xl glass rounded-[2rem] p-3 flex items-center justify-between">
-      <div class="flex items-center gap-3 pl-2">
-        <div class="w-10 h-10 bg-emerald-400 rounded-2xl flex items-center justify-center shadow-[0_0_15px_rgba(52,211,153,0.3)]">
-            <span class="material-symbols-rounded text-slate-950">payments</span>
-        </div>
-        <div>
-          <div class="text-sm font-black tracking-tight">KARTEJI</div>
-          <div class="text-[9px] text-emerald-400 font-bold uppercase tracking-widest">Bendahara Keuangan</div>
-        </div>
+  <div id="crudModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-all">
+    <div class="bg-white w-full max-w-md rounded-[2rem] p-6 relative shadow-2xl animate-[slideUp_0.3s_ease-out]">
+      <div class="flex justify-between items-center mb-6">
+          <h2 id="modalTitle" class="text-xl font-extrabold text-brand-primary uppercase tracking-tight">Judul</h2>
+          <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors text-slate-500">
+            <span class="material-symbols-rounded text-xl">close</span>
+          </button>
       </div>
-      <button id="logoutBtn" class="p-2.5 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500 hover:text-white transition-all">
-          <span class="material-symbols-rounded text-sm">logout</span>
-      </button>
+      <div id="modalBody" class="space-y-4 max-h-[60vh] overflow-y-auto no-scrollbar"></div>
+      <button id="modalSubmitBtn" class="mt-6 w-full rounded-xl bg-brand-primary text-white py-4 text-sm font-bold shadow-lg shadow-slate-300 hover:bg-slate-800 active:scale-95 transition-all">SIMPAN</button>
     </div>
+  </div>
+
+  <header class="sticky top-0 z-30 px-6 pt-8 pb-4 bg-gradient-to-b from-[#F8FAFC] via-[#F8FAFC] to-transparent">
+      <div class="flex justify-between items-center">
+          <div class="flex items-center gap-3">
+              <button onclick="switchView('profile')" class="relative group">
+                <img id="headerPhoto" class="w-11 h-11 rounded-full border-2 border-white shadow-md object-cover" src="https://via.placeholder.com/100">
+                <div class="absolute bottom-0 right-0 w-3 h-3 bg-accent border-2 border-white rounded-full"></div>
+              </button>
+              <div>
+                  <p class="text-[10px] font-bold text-accent uppercase tracking-widest bg-accent-light px-2 py-0.5 rounded-full w-fit mb-0.5">Bendahara</p>
+                  <h1 id="headerName" class="text-xl font-extrabold text-brand-primary leading-none">Memuat...</h1>
+              </div>
+          </div>
+          <button id="logoutBtn" class="w-10 h-10 rounded-full bg-white border border-slate-100 shadow-sm flex items-center justify-center text-red-500 hover:bg-red-50 hover:border-red-100 transition-all">
+            <span class="material-symbols-rounded text-xl">logout</span>
+          </button>
+      </div>
   </header>
 
-  <main id="content" class="hidden mx-auto max-w-5xl px-4 pb-24 space-y-6">
-    
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="glass rounded-[2.5rem] p-6 border-l-4 border-emerald-400">
-            <p class="text-[10px] font-black text-slate-500 uppercase italic">Total Kas Masuk</p>
-            <h3 id="sumIncome" class="text-xl font-black text-emerald-400 mt-1">Rp 0</h3>
-        </div>
-        <div class="glass rounded-[2.5rem] p-6 border-l-4 border-rose-400">
-            <p class="text-[10px] font-black text-slate-500 uppercase italic">Total Kas Keluar</p>
-            <h3 id="sumExpense" class="text-xl font-black text-rose-400 mt-1">Rp 0</h3>
-        </div>
-        <div class="glass rounded-[2.5rem] p-6 bg-emerald-400 text-slate-950 shadow-[0_10px_30px_rgba(52,211,153,0.2)]">
-            <p class="text-[10px] font-black opacity-60 uppercase italic">Saldo Saat Ini</p>
-            <h3 id="sumBalance" class="text-xl font-black mt-1">Rp 0</h3>
-        </div>
-    </section>
+  <main class="px-5 mt-2 relative z-10">
 
-    <section class="flex flex-wrap gap-3 items-center justify-between">
-        <h2 class="text-2xl font-black italic uppercase tracking-tighter">Log Transaksi</h2>
-        <div class="flex gap-2">
-            <button id="refreshBtn" class="p-4 rounded-2xl glass text-emerald-400 hover:bg-white/5"><span class="material-symbols-rounded">sync</span></button>
-            <button onclick="openFinanceModal()" class="px-6 py-4 bg-emerald-400 text-slate-950 rounded-2xl font-black text-xs shadow-lg">+ KAS BARU</button>
-        </div>
-    </section>
+      <section id="view-home" class="view-section active">
+          
+          <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 group transition-all">
+              <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500 transform group-hover:scale-110"><span class="material-symbols-rounded text-9xl">payments</span></div>
+              <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-accent blur-3xl opacity-20"></div>
+              
+              <div class="relative z-10">
+                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Saldo Kas Saat Ini</p>
+                <h2 id="cardBalance" class="text-4xl font-black tracking-tight mb-8">Rp 0</h2>
 
-    <section id="finList" class="space-y-3"></section>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5">
+                        <div class="flex items-center gap-1.5 mb-1">
+                            <div class="bg-green-400/20 p-1 rounded-full"><span class="material-symbols-rounded text-[10px] text-green-300">arrow_downward</span></div>
+                            <span class="text-[9px] font-bold uppercase text-slate-300">Total Masuk</span>
+                        </div>
+                        <p id="sumIncome" class="text-sm font-bold text-white leading-tight">Rp 0</p>
+                    </div>
+                    <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5">
+                        <div class="flex items-center gap-1.5 mb-1">
+                            <div class="bg-red-400/20 p-1 rounded-full"><span class="material-symbols-rounded text-[10px] text-red-300">arrow_upward</span></div>
+                            <span class="text-[9px] font-bold uppercase text-slate-300">Total Keluar</span>
+                        </div>
+                        <p id="sumExpense" class="text-sm font-bold text-white leading-tight">Rp 0</p>
+                    </div>
+                </div>
+              </div>
+          </div>
+
+          <div class="mt-6">
+              <div class="flex justify-between items-center mb-4 px-1">
+                  <h3 class="text-sm font-bold text-brand-primary uppercase tracking-wide">Aksi Cepat</h3>
+              </div>
+              <button onclick="openFinanceModal()" class="w-full bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between group active:scale-95 transition-all">
+                  <div class="flex items-center gap-4">
+                      <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                          <span class="material-symbols-rounded text-2xl">add_card</span>
+                      </div>
+                      <div class="text-left">
+                          <h4 class="text-sm font-bold text-brand-primary">Catat Transaksi</h4>
+                          <p class="text-[10px] text-slate-400">Input pemasukan atau pengeluaran</p>
+                      </div>
+                  </div>
+                  <span class="material-symbols-rounded text-slate-300 group-hover:text-brand-primary transition-colors">chevron_right</span>
+              </button>
+          </div>
+
+          <div class="mt-6">
+              <div class="flex justify-between items-center mb-3 px-1">
+                  <h3 class="text-sm font-bold text-brand-primary uppercase tracking-wide">Terbaru</h3>
+                  <button onclick="switchView('finance')" class="text-xs text-accent font-bold">Lihat Semua</button>
+              </div>
+              <div id="homeFinList" class="space-y-3"></div>
+          </div>
+      </section>
+
+      <section id="view-finance" class="view-section">
+          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
+            <div>
+                <h2 class="text-2xl font-bold text-brand-primary">Buku Kas</h2>
+                <p class="text-xs text-slate-400">Riwayat transaksi lengkap</p>
+            </div>
+            <button onclick="openFinanceModal()" class="w-10 h-10 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+                <span class="material-symbols-rounded">add</span>
+            </button>
+          </div>
+          <div id="finList" class="space-y-3 pb-20"></div>
+      </section>
+
+      <section id="view-profile" class="view-section">
+        <div class="flex flex-col items-center pt-4">
+            <div class="relative group cursor-pointer" onclick="$('profileUpload').click()">
+                <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl">
+                <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span class="material-symbols-rounded text-white">photo_camera</span>
+                </div>
+                <div class="absolute bottom-1 right-1 bg-accent p-1.5 rounded-full border-2 border-white shadow-sm">
+                    <span class="material-symbols-rounded text-white text-sm block">edit</span>
+                </div>
+            </div>
+            <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
+            
+            <h2 id="profileNameDisplay" class="text-xl font-bold text-brand-primary mt-4">Nama Bendahara</h2>
+            <p id="profileEmailDisplay" class="text-sm text-slate-400">email@user.com</p>
+
+            <div class="w-full mt-8 space-y-4">
+                <div>
+                    <label class="text-xs font-bold text-slate-400 ml-1">NAMA LENGKAP</label>
+                    <input id="editName" type="text" class="w-full p-4 bg-white rounded-2xl border border-slate-200 text-brand-primary outline-none focus:border-accent font-bold mt-1">
+                </div>
+                
+                <button onclick="saveProfile()" class="w-full bg-brand-primary text-white py-4 rounded-2xl font-bold shadow-lg shadow-slate-300 hover:bg-slate-800 transition-all active:scale-95">
+                    SIMPAN PERUBAHAN
+                </button>
+
+                <button onclick="document.getElementById('logoutBtn').click()" class="w-full bg-red-50 text-red-500 py-4 rounded-2xl font-bold hover:bg-red-100 transition-all active:scale-95 flex items-center justify-center gap-2">
+                    <span class="material-symbols-rounded">logout</span>
+                    KELUAR AKUN
+                </button>
+            </div>
+        </div>
+      </section>
 
   </main>
+
+  <nav class="fixed bottom-0 w-full glass-nav pb-6 pt-2 px-8 z-50 rounded-t-[2rem]">
+      <div class="flex justify-between items-center max-w-sm mx-auto">
+          <button onclick="switchView('home')" class="nav-btn active flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="home">
+              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">grid_view</span>
+              <p class="text-[10px] font-medium text-slate-400 transition-colors">Home</p>
+          </button>
+          
+          <div class="relative -top-6">
+            <button onclick="switchView('profile')" class="nav-btn w-16 h-16 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-xl shadow-slate-400 hover:scale-105 active:scale-95 transition-all ring-4 ring-white" data-target="profile">
+                <span class="material-symbols-rounded text-3xl">person</span>
+            </button>
+          </div>
+
+          <button onclick="switchView('finance')" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="finance">
+              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">account_balance_wallet</span>
+              <p class="text-[10px] font-medium text-slate-400 transition-colors">Kas</p>
+          </button>
+      </div>
+  </nav>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, getDocs, addDoc, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    // --- CONFIG ---
     const firebaseConfig = {
       apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
       authDomain: "katar-9cac3.firebaseapp.com",
@@ -109,19 +256,28 @@
       messagingSenderId: "1017734829960",
       appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d"
     };
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
     const CLOUD_NAME = "dbxktcwug";
     const PRESET_FINANCE = "Karteji Finance";
+    const PRESET_PROFILE = "Karteji";
 
-    const $ = id => document.getElementById(id);
-    let ME_UID = null;
+    const $ = (id) => document.getElementById(id);
+    let UID = null;
+    let newProfileFile = null;
 
-    // --- UI ENGINE ---
-    window.toggleLoader = (show) => $("loader").classList.toggle('active', show);
-    
+    // --- UTILITIES UI ---
+    window.toggleLoader = (show, msg="MEMUAT...") => {
+        const l = $("globalLoader");
+        $("loaderMsg").textContent = msg;
+        if(show) { l.classList.remove('hidden'); l.classList.add('flex'); }
+        else { l.classList.add('hidden'); l.classList.remove('flex'); }
+    };
+
+    window.closeModal = () => $("crudModal").classList.add('hidden');
     window.showModal = (title, bodyHtml, onSave) => {
         $("modalTitle").textContent = title;
         $("modalBody").innerHTML = bodyHtml;
@@ -130,60 +286,187 @@
         $("modalSubmitBtn").onclick = onSave;
     };
 
-    window.closeModal = () => {
-        $("crudModal").classList.add('hidden');
-        $("crudModal").classList.remove('flex');
+    window.switchView = (viewId) => {
+        document.querySelectorAll('.view-section').forEach(el => {
+            el.classList.remove('active');
+            setTimeout(() => { if(!el.classList.contains('active')) el.style.display = 'none'; }, 300);
+        });
+        const target = $(`view-${viewId}`);
+        target.style.display = 'block';
+        setTimeout(() => target.classList.add('active'), 10);
+
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`);
+        if(activeBtn) activeBtn.classList.add('active');
+        
+        // Refresh specific data
+        if(viewId === 'home') loadHomeData();
+        if(viewId === 'finance') loadFinance();
+        if(viewId === 'profile') loadProfileData();
     };
-    $("closeModalBtn").onclick = closeModal;
 
-    const fmtIDR = (n) => "Rp " + Number(n||0).toLocaleString('id-ID');
-
-    // --- CLOUDINARY ENGINE ---
-    async function upload(file) {
-        if(!file) return null;
+    async function upload(file, preset){
         const fd = new FormData();
         fd.append("file", file);
-        fd.append("upload_preset", PRESET_FINANCE);
-        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, { method: "POST", body: fd });
-        const d = await res.json();
-        return { url: d.secure_url };
+        fd.append("upload_preset", preset);
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,{ method:"POST", body:fd });
+        const data = await res.json();
+        if(!res.ok) throw new Error("Upload Gagal");
+        return { url:data.secure_url };
     }
 
-    // --- AUTH ---
+    // --- AUTH & INIT ---
     onAuthStateChanged(auth, async user => {
-        if (!user) return window.location.href = "../login.html";
-        const snap = await getDoc(doc(db, "users", user.uid));
-        if (snap.data()?.role !== "bendahara") return window.location.href = "../index.html";
+        if(!user) return location.href = "login.html";
         
-        ME_UID = user.uid;
-        $("content").classList.remove("hidden");
+        toggleLoader(true, "CEK AKSES...");
+        try {
+            const snap = await getDoc(doc(db,"users",user.uid));
+            if(!snap.exists() || (snap.data().role !== "bendahara" && snap.data().role !== "super_admin")){
+                toggleLoader(false);
+                $("gate").classList.remove("hidden");
+                $("gate").classList.add("flex");
+                return;
+            }
+            UID = user.uid;
+            
+            await Promise.all([loadHomeData(), loadFinance(), loadProfileData()]);
+        } catch(e) { console.error(e); }
         toggleLoader(false);
-        loadFinance();
     });
 
-    // --- FINANCE LOGIC ---
+    // --- HOME DASHBOARD ---
+    async function loadHomeData() {
+        const fin = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc")));
+        let bal = 0;
+        let inc = 0, exp = 0;
+        
+        // Clear list preview
+        $("homeFinList").innerHTML = "";
+        let count = 0;
+
+        fin.forEach(d => {
+            const f = d.data();
+            if(f.status === 'approved') {
+                if(f.type === 'income') {
+                    bal += Number(f.amount);
+                    inc += Number(f.amount);
+                } else {
+                    bal -= Number(f.amount);
+                    exp += Number(f.amount);
+                }
+            }
+
+            // Preview logic (Show 3 items)
+            if(count < 3) {
+                renderFinanceItem($("homeFinList"), d.id, f);
+                count++;
+            }
+        });
+
+        $("cardBalance").textContent = "Rp " + bal.toLocaleString('id-ID');
+        $("sumIncome").textContent = "Rp " + inc.toLocaleString('id-ID');
+        $("sumExpense").textContent = "Rp " + exp.toLocaleString('id-ID');
+    }
+
+    // --- PROFILE LOGIC ---
+    async function loadProfileData() {
+        const snap = await getDoc(doc(db, "users", UID));
+        if(snap.exists()){
+            const d = snap.data();
+            const photoUrl = d.photo?.url || "https://via.placeholder.com/150";
+            $("headerName").textContent = d.name || "Bendahara";
+            $("headerPhoto").src = photoUrl;
+            
+            $("profileImage").src = photoUrl;
+            $("profileNameDisplay").textContent = d.name;
+            $("profileEmailDisplay").textContent = d.email;
+            $("editName").value = d.name;
+        }
+    }
+
+    window.previewProfileImage = (input) => {
+        if (input.files && input.files[0]) {
+            newProfileFile = input.files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => $("profileImage").src = e.target.result;
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    window.saveProfile = async () => {
+        toggleLoader(true);
+        try {
+            let updateData = { name: $("editName").value };
+            if(newProfileFile) {
+                const uploaded = await upload(newProfileFile, PRESET_PROFILE);
+                updateData.photo = uploaded;
+            }
+            await updateDoc(doc(db, "users", UID), updateData);
+            alert("Profil berhasil diperbarui!");
+            await loadProfileData();
+        } catch(e) { console.error(e); alert("Gagal update profil"); }
+        toggleLoader(false);
+    }
+
+    // --- FINANCE LOGIC (INPUT & VIEW) ---
+    async function loadFinance(){
+        const list = $("finList"); list.innerHTML = "";
+        const snap = await getDocs(query(collection(db,"financial_records"), orderBy("createdAt","desc"), limit(50)));
+        
+        snap.forEach(d => {
+            renderFinanceItem(list, d.id, d.data());
+        });
+    }
+
+    function renderFinanceItem(container, id, f) {
+        const isInc = f.type === 'income';
+        const isPending = f.status === 'pending';
+        
+        container.innerHTML += `
+             <div class="bg-white p-4 rounded-2xl flex justify-between items-center border border-slate-100 shadow-sm relative">
+                <div class="flex items-center gap-3">
+                     <div class="w-10 h-10 rounded-full ${isInc ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'} flex items-center justify-center">
+                        <span class="material-symbols-rounded text-xl">${isInc ? 'arrow_downward' : 'arrow_upward'}</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-brand-primary line-clamp-1">${f.note || 'Transaksi'}</p>
+                        <p class="text-[10px] ${isPending ? 'text-orange-500 font-bold' : 'text-slate-400 font-medium'}">${isPending ? 'Menunggu ACC' : 'Terverifikasi'}</p>
+                    </div>
+                </div>
+                <div class="text-right flex flex-col items-end">
+                    <p class="text-sm font-bold ${isInc?'text-green-600':'text-red-500'}">${isInc?'+':'-'} Rp ${Number(f.amount).toLocaleString('id-ID')}</p>
+                    <div class="flex gap-2 mt-1">
+                        ${f.proof ? `<a href="${f.proof.url}" target="_blank" class="text-blue-500 text-[10px] underline">Bukti</a>` : ''}
+                        ${f.createdByUid === UID ? `<button onclick="deleteFin('${id}')" class="text-red-400 text-[10px]">Hapus</button>` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     window.openFinanceModal = () => {
         const html = `
-            <select id="fType" class="w-full p-4 rounded-2xl bg-slate-900 border border-white/10 outline-none focus:border-emerald-400">
+            <select id="fType" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-brand-primary font-bold outline-none mb-3">
                 <option value="income">Kas Masuk (+)</option>
                 <option value="expense">Kas Keluar (-)</option>
             </select>
-            <input id="fAmt" type="number" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-xl font-black text-emerald-400" placeholder="Nominal Rp">
-            <input id="fCat" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-sm" placeholder="Kategori (Donasi/Sembako/Lainnya)">
-            <textarea id="fNote" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-sm h-24" placeholder="Keterangan transaksi..."></textarea>
-            <div class="space-y-1">
-                <label class="text-[10px] font-black text-slate-500 ml-2 uppercase">Bukti Transaksi (Gambar)</label>
-                <input id="fProof" type="file" class="text-xs">
+            <input id="fAmt" type="number" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-brand-primary text-lg font-black outline-none mb-3 placeholder-slate-400" placeholder="Nominal (Rp)">
+            <input id="fCat" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-brand-primary text-sm font-bold outline-none mb-3 placeholder-slate-400" placeholder="Kategori (mis: Donasi)">
+            <textarea id="fNote" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-brand-primary text-sm font-bold outline-none h-20 mb-3 placeholder-slate-400 resize-none" placeholder="Keterangan transaksi..."></textarea>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 border-dashed">
+                <label class="text-[10px] font-bold text-slate-400 mb-1 block uppercase">Upload Bukti (Foto)</label>
+                <input id="fProof" type="file" class="text-xs w-full text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-slate-700">
             </div>
         `;
-        showModal("TAMBAH KAS", html, async () => {
+        showModal("INPUT KAS BARU", html, async () => {
             const amount = $("fAmt").value;
             if(!amount || amount <= 0) return alert("Nominal tidak valid!");
             
-            toggleLoader(true);
+            toggleLoader(true, "MENYIMPAN...");
             try {
                 let proof = null;
-                if($("fProof").files[0]) proof = await upload($("fProof").files[0]);
+                if($("fProof").files[0]) proof = await upload($("fProof").files[0], PRESET_FINANCE);
                 
                 await addDoc(collection(db, "financial_records"), {
                     type: $("fType").value,
@@ -191,69 +474,31 @@
                     category: $("fCat").value,
                     note: $("fNote").value,
                     proof,
-                    status: "pending",
-                    createdByUid: ME_UID,
+                    status: "pending", // Default pending agar di-acc wakil/ketua
+                    createdByUid: UID,
                     createdAt: serverTimestamp()
                 });
                 closeModal();
-                loadFinance();
-            } finally { toggleLoader(false); }
+                await loadFinance(); 
+                await loadHomeData();
+            } catch(e){ alert("Gagal input kas"); }
+            toggleLoader(false);
         });
     };
-
-    async function loadFinance() {
-        const snap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc"), limit(50)));
-        const list = $("finList");
-        let inc = 0, exp = 0;
-        list.innerHTML = "";
-
-        snap.forEach(d => {
-            const f = d.data();
-            const isInc = f.type === 'income';
-            if(f.status === 'approved') {
-                if(isInc) inc += f.amount; else exp += f.amount;
-            }
-
-            const div = document.createElement("div");
-            div.className = "glass p-5 rounded-[2rem] flex justify-between items-center group hover:border-emerald-400/30 transition-all";
-            div.innerHTML = `
-                <div class="flex items-center gap-4">
-                    <div class="p-3 rounded-2xl ${isInc ? 'bg-emerald-400/10 text-emerald-400' : 'bg-rose-500/10 text-rose-500'}">
-                        <span class="material-symbols-rounded">${isInc ? 'north_east' : 'south_west'}</span>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">${f.category || 'Kas'}</p>
-                            <span class="px-2 py-0.5 rounded-full text-[8px] font-black uppercase ${f.status === 'approved' ? 'bg-emerald-400/20 text-emerald-400' : 'bg-amber-400/20 text-amber-400'}">${f.status}</span>
-                        </div>
-                        <p class="font-black text-lg ${isInc ? 'text-emerald-400' : 'text-rose-400'}">${fmtIDR(f.amount)}</p>
-                        <p class="text-[10px] text-slate-400 mt-1 italic line-clamp-1">"${f.note || 'No description'}"</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    ${f.proof ? `<a href="${f.proof.url}" target="_blank" class="p-2 glass rounded-xl text-emerald-400 hover:bg-emerald-400 hover:text-slate-950 transition-all"><span class="material-symbols-rounded text-sm">image</span></a>` : ''}
-                    <button onclick="deleteFin('${d.id}')" class="p-2 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white transition-all"><span class="material-symbols-rounded text-sm">delete</span></button>
-                </div>
-            `;
-            list.appendChild(div);
-        });
-
-        $("sumIncome").textContent = fmtIDR(inc);
-        $("sumExpense").textContent = fmtIDR(exp);
-        $("sumBalance").textContent = fmtIDR(inc - exp);
-    }
 
     window.deleteFin = async (id) => {
         if(!confirm("Hapus catatan transaksi ini?")) return;
-        toggleLoader(true);
+        toggleLoader(true, "MENGHAPUS...");
         await deleteDoc(doc(db, "financial_records", id));
-        loadFinance();
+        await loadFinance();
+        await loadHomeData();
         toggleLoader(false);
     };
 
-    $("refreshBtn").onclick = loadFinance;
-    $("logoutBtn").onclick = () => signOut(auth).then(() => location.href = "../login.html");
-
+    $("logoutBtn").onclick = async () => {
+        await signOut(auth);
+        location.href = "../login.html";
+    };
   </script>
 </body>
 </html>
