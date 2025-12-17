@@ -15,7 +15,7 @@
 <header class="sticky top-0 z-20 border-b border-white/10 bg-slate-950/70 backdrop-blur-xl">
   <div class="mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
     <div class="flex items-center gap-3">
-      <img src="../assets/img/logo.png" class="h-10 w-10 rounded-2xl border border-white/10">
+      <img src="../assets/img/logo.png" class="h-10 w-10 rounded-2xl border border-white/10" alt="Logo">
       <div>
         <div class="font-extrabold">KARTEJI</div>
         <div class="text-xs text-slate-400">Dashboard Ketua</div>
@@ -34,8 +34,8 @@
 <section id="gate" class="hidden">
   <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
     <h2 class="text-xl font-extrabold">Akses Ditolak</h2>
-    <p class="text-sm text-slate-300 mt-2">Halaman ini khusus Ketua.</p>
-    <a href="../login.html" class="inline-block mt-4 text-emerald-400">Kembali ke Login</a>
+    <p class="text-sm text-slate-300 mt-2" id="gateMsg">Halaman ini khusus Ketua.</p>
+    <a href="/login.html" class="inline-block mt-4 text-emerald-400">Kembali ke Login</a>
   </div>
 </section>
 
@@ -48,12 +48,14 @@
 
   <div class="mt-4 grid sm:grid-cols-4 gap-4">
     <img id="mePhoto" class="h-20 w-20 rounded-2xl border border-white/10 object-cover"
-      src="https://via.placeholder.com/120">
+      src="https://via.placeholder.com/120" alt="Foto">
 
     <div class="sm:col-span-2">
       <label class="text-xs text-slate-400">Nama</label>
       <input id="meName"
-        class="w-full mt-1 rounded-2xl bg-white/5 border border-white/10 px-4 py-3">
+        class="w-full mt-1 rounded-2xl bg-white/5 border border-white/10 px-4 py-3"
+        placeholder="Nama Ketua">
+      <p class="text-xs text-slate-400 mt-2" id="statusMsg"></p>
     </div>
 
     <div class="flex flex-col gap-2">
@@ -78,7 +80,6 @@
 <section id="tab-users" class="tabPanel">
   <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
     <h3 class="font-extrabold">Struktur Pengurus</h3>
-
     <div id="userList" class="mt-4 divide-y divide-white/10"></div>
   </div>
 </section>
@@ -120,7 +121,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/fireba
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 import {
   getFirestore, doc, getDoc, updateDoc,
-  collection, getDocs, addDoc, query, orderBy
+  collection, getDocs, addDoc,
+  query, orderBy, limit,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -151,11 +154,17 @@ async function upload(file, preset, folder){
     method:"POST", body:fd
   });
   const data = await res.json();
-  return { url:data.secure_url, publicId:data.public_id };
+  if(!res.ok) throw new Error(data?.error?.message || "Upload gagal");
+  return { url:data.secure_url, publicId:data.public_id, bytes:data.bytes, format:data.format };
 }
 
 /* ========= UI ========= */
 const $ = id => document.getElementById(id);
+const setStatus = (t)=> $("statusMsg").textContent = t || "";
+const esc = (s)=> String(s ?? "").replace(/[&<>"']/g, (m)=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+}[m]));
+
 document.querySelectorAll(".btn-tab").forEach(b=>{
   b.classList.add("rounded-2xl","px-4","py-2","bg-white/5","border","border-white/10","text-xs");
 });
@@ -170,50 +179,94 @@ document.querySelectorAll(".tabBtn").forEach(b=>{
 
 /* ========= AUTH GATE ========= */
 let UID=null;
+
 onAuthStateChanged(auth, async user=>{
-  if(!user) return $("gate").classList.remove("hidden");
+  if(!user) return deny("Belum login. Silakan login.");
 
-  const snap = await getDoc(doc(db,"users",user.uid));
-  if(!snap.exists() || snap.data().role!=="ketua"){
-    return $("gate").classList.remove("hidden");
+  try {
+    const snap = await getDoc(doc(db,"users",user.uid));
+    if(!snap.exists()) return deny("Profil user tidak ditemukan.");
+    const me = snap.data();
+
+    if(me?.role !== "ketua"){
+      return deny("Halaman ini khusus Ketua.");
+    }
+
+    UID = user.uid;
+    $("content").classList.remove("hidden");
+
+    $("meName").value = me?.name || "";
+    $("mePhoto").src = me?.photo?.url || "https://via.placeholder.com/120";
+
+    openTab("users");
+    await Promise.allSettled([loadUsers(), loadActivities(), loadFinance()]);
+    setStatus("Siap ✅");
+  } catch (e) {
+    deny("Gagal memuat data.");
   }
-
-  UID=user.uid;
-  $("content").classList.remove("hidden");
-  $("meName").value=snap.data().name||"";
-  $("mePhoto").src=snap.data().photo?.url||"https://via.placeholder.com/120";
-
-  loadUsers(); loadActivities(); loadFinance();
 });
 
+function deny(message){
+  $("content").classList.add("hidden");
+  $("gate").classList.remove("hidden");
+  $("gateMsg").textContent = message || "Akses ditolak.";
+}
+
 /* ========= LOGOUT ========= */
-$("logoutBtn").onclick=async()=>{ await signOut(auth); location.href="../login.html"; };
+$("logoutBtn").onclick=async()=>{
+  await signOut(auth);
+  location.href="/login.html";
+};
 
 /* ========= PROFILE ========= */
 $("saveProfileBtn").onclick=async()=>{
-  const name=$("meName").value.trim();
-  const file=$("mePhotoInput").files[0];
-  const payload={ name };
+  if(!UID) return;
 
-  if(file){
-    payload.photo=await upload(file,PRESET_PROFILE,`karteji/users/${UID}`);
-    $("mePhoto").src=payload.photo.url;
+  const name = $("meName").value.trim();
+  const file = $("mePhotoInput").files?.[0];
+
+  const payload = {};
+  if(name) payload.name = name;
+
+  try{
+    setStatus("Menyimpan profil...");
+    if(file){
+      payload.photo = await upload(file, PRESET_PROFILE, `karteji/users/${UID}`);
+      $("mePhoto").src = payload.photo.url;
+    }
+
+    if(!Object.keys(payload).length){
+      setStatus("Tidak ada perubahan.");
+      return;
+    }
+
+    await updateDoc(doc(db,"users",UID), payload);
+    setStatus("Profil tersimpan ✅");
+  }catch(e){
+    setStatus(e.message || "Gagal simpan profil");
   }
-  await updateDoc(doc(db,"users",UID),payload);
 };
 
-/* ========= USERS ========= */
+/* ========= USERS (read-only struktur) ========= */
 async function loadUsers(){
-  const q=query(collection(db,"users"),orderBy("name"));
-  const snap=await getDocs(q);
-  $("userList").innerHTML="";
+  const qy = query(collection(db,"users"), orderBy("name","asc"), limit(200));
+  const snap = await getDocs(qy);
+
+  $("userList").innerHTML = "";
+  if(snap.empty){
+    $("userList").innerHTML = `<div class="py-3 text-sm text-slate-300">Belum ada user.</div>`;
+    return;
+  }
+
   snap.forEach(d=>{
-    if(d.data().role==="super_admin") return;
-    $("userList").innerHTML+=`
+    const u = d.data();
+    if(u?.role === "super_admin") return;
+
+    $("userList").innerHTML += `
       <div class="py-3 flex justify-between items-center">
         <div>
-          <div class="font-bold">${d.data().name}</div>
-          <div class="text-xs text-slate-400">${d.data().role}</div>
+          <div class="font-bold">${esc(u?.name || "-")}</div>
+          <div class="text-xs text-slate-400">${esc(u?.role || "anggota")}</div>
         </div>
       </div>`;
   });
@@ -221,43 +274,81 @@ async function loadUsers(){
 
 /* ========= ACTIVITIES ========= */
 async function loadActivities(){
-  const q=query(collection(db,"activities"),orderBy("createdAt","desc"));
-  const snap=await getDocs(q);
-  $("actList").innerHTML="";
+  const qy = query(collection(db,"activities"), orderBy("createdAt","desc"), limit(100));
+  const snap = await getDocs(qy);
+
+  $("actList").innerHTML = "";
+  if(snap.empty){
+    $("actList").innerHTML = `<div class="py-3 text-sm text-slate-300">Belum ada kegiatan.</div>`;
+    return;
+  }
+
   snap.forEach(d=>{
-    $("actList").innerHTML+=`
+    const x = d.data();
+    $("actList").innerHTML += `
       <div class="py-3 flex justify-between">
-        <div>${d.data().title}</div>
-        <div class="text-xs">${d.data().status||"pending"}</div>
+        <div class="font-semibold">${esc(x?.title || "-")}</div>
+        <div class="text-xs text-slate-400">${esc(x?.status || "pending")}</div>
       </div>`;
   });
 }
 
 $("addActBtn").onclick=async()=>{
-  const title=$("actTitle").value.trim();
-  const file=$("actCover").files[0];
-  let cover=null;
-  if(file) cover=await upload(file,PRESET_GALLERY,"karteji/activities");
+  if(!UID) return;
 
-  await addDoc(collection(db,"activities"),{
-    title, cover, status:"pending", createdAt:new Date()
-  });
-  loadActivities();
+  const title = $("actTitle").value.trim();
+  const file = $("actCover").files?.[0];
+
+  if(!title){
+    setStatus("Judul kegiatan wajib diisi.");
+    return;
+  }
+
+  try{
+    setStatus("Menambah kegiatan...");
+    let cover = null;
+    if(file){
+      cover = await upload(file, PRESET_GALLERY, "karteji/activities");
+    }
+
+    await addDoc(collection(db,"activities"),{
+      title,
+      cover,
+      status:"pending",
+      createdByUid: UID,
+      createdAt: serverTimestamp()
+    });
+
+    $("actTitle").value = "";
+    $("actCover").value = "";
+    setStatus("Kegiatan ditambahkan ✅");
+    await loadActivities();
+  }catch(e){
+    setStatus(e.message || "Gagal tambah kegiatan");
+  }
 };
 
-/* ========= FINANCE ========= */
+/* ========= FINANCE (read-only list) ========= */
 async function loadFinance(){
-  const q=query(collection(db,"financial_records"),orderBy("createdAt","desc"));
-  const snap=await getDocs(q);
-  $("finList").innerHTML="";
+  const qy = query(collection(db,"financial_records"), orderBy("createdAt","desc"), limit(100));
+  const snap = await getDocs(qy);
+
+  $("finList").innerHTML = "";
+  if(snap.empty){
+    $("finList").innerHTML = `<div class="py-3 text-sm text-slate-300">Belum ada data keuangan.</div>`;
+    return;
+  }
+
   snap.forEach(d=>{
-    $("finList").innerHTML+=`
+    const x = d.data();
+    $("finList").innerHTML += `
       <div class="py-3 flex justify-between">
-        <div>Rp ${d.data().amount}</div>
-        <div class="text-xs">${d.data().status}</div>
+        <div>Rp ${esc(x?.amount ?? 0)}</div>
+        <div class="text-xs text-slate-400">${esc(x?.status || "pending")}</div>
       </div>`;
   });
 }
 </script>
+
 </body>
 </html>
