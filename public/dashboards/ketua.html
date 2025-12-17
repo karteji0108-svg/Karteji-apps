@@ -1,354 +1,397 @@
-<!doctype html>
-<html lang="id" class="h-full">
+<!DOCTYPE html>
+<html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Ketua | KARTEJI</title>
 
-  <link rel="stylesheet" href="../../dist/assets/css/app.css">
-  <link rel="icon" href="../assets/img/logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'bg-main': '#050505',
+            'card-dark': '#121212',
+            'accent-lime': '#D4FC79',
+          },
+          fontFamily: { sans: ['Outfit', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { background-color: #050505; color: #ffffff; -webkit-tap-highlight-color: transparent; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    
+    /* Glass Bottom Nav */
+    .glass-nav {
+      background: rgba(18, 18, 18, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* Transitions */
+    .view-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
+    .view-section.active { display: block; opacity: 1; transform: translateY(0); }
+
+    /* Nav Active State */
+    .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #D4FC79; }
+    .nav-btn.active p { color: #D4FC79; }
+  </style>
 </head>
 
-<body class="min-h-full bg-slate-950 text-slate-100">
+<body class="min-h-screen relative overflow-x-hidden pb-24">
 
-<!-- HEADER -->
-<header class="sticky top-0 z-20 border-b border-white/10 bg-slate-950/70 backdrop-blur-xl">
-  <div class="mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
-    <div class="flex items-center gap-3">
-      <img src="../assets/img/logo.png" class="h-10 w-10 rounded-2xl border border-white/10" alt="Logo">
-      <div>
-        <div class="font-extrabold">KARTEJI</div>
-        <div class="text-xs text-slate-400">Dashboard Ketua</div>
+  <div id="globalLoader" class="fixed inset-0 bg-black/90 z-[9999] flex items-center justify-center flex-col gap-4 backdrop-blur-xl">
+    <div class="w-12 h-12 border-4 border-gray-800 border-t-accent-lime rounded-full animate-spin"></div>
+    <p id="loaderMsg" class="text-xs text-accent-lime tracking-widest animate-pulse">MEMUAT...</p>
+  </div>
+
+  <div id="gate" class="fixed inset-0 bg-black z-[9998] hidden items-center justify-center p-6 text-center">
+    <span class="material-symbols-rounded text-red-500 text-6xl mb-4">lock</span>
+    <h2 class="text-2xl font-bold text-white mb-2">Akses Ditolak</h2>
+    <p class="text-gray-400 text-sm mb-6" id="gateMsg">Halaman ini khusus Ketua.</p>
+    <a href="../login.html" class="text-accent-lime font-bold text-sm underline">Kembali ke Login</a>
+  </div>
+
+  <div id="crudModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
+    <div class="bg-[#121212] border border-white/10 w-full max-w-md rounded-[2rem] p-6 relative shadow-2xl">
+      <div class="flex justify-between items-center mb-6">
+          <h2 id="modalTitle" class="text-xl font-bold text-white uppercase tracking-wider">Judul</h2>
+          <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10"><span class="material-symbols-rounded text-sm">close</span></button>
       </div>
-    </div>
-    <button id="logoutBtn"
-      class="rounded-2xl bg-rose-500 px-4 py-2 text-xs font-extrabold hover:bg-rose-400">
-      Logout
-    </button>
-  </div>
-</header>
-
-<main class="mx-auto max-w-6xl px-6 py-6 space-y-6">
-
-<!-- GATE -->
-<section id="gate" class="hidden">
-  <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
-    <h2 class="text-xl font-extrabold">Akses Ditolak</h2>
-    <p class="text-sm text-slate-300 mt-2" id="gateMsg">Halaman ini khusus Ketua.</p>
-    <a href="/login.html" class="inline-block mt-4 text-emerald-400">Kembali ke Login</a>
-  </div>
-</section>
-
-<!-- CONTENT -->
-<section id="content" class="hidden space-y-6">
-
-<!-- PROFIL -->
-<div class="rounded-3xl border border-white/10 bg-white/5 p-6">
-  <h2 class="text-lg font-extrabold">Profil Ketua</h2>
-
-  <div class="mt-4 grid sm:grid-cols-4 gap-4">
-    <img id="mePhoto" class="h-20 w-20 rounded-2xl border border-white/10 object-cover"
-      src="https://via.placeholder.com/120" alt="Foto">
-
-    <div class="sm:col-span-2">
-      <label class="text-xs text-slate-400">Nama</label>
-      <input id="meName"
-        class="w-full mt-1 rounded-2xl bg-white/5 border border-white/10 px-4 py-3"
-        placeholder="Nama Ketua">
-      <p class="text-xs text-slate-400 mt-2" id="statusMsg"></p>
-    </div>
-
-    <div class="flex flex-col gap-2">
-      <input id="mePhotoInput" type="file" accept="image/*"
-        class="rounded-2xl bg-white/5 border border-white/10 px-3 py-2 text-xs">
-      <button id="saveProfileBtn"
-        class="rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-extrabold text-slate-950">
-        Simpan Profil
-      </button>
+      <div id="modalBody" class="space-y-4 max-h-[60vh] overflow-y-auto no-scrollbar"></div>
+      <button id="modalSubmitBtn" class="mt-6 w-full rounded-xl bg-accent-lime text-black py-3 text-sm font-bold hover:brightness-110 transition-all">SIMPAN</button>
     </div>
   </div>
-</div>
 
-<!-- TABS -->
-<div class="flex gap-2 flex-wrap">
-  <button class="tabBtn btn-tab" data-tab="users">Struktur</button>
-  <button class="tabBtn btn-tab" data-tab="activities">Kegiatan</button>
-  <button class="tabBtn btn-tab" data-tab="finance">Keuangan</button>
-</div>
+  <header class="sticky top-0 z-30 px-5 pt-6 pb-2 bg-gradient-to-b from-[#050505] to-transparent">
+      <div class="flex justify-between items-center">
+          <div class="flex items-center gap-3">
+              <img src="../assets/img/logo.png" class="w-10 h-10 rounded-xl border border-white/10">
+              <div>
+                  <p class="text-[10px] text-accent-lime uppercase tracking-widest font-bold">Dashboard</p>
+                  <h1 class="text-lg font-bold leading-none text-white">KETUA</h1>
+              </div>
+          </div>
+          <button id="logoutBtn" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-red-400 hover:bg-red-500/20"><span class="material-symbols-rounded text-lg">logout</span></button>
+      </div>
+  </header>
 
-<!-- STRUKTUR -->
-<section id="tab-users" class="tabPanel">
-  <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
-    <h3 class="font-extrabold">Struktur Pengurus</h3>
-    <div id="userList" class="mt-4 divide-y divide-white/10"></div>
-  </div>
-</section>
+  <main class="px-4 mt-2">
 
-<!-- KEGIATAN -->
-<section id="tab-activities" class="tabPanel hidden">
-  <div class="rounded-3xl border border-white/10 bg-white/5 p-6 space-y-4">
-    <h3 class="font-extrabold">Kegiatan</h3>
+      <section id="view-home" class="view-section active">
+          <div class="w-full bg-[#121212] border border-white/5 rounded-[2rem] p-6 relative overflow-hidden group">
+              <div class="absolute inset-0 bg-gradient-to-br from-accent-lime/5 to-transparent"></div>
+              <div class="flex flex-col items-center text-center z-10 relative">
+                  <div class="relative mb-4">
+                      <img id="displayPhoto" class="w-24 h-24 rounded-full object-cover border-4 border-[#1E1E1E] shadow-2xl" src="https://via.placeholder.com/150">
+                      <button onclick="openProfileModal()" class="absolute bottom-0 right-0 bg-accent-lime text-black p-2 rounded-full shadow-lg hover:scale-110 transition-transform">
+                          <span class="material-symbols-rounded text-sm font-bold">edit</span>
+                      </button>
+                  </div>
+                  <h2 id="displayName" class="text-2xl font-bold text-white mb-1">Memuat...</h2>
+                  <p class="text-xs text-gray-500 bg-white/5 px-3 py-1 rounded-full">Ketua Organisasi</p>
+              </div>
+          </div>
 
-    <input id="actTitle" placeholder="Judul kegiatan"
-      class="w-full rounded-2xl bg-white/5 border border-white/10 px-4 py-3">
+          <div class="grid grid-cols-2 gap-3 mt-4">
+              <div class="bg-accent-lime rounded-[1.5rem] p-4 text-black flex flex-col justify-between h-28" onclick="switchView('activities')">
+                  <span class="material-symbols-rounded text-3xl">event_note</span>
+                  <div>
+                      <h3 class="font-black text-2xl leading-none" id="countAct">0</h3>
+                      <p class="text-[10px] font-bold uppercase opacity-70">Program Kerja</p>
+                  </div>
+              </div>
+              <div class="bg-[#121212] border border-white/5 rounded-[1.5rem] p-4 flex flex-col justify-between h-28" onclick="switchView('users')">
+                  <span class="material-symbols-rounded text-white/50 text-3xl">groups</span>
+                  <div>
+                      <h3 class="font-black text-2xl leading-none text-white" id="countUsers">0</h3>
+                      <p class="text-[10px] text-gray-500 font-bold uppercase">Total Anggota</p>
+                  </div>
+              </div>
+          </div>
+          
+          <div class="mt-6">
+            <button onclick="openAddActivityModal()" class="w-full py-4 rounded-2xl border border-dashed border-white/20 text-gray-400 hover:border-accent-lime hover:text-accent-lime transition-all flex items-center justify-center gap-2 text-sm font-bold">
+                <span class="material-symbols-rounded">add_circle</span> Tambah Kegiatan Baru
+            </button>
+          </div>
+      </section>
 
-    <input id="actCover" type="file" accept="image/*"
-      class="w-full rounded-2xl bg-white/5 border border-white/10 px-4 py-3">
+      <section id="view-users" class="view-section">
+          <h2 class="text-2xl font-bold mb-4 px-1">Struktur</h2>
+          <div id="userList" class="grid grid-cols-1 gap-2"></div>
+      </section>
 
-    <button id="addActBtn"
-      class="rounded-2xl bg-emerald-400 px-4 py-3 font-extrabold text-slate-950">
-      Tambah Kegiatan
-    </button>
+      <section id="view-activities" class="view-section">
+          <div class="flex justify-between items-center mb-4 px-1">
+            <h2 class="text-2xl font-bold">Kegiatan</h2>
+            <button onclick="openAddActivityModal()" class="bg-accent-lime text-black p-2 rounded-full"><span class="material-symbols-rounded">add</span></button>
+          </div>
+          <div id="actList" class="grid grid-cols-1 gap-3"></div>
+      </section>
 
-    <div id="actList" class="divide-y divide-white/10"></div>
-  </div>
-</section>
+      <section id="view-finance" class="view-section">
+          <h2 class="text-2xl font-bold mb-4 px-1">Monitor Keuangan</h2>
+          <div id="finList" class="space-y-2"></div>
+      </section>
 
-<!-- FINANCE -->
-<section id="tab-finance" class="tabPanel hidden">
-  <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
-    <h3 class="font-extrabold">Persetujuan Keuangan</h3>
-    <div id="finList" class="divide-y divide-white/10 mt-4"></div>
-  </div>
-</section>
+  </main>
 
-</section>
-</main>
+  <nav class="fixed bottom-0 w-full glass-nav pb-6 pt-3 px-2 z-40">
+      <div class="flex justify-around items-center max-w-md mx-auto">
+          <button onclick="switchView('home')" class="nav-btn active flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="home">
+              <span class="material-symbols-rounded text-2xl text-gray-400 transition-colors">grid_view</span>
+              <p class="text-[9px] font-bold text-gray-500 transition-colors">Home</p>
+          </button>
+          
+          <button onclick="switchView('users')" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="users">
+              <span class="material-symbols-rounded text-2xl text-gray-400 transition-colors">group</span>
+              <p class="text-[9px] font-bold text-gray-500 transition-colors">Struktur</p>
+          </button>
 
-<script type="module">
-/* ========= FIREBASE ========= */
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-import {
-  getFirestore, doc, getDoc, updateDoc,
-  collection, getDocs, addDoc,
-  query, orderBy, limit,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+          <button onclick="switchView('activities')" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="activities">
+              <span class="material-symbols-rounded text-2xl text-gray-400 transition-colors">event_available</span>
+              <p class="text-[9px] font-bold text-gray-500 transition-colors">Acara</p>
+          </button>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
-  authDomain: "katar-9cac3.firebaseapp.com",
-  projectId: "katar-9cac3",
-  storageBucket: "katar-9cac3.firebasestorage.app",
-  messagingSenderId: "1017734829960",
-  appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d"
-};
+          <button onclick="switchView('finance')" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="finance">
+              <span class="material-symbols-rounded text-2xl text-gray-400 transition-colors">account_balance</span>
+              <p class="text-[9px] font-bold text-gray-500 transition-colors">Kas</p>
+          </button>
+      </div>
+  </nav>
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+  <script type="module">
+    /* ========= CONFIG ========= */
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc, collection, getDocs, addDoc, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-/* ========= CLOUDINARY ========= */
-const CLOUD_NAME = "dbxktcwug";
-const PRESET_PROFILE = "Karteji";
-const PRESET_GALLERY = "Karteji Galeri";
+    const firebaseConfig = {
+      apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
+      authDomain: "katar-9cac3.firebaseapp.com",
+      projectId: "katar-9cac3",
+      storageBucket: "katar-9cac3.firebasestorage.app",
+      messagingSenderId: "1017734829960",
+      appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d"
+    };
 
-async function upload(file, preset, folder){
-  const fd = new FormData();
-  fd.append("file", file);
-  fd.append("upload_preset", preset);
-  fd.append("folder", folder);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,{
-    method:"POST", body:fd
-  });
-  const data = await res.json();
-  if(!res.ok) throw new Error(data?.error?.message || "Upload gagal");
-  return { url:data.secure_url, publicId:data.public_id, bytes:data.bytes, format:data.format };
-}
+    const CLOUD_NAME = "dbxktcwug";
+    const PRESET_PROFILE = "Karteji";
+    const PRESET_GALLERY = "Karteji Galeri";
 
-/* ========= UI ========= */
-const $ = id => document.getElementById(id);
-const setStatus = (t)=> $("statusMsg").textContent = t || "";
-const esc = (s)=> String(s ?? "").replace(/[&<>"']/g, (m)=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-}[m]));
+    const $ = (id) => document.getElementById(id);
+    let UID = null;
 
-document.querySelectorAll(".btn-tab").forEach(b=>{
-  b.classList.add("rounded-2xl","px-4","py-2","bg-white/5","border","border-white/10","text-xs");
-});
+    /* ========= UTILS ========= */
+    window.toggleLoader = (show, msg="MEMUAT...") => {
+        const l = $("globalLoader");
+        $("loaderMsg").textContent = msg;
+        if(show) { l.classList.remove('hidden'); l.classList.add('flex'); }
+        else { l.classList.add('hidden'); l.classList.remove('flex'); }
+    };
 
-function openTab(n){
-  document.querySelectorAll(".tabPanel").forEach(p=>p.classList.add("hidden"));
-  $(`tab-${n}`).classList.remove("hidden");
-}
-document.querySelectorAll(".tabBtn").forEach(b=>{
-  b.onclick=()=>openTab(b.dataset.tab);
-});
+    window.closeModal = () => $("crudModal").classList.add('hidden');
+    window.showModal = (title, bodyHtml, onSave) => {
+        $("modalTitle").textContent = title;
+        $("modalBody").innerHTML = bodyHtml;
+        $("crudModal").classList.remove('hidden');
+        $("crudModal").classList.add('flex');
+        $("modalSubmitBtn").onclick = onSave;
+    };
 
-/* ========= AUTH GATE ========= */
-let UID=null;
+    window.switchView = (viewId) => {
+        document.querySelectorAll('.view-section').forEach(el => {
+            el.classList.remove('active');
+            setTimeout(() => { if(!el.classList.contains('active')) el.style.display = 'none'; }, 300);
+        });
+        const target = $(`view-${viewId}`);
+        target.style.display = 'block';
+        setTimeout(() => target.classList.add('active'), 10);
 
-onAuthStateChanged(auth, async user=>{
-  if(!user) return deny("Belum login. Silakan login.");
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`);
+        if(activeBtn) activeBtn.classList.add('active');
+    };
 
-  try {
-    const snap = await getDoc(doc(db,"users",user.uid));
-    if(!snap.exists()) return deny("Profil user tidak ditemukan.");
-    const me = snap.data();
-
-    if(me?.role !== "ketua"){
-      return deny("Halaman ini khusus Ketua.");
+    async function upload(file, preset, folder){
+        const fd = new FormData();
+        fd.append("file", file);
+        fd.append("upload_preset", preset);
+        fd.append("folder", folder);
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,{ method:"POST", body:fd });
+        const data = await res.json();
+        if(!res.ok) throw new Error("Upload Gagal");
+        return { url:data.secure_url };
     }
 
-    UID = user.uid;
-    $("content").classList.remove("hidden");
+    /* ========= LOGIC ========= */
+    onAuthStateChanged(auth, async user => {
+        if(!user) return location.href = "../login.html";
+        
+        toggleLoader(true, "CEK AKSES...");
+        try {
+            const snap = await getDoc(doc(db,"users",user.uid));
+            if(!snap.exists() || snap.data().role !== "ketua"){
+                toggleLoader(false);
+                $("gate").classList.remove("hidden");
+                return;
+            }
+            UID = user.uid;
+            const me = snap.data();
+            
+            // Set Header & Profile
+            $("displayName").textContent = me.name || "Ketua";
+            $("displayPhoto").src = me.photo?.url || "https://via.placeholder.com/150";
 
-    $("meName").value = me?.name || "";
-    $("mePhoto").src = me?.photo?.url || "https://via.placeholder.com/120";
-
-    openTab("users");
-    await Promise.allSettled([loadUsers(), loadActivities(), loadFinance()]);
-    setStatus("Siap ✅");
-  } catch (e) {
-    deny("Gagal memuat data.");
-  }
-});
-
-function deny(message){
-  $("content").classList.add("hidden");
-  $("gate").classList.remove("hidden");
-  $("gateMsg").textContent = message || "Akses ditolak.";
-}
-
-/* ========= LOGOUT ========= */
-$("logoutBtn").onclick=async()=>{
-  await signOut(auth);
-  location.href="/login.html";
-};
-
-/* ========= PROFILE ========= */
-$("saveProfileBtn").onclick=async()=>{
-  if(!UID) return;
-
-  const name = $("meName").value.trim();
-  const file = $("mePhotoInput").files?.[0];
-
-  const payload = {};
-  if(name) payload.name = name;
-
-  try{
-    setStatus("Menyimpan profil...");
-    if(file){
-      payload.photo = await upload(file, PRESET_PROFILE, `karteji/users/${UID}`);
-      $("mePhoto").src = payload.photo.url;
-    }
-
-    if(!Object.keys(payload).length){
-      setStatus("Tidak ada perubahan.");
-      return;
-    }
-
-    await updateDoc(doc(db,"users",UID), payload);
-    setStatus("Profil tersimpan ✅");
-  }catch(e){
-    setStatus(e.message || "Gagal simpan profil");
-  }
-};
-
-/* ========= USERS (read-only struktur) ========= */
-async function loadUsers(){
-  const qy = query(collection(db,"users"), orderBy("name","asc"), limit(200));
-  const snap = await getDocs(qy);
-
-  $("userList").innerHTML = "";
-  if(snap.empty){
-    $("userList").innerHTML = `<div class="py-3 text-sm text-slate-300">Belum ada user.</div>`;
-    return;
-  }
-
-  snap.forEach(d=>{
-    const u = d.data();
-    if(u?.role === "super_admin") return;
-
-    $("userList").innerHTML += `
-      <div class="py-3 flex justify-between items-center">
-        <div>
-          <div class="font-bold">${esc(u?.name || "-")}</div>
-          <div class="text-xs text-slate-400">${esc(u?.role || "anggota")}</div>
-        </div>
-      </div>`;
-  });
-}
-
-/* ========= ACTIVITIES ========= */
-async function loadActivities(){
-  const qy = query(collection(db,"activities"), orderBy("createdAt","desc"), limit(100));
-  const snap = await getDocs(qy);
-
-  $("actList").innerHTML = "";
-  if(snap.empty){
-    $("actList").innerHTML = `<div class="py-3 text-sm text-slate-300">Belum ada kegiatan.</div>`;
-    return;
-  }
-
-  snap.forEach(d=>{
-    const x = d.data();
-    $("actList").innerHTML += `
-      <div class="py-3 flex justify-between">
-        <div class="font-semibold">${esc(x?.title || "-")}</div>
-        <div class="text-xs text-slate-400">${esc(x?.status || "pending")}</div>
-      </div>`;
-  });
-}
-
-$("addActBtn").onclick=async()=>{
-  if(!UID) return;
-
-  const title = $("actTitle").value.trim();
-  const file = $("actCover").files?.[0];
-
-  if(!title){
-    setStatus("Judul kegiatan wajib diisi.");
-    return;
-  }
-
-  try{
-    setStatus("Menambah kegiatan...");
-    let cover = null;
-    if(file){
-      cover = await upload(file, PRESET_GALLERY, "karteji/activities");
-    }
-
-    await addDoc(collection(db,"activities"),{
-      title,
-      cover,
-      status:"pending",
-      createdByUid: UID,
-      createdAt: serverTimestamp()
+            await Promise.all([loadUsers(), loadActivities(), loadFinance()]);
+        } catch(e) { console.error(e); }
+        toggleLoader(false);
     });
 
-    $("actTitle").value = "";
-    $("actCover").value = "";
-    setStatus("Kegiatan ditambahkan ✅");
-    await loadActivities();
-  }catch(e){
-    setStatus(e.message || "Gagal tambah kegiatan");
-  }
-};
+    /* --- PROFILE EDIT --- */
+    window.openProfileModal = () => {
+        const html = `
+            <input id="editName" class="w-full p-4 rounded-xl bg-white/5 border border-white/10 text-white outline-none mb-2" value="${$("displayName").textContent}">
+            <div class="bg-white/5 p-3 rounded-xl border border-white/10">
+                <p class="text-[10px] text-gray-400 mb-2">Ganti Foto Profil</p>
+                <input id="editFile" type="file" accept="image/*" class="text-xs text-gray-300">
+            </div>
+        `;
+        showModal("EDIT PROFIL", html, async () => {
+            const name = $("editName").value.trim();
+            const file = $("editFile").files?.[0];
+            const payload = {};
+            
+            toggleLoader(true, "MENYIMPAN...");
+            try {
+                if(name) payload.name = name;
+                if(file) payload.photo = await upload(file, PRESET_PROFILE, `karteji/users/${UID}`);
+                
+                if(Object.keys(payload).length){
+                    await updateDoc(doc(db,"users",UID), payload);
+                    location.reload();
+                } else {
+                    closeModal();
+                    toggleLoader(false);
+                }
+            } catch(e){ alert("Gagal update"); toggleLoader(false); }
+        });
+    }
 
-/* ========= FINANCE (read-only list) ========= */
-async function loadFinance(){
-  const qy = query(collection(db,"financial_records"), orderBy("createdAt","desc"), limit(100));
-  const snap = await getDocs(qy);
+    /* --- USERS --- */
+    async function loadUsers(){
+        const list = $("userList"); list.innerHTML = "";
+        const snap = await getDocs(query(collection(db,"users"), orderBy("name","asc"), limit(200)));
+        $("countUsers").textContent = snap.size > 0 ? snap.size - 1 : 0; // Exclude super_admin usually
 
-  $("finList").innerHTML = "";
-  if(snap.empty){
-    $("finList").innerHTML = `<div class="py-3 text-sm text-slate-300">Belum ada data keuangan.</div>`;
-    return;
-  }
+        snap.forEach(d => {
+            const u = d.data();
+            if(u.role === "super_admin") return;
+            
+            list.innerHTML += `
+                <div class="bg-[#121212] p-3 rounded-2xl flex items-center justify-between border border-white/5">
+                    <div class="flex items-center gap-3">
+                         <img src="${u.photo?.url || 'https://via.placeholder.com/50'}" class="w-10 h-10 rounded-full object-cover bg-gray-800">
+                         <div>
+                             <p class="text-sm font-bold text-white">${u.name || '-'}</p>
+                             <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded text-gray-400 uppercase">${u.role || 'anggota'}</span>
+                         </div>
+                    </div>
+                </div>
+            `;
+        });
+    }
 
-  snap.forEach(d=>{
-    const x = d.data();
-    $("finList").innerHTML += `
-      <div class="py-3 flex justify-between">
-        <div>Rp ${esc(x?.amount ?? 0)}</div>
-        <div class="text-xs text-slate-400">${esc(x?.status || "pending")}</div>
-      </div>`;
-  });
-}
-</script>
+    /* --- ACTIVITIES --- */
+    async function loadActivities(){
+        const list = $("actList"); list.innerHTML = "";
+        const snap = await getDocs(query(collection(db,"activities"), orderBy("createdAt","desc"), limit(50)));
+        $("countAct").textContent = snap.size;
 
+        if(snap.empty) { list.innerHTML = `<p class="text-center text-xs text-gray-500 mt-4">Belum ada kegiatan.</p>`; return; }
+
+        snap.forEach(d => {
+            const x = d.data();
+            list.innerHTML += `
+                <div class="bg-[#121212] rounded-2xl overflow-hidden border border-white/5 flex h-24 relative">
+                    <img src="${x.cover?.url || 'https://via.placeholder.com/150'}" class="w-24 h-full object-cover opacity-80">
+                    <div class="p-3 flex flex-col justify-center w-full">
+                        <h3 class="text-sm font-bold text-white line-clamp-1">${x.title}</h3>
+                        <p class="text-[10px] text-accent-lime uppercase font-bold mt-1 tracking-wider">${x.status || 'Pending'}</p>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    window.openAddActivityModal = () => {
+        const html = `
+            <input id="actTitle" class="w-full p-4 rounded-xl bg-white/5 border border-white/10 text-white outline-none mb-3" placeholder="Judul Kegiatan">
+            <div class="bg-white/5 p-3 rounded-xl border border-white/10">
+                <p class="text-[10px] text-gray-400 mb-2">Upload Cover</p>
+                <input id="actCover" type="file" accept="image/*" class="text-xs text-gray-300">
+            </div>
+        `;
+        showModal("KEGIATAN BARU", html, async () => {
+            const title = $("actTitle").value.trim();
+            const file = $("actCover").files?.[0];
+            
+            if(!title) return alert("Judul wajib diisi");
+            
+            toggleLoader(true, "UPLOAD...");
+            try {
+                let cover = null;
+                if(file) cover = await upload(file, PRESET_GALLERY, "karteji/activities");
+                
+                await addDoc(collection(db,"activities"), {
+                    title, cover, status: "pending", createdByUid: UID, createdAt: serverTimestamp()
+                });
+                closeModal();
+                await loadActivities();
+            } catch(e) { alert("Gagal tambah"); }
+            toggleLoader(false);
+        });
+    }
+
+    /* --- FINANCE --- */
+    async function loadFinance(){
+        const list = $("finList"); list.innerHTML = "";
+        const snap = await getDocs(query(collection(db,"financial_records"), orderBy("createdAt","desc"), limit(50)));
+        
+        if(snap.empty) { list.innerHTML = `<p class="text-center text-xs text-gray-500 mt-4">Belum ada data keuangan.</p>`; return; }
+
+        snap.forEach(d => {
+            const x = d.data();
+            list.innerHTML += `
+                 <div class="bg-[#121212] p-4 rounded-2xl flex justify-between items-center border border-white/5">
+                    <div>
+                        <p class="text-xs font-bold text-white">Rp ${Number(x.amount).toLocaleString('id-ID')}</p>
+                        <p class="text-[9px] text-gray-500 mt-0.5">Status: ${x.status}</p>
+                    </div>
+                    <div class="w-2 h-2 rounded-full ${x.status==='approved'?'bg-accent-lime':'bg-yellow-500'}"></div>
+                </div>
+            `;
+        });
+    }
+
+    /* --- GLOBAL --- */
+    $("logoutBtn").onclick = async () => {
+        await signOut(auth);
+        location.href = "../login.html";
+    };
+  </script>
 </body>
 </html>
