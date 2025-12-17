@@ -132,21 +132,23 @@
       <section id="view-home" class="view-section active">
           <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 group transition-all">
               <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500 transform group-hover:scale-110"><span class="material-symbols-rounded text-9xl">payments</span></div>
+              
               <div class="relative z-10">
                 <p class="text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Saldo Kas Saat Ini</p>
                 <h2 id="cardBalance" class="text-4xl font-black tracking-tight mb-8">Rp 0</h2>
+
                 <div class="grid grid-cols-2 gap-3">
                     <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5">
                         <div class="flex items-center gap-1.5 mb-1">
                             <div class="bg-green-400/20 p-1 rounded-full"><span class="material-symbols-rounded text-[10px] text-green-300">arrow_downward</span></div>
-                            <span class="text-[9px] font-bold uppercase text-slate-300">Masuk</span>
+                            <span class="text-[9px] font-bold uppercase text-slate-300">Total Masuk</span>
                         </div>
                         <p id="sumIncome" class="text-sm font-bold text-white leading-tight">Rp 0</p>
                     </div>
                     <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5">
                         <div class="flex items-center gap-1.5 mb-1">
                             <div class="bg-red-400/20 p-1 rounded-full"><span class="material-symbols-rounded text-[10px] text-red-300">arrow_upward</span></div>
-                            <span class="text-[9px] font-bold uppercase text-slate-300">Keluar</span>
+                            <span class="text-[9px] font-bold uppercase text-slate-300">Total Keluar</span>
                         </div>
                         <p id="sumExpense" class="text-sm font-bold text-white leading-tight">Rp 0</p>
                     </div>
@@ -188,13 +190,12 @@
               </div>
           </div>
 
-          <div id="infoContent" class="pb-20 min-h-[300px]">
-              </div>
+          <div id="infoContent" class="pb-20 min-h-[300px]"></div>
       </section>
 
       <section id="view-titik-kumpul" class="view-section">
           <div class="w-full bg-slate-900 rounded-[2.5rem] p-8 text-white text-center relative overflow-hidden shadow-xl mb-6">
-              <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+              <div class="absolute top-0 left-0 w-full h-full opacity-10" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 20px 20px;"></div>
               
               <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">GILIRAN TUAN RUMAH</p>
               
@@ -211,7 +212,7 @@
 
           <div class="px-1 mb-3 flex justify-between items-end">
               <h3 class="text-lg font-bold text-brand-primary">Daftar Anggota</h3>
-              <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-1 rounded-md font-bold">Eligible: <span id="eligibleCount">0</span></span>
+              <span class="text-[10px] bg-slate-200 text-slate-600 px-2 py-1 rounded-md font-bold">Total Eligible: <span id="eligibleCount">0</span></span>
           </div>
 
           <div id="memberList" class="space-y-2 pb-20">
@@ -302,13 +303,15 @@
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
     import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
+    // --- CONFIG FIREBASE ANDA ---
     const firebaseConfig = {
       apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
       authDomain: "katar-9cac3.firebaseapp.com",
       projectId: "katar-9cac3",
       storageBucket: "katar-9cac3.firebasestorage.app",
       messagingSenderId: "1017734829960",
-      appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d"
+      appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d",
+      measurementId: "G-M4F9J10TTE"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -354,7 +357,6 @@
         const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`);
         if(activeBtn) activeBtn.classList.add('active');
         
-        // Load Data Contextually
         if(viewId === 'home') loadHomeData();
         if(viewId === 'finance') loadFinance();
         if(viewId === 'profile') loadProfileData();
@@ -392,10 +394,9 @@
         toggleLoader(false);
     });
 
-    // --- INFO (KEGIATAN & PENGUMUMAN) ---
+    // --- INFO LOGIC ---
     window.switchInfoTab = (tab) => {
         currentInfoTab = tab;
-        // Visual Update Button
         if(tab === 'kegiatan') {
             $("tabKegiatan").className = "flex-1 py-2 rounded-lg text-xs font-bold transition-all bg-brand-primary text-white";
             $("tabPengumuman").className = "flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 transition-all hover:text-brand-primary";
@@ -453,50 +454,62 @@
         container.innerHTML = html;
     }
 
-    // --- TITIK KUMPUL LOGIC ---
+    // --- TITIK KUMPUL LOGIC (FIXED) ---
     async function loadTitikKumpul() {
         const listContainer = $("memberList");
         listContainer.innerHTML = '<div class="text-center py-4 text-xs text-slate-400">Memuat anggota...</div>';
 
-        // 1. Get History (Siapa yang sudah kena)
-        const historySnap = await getDocs(collection(db, "gathering_history"));
-        const hostedIds = historySnap.docs.map(doc => doc.data().userId);
+        try {
+            // 1. Get History (Siapa yang sudah pernah)
+            const historySnap = await getDocs(collection(db, "gathering_history"));
+            const hostedIds = historySnap.docs.map(doc => doc.data().userId);
 
-        // Get Latest Host
-        if(historySnap.size > 0) {
-            // Sort manually client side or complex query. Simple: grab last added
-            const last = historySnap.docs[historySnap.size-1].data();
-            $("currentHost").textContent = last.userName;
-            $("lastDate").textContent = "Terpilih pada " + new Date(last.createdAt?.seconds*1000).toLocaleDateString();
-        }
+            // Get Latest Host
+            if(historySnap.size > 0) {
+                const histories = historySnap.docs.map(d => d.data()).sort((a,b) => b.createdAt - a.createdAt);
+                const last = histories[0]; 
+                
+                $("currentHost").textContent = last.userName;
+                $("lastDate").textContent = "Terpilih pada " + new Date(last.createdAt?.seconds*1000).toLocaleDateString();
+            }
 
-        // 2. Get Users
-        const usersSnap = await getDocs(query(collection(db, "users"), orderBy("name")));
-        let html = "";
-        let eligibleCount = 0;
+            // 2. Get All Users (Fixed Query Logic)
+            const usersSnap = await getDocs(query(collection(db, "users"), orderBy("name")));
+            let html = "";
+            let eligibleCount = 0;
 
-        usersSnap.forEach(d => {
-            const u = d.data();
-            if(u.role === 'super_admin') return; // Skip super admin
+            usersSnap.forEach(d => {
+                const u = d.data();
+                
+                // Only skip Super Admin, show everyone else (Ketua, Bendahara, etc.)
+                if(u.role === 'super_admin') return; 
 
-            const hasHosted = hostedIds.includes(d.id);
-            if(!hasHosted) eligibleCount++;
+                const hasHosted = hostedIds.includes(d.id);
+                if(!hasHosted) eligibleCount++;
 
-            html += `
-                <div class="bg-white p-3 rounded-xl border border-slate-100 flex items-center justify-between ${hasHosted ? 'opacity-50 grayscale' : ''}">
-                    <div class="flex items-center gap-3">
-                        <img src="${u.photo?.url || 'https://via.placeholder.com/50'}" class="w-8 h-8 rounded-full object-cover">
-                        <p class="text-xs font-bold text-brand-primary">${u.name}</p>
+                html += `
+                    <div class="bg-white p-3 rounded-xl border border-slate-100 flex items-center justify-between ${hasHosted ? 'opacity-50 grayscale' : ''}">
+                        <div class="flex items-center gap-3">
+                            <img src="${u.photo?.url || 'https://via.placeholder.com/50'}" class="w-8 h-8 rounded-full object-cover">
+                            <div>
+                                <p class="text-xs font-bold text-brand-primary">${u.name}</p>
+                                <p class="text-[9px] text-slate-400 uppercase">${u.role.replace('_', ' ')}</p>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-bold px-2 py-1 rounded-md ${hasHosted ? 'bg-slate-100 text-slate-400' : 'bg-green-50 text-green-600'}">
+                            ${hasHosted ? 'SUDAH' : 'BELUM'}
+                        </span>
                     </div>
-                    <span class="text-[10px] font-bold px-2 py-1 rounded-md ${hasHosted ? 'bg-slate-100 text-slate-400' : 'bg-green-50 text-green-600'}">
-                        ${hasHosted ? 'SUDAH' : 'BELUM'}
-                    </span>
-                </div>
-            `;
-        });
+                `;
+            });
 
-        $("eligibleCount").textContent = eligibleCount;
-        listContainer.innerHTML = html;
+            $("eligibleCount").textContent = eligibleCount;
+            listContainer.innerHTML = html;
+
+        } catch (e) {
+            console.error("Error loading titik kumpul:", e);
+            listContainer.innerHTML = '<div class="text-center py-4 text-xs text-red-400">Gagal memuat data.</div>';
+        }
     }
 
     window.runRaffle = async () => {
@@ -506,13 +519,13 @@
         btn.innerHTML = "MENGACAK...";
 
         try {
-            // 1. Fetch Candidates again to be sure
             const historySnap = await getDocs(collection(db, "gathering_history"));
             const hostedIds = historySnap.docs.map(doc => doc.data().userId);
             const usersSnap = await getDocs(collection(db, "users"));
             
             const candidates = [];
             usersSnap.forEach(d => {
+                // Same logic as display: exclude Super Admin, exclude hosted
                 if(d.data().role !== 'super_admin' && !hostedIds.includes(d.id)) {
                     candidates.push({ id: d.id, name: d.data().name });
                 }
@@ -526,31 +539,27 @@
                 return;
             }
 
-            // 2. Randomize after delay (Effect)
             setTimeout(async () => {
                 const winner = candidates[Math.floor(Math.random() * candidates.length)];
                 
-                // Save Result
                 await addDoc(collection(db, "gathering_history"), {
                     userId: winner.id,
                     userName: winner.name,
                     createdAt: serverTimestamp()
                 });
 
-                // Show Winner
                 $("winnerText").textContent = winner.name;
                 document.getElementById('winnerCard').classList.remove("scale-0");
                 document.getElementById('winnerCard').classList.add("scale-100");
                 $("winnerModal").classList.remove("hidden");
                 $("winnerModal").classList.add("flex");
 
-                // Reset Button & Reload List
                 btn.classList.remove("shaking");
                 btn.disabled = false;
                 btn.innerHTML = '<span class="material-symbols-rounded">casino</span> ACAK LOKASI BARU';
-                loadTitikKumpul();
+                loadTitikKumpul(); 
 
-            }, 2000); // 2 seconds drama
+            }, 2000);
 
         } catch(e) {
             console.error(e);
