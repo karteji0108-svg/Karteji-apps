@@ -16,7 +16,7 @@
           fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
           colors: {
             brand: {
-              dark: '#0B1120',  // Navy Gelap Premium
+              dark: '#0B1120',  
               primary: '#0F172A', // Navy Utama
               light: '#334155',
             },
@@ -57,12 +57,6 @@
       box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
     }
     
-    .glass-dark {
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(12px);
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
     /* Hide Scrollbar */
     body::-webkit-scrollbar { display: none; }
     
@@ -88,14 +82,20 @@
     <div class="relative z-10 flex flex-col items-center">
       <div class="relative mb-8">
         <div class="absolute -inset-4 bg-accent/20 rounded-full blur-xl animate-pulse"></div>
-        <div class="relative bg-white w-24 h-24 rounded-3xl shadow-2xl flex items-center justify-center animate-float">
-          <img src="./assets/img/logo.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'" class="w-14 h-14 object-contain" />
-          <span class="material-symbols-rounded text-6xl text-brand-primary hidden">diversity_3</span>
+        <div class="relative bg-white w-24 h-24 rounded-3xl shadow-2xl flex items-center justify-center animate-float overflow-hidden p-2">
+          
+          <img src="./assets/img/logo.png" 
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='block'" 
+               class="w-full h-full object-contain" 
+               alt="Logo Karteji" />
+               
+          <span class="material-symbols-rounded text-6xl text-brand-primary hidden absolute">diversity_3</span>
+          
         </div>
       </div>
 
       <div class="text-center space-y-2 overflow-hidden">
-        <h1 class="text-4xl font-extrabold text-white tracking-tight transform transition-all duration-700 translate-y-0" id="splash-title">
+        <h1 class="text-4xl font-extrabold text-white tracking-tight">
           KARTEJI
         </h1>
         <p class="text-slate-400 text-sm tracking-widest uppercase font-medium">App Karang Taruna Digital</p>
@@ -187,11 +187,9 @@
 
 
   <section id="auth-screen" class="absolute inset-0 z-30 hidden items-end justify-center bg-black/20 backdrop-blur-sm transition-opacity duration-500 opacity-0">
-    
     <div class="absolute inset-0" onclick="console.log('bg tap')"></div>
 
     <div class="glass-card w-full rounded-t-[2.5rem] p-8 pb-10 translate-y-full transition-transform duration-500 ease-out" id="auth-card">
-      
       <div class="w-12 h-1.5 bg-slate-300 rounded-full mx-auto mb-8"></div>
 
       <div class="text-center mb-8">
@@ -217,7 +215,6 @@
   </section>
 
   <script>
-    // --- LOGIC ---
     const splash = document.getElementById('splash-screen');
     const loading = document.getElementById('loading-bar');
     const onboarding = document.getElementById('onboarding-screen');
@@ -229,24 +226,19 @@
     
     let currentIndex = 0;
 
-    // 1. Initial Load
     window.onload = () => {
-        // Trigger loading bar
         setTimeout(() => { loading.style.width = '100%'; }, 100);
 
-        // Hide Splash after 2.5s
         setTimeout(() => {
             splash.style.opacity = '0';
             setTimeout(() => {
                 splash.style.display = 'none';
                 onboarding.style.display = 'flex';
-                // Trigger Onboarding Fade In
                 setTimeout(() => onboarding.classList.remove('opacity-0'), 50);
-            }, 1000); // Wait for transition
+            }, 1000); 
         }, 2500);
     };
 
-    // 2. Slider Logic
     btnNext.addEventListener('click', () => {
         if(currentIndex < slides.length - 1) {
             changeSlide(currentIndex + 1);
@@ -256,18 +248,12 @@
     });
 
     function changeSlide(newIndex) {
-        // Current slide exits to left
         slides[currentIndex].className = "slide absolute w-full text-center transition-all duration-700 ease-out slide-exit";
-        
-        // Update index
         currentIndex = newIndex;
-
-        // New slide enters from right
         slides[currentIndex].className = "slide absolute w-full text-center transition-all duration-700 ease-out slide-active";
 
-        // Reset classes for other slides (to ensure they stay hidden correctly if needed)
         slides.forEach((s, i) => {
-            if(i !== currentIndex && i !== currentIndex - 1) { // Basic cleanup
+            if(i !== currentIndex && i !== currentIndex - 1) {
                 s.className = "slide absolute w-full text-center transition-all duration-700 ease-out slide-enter";
             }
         });
@@ -290,26 +276,21 @@
         if(currentIndex === slides.length - 1) {
             btnNext.innerHTML = `<span class="relative z-10">Mulai Sekarang</span>`;
             btnNext.classList.remove('bg-brand-primary');
-            btnNext.classList.add('bg-accent'); // Change to Orange
+            btnNext.classList.add('bg-accent'); 
         }
     }
 
-    // 3. Show Auth (Bottom Sheet)
     function finishOnboarding() {
         showAuth();
     }
 
     function showAuth() {
-        // Fade out onboarding
         onboarding.style.opacity = '0';
         setTimeout(() => {
             onboarding.style.display = 'none';
             auth.style.display = 'flex';
-            
-            // Fade in Overlay
             setTimeout(() => {
                 auth.classList.remove('opacity-0');
-                // Slide up Card
                 authCard.classList.remove('translate-y-full');
             }, 50);
         }, 500);
