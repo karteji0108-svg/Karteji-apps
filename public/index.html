@@ -5,19 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KARTEJI - Welcome</title>
   
-  <!-- Tailwind CDN (identik) -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Icons & Font (identik) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0" />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
 
   <style>
     body { font-family: 'Outfit', sans-serif; }
 
-    /* Background Animation */
+    /* Background Animation (Sama dengan dashboard lain agar konsisten) */
     .bg-gradient-animate {
-      background: linear-gradient(-45deg, #020617, #020617, #022c22, #020617);
+      background: linear-gradient(-45deg, #020617, #0f172a, #1e1b4b, #020617);
       background-size: 400% 400%;
       animation: gradientBG 15s ease infinite;
     }
@@ -30,157 +28,169 @@
     /* Transitions */
     .fade-in { animation: fadeIn 0.8s ease-out forwards; }
     .fade-out { animation: fadeOut 0.5s ease-in forwards; }
-    .slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .slide-up { animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
-    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-    /* Glass */
+    /* Glass Effect */
     .glass {
       background: rgba(255,255,255,0.05);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.1);
+      border-top: 1px solid rgba(255,255,255,0.1);
     }
+
+    /* Utility untuk slider */
+    .slide-hidden-left { transform: translateX(-100%); opacity: 0; pointer-events: none; }
+    .slide-hidden-right { transform: translateX(100%); opacity: 0; pointer-events: none; }
+    .slide-active { transform: translateX(0); opacity: 1; }
   </style>
 </head>
 
 <body class="bg-slate-950 text-white h-screen w-screen overflow-hidden relative bg-gradient-animate">
 
-  <!-- SPLASH -->
   <section id="splash-screen"
     class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 transition-opacity duration-700">
 
-    <div class="relative">
-      <div class="absolute -inset-6 bg-emerald-500/30 rounded-full blur-2xl animate-pulse"></div>
-      <div class="relative bg-slate-900 p-6 rounded-2xl border border-emerald-500/30 shadow-2xl shadow-emerald-500/20">
+    <div class="relative mb-8">
+      <div class="absolute -inset-10 bg-gradient-to-tr from-emerald-500 to-teal-500 rounded-full blur-3xl opacity-20 animate-pulse"></div>
+      
+      <div class="relative bg-slate-900 p-6 rounded-3xl border border-white/10 shadow-2xl">
         <img src="./assets/img/logo.png"
-          onerror="this.src='https://via.placeholder.com/120'"
-          class="w-16 h-16 rounded-xl object-cover" />
+          onerror="this.src='https://via.placeholder.com/120/10b981/ffffff?text=K'"
+          class="w-20 h-20 object-cover rounded-2xl" />
       </div>
     </div>
 
-    <div class="mt-6 text-center space-y-2">
-      <h1 class="text-3xl font-extrabold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">
+    <div class="text-center space-y-2">
+      <h1 class="text-4xl font-extrabold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">
         KARTEJI
       </h1>
-      <p class="text-slate-400 text-sm tracking-wide">Cilosari Barat</p>
+      <p class="text-slate-400 text-sm tracking-[0.3em] uppercase font-semibold">Digital Platform</p>
     </div>
 
-    <div class="absolute bottom-20 w-48 h-1 bg-slate-800 rounded-full overflow-hidden">
+    <div class="absolute bottom-24 w-48 h-1.5 bg-slate-800 rounded-full overflow-hidden">
       <div id="loading-bar"
-        class="h-full bg-emerald-500 animate-[width_2s_ease-in-out_forwards]"
+        class="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full animate-[width_2.5s_ease-in-out_forwards]"
         style="width:0%">
       </div>
     </div>
   </section>
 
-  <!-- ONBOARDING -->
+
   <section id="onboarding-screen"
     class="absolute inset-0 z-40 flex flex-col hidden opacity-0 transition-opacity duration-500">
 
     <div class="pt-12 px-6 flex justify-end">
       <button onclick="finishOnboarding()"
-        class="text-slate-400 text-sm hover:text-white transition-colors">
+        class="px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-xs font-bold text-slate-300 transition-all">
         Lewati
       </button>
     </div>
 
-    <div class="flex-1 flex flex-col justify-center items-center px-6 text-center relative">
-
-      <!-- Slide 1 -->
-      <div class="onboarding-slide absolute transition-all duration-500 opacity-100 transform translate-x-0" data-index="0">
-        <div class="w-24 h-24 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-8 border border-emerald-500/30">
-          <span class="material-symbols-rounded text-5xl text-emerald-400">diversity_3</span>
+    <div class="flex-1 relative flex items-center justify-center overflow-hidden">
+      
+      <div class="onboarding-slide absolute inset-0 flex flex-col items-center justify-center px-8 transition-all duration-500 slide-active" data-index="0">
+        <div class="w-40 h-40 bg-emerald-500/10 rounded-full flex items-center justify-center mb-8 border border-emerald-500/20 shadow-[0_0_50px_rgba(16,185,129,0.2)]">
+          <span class="material-symbols-rounded text-7xl text-emerald-400">diversity_3</span>
         </div>
-        <h2 class="text-2xl font-bold mb-3">Untuk Apa KARTEJI?</h2>
-        <p class="text-slate-400 text-sm leading-relaxed">
-          Platform digital Karang Taruna untuk mengelola kegiatan, informasi, dokumentasi, dan organisasi secara modern.
+        <h2 class="text-3xl font-black mb-4 text-emerald-400">Organisasi Digital</h2>
+        <p class="text-slate-300 text-center leading-relaxed">
+          Platform modern untuk Karang Taruna. Kelola anggota, struktur, dan data dalam satu genggaman.
         </p>
       </div>
 
-      <!-- Slide 2 -->
-      <div class="onboarding-slide absolute transition-all duration-500 opacity-0 transform translate-x-full" data-index="1">
-        <div class="w-24 h-24 bg-sky-500/20 rounded-full flex items-center justify-center mx-auto mb-8 border border-sky-500/30">
-          <span class="material-symbols-rounded text-5xl text-sky-400">event_note</span>
+      <div class="onboarding-slide absolute inset-0 flex flex-col items-center justify-center px-8 transition-all duration-500 slide-hidden-right" data-index="1">
+        <div class="w-40 h-40 bg-sky-500/10 rounded-full flex items-center justify-center mb-8 border border-sky-500/20 shadow-[0_0_50px_rgba(14,165,233,0.2)]">
+          <span class="material-symbols-rounded text-7xl text-sky-400">event_available</span>
         </div>
-        <h2 class="text-2xl font-bold mb-3">Manajemen Kegiatan</h2>
-        <p class="text-slate-400 text-sm leading-relaxed">
-          Jadwal kegiatan, absensi, dokumentasi, dan laporan terpusat dalam satu sistem.
+        <h2 class="text-3xl font-black mb-4 text-sky-400">Manajemen Kegiatan</h2>
+        <p class="text-slate-300 text-center leading-relaxed">
+          Buat jadwal, dokumentasikan acara, dan pantau partisipasi anggota secara real-time.
         </p>
       </div>
 
-      <!-- Slide 3 -->
-      <div class="onboarding-slide absolute transition-all duration-500 opacity-0 transform translate-x-full" data-index="2">
-        <div class="w-24 h-24 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-8 border border-amber-500/30">
-          <span class="material-symbols-rounded text-5xl text-amber-400">account_balance_wallet</span>
+      <div class="onboarding-slide absolute inset-0 flex flex-col items-center justify-center px-8 transition-all duration-500 slide-hidden-right" data-index="2">
+        <div class="w-40 h-40 bg-amber-500/10 rounded-full flex items-center justify-center mb-8 border border-amber-500/20 shadow-[0_0_50px_rgba(245,158,11,0.2)]">
+          <span class="material-symbols-rounded text-7xl text-amber-400">account_balance_wallet</span>
         </div>
-        <h2 class="text-2xl font-bold mb-3">Transparansi Kas</h2>
-        <p class="text-slate-400 text-sm leading-relaxed">
-          Pencatatan kas masuk & keluar lengkap dengan bukti untuk kepercayaan bersama.
+        <h2 class="text-3xl font-black mb-4 text-amber-400">Transparansi Kas</h2>
+        <p class="text-slate-300 text-center leading-relaxed">
+          Catat pemasukan dan pengeluaran dengan bukti upload foto. Transparan dan akuntabel.
         </p>
       </div>
 
-      <!-- Slide 4 -->
-      <div class="onboarding-slide absolute transition-all duration-500 opacity-0 transform translate-x-full" data-index="3">
-        <div class="w-24 h-24 bg-indigo-500/20 rounded-full flex items-center justify-center mx-auto mb-8 border border-indigo-500/30">
-          <span class="material-symbols-rounded text-5xl text-indigo-400">admin_panel_settings</span>
+      <div class="onboarding-slide absolute inset-0 flex flex-col items-center justify-center px-8 transition-all duration-500 slide-hidden-right" data-index="3">
+        <div class="w-40 h-40 bg-indigo-500/10 rounded-full flex items-center justify-center mb-8 border border-indigo-500/20 shadow-[0_0_50px_rgba(99,102,241,0.2)]">
+          <span class="material-symbols-rounded text-7xl text-indigo-400">admin_panel_settings</span>
         </div>
-        <h2 class="text-2xl font-bold mb-3">Dashboard Sesuai Role</h2>
-        <p class="text-slate-400 text-sm leading-relaxed">
-          Super Admin, Ketua, Bendahara, Sekretaris, hingga Anggota — semua punya akses sesuai tugas.
+        <h2 class="text-3xl font-black mb-4 text-indigo-400">Sistem Multi-Role</h2>
+        <p class="text-slate-300 text-center leading-relaxed">
+          Akses khusus untuk Ketua, Sekretaris, Bendahara, dan Anggota. Keamanan data terjamin.
         </p>
       </div>
+
     </div>
 
     <div class="pb-12 px-6">
-      <div class="flex justify-center gap-2 mb-8">
-        <div class="dot w-6 h-2 rounded-full bg-emerald-500 transition-all"></div>
-        <div class="dot w-2 h-2 rounded-full bg-slate-700 transition-all"></div>
-        <div class="dot w-2 h-2 rounded-full bg-slate-700 transition-all"></div>
-        <div class="dot w-2 h-2 rounded-full bg-slate-700 transition-all"></div>
+      <div class="flex justify-center gap-3 mb-8">
+        <div class="dot w-8 h-2 rounded-full bg-emerald-500 transition-all duration-300"></div>
+        <div class="dot w-2 h-2 rounded-full bg-slate-700 transition-all duration-300"></div>
+        <div class="dot w-2 h-2 rounded-full bg-slate-700 transition-all duration-300"></div>
+        <div class="dot w-2 h-2 rounded-full bg-slate-700 transition-all duration-300"></div>
       </div>
 
       <button id="btn-next"
-        class="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-semibold py-4 rounded-xl shadow-lg shadow-emerald-500/30 transition-all active:scale-95 flex items-center justify-center gap-2">
-        <span>Lanjut</span>
+        class="w-full bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-extrabold py-4 rounded-2xl shadow-[0_10px_20px_rgba(16,185,129,0.2)] transition-all active:scale-95 flex items-center justify-center gap-2">
+        <span>LANJUT</span>
         <span class="material-symbols-rounded">arrow_forward</span>
       </button>
     </div>
   </section>
 
-  <!-- AUTH -->
-  <section id="auth-screen"
-    class="absolute inset-0 z-30 flex flex-col justify-end hidden opacity-0 transition-opacity duration-700">
 
-    <div class="glass rounded-t-[2.5rem] p-8 pb-12 w-full slide-up">
+  <section id="auth-screen"
+    class="absolute inset-0 z-30 flex flex-col justify-end hidden opacity-0 transition-opacity duration-700 pointer-events-none">
+    
+    <div class="flex-1"></div>
+
+    <div class="glass rounded-t-[3rem] p-8 pb-12 w-full slide-up pointer-events-auto border-t border-white/20">
+      
+      <div class="flex justify-center mb-6">
+        <div class="w-16 h-1.5 bg-slate-700 rounded-full"></div>
+      </div>
+
       <div class="text-center mb-8">
-        <span class="material-symbols-rounded text-4xl text-emerald-400 mb-3 inline-block">rocket_launch</span>
-        <h2 class="text-3xl font-bold mb-2">Mulai Sekarang</h2>
-        <p class="text-slate-400 text-sm">
-          Login atau daftar untuk masuk ke dashboard KARTEJI
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-cyan-500 mb-4 shadow-lg shadow-emerald-500/20">
+            <span class="material-symbols-rounded text-3xl text-slate-950">rocket_launch</span>
+        </div>
+        <h2 class="text-3xl font-black mb-2">Mulai Sekarang</h2>
+        <p class="text-slate-400 text-sm font-medium">
+          Masuk untuk mengelola organisasi lebih baik.
         </p>
       </div>
 
       <div class="space-y-4">
-        <a href="login.html"
-          class="block w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-center font-bold py-4 rounded-xl shadow-lg transition active:scale-95">
-          Login
+        <a href="pages/login.html"
+          class="block w-full bg-emerald-400 hover:bg-emerald-300 text-slate-950 text-center font-black py-4 rounded-2xl shadow-lg transition active:scale-[0.98]">
+          LOGIN
         </a>
-        <a href="register.html"
-          class="block w-full bg-slate-800 hover:bg-slate-700 text-white text-center font-semibold py-4 rounded-xl border border-slate-700 transition active:scale-95">
-          Daftar
+        <a href="pages/register.html"
+          class="block w-full bg-slate-800 hover:bg-slate-700 text-white text-center font-bold py-4 rounded-2xl border border-slate-700 transition active:scale-[0.98]">
+          DAFTAR AKUN
         </a>
       </div>
 
-      <p class="text-center text-xs text-slate-500 mt-8">
-        © 2025 Karang Taruna Cilosari Barat
+      <p class="text-center text-[10px] text-slate-600 font-bold uppercase tracking-widest mt-10">
+        Karang Taruna Cilosari Barat
       </p>
     </div>
   </section>
 
   <script>
+    /* ================= Logic ================= */
     const splashScreen = document.getElementById('splash-screen');
     const loadingBar = document.getElementById('loading-bar');
     const onboardingScreen = document.getElementById('onboarding-screen');
@@ -190,11 +200,20 @@
     const dots = document.querySelectorAll('.dot');
     const btnNext = document.getElementById('btn-next');
 
+    // Warna untuk dots agar matching dengan slide
+    const dotColors = ['bg-emerald-500', 'bg-sky-500', 'bg-amber-500', 'bg-indigo-500'];
+    const btnGradients = [
+        'from-emerald-500 to-teal-400', 
+        'from-sky-500 to-blue-400', 
+        'from-amber-500 to-orange-400', 
+        'from-indigo-500 to-purple-400'
+    ];
+
     let currentSlideIndex = 0;
 
+    // 1. Splash Screen Logic
     window.addEventListener('load', () => {
-      loadingBar.style.width = '100%';
-
+      // Tunggu animasi loading bar CSS selesai (2.5s)
       setTimeout(() => {
         splashScreen.classList.add('fade-out');
         setTimeout(() => {
@@ -205,9 +224,10 @@
             onboardingScreen.classList.add('fade-in');
           }, 50);
         }, 500);
-      }, 2200);
+      }, 2600);
     });
 
+    // 2. Slider Logic
     btnNext.addEventListener('click', () => {
       if (currentSlideIndex < slides.length - 1) {
         goToSlide(currentSlideIndex + 1);
@@ -217,45 +237,57 @@
     });
 
     function goToSlide(index) {
-      slides[currentSlideIndex].classList.remove('opacity-100','translate-x-0');
-      slides[currentSlideIndex].classList.add('opacity-0','-translate-x-full');
+      // Slide Out Current
+      const current = slides[currentSlideIndex];
+      current.classList.remove('slide-active');
+      current.classList.add('slide-hidden-left'); // Pergi ke kiri
 
       currentSlideIndex = index;
 
-      slides[currentSlideIndex].classList.remove('opacity-0','translate-x-full');
-      slides[currentSlideIndex].classList.add('opacity-100','translate-x-0');
+      // Slide In New
+      const next = slides[currentSlideIndex];
+      next.classList.remove('slide-hidden-right');
+      next.classList.add('slide-active');
 
-      updateDots();
-      updateButtonText();
+      updateUI();
     }
 
-    function updateDots() {
+    function updateUI() {
+      // Update Dots & Button Color
+      const colorClass = dotColors[currentSlideIndex];
+      const gradientClass = btnGradients[currentSlideIndex];
+
+      // Update Dots
       dots.forEach((dot, idx) => {
+        // Reset base classes
+        dot.className = "dot w-2 h-2 rounded-full bg-slate-700 transition-all duration-300";
+        
         if (idx === currentSlideIndex) {
-          dot.classList.add('bg-emerald-500','w-6');
-          dot.classList.remove('bg-slate-700','w-2');
-        } else {
-          dot.classList.add('bg-slate-700','w-2');
-          dot.classList.remove('bg-emerald-500','w-6');
+            dot.className = `dot w-8 h-2 rounded-full ${colorClass} transition-all duration-300`;
         }
       });
+
+      // Update Button Appearance
+      btnNext.className = `w-full bg-gradient-to-r ${gradientClass} text-white font-extrabold py-4 rounded-2xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2`;
+
+      // Update Button Text
+      if (currentSlideIndex === slides.length - 1) {
+          btnNext.innerHTML = `<span>MULAI</span><span class="material-symbols-rounded">rocket_launch</span>`;
+      } else {
+          btnNext.innerHTML = `<span>LANJUT</span><span class="material-symbols-rounded">arrow_forward</span>`;
+      }
     }
 
-    function updateButtonText() {
-      btnNext.innerHTML =
-        currentSlideIndex === slides.length - 1
-        ? `<span>Mulai</span><span class="material-symbols-rounded">rocket_launch</span>`
-        : `<span>Lanjut</span><span class="material-symbols-rounded">arrow_forward</span>`;
-    }
-
+    // 3. Finish Onboarding -> Show Auth
     function finishOnboarding() {
       onboardingScreen.classList.add('fade-out');
       setTimeout(() => {
         onboardingScreen.classList.add('hidden');
         authScreen.classList.remove('hidden');
         setTimeout(() => {
-          authScreen.classList.remove('opacity-0');
-          authScreen.classList.add('fade-in');
+            authScreen.classList.remove('opacity-0');
+            // Allow pointer events now
+            authScreen.classList.remove('pointer-events-none');
         }, 50);
       }, 500);
     }
