@@ -104,7 +104,6 @@
   <main class="px-5 mt-2 relative z-10">
 
       <section id="view-home" class="view-section active">
-          
           <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 group transition-all">
               <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500 transform group-hover:scale-110"><span class="material-symbols-rounded text-9xl">account_balance_wallet</span></div>
               <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-accent blur-3xl opacity-20"></div>
@@ -163,9 +162,9 @@
       </section>
 
       <section id="view-profile" class="view-section">
-        <div class="flex flex-col items-center pt-4">
+        <div class="flex flex-col items-center pt-4 pb-20">
             <div class="relative group cursor-pointer" onclick="$('profileUpload').click()">
-                <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl">
+                <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl shadow-slate-200">
                 <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <span class="material-symbols-rounded text-white">photo_camera</span>
                 </div>
@@ -175,22 +174,40 @@
             </div>
             <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
             
-            <h2 id="profileNameDisplay" class="text-xl font-bold text-brand-primary mt-4">Nama User</h2>
+            <h2 id="profileNameDisplay" class="text-xl font-bold text-brand-primary mt-4 mb-0.5">Nama User</h2>
+            <div id="profileRoleBadge" class="px-3 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-extrabold uppercase tracking-wide mb-1">ANGGOTA</div>
             <p id="profileEmailDisplay" class="text-sm text-slate-400">email@user.com</p>
 
-            <div class="w-full mt-8 space-y-4">
-                <div>
-                    <label class="text-xs font-bold text-slate-400 ml-1">NAMA LENGKAP</label>
-                    <input id="editName" type="text" class="w-full p-4 bg-white rounded-2xl border border-slate-200 text-brand-primary outline-none focus:border-accent font-bold mt-1">
+            <div class="w-full mt-8 space-y-4 px-1">
+                <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm space-y-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">badge</span> Nama Lengkap</label>
+                        <input id="editName" type="text" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-accent focus:bg-white transition-all">
+                    </div>
+                    
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">call</span> No. WhatsApp / HP</label>
+                        <input id="editPhone" type="tel" placeholder="08..." class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-accent focus:bg-white transition-all">
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">home_pin</span> Alamat Domisili</label>
+                        <textarea id="editAddress" rows="2" placeholder="Masukkan alamat lengkap..." class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-accent focus:bg-white transition-all resize-none"></textarea>
+                    </div>
+
+                     <div>
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">sticky_note_2</span> Bio / Catatan</label>
+                        <textarea id="editBio" rows="2" placeholder="Tulis sesuatu tentang anda..." class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-accent focus:bg-white transition-all resize-none"></textarea>
+                    </div>
                 </div>
                 
                 <button onclick="saveProfile()" class="w-full bg-brand-primary text-white py-4 rounded-2xl font-bold shadow-lg shadow-slate-300 hover:bg-slate-800 transition-all active:scale-95">
-                    SIMPAN PERUBAHAN
+                    SIMPAN PROFIL
                 </button>
 
                 <button id="logoutBtn" class="w-full bg-red-50 text-red-500 py-4 rounded-2xl font-bold hover:bg-red-100 transition-all active:scale-95 flex items-center justify-center gap-2">
                     <span class="material-symbols-rounded">logout</span>
-                    KELUAR AKUN
+                    KELUAR
                 </button>
             </div>
         </div>
@@ -283,8 +300,10 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const CLOUD_NAME = "dbxktcwug";
-    const UPLOAD_PRESET = "Karteji";
+
+    // --- KONFIGURASI CLOUDINARY ANDA ---
+    const CLOUD_NAME = "dbxktcwug"; // GANTI INI
+    const UPLOAD_PRESET = "Karteji"; // GANTI INI (Pastikan Mode Unsigned)
 
     const $ = (id) => document.getElementById(id);
     let ME_UID = null;
@@ -328,14 +347,27 @@
         $("modalSubmitBtn").onclick = onSave;
     };
 
+    // --- UPLOAD LOGIC ---
     async function uploadToCloudinary(file) {
         if(!file) return null;
+        if(!file.type.startsWith('image/')){
+            alert("File harus berupa gambar!");
+            throw new Error("Invalid file type");
+        }
         const form = new FormData();
         form.append("file", file);
         form.append("upload_preset", UPLOAD_PRESET);
-        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: "POST", body: form });
-        const d = await res.json();
-        return { url: d.secure_url };
+
+        try {
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: "POST", body: form });
+            const d = await res.json();
+            if(d.error) throw new Error(d.error.message);
+            return { url: d.secure_url };
+        } catch (err) {
+            console.error(err);
+            alert("Gagal Upload. Cek koneksi atau konfigurasi Cloudinary.");
+            throw err;
+        }
     }
 
     // --- FIREBASE INIT ---
@@ -386,7 +418,7 @@
         $("userCountBadge").textContent = u.size;
     }
 
-    // --- PROFILE LOGIC ---
+    // --- PROFILE LOGIC (DIPERBARUI) ---
     async function loadProfileData() {
         const snap = await getDoc(doc(db, "users", ME_UID));
         if(snap.exists()){
@@ -399,7 +431,16 @@
             $("profileImage").src = photoUrl;
             $("profileNameDisplay").textContent = d.name;
             $("profileEmailDisplay").textContent = d.email;
-            $("editName").value = d.name;
+            
+            // Badge Role
+            const role = d.role ? d.role.replace('_', ' ') : 'ANGGOTA';
+            $("profileRoleBadge").textContent = role;
+
+            // Form Fields
+            $("editName").value = d.name || "";
+            $("editPhone").value = d.phone || "";
+            $("editAddress").value = d.address || "";
+            $("editBio").value = d.bio || "";
         }
     }
 
@@ -413,20 +454,35 @@
     }
 
     window.saveProfile = async () => {
+        const btn = event.target;
+        const originalText = btn.innerText;
+        btn.innerText = "MENYIMPAN...";
+        btn.disabled = true;
+        
         toggleLoader(true);
         try {
-            let updateData = { name: $("editName").value };
+            let updateData = { 
+                name: $("editName").value,
+                phone: $("editPhone").value,
+                address: $("editAddress").value,
+                bio: $("editBio").value
+            };
             
             if(newProfileFile) {
                 const uploaded = await uploadToCloudinary(newProfileFile);
-                updateData.photo = uploaded;
+                if(uploaded) updateData.photo = uploaded;
             }
 
             await updateDoc(doc(db, "users", ME_UID), updateData);
             alert("Profil berhasil diperbarui!");
             await loadProfileData();
-        } catch(e) { console.error(e); alert("Gagal update profil"); }
+            newProfileFile = null;
+        } catch(e) { 
+            console.error(e); 
+        }
         toggleLoader(false);
+        btn.innerText = originalText;
+        btn.disabled = false;
     }
 
     // --- LIST LOADERS ---
@@ -438,7 +494,7 @@
         snap.forEach(d => {
             const u = d.data();
             if(d.id === ME_UID) return;
-            let options = roles.map(r => `<option value="${r}" ${u.role===r ? 'selected' : ''}>${r.substr(0,1).toUpperCase()+r.substr(1)}</option>`).join('');
+            let options = roles.map(r => `<option value="${r}" ${u.role===r ? 'selected' : ''}>${r.replace('_',' ').toUpperCase()}</option>`).join('');
 
             list.innerHTML += `
                 <div class="bg-white p-4 rounded-2xl flex items-center justify-between border border-slate-100 shadow-sm">
@@ -472,17 +528,20 @@
             const f = d.data();
             const isInc = f.type === 'income';
             list.innerHTML += `
-                <div class="bg-white p-4 rounded-2xl flex justify-between items-center border border-slate-100 shadow-sm">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full ${isInc ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'} flex items-center justify-center">
+                <div class="bg-white p-4 rounded-2xl flex justify-between items-start border border-slate-100 shadow-sm transition-all">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-full ${isInc ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'} flex items-center justify-center shrink-0">
                             <span class="material-symbols-rounded text-xl">${isInc ? 'arrow_downward' : 'arrow_upward'}</span>
                         </div>
                         <div>
-                            <p class="text-sm font-bold text-brand-primary line-clamp-1">${f.note}</p>
-                            <p class="text-[10px] text-slate-400 font-medium">${new Date(f.createdAt?.seconds*1000).toLocaleDateString()}</p>
+                            <p class="text-sm font-bold text-brand-primary line-clamp-1 break-all">${f.note}</p>
+                            <div class="flex items-center gap-2 mt-1">
+                                <p class="text-[10px] text-slate-400 font-medium">${new Date(f.createdAt?.seconds*1000).toLocaleDateString()}</p>
+                                <button onclick="deleteDocData('financial_records','${d.id}')" class="text-[10px] text-red-500 font-bold bg-red-50 px-2 py-0.5 rounded-md active:scale-95 transition-transform">Hapus</button>
+                            </div>
                         </div>
                     </div>
-                    <p class="text-sm font-bold ${isInc?'text-green-600':'text-red-500'}">${isInc?'+':'-'} ${Number(f.amount).toLocaleString()}</p>
+                    <p class="text-sm font-bold ${isInc?'text-green-600':'text-red-500'} whitespace-nowrap">${isInc?'+':'-'} ${Number(f.amount).toLocaleString()}</p>
                 </div>
             `;
         });
@@ -496,12 +555,14 @@
             list.innerHTML += `
                 <div class="bg-white p-0 rounded-2xl overflow-hidden border border-slate-100 shadow-sm flex h-28 relative group">
                     <img src="${x.cover?.url || 'https://via.placeholder.com/150'}" class="w-28 h-full object-cover">
-                    <div class="p-4 flex flex-col justify-center w-full">
+                    <div class="p-4 flex flex-col justify-center w-full min-w-0">
                         <div class="bg-blue-50 w-fit px-2 py-0.5 rounded text-[9px] text-blue-600 font-bold uppercase mb-1">${x.date}</div>
                         <h3 class="text-sm font-bold text-brand-primary line-clamp-2 leading-tight">${x.title}</h3>
                         <p class="text-[10px] text-slate-400 line-clamp-1 flex items-center gap-1 mt-1.5"><span class="material-symbols-rounded text-[12px]">location_on</span> ${x.location}</p>
                     </div>
-                    <button onclick="deleteDocData('activities','${d.id}')" class="absolute top-2 right-2 text-white bg-red-500/80 rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity"><span class="material-symbols-rounded text-sm">delete</span></button>
+                    <button onclick="deleteDocData('activities','${d.id}')" class="absolute bottom-2 right-2 text-red-500 bg-white shadow-md border border-slate-100 rounded-full p-2 z-20 active:scale-90 transition-transform">
+                        <span class="material-symbols-rounded text-lg">delete</span>
+                    </button>
                 </div>
             `;
         });
@@ -519,7 +580,7 @@
                             ${n.level==='important' ? '<span class="material-symbols-rounded text-red-500 text-sm">warning</span>' : '<span class="material-symbols-rounded text-accent text-sm">info</span>'}
                             ${n.title}
                         </h4>
-                        <button onclick="deleteDocData('notifications','${d.id}')" class="text-slate-300 hover:text-red-500"><span class="material-symbols-rounded text-sm">close</span></button>
+                        <button onclick="deleteDocData('notifications','${d.id}')" class="text-slate-300 hover:text-red-500 active:scale-90 transition-transform"><span class="material-symbols-rounded text-lg">close</span></button>
                     </div>
                     <p class="text-xs text-slate-500 leading-relaxed">${n.body}</p>
                 </div>
@@ -536,8 +597,11 @@
         `;
         showModal("Catat Kas", html, async () => {
             toggleLoader(true);
-            await addDoc(collection(db,"financial_records"), { type: $("finT").value, amount: $("finA").value, note: $("finN").value, status: "approved", createdAt: serverTimestamp() });
-            closeModal(); await loadHomeData(); toggleLoader(false);
+            try {
+                await addDoc(collection(db,"financial_records"), { type: $("finT").value, amount: $("finA").value, note: $("finN").value, status: "approved", createdAt: serverTimestamp() });
+                closeModal(); await loadHomeData();
+            } catch(e) { alert("Gagal menyimpan kas"); console.error(e); }
+            toggleLoader(false);
         });
     };
 
@@ -553,9 +617,15 @@
         `;
         showModal("Acara Baru", html, async () => {
             toggleLoader(true);
-            let cover = await uploadToCloudinary($("actF").files[0]);
-            await addDoc(collection(db,"activities"), { title:$("actT").value, date:$("actD").value, location:$("actL").value, cover, status:"approved", createdAt:serverTimestamp() });
-            closeModal(); await loadHomeData(); toggleLoader(false);
+            try {
+                let cover = null;
+                if($("actF").files.length > 0) {
+                     cover = await uploadToCloudinary($("actF").files[0]);
+                }
+                await addDoc(collection(db,"activities"), { title:$("actT").value, date:$("actD").value, location:$("actL").value, cover, status:"approved", createdAt:serverTimestamp() });
+                closeModal(); await loadHomeData();
+            } catch(e) { console.error(e); }
+            toggleLoader(false);
         });
     };
     
