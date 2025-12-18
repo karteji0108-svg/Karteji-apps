@@ -15,18 +15,10 @@
         extend: {
           fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
           colors: {
-            brand: {
-              primary: '#0F172A', // Navy Utama
-              light: '#334155',
-            },
-            accent: {
-              DEFAULT: '#F97316', // Orange
-              light: '#FFEDD5',
-            }
+            brand: { primary: '#0F172A', light: '#334155' },
+            accent: { DEFAULT: '#F97316', light: '#FFEDD5' }
           },
-          animation: {
-            'blob': 'blob 10s infinite',
-          },
+          animation: { 'blob': 'blob 10s infinite' },
           keyframes: {
             blob: {
               '0%': { transform: 'translate(0px, 0px) scale(1)' },
@@ -41,11 +33,8 @@
   </script>
 
   <style>
-    /* Styling Dasar Light Mode */
     body { background-color: #F8FAFC; color: #1E293B; -webkit-tap-highlight-color: transparent; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
-    
-    /* Glass Effect Navigasi Bawah */
     .glass-nav {
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(20px);
@@ -53,12 +42,8 @@
       border-top: 1px solid rgba(15, 23, 42, 0.05);
       box-shadow: 0 -10px 40px rgba(0,0,0,0.05);
     }
-
-    /* Animasi Transisi Halaman */
     .view-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
     .view-section.active { display: block; opacity: 1; transform: translateY(0); }
-
-    /* Tombol Navigasi Aktif */
     .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #F97316; }
     .nav-btn.active p { color: #0F172A; font-weight: 700; }
   </style>
@@ -71,9 +56,9 @@
     <div class="absolute top-[20%] right-[-10%] w-96 h-96 bg-orange-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
   </div>
 
-  <div id="globalLoader" class="fixed inset-0 bg-white/80 z-[9999] flex items-center justify-center flex-col gap-4 backdrop-blur-md">
+  <div id="globalLoader" class="fixed inset-0 bg-white/80 z-[9999] flex items-center justify-center flex-col gap-4 backdrop-blur-md hidden">
     <div class="w-12 h-12 border-4 border-slate-200 border-t-accent rounded-full animate-spin"></div>
-    <p id="loaderMsg" class="text-xs font-bold text-slate-400 tracking-widest animate-pulse">MEMUAT...</p>
+    <p class="text-xs font-bold text-slate-400 animate-pulse">MEMUAT...</p>
   </div>
 
   <div id="gate" class="fixed inset-0 bg-slate-900 z-[9998] hidden items-center justify-center p-6 text-center">
@@ -101,7 +86,7 @@
   <header class="sticky top-0 z-30 px-6 pt-8 pb-4 bg-gradient-to-b from-[#F8FAFC] via-[#F8FAFC] to-transparent">
       <div class="flex justify-between items-center">
           <div class="flex items-center gap-3">
-              <button onclick="switchView('profile')" class="relative group">
+              <button onclick="switchView('profile')" class="relative group active:scale-95 transition-transform">
                 <img id="headerPhoto" class="w-11 h-11 rounded-full border-2 border-white shadow-md object-cover" src="https://via.placeholder.com/100">
                 <div class="absolute bottom-0 right-0 w-3 h-3 bg-accent border-2 border-white rounded-full"></div>
               </button>
@@ -110,7 +95,7 @@
                   <h1 id="headerName" class="text-xl font-extrabold text-brand-primary leading-none">Memuat...</h1>
               </div>
           </div>
-          <button id="logoutBtn" class="w-10 h-10 rounded-full bg-white border border-slate-100 shadow-sm flex items-center justify-center text-red-500 hover:bg-red-50 hover:border-red-100 transition-all">
+          <button id="logoutBtn" class="w-10 h-10 rounded-full bg-white border border-slate-100 shadow-sm flex items-center justify-center text-red-500 hover:bg-red-50 hover:border-red-100 transition-all active:scale-95">
             <span class="material-symbols-rounded text-xl">logout</span>
           </button>
       </div>
@@ -119,15 +104,11 @@
   <main class="px-5 mt-2 relative z-10">
 
       <section id="view-home" class="view-section active">
-          
           <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 group transition-all">
               <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500 transform group-hover:scale-110"><span class="material-symbols-rounded text-9xl">account_balance_wallet</span></div>
-              <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-accent blur-3xl opacity-20"></div>
-              
               <div class="relative z-10">
                 <p class="text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Total Kas Organisasi</p>
                 <h2 id="cardBalance" class="text-4xl font-black tracking-tight mb-8">Rp 0</h2>
-
                 <div class="grid grid-cols-2 gap-3">
                     <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5">
                         <div class="flex items-center gap-1.5 mb-1">
@@ -148,7 +129,7 @@
           </div>
 
           <div class="grid grid-cols-2 gap-3 mt-6">
-              <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-36 relative group overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer" onclick="switchView('activities')">
+              <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-36 relative group overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer active:scale-95" onclick="switchView('activities')">
                    <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent opacity-50"></div>
                    <div class="relative z-10">
                        <span class="material-symbols-rounded text-blue-500 mb-2 text-2xl">event</span>
@@ -157,7 +138,7 @@
                    <h3 id="widgetEvent" class="relative z-10 text-xs font-bold text-brand-primary line-clamp-2 leading-relaxed mt-1">Belum ada acara</h3>
               </div>
 
-              <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-36 relative group overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer">
+              <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-36 relative group overflow-hidden shadow-sm hover:shadow-md transition-all">
                    <div class="absolute inset-0 bg-gradient-to-br from-orange-50 to-transparent opacity-50"></div>
                    <div class="relative z-10">
                        <span class="material-symbols-rounded text-accent mb-2 text-2xl">campaign</span>
@@ -182,9 +163,9 @@
       </section>
 
       <section id="view-profile" class="view-section">
-        <div class="flex flex-col items-center pt-4">
-            <div class="relative group cursor-pointer" onclick="$('profileUpload').click()">
-                <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl">
+        <div class="flex flex-col items-center pt-4 pb-20">
+            <div class="relative group cursor-pointer active:scale-95 transition-transform" onclick="$('profileUpload').click()">
+                <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl shadow-slate-200">
                 <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <span class="material-symbols-rounded text-white">photo_camera</span>
                 </div>
@@ -194,23 +175,31 @@
             </div>
             <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
             
-            <h2 id="profileNameDisplay" class="text-xl font-bold text-brand-primary mt-4">Nama Ketua</h2>
+            <h2 id="profileNameDisplay" class="text-xl font-bold text-brand-primary mt-4 mb-0.5">Nama Ketua</h2>
+            <div id="profileRoleBadge" class="px-3 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-extrabold uppercase tracking-wide mb-1">KETUA</div>
             <p id="profileEmailDisplay" class="text-sm text-slate-400">email@user.com</p>
 
-            <div class="w-full mt-8 space-y-4">
-                <div>
-                    <label class="text-xs font-bold text-slate-400 ml-1">NAMA LENGKAP</label>
-                    <input id="editName" type="text" class="w-full p-4 bg-white rounded-2xl border border-slate-200 text-brand-primary outline-none focus:border-accent font-bold mt-1">
+            <div class="w-full mt-8 space-y-4 px-1">
+                <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm space-y-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">badge</span> Nama Lengkap</label>
+                        <input id="editName" type="text" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-accent focus:bg-white transition-all">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">call</span> No. WhatsApp / HP</label>
+                        <input id="editPhone" type="tel" placeholder="08..." class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-accent focus:bg-white transition-all">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">home_pin</span> Alamat Domisili</label>
+                        <textarea id="editAddress" rows="2" placeholder="Masukkan alamat lengkap..." class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-accent focus:bg-white transition-all resize-none"></textarea>
+                    </div>
+                     <div>
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">sticky_note_2</span> Bio / Catatan</label>
+                        <textarea id="editBio" rows="2" placeholder="Tulis sesuatu tentang anda..." class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-accent focus:bg-white transition-all resize-none"></textarea>
+                    </div>
                 </div>
                 
-                <button onclick="saveProfile()" class="w-full bg-brand-primary text-white py-4 rounded-2xl font-bold shadow-lg shadow-slate-300 hover:bg-slate-800 transition-all active:scale-95">
-                    SIMPAN PERUBAHAN
-                </button>
-
-                <button onclick="document.getElementById('logoutBtn').click()" class="w-full bg-red-50 text-red-500 py-4 rounded-2xl font-bold hover:bg-red-100 transition-all active:scale-95 flex items-center justify-center gap-2">
-                    <span class="material-symbols-rounded">logout</span>
-                    KELUAR AKUN
-                </button>
+                <button onclick="saveProfile()" class="w-full bg-brand-primary text-white py-4 rounded-2xl font-bold shadow-lg shadow-slate-300 hover:bg-slate-800 transition-all active:scale-95">SIMPAN PROFIL</button>
             </div>
         </div>
       </section>
@@ -232,7 +221,7 @@
           <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
             <div>
                 <h2 class="text-2xl font-bold text-brand-primary">Laporan Kas</h2>
-                <p class="text-xs text-slate-400">Monitoring dana</p>
+                <p class="text-xs text-slate-400">Monitoring dana (View Only)</p>
             </div>
           </div>
           <div id="finList" class="space-y-3 pb-20"></div>
@@ -283,23 +272,24 @@
       messagingSenderId: "1017734829960",
       appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d"
     };
-
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // ============================================================
+    // KONFIGURASI CLOUDINARY
+    // ============================================================
     const CLOUD_NAME = "dbxktcwug";
-    const PRESET_PROFILE = "Karteji";
-    const PRESET_GALLERY = "Karteji Galeri";
+    const UPLOAD_PRESET = "Karteji"; 
 
-    const $ = (id) => document.getElementById(id);
+    // --- GLOBAL HELPER ---
+    window.$ = (id) => document.getElementById(id);
     let UID = null;
     let newProfileFile = null;
 
-    // --- UTILITIES UI ---
-    window.toggleLoader = (show, msg="MEMUAT...") => {
+    // --- UI UTILS ---
+    window.toggleLoader = (show) => {
         const l = $("globalLoader");
-        $("loaderMsg").textContent = msg;
         if(show) { l.classList.remove('hidden'); l.classList.add('flex'); }
         else { l.classList.add('hidden'); l.classList.remove('flex'); }
     };
@@ -310,7 +300,11 @@
         $("modalBody").innerHTML = bodyHtml;
         $("crudModal").classList.remove('hidden');
         $("crudModal").classList.add('flex');
-        $("modalSubmitBtn").onclick = onSave;
+        
+        const btn = $("modalSubmitBtn");
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        newBtn.onclick = onSave;
     };
 
     window.switchView = (viewId) => {
@@ -326,28 +320,39 @@
         const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`);
         if(activeBtn) activeBtn.classList.add('active');
         
-        // Refresh specific data
         if(viewId === 'home') loadHomeData();
         if(viewId === 'users') loadUsers();
         if(viewId === 'profile') loadProfileData();
+        if(viewId === 'activities') loadActivities();
+        if(viewId === 'finance') loadFinance();
     };
 
-    async function upload(file, preset, folder){
+    // --- UPLOAD LOGIC ---
+    async function upload(file) {
+        if(!file) return null;
+        if(!file.type.startsWith('image/')){ alert("File harus gambar!"); return null; }
+
         const fd = new FormData();
         fd.append("file", file);
-        fd.append("upload_preset", preset);
-        fd.append("folder", folder);
-        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,{ method:"POST", body:fd });
-        const data = await res.json();
-        if(!res.ok) throw new Error("Upload Gagal");
-        return { url:data.secure_url };
+        fd.append("upload_preset", UPLOAD_PRESET);
+
+        try {
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{ method:"POST", body:fd });
+            const data = await res.json();
+            if(data.error) throw new Error(data.error.message);
+            return { url:data.secure_url };
+        } catch(e) {
+            console.error(e);
+            alert("Gagal Upload Gambar: " + e.message);
+            throw e;
+        }
     }
 
     // --- AUTH & INIT ---
     onAuthStateChanged(auth, async user => {
         if(!user) return location.href = "login.html";
         
-        toggleLoader(true, "CEK AKSES...");
+        toggleLoader(true);
         try {
             const snap = await getDoc(doc(db,"users",user.uid));
             if(!snap.exists() || (snap.data().role !== "ketua" && snap.data().role !== "super_admin")){
@@ -357,7 +362,6 @@
                 return;
             }
             UID = user.uid;
-            
             await Promise.all([loadHomeData(), loadUsers(), loadActivities(), loadFinance(), loadProfileData()]);
         } catch(e) { console.error(e); }
         toggleLoader(false);
@@ -366,8 +370,7 @@
     // --- HOME DASHBOARD ---
     async function loadHomeData() {
         const fin = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc")));
-        let bal = 0;
-        let lastInc = 0, lastExp = 0;
+        let bal = 0, lastInc = 0, lastExp = 0;
 
         fin.forEach(d => {
             const f = d.data();
@@ -394,20 +397,25 @@
         else $("widgetAlert").textContent = "Tidak ada info penting";
     }
 
-    // --- PROFILE LOGIC ---
+    // --- PROFILE ---
     async function loadProfileData() {
-        const snap = await getDoc(doc(db, "users", UID));
-        if(snap.exists()){
-            const d = snap.data();
-            const photoUrl = d.photo?.url || "https://via.placeholder.com/150";
-            $("headerName").textContent = d.name || "Ketua";
-            $("headerPhoto").src = photoUrl;
-            
-            $("profileImage").src = photoUrl;
-            $("profileNameDisplay").textContent = d.name;
-            $("profileEmailDisplay").textContent = d.email;
-            $("editName").value = d.name;
-        }
+        try {
+            const snap = await getDoc(doc(db, "users", UID));
+            if(snap.exists()){
+                const d = snap.data();
+                $("headerName").textContent = d.name || "Ketua";
+                $("headerPhoto").src = d.photo?.url || "https://via.placeholder.com/150";
+                
+                $("profileImage").src = d.photo?.url || "https://via.placeholder.com/150";
+                $("profileNameDisplay").textContent = d.name;
+                $("profileEmailDisplay").textContent = d.email;
+                
+                $("editName").value = d.name || "";
+                $("editPhone").value = d.phone || "";
+                $("editAddress").value = d.address || "";
+                $("editBio").value = d.bio || "";
+            }
+        } catch(e) { console.error(e); }
     }
 
     window.previewProfileImage = (input) => {
@@ -422,19 +430,25 @@
     window.saveProfile = async () => {
         toggleLoader(true);
         try {
-            let updateData = { name: $("editName").value };
+            let updateData = { 
+                name: $("editName").value,
+                phone: $("editPhone").value,
+                address: $("editAddress").value,
+                bio: $("editBio").value
+            };
+            
             if(newProfileFile) {
-                const uploaded = await upload(newProfileFile, PRESET_PROFILE, `karteji/users/${UID}`);
+                const uploaded = await upload(newProfileFile);
                 updateData.photo = uploaded;
             }
             await updateDoc(doc(db, "users", UID), updateData);
             alert("Profil berhasil diperbarui!");
             await loadProfileData();
         } catch(e) { console.error(e); alert("Gagal update profil"); }
-        toggleLoader(false);
+        finally { toggleLoader(false); }
     }
 
-    // --- USERS MANAGEMENT ---
+    // --- USERS ---
     async function loadUsers(){
         const list = $("userList"); list.innerHTML = "";
         const snap = await getDocs(query(collection(db,"users"), orderBy("name","asc")));
@@ -452,7 +466,6 @@
 
             if(isSuper) {
                 controlHTML = `<div class="bg-red-50 text-red-500 px-2 py-0.5 rounded text-[10px] font-bold w-fit mt-1 border border-red-100 flex items-center gap-1"><span class="material-symbols-rounded text-[10px]">lock</span> SUPER ADMIN</div>`;
-                deleteBtnHTML = `<div class="w-9 h-9"></div>`; 
             } else {
                 let options = roles.map(r => `<option value="${r}" ${u.role===r ? 'selected' : ''}>${r.substr(0,1).toUpperCase()+r.substr(1)}</option>`).join('');
                 controlHTML = `
@@ -464,7 +477,7 @@
                     </div>
                 `;
                 deleteBtnHTML = `
-                    <button onclick="deleteDocData('users','${d.id}')" class="w-9 h-9 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm border border-red-100">
+                    <button onclick="deleteDocData('users','${d.id}')" class="w-9 h-9 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm border border-red-100 active:scale-95">
                         <span class="material-symbols-rounded text-lg">delete</span>
                     </button>
                 `;
@@ -472,26 +485,27 @@
             
             list.innerHTML += `
                 <div class="bg-white p-4 rounded-2xl flex items-center justify-between border border-slate-100 shadow-sm">
-                     <div class="flex items-center gap-3 overflow-hidden w-full">
+                      <div class="flex items-center gap-3 overflow-hidden w-full">
                         <img src="${u.photo?.url || 'https://via.placeholder.com/50'}" class="w-10 h-10 rounded-full object-cover bg-slate-200 border border-slate-100">
                         <div class="min-w-0 w-full pr-2">
                             <p class="text-sm font-bold text-brand-primary truncate">${u.name || '-'}</p>
                             ${controlHTML}
                         </div>
-                     </div>
-                     ${deleteBtnHTML}
+                      </div>
+                      ${deleteBtnHTML}
                 </div>
             `;
         });
     }
 
     window.changeRole = async (uid, val) => {
-        toggleLoader(true, "UPDATE ROLE...");
-        await updateDoc(doc(db, "users", uid), { role: val });
-        toggleLoader(false);
+        toggleLoader(true);
+        try { await updateDoc(doc(db, "users", uid), { role: val }); }
+        catch(e) { alert("Gagal update role"); }
+        finally { toggleLoader(false); }
     }
 
-    // --- ACTIVITIES MANAGEMENT ---
+    // --- ACTIVITIES ---
     async function loadActivities(){
         const list = $("actList"); list.innerHTML = "";
         const snap = await getDocs(query(collection(db,"activities"), orderBy("createdAt","desc")));
@@ -505,8 +519,8 @@
                         <h3 class="text-sm font-bold text-brand-primary line-clamp-2 leading-tight">${x.title}</h3>
                         <p class="text-[10px] text-slate-400 mt-1 bg-slate-100 w-fit px-2 py-0.5 rounded uppercase font-bold tracking-wider">${x.status || 'Active'}</p>
                     </div>
-                    <button onclick="deleteDocData('activities','${d.id}')" class="absolute top-2 right-2 w-8 h-8 bg-white/90 text-red-500 rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm opacity-0 group-hover:opacity-100">
-                        <span class="material-symbols-rounded text-base">delete</span>
+                    <button onclick="deleteDocData('activities','${d.id}')" class="absolute bottom-2 right-2 w-10 h-10 bg-white text-red-500 rounded-full flex items-center justify-center hover:bg-red-50 hover:text-white transition-all shadow-md active:scale-95 border border-slate-100">
+                        <span class="material-symbols-rounded text-xl">delete</span>
                     </button>
                 </div>
             `;
@@ -529,14 +543,14 @@
             toggleLoader(true);
             try {
                 let cover = null;
-                if(file) cover = await upload(file, PRESET_GALLERY, "karteji/activities");
+                if(file) cover = await upload(file);
                 
                 await addDoc(collection(db,"activities"), {
                     title, cover, status: "approved", createdByUid: UID, createdAt: serverTimestamp()
                 });
                 closeModal(); await loadActivities(); await loadHomeData();
             } catch(e) { alert("Gagal tambah"); }
-            toggleLoader(false);
+            finally { toggleLoader(false); }
         });
     }
 
@@ -570,14 +584,14 @@
     // --- GLOBAL DELETE ---
     window.deleteDocData = async (col, id) => {
         if(!confirm("Hapus data ini secara permanen?")) return;
-        toggleLoader(true, "MENGHAPUS...");
+        toggleLoader(true);
         try {
             await deleteDoc(doc(db, col, id));
             if(col === 'users') loadUsers();
             if(col === 'activities') loadActivities();
             await loadHomeData();
         } catch(e) { alert("Gagal hapus"); }
-        toggleLoader(false);
+        finally { toggleLoader(false); }
     };
 
     $("logoutBtn").onclick = async () => {
