@@ -281,11 +281,10 @@
     const db = getFirestore(app);
 
     // ============================================================
-    // ⚠️⚠️ WAJIB DIUBAH AGAR BISA UPLOAD GAMBAR ⚠️⚠️
-    // Ganti dengan akun Cloudinary Anda sendiri (Daftar di cloudinary.com)
+    // SUDAH DI-SET SESUAI PERMINTAAN:
     // ============================================================
-    const CLOUD_NAME = "YOUR_CLOUD_NAME";       // CONTOH: "dy6h7..."
-    const UPLOAD_PRESET = "YOUR_UPLOAD_PRESET"; // CONTOH: "ml_default" atau buat baru mode Unsigned
+    const CLOUD_NAME = "dbxktcwug";
+    const UPLOAD_PRESET = "Karteji"; 
 
     // --- HELPER GLOBAL (Agar bisa dipanggil HTML) ---
     window.$ = (id) => document.getElementById(id);
@@ -339,11 +338,6 @@
         if(!file) return null;
         if(!file.type.startsWith('image/')){ alert("File harus gambar!"); return null; }
         
-        if(CLOUD_NAME === "YOUR_CLOUD_NAME") {
-            alert("ERROR: Anda belum mengganti CLOUD_NAME di dalam Script Code!");
-            throw new Error("Config Error");
-        }
-
         const form = new FormData();
         form.append("file", file);
         form.append("upload_preset", UPLOAD_PRESET);
@@ -462,7 +456,7 @@
             newProfileFile = null;
         } catch(e) { 
             console.error(e);
-            if(e.message !== "Config Error") alert("Terjadi kesalahan: " + e.message);
+            alert("Terjadi kesalahan: " + e.message);
         } finally {
             toggleLoader(false);
             btn.innerText = originalText;
