@@ -129,7 +129,7 @@
       <button onclick="finishOnboarding()" class="text-slate-400 text-sm font-semibold hover:text-brand-primary transition-colors">Lewati</button>
     </div>
 
-    <div class="flex-1 relative flex items-center justify-center">
+    <div id="slider-container" class="flex-1 relative flex items-center justify-center touch-pan-y">
       <div class="slide absolute w-full text-center transition-all duration-700 ease-out slide-active" data-index="0">
         <div class="relative w-64 h-64 mx-auto mb-8">
             <div class="absolute inset-0 border-2 border-dashed border-slate-300 rounded-full animate-spin-slow"></div>
@@ -231,13 +231,18 @@
     const slides = document.querySelectorAll('.slide');
     const dots = document.querySelectorAll('.dot');
     
+    // UPDATE: Select container for Swipe Logic
+    const sliderContainer = document.getElementById('slider-container');
+    
     let currentIndex = 0;
+    
+    // UPDATE: Variables for Swipe Logic
+    let touchStartX = 0;
+    let touchEndX = 0;
 
     window.onload = () => {
-        // Delay sedikit agar animasi CSS berjalan dulu sebelum loading bar jalan
         setTimeout(() => { loading.style.width = '100%'; }, 800); 
 
-        // Total durasi splash agak sedikit diperpanjang agar animasi pembuka selesai
         setTimeout(() => {
             splash.style.opacity = '0';
             setTimeout(() => {
@@ -245,7 +250,7 @@
                 onboarding.style.display = 'flex';
                 setTimeout(() => onboarding.classList.remove('opacity-0'), 50);
             }, 1000); 
-        }, 3000); // Diperpanjang sedikit ke 3 detik untuk mengakomodasi delay animasi
+        }, 3000); 
     };
 
     btnNext.addEventListener('click', () => {
@@ -255,6 +260,39 @@
             showAuth();
         }
     });
+    
+    // --- UPDATE: SWIPE EVENT LISTENERS ---
+    sliderContainer.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, {passive: true});
+
+    sliderContainer.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, {passive: true});
+
+    function handleSwipe() {
+        // Minimal jarak usap (threshold) agar tidak terlalu sensitif (misal 50px)
+        const swipeThreshold = 50; 
+        
+        // Cek arah usapan
+        if (touchStartX - touchEndX > swipeThreshold) {
+            // Swipe ke KIRI (Next Slide)
+            if(currentIndex < slides.length - 1) {
+                changeSlide(currentIndex + 1);
+            } else {
+                showAuth();
+            }
+        }
+        
+        if (touchEndX - touchStartX > swipeThreshold) {
+            // Swipe ke KANAN (Previous Slide)
+            if(currentIndex > 0) {
+                changeSlide(currentIndex - 1);
+            }
+        }
+    }
+    // ------------------------------------
 
     function changeSlide(newIndex) {
         slides[currentIndex].className = "slide absolute w-full text-center transition-all duration-700 ease-out slide-exit";
@@ -286,6 +324,13 @@
             btnNext.innerHTML = `<span class="relative z-10">Mulai Sekarang</span>`;
             btnNext.classList.remove('bg-brand-primary');
             btnNext.classList.add('bg-accent'); 
+        } else {
+             // Reset button style if user swipes back
+            btnNext.innerHTML = `<span class="relative z-10">Lanjut</span>
+            <span class="material-symbols-rounded relative z-10 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+            <div class="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>`;
+            btnNext.classList.add('bg-brand-primary');
+            btnNext.classList.remove('bg-accent');
         }
     }
 
