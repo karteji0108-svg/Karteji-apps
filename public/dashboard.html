@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Memuat Dashboard | KARTEJI</title>
+  <title>KARTEJI MAX | Super App</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0" />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
     tailwind.config = {
@@ -15,28 +16,22 @@
         extend: {
           fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
           colors: {
-            brand: {
-              primary: '#0F172A', // Navy Utama
-            },
-            accent: {
-              DEFAULT: '#F97316', // Orange
-            }
+            brand: { primary: '#0F172A', secondary: '#1E293B', light: '#334155' },
+            accent: { DEFAULT: '#F97316', hover: '#EA580C', light: '#FFEDD5' },
+            success: '#10B981',
+            danger: '#EF4444'
           },
-          animation: {
-            'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-            'blob': 'blob 10s infinite',
-            'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-          },
+          animation: { 'blob': 'blob 10s infinite', 'slide-up': 'slideUp 0.3s ease-out' },
           keyframes: {
-            slideUp: {
-              'from': { transform: 'translateY(40px)', opacity: '0' },
-              'to': { transform: 'translateY(0)', opacity: '1' }
-            },
             blob: {
               '0%': { transform: 'translate(0px, 0px) scale(1)' },
               '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
               '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
               '100%': { transform: 'translate(0px, 0px) scale(1)' },
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
             }
           }
         }
@@ -45,157 +40,687 @@
   </script>
 
   <style>
-    .glass-card {
-      background: rgba(255, 255, 255, 0.85);
+    body { background-color: #F1F5F9; color: #1E293B; -webkit-tap-highlight-color: transparent; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    
+    /* Premium Glass Effect */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.7);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.5);
     }
-    body::-webkit-scrollbar { display: none; }
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(0,0,0,0.05);
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.02);
+    }
+
+    /* Page Transitions */
+    .view-section { display: none; animation: fadeIn 0.3s ease-in-out; }
+    .view-section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Nav Button Active State */
+    .nav-btn { transition: all 0.2s ease; }
+    .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #F97316; transform: scale(1.1); }
+    .nav-btn.active p { color: #0F172A; font-weight: 700; }
+    
+    /* Skeleton Loading */
+    .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
   </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 h-screen w-screen overflow-hidden relative">
+<body class="min-h-screen relative overflow-x-hidden pb-32 select-none">
 
   <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
-    <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-orange-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
+    <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-200 rounded-full mix-blend-multiply filter blur-[100px] opacity-40 animate-blob"></div>
+    <div class="absolute top-[20%] right-[-10%] w-[400px] h-[400px] bg-orange-200 rounded-full mix-blend-multiply filter blur-[100px] opacity-40 animate-blob animation-delay-2000"></div>
   </div>
 
-  <section class="absolute inset-0 z-30 flex flex-col justify-center items-center px-6">
-    
-    <div class="glass-card w-full max-w-[340px] rounded-3xl p-8 text-center animate-slide-up relative z-10">
-      
-      <div class="relative w-20 h-20 mx-auto mb-6">
-        <div class="absolute inset-0 bg-blue-100 rounded-full animate-ping opacity-75"></div>
-        <div class="relative w-full h-full bg-white rounded-full flex items-center justify-center shadow-md border border-slate-100">
-            <span class="material-symbols-rounded text-4xl text-brand-primary animate-pulse-fast">shield_lock</span>
-        </div>
-      </div>
+  <div id="toastContainer" class="fixed top-4 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-2 w-[90%] max-w-sm pointer-events-none"></div>
 
-      <h1 class="text-xl font-bold text-brand-primary mb-2">Memuat Data...</h1>
-      <p class="text-slate-500 text-sm mb-6">Sistem sedang mengecek hak akses Anda.</p>
-
-      <div class="flex items-center justify-center gap-2 mb-4">
-        <div class="w-2 h-2 bg-accent rounded-full animate-bounce"></div>
-        <span id="msg" class="text-xs font-semibold text-slate-600">Menghubungkan...</span>
-      </div>
-
-      <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
-        <div id="loadingBar" class="h-full bg-brand-primary rounded-full transition-all duration-500 ease-out" style="width:5%"></div>
-      </div>
-
-      <button id="backBtn" class="hidden mt-6 w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 rounded-xl transition-all text-sm flex items-center justify-center gap-2">
-        <span class="material-symbols-rounded text-lg">logout</span>
-        <span>Kembali Login</span>
-      </button>
-
+  <div id="globalLoader" class="fixed inset-0 bg-white z-[9999] flex items-center justify-center flex-col gap-4 transition-opacity duration-500">
+    <div class="relative w-16 h-16">
+        <div class="absolute inset-0 border-4 border-slate-100 rounded-full"></div>
+        <div class="absolute inset-0 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
+        <span class="material-symbols-rounded absolute inset-0 flex items-center justify-center text-brand-primary text-xl">bolt</span>
     </div>
+    <p class="text-xs font-bold text-slate-400 tracking-widest animate-pulse">MEMUAT SISTEM...</p>
+  </div>
 
-    <p class="absolute bottom-10 text-[10px] text-slate-400 font-medium">KARTEJI SECURITY CHECK</p>
-  </section>
+  <div id="crudModal" class="fixed inset-0 z-[60] hidden items-end sm:items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-all p-0 sm:p-4">
+    <div class="bg-white w-full sm:max-w-md rounded-t-[2rem] sm:rounded-[2rem] p-6 relative shadow-2xl animate-slide-up max-h-[90vh] flex flex-col">
+      <div class="flex justify-between items-center mb-6 shrink-0">
+          <h2 id="modalTitle" class="text-xl font-extrabold text-brand-primary">Judul</h2>
+          <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 text-slate-500"><span class="material-symbols-rounded">close</span></button>
+      </div>
+      <div id="modalBody" class="space-y-4 overflow-y-auto no-scrollbar pb-2"></div>
+      <div class="mt-4 pt-4 border-t border-slate-100 shrink-0">
+         <button id="modalSubmitBtn" class="w-full rounded-xl bg-brand-primary text-white py-4 text-sm font-bold shadow-lg shadow-slate-300 hover:scale-[1.02] active:scale-95 transition-all">SIMPAN</button>
+      </div>
+    </div>
+  </div>
+
+  <header class="sticky top-0 z-30 px-6 pt-10 pb-4 bg-gradient-to-b from-[#F1F5F9] via-[#F1F5F9] to-transparent">
+      <div class="flex justify-between items-center">
+          <div class="flex items-center gap-3">
+              <button onclick="switchView('profile')" class="relative group active:scale-95 transition-transform">
+                <img id="headerPhoto" class="w-12 h-12 rounded-full border-2 border-white shadow-lg object-cover" src="https://via.placeholder.com/100">
+                <div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
+              </button>
+              <div>
+                  <p id="greetingText" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Selamat Pagi,</p>
+                  <h1 id="headerName" class="text-xl font-extrabold text-brand-primary leading-none truncate max-w-[150px]">User</h1>
+                  <span id="headerRoleBadge" class="text-[9px] bg-accent/10 text-accent font-bold px-2 py-0.5 rounded-md mt-1 inline-block">MEMBER</span>
+              </div>
+          </div>
+          <button id="logoutBtn" class="w-10 h-10 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center text-red-500 hover:bg-red-50 active:scale-90 transition-all">
+            <span class="material-symbols-rounded">logout</span>
+          </button>
+      </div>
+  </header>
+
+  <main class="px-5 mt-2 relative z-10 min-h-[75vh]">
+
+      <section id="view-home" class="view-section active">
+          <div class="w-full bg-brand-primary rounded-[2.5rem] p-6 text-white relative overflow-hidden shadow-2xl shadow-slate-300 mb-6">
+              <div class="absolute -right-10 -bottom-10 w-48 h-48 opacity-20 pointer-events-none">
+                  <canvas id="miniChart"></canvas>
+              </div>
+
+              <div class="relative z-10">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Total Saldo Kas</p>
+                        <h2 id="cardBalance" class="text-3xl font-black tracking-tight">Rp 0</h2>
+                    </div>
+                    <div class="bg-white/10 p-2 rounded-xl backdrop-blur-md">
+                        <span class="material-symbols-rounded text-accent">wallet</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                   <div class="bg-white/5 backdrop-blur-sm px-3 py-3 rounded-2xl flex-1 border border-white/5">
+                       <div class="flex items-center gap-1.5 mb-1">
+                           <div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center"><span class="material-symbols-rounded text-[10px] text-green-400">arrow_downward</span></div>
+                           <span class="text-[9px] uppercase font-bold text-slate-400">Masuk</span>
+                       </div>
+                       <p id="cardIncome" class="text-sm font-bold text-white truncate">Rp 0</p>
+                   </div>
+                   <div class="bg-white/5 backdrop-blur-sm px-3 py-3 rounded-2xl flex-1 border border-white/5">
+                       <div class="flex items-center gap-1.5 mb-1">
+                           <div class="w-4 h-4 rounded-full bg-red-500/20 flex items-center justify-center"><span class="material-symbols-rounded text-[10px] text-red-400">arrow_upward</span></div>
+                           <span class="text-[9px] uppercase font-bold text-slate-400">Keluar</span>
+                       </div>
+                       <p id="cardExpense" class="text-sm font-bold text-white truncate">Rp 0</p>
+                   </div>
+                </div>
+              </div>
+          </div>
+
+          <h3 class="text-sm font-bold text-brand-primary mb-3 px-1">Menu Cepat</h3>
+          <div id="shortcutsGrid" class="grid grid-cols-4 gap-3 mb-6">
+              </div>
+
+          <div class="flex justify-between items-end mb-3 px-1">
+             <h3 class="text-sm font-bold text-brand-primary">Info Terbaru</h3>
+             <button onclick="switchView('events')" class="text-[10px] font-bold text-accent">Lihat Semua</button>
+          </div>
+          <div id="homeInfoList" class="space-y-3 pb-20">
+              <div class="skeleton h-20 w-full"></div>
+              <div class="skeleton h-20 w-full"></div>
+          </div>
+      </section>
+
+      <section id="view-finance" class="view-section">
+          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F1F5F9] py-2 z-20 backdrop-blur-sm">
+            <div>
+                <h2 class="text-2xl font-bold text-brand-primary">Laporan Kas</h2>
+                <p class="text-xs text-slate-400">Transparansi Dana</p>
+            </div>
+            <button id="addFinBtn" class="hidden w-11 h-11 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-lg shadow-slate-400 active:scale-90 transition-transform"><span class="material-symbols-rounded">add</span></button>
+          </div>
+          
+          <div class="flex p-1 bg-white rounded-xl shadow-sm mb-4">
+              <button onclick="filterFinance('all')" class="flex-1 py-2 text-[10px] font-bold rounded-lg bg-slate-100 text-brand-primary transition-colors" id="tabFinAll">SEMUA</button>
+              <button onclick="filterFinance('income')" class="flex-1 py-2 text-[10px] font-bold rounded-lg text-slate-400 hover:text-brand-primary transition-colors" id="tabFinInc">MASUK</button>
+              <button onclick="filterFinance('expense')" class="flex-1 py-2 text-[10px] font-bold rounded-lg text-slate-400 hover:text-brand-primary transition-colors" id="tabFinExp">KELUAR</button>
+          </div>
+
+          <div id="finList" class="space-y-3 pb-24"></div>
+      </section>
+
+      <section id="view-users" class="view-section">
+          <div class="flex justify-between items-center mb-4 px-1">
+             <h2 class="text-2xl font-bold text-brand-primary">Anggota</h2>
+             <div class="bg-white px-3 py-1 rounded-full shadow-sm border border-slate-100 text-xs font-bold text-brand-primary"><span id="userCount">0</span> Orang</div>
+          </div>
+          <div class="relative mb-4 group">
+              <span class="material-symbols-rounded absolute left-4 top-3 text-slate-400 group-focus-within:text-accent transition-colors">search</span>
+              <input type="text" onkeyup="filterUsers(this.value)" placeholder="Cari nama..." class="w-full bg-white pl-11 pr-4 py-3 rounded-2xl shadow-sm border-none outline-none focus:ring-2 focus:ring-accent/20 transition-all text-sm font-semibold">
+          </div>
+          <div id="userList" class="grid grid-cols-1 gap-3 pb-24"></div>
+      </section>
+
+      <section id="view-events" class="view-section">
+          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F1F5F9] py-2 z-20">
+            <div>
+                <h2 class="text-2xl font-bold text-brand-primary">Kegiatan</h2>
+                <p class="text-xs text-slate-400">Jadwal Organisasi</p>
+            </div>
+            <button id="addEventBtn" class="hidden w-11 h-11 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg shadow-blue-200 active:scale-90 transition-transform"><span class="material-symbols-rounded">add</span></button>
+          </div>
+          <div id="eventList" class="space-y-4 pb-24"></div>
+      </section>
+
+      <section id="view-inventory" class="view-section">
+          <div class="flex justify-between items-center mb-6 px-1">
+            <h2 class="text-2xl font-bold text-brand-primary">Inventaris</h2>
+            <button onclick="openInventoryModal()" class="w-11 h-11 bg-purple-600 text-white rounded-full flex items-center justify-center shadow-lg shadow-purple-200 active:scale-90"><span class="material-symbols-rounded">add</span></button>
+          </div>
+          <div id="invList" class="grid grid-cols-2 gap-3 pb-24"></div>
+      </section>
+
+      <section id="view-profile" class="view-section">
+        <div class="flex flex-col items-center pt-6 pb-24">
+            <div class="relative group cursor-pointer active:scale-95 transition-transform" onclick="$('profileUpload').click()">
+                <div class="absolute -inset-1 bg-gradient-to-tr from-accent to-blue-500 rounded-full blur opacity-40 group-hover:opacity-75 transition duration-500"></div>
+                <img id="profileImage" src="https://via.placeholder.com/150" class="relative w-32 h-32 rounded-full object-cover border-4 border-white shadow-xl">
+                <div class="absolute bottom-2 right-2 bg-slate-800 text-white p-2 rounded-full border-2 border-white shadow-sm z-10"><span class="material-symbols-rounded text-sm block">edit</span></div>
+            </div>
+            <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
+            
+            <h2 id="pName" class="text-2xl font-black text-brand-primary mt-5 mb-1 text-center">User Name</h2>
+            <p id="pEmail" class="text-sm text-slate-400 font-medium mb-4">user@email.com</p>
+            
+            <button onclick="showIdCard()" class="flex items-center gap-2 bg-white px-5 py-2.5 rounded-2xl shadow-sm border border-slate-100 text-brand-primary font-bold text-xs hover:bg-slate-50 transition-colors active:scale-95">
+                <span class="material-symbols-rounded text-accent">badge</span> LIHAT ID CARD
+            </button>
+
+            <div class="w-full mt-8 space-y-4 px-1">
+                <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 space-y-5">
+                    <div class="group">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block group-focus-within:text-accent transition-colors">Nama Lengkap</label>
+                        <input id="editName" type="text" class="w-full p-3 bg-slate-50 rounded-xl font-bold text-brand-primary outline-none focus:ring-2 focus:ring-accent/20 transition-all border-none">
+                    </div>
+                    <div class="group">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block group-focus-within:text-accent transition-colors">WhatsApp</label>
+                        <input id="editPhone" type="tel" class="w-full p-3 bg-slate-50 rounded-xl font-bold text-brand-primary outline-none focus:ring-2 focus:ring-accent/20 transition-all border-none">
+                    </div>
+                    <div class="group">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block group-focus-within:text-accent transition-colors">Alamat</label>
+                        <textarea id="editAddress" rows="2" class="w-full p-3 bg-slate-50 rounded-xl font-medium text-brand-primary outline-none focus:ring-2 focus:ring-accent/20 transition-all border-none resize-none"></textarea>
+                    </div>
+                </div>
+                <button onclick="saveProfile()" class="w-full bg-brand-primary text-white py-4 rounded-2xl font-bold shadow-xl shadow-slate-300 hover:scale-[1.02] active:scale-95 transition-all">SIMPAN PERUBAHAN</button>
+            </div>
+        </div>
+      </section>
+
+  </main>
+
+  <nav class="fixed bottom-0 w-full glass-nav pb-6 pt-2 px-4 z-50 rounded-t-[2rem]">
+      <div id="navContainer" class="flex justify-between items-center max-w-sm mx-auto">
+          </div>
+  </nav>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
+    // --- CONFIGURATION ---
     const firebaseConfig = {
       apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
       authDomain: "katar-9cac3.firebaseapp.com",
       projectId: "katar-9cac3",
       storageBucket: "katar-9cac3.firebasestorage.app",
       messagingSenderId: "1017734829960",
-      appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d",
-      measurementId: "G-M4F9J10TTE"
+      appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d"
     };
-
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const CLOUD_NAME = "dbxktcwug";
+    const UPLOAD_PRESET = "Karteji";
 
-    const msgEl = document.getElementById("msg");
-    const backBtn = document.getElementById("backBtn");
-    const loadingBar = document.getElementById("loadingBar");
+    // --- STATE ---
+    window.$ = (id) => document.getElementById(id);
+    let ME = null;
+    let ROLE = "anggota";
+    let chartInstance = null;
+    let newProfileFile = null;
 
-    function setProgress(pct) {
-      loadingBar.style.width = `${pct}%`;
+    // --- TOAST SYSTEM (Super Max UX) ---
+    window.showToast = (msg, type='info') => {
+        const c = $("toastContainer");
+        const el = document.createElement("div");
+        const color = type==='error'?'bg-red-500':(type==='success'?'bg-green-500':'bg-brand-primary');
+        const icon = type==='error'?'error':(type==='success'?'check_circle':'info');
+        
+        el.className = `flex items-center gap-3 p-4 rounded-2xl shadow-xl text-white ${color} animate-[slideUp_0.3s_ease-out] backdrop-blur-md bg-opacity-90`;
+        el.innerHTML = `<span class="material-symbols-rounded">${icon}</span><p class="text-xs font-bold">${msg}</p>`;
+        
+        c.appendChild(el);
+        c.style.pointerEvents = 'auto';
+        setTimeout(() => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(-20px)';
+            setTimeout(() => el.remove(), 300);
+        }, 3000);
     }
 
-    // Mapping Halaman (Sesuaikan nama folder/file Anda nanti)
-    const routeByRole = {
-      "super_admin": "dashboards/super-admin.html",
-      "ketua": "dashboards/ketua.html",
-      "wakil_ketua": "dashboards/wakil-ketua.html",
-      "sekretaris": "dashboards/sekretaris.html",
-      "bendahara": "dashboards/bendahara.html",
-      "koordinator": "dashboards/koordinator.html",
-      "anggota": "dashboards/anggota.html"
+    // --- ROLE CONFIGURATION ---
+    const ROLES = {
+        super_admin: { label: "Super Admin", nav: ['home','users','finance','inventory','profile'] },
+        ketua: { label: "Ketua", nav: ['home','events','users','finance','profile'] },
+        wakil_ketua: { label: "Wakil Ketua", nav: ['home','events','users','finance','profile'] },
+        bendahara: { label: "Bendahara", nav: ['home','finance','users','profile'] },
+        sekretaris: { label: "Sekretaris", nav: ['home','events','users','profile'] }, // Sekretariat via shortcut
+        anggota: { label: "Anggota", nav: ['home','events','finance','profile'] }
     };
 
-    function normalizeRole(role) {
-      const r = String(role || "").trim().toLowerCase().replace(/[\s-]/g, "_");
-      // Fallback jika ada typo di database
-      const alias = {
-        "superadmin": "super_admin",
-        "wakilketua": "wakil_ketua",
-        "wakil": "wakil_ketua"
-      };
-      return alias[r] || r || "anggota";
-    }
+    const MENUS = {
+        home: { icon: 'grid_view', label: 'Home' },
+        users: { icon: 'group', label: 'Tim' },
+        finance: { icon: 'account_balance_wallet', label: 'Kas' },
+        events: { icon: 'calendar_month', label: 'Acara' },
+        inventory: { icon: 'inventory_2', label: 'Aset' },
+        profile: { icon: 'person', label: 'Profil' }
+    };
 
-    async function showBack(message) {
-      msgEl.textContent = message || "Gagal masuk.";
-      msgEl.classList.add("text-red-500");
-      backBtn.classList.remove("hidden");
-      setProgress(100);
-      loadingBar.classList.add("bg-red-500");
-      
-      backBtn.onclick = async () => {
-        await signOut(auth);
-        window.location.href = "login.html";
-      };
-    }
-
-    // Mulai Loading
-    setProgress(20);
-
+    // --- AUTH FLOW ---
     onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        return showBack("Sesi habis. Silakan login ulang.");
-      }
+        if (!user) return window.location.href = "login.html";
+        try {
+            const snap = await getDoc(doc(db, "users", user.uid));
+            if(!snap.exists()) { signOut(auth); showToast("Akun tidak ditemukan!", "error"); return; }
+            
+            ME = { uid: user.uid, ...snap.data() };
+            ROLE = ME.role || "anggota";
+            if(!ROLES[ROLE]) ROLE = "anggota";
 
-      try {
-        msgEl.textContent = "Verifikasi Profil...";
-        setProgress(50);
+            initApp();
+        } catch(e) { console.error(e); }
+    });
 
-        const snap = await getDoc(doc(db, "users", user.uid));
+    function initApp() {
+        updateHeader();
+        renderNav();
+        renderShortcuts();
         
-        if (!snap.exists()) {
-          return showBack("Profil user tidak ditemukan di database.");
+        // Hide Loader smoothly
+        const l = $("globalLoader");
+        l.style.opacity = '0';
+        setTimeout(() => l.style.display = 'none', 500);
+
+        switchView('home');
+    }
+
+    // --- UI RENDERING ---
+    function updateHeader() {
+        // Greeting Time
+        const h = new Date().getHours();
+        let greet = "Selamat Pagi,";
+        if(h >= 12) greet = "Selamat Siang,";
+        if(h >= 15) greet = "Selamat Sore,";
+        if(h >= 19) greet = "Selamat Malam,";
+        
+        $("greetingText").textContent = greet;
+        $("headerName").textContent = ME.name.split(' ')[0];
+        $("pName").textContent = ME.name;
+        $("pEmail").textContent = ME.email;
+        $("headerRoleBadge").textContent = ROLES[ROLE].label.toUpperCase();
+        
+        if(ME.photo?.url) {
+            $("headerPhoto").src = ME.photo.url;
+            $("profileImage").src = ME.photo.url;
         }
 
-        setProgress(80);
-        const profile = snap.data();
-        const role = normalizeRole(profile?.role);
-        
-        // Cek halaman tujuan
-        const targetPage = routeByRole[role] || routeByRole["anggota"];
-        
-        msgEl.textContent = `Dialihkan ke Dashboard ${role.replace('_', ' ')}...`;
-        setProgress(100);
+        // Fill Profile Form
+        $("editName").value = ME.name || "";
+        $("editPhone").value = ME.phone || "";
+        $("editAddress").value = ME.address || "";
+    }
 
-        setTimeout(() => {
-            window.location.replace(targetPage);
-        }, 800); // Delay dikit biar animasi loading selesai
+    function renderNav() {
+        const c = $("navContainer"); c.innerHTML = "";
+        const navs = ROLES[ROLE].nav;
         
-      } catch (e) {
-        console.error(e);
-        showBack("Terjadi kesalahan sistem.");
-      }
-    });
+        navs.forEach(key => {
+            const m = MENUS[key];
+            const isCenter = key === 'profile'; // Center profile button logic style
+            
+            if(isCenter) {
+                 c.innerHTML += `
+                    <div class="relative -top-6">
+                        <button onclick="switchView('${key}')" class="nav-btn w-14 h-14 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-xl shadow-slate-400 hover:scale-105 active:scale-95 transition-all ring-4 ring-white" data-target="${key}">
+                            <span class="material-symbols-rounded text-3xl">${m.icon}</span>
+                        </button>
+                    </div>`;
+            } else {
+                 c.innerHTML += `
+                    <button onclick="switchView('${key}')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="${key}">
+                        <span class="material-symbols-rounded text-2xl text-slate-300 transition-colors">${m.icon}</span>
+                        <p class="text-[9px] font-medium text-slate-300 transition-colors">${m.label}</p>
+                    </button>`;
+            }
+        });
+    }
+
+    function renderShortcuts() {
+        const grid = $("shortcutsGrid"); grid.innerHTML = "";
+        
+        // Dynamic Shortcuts based on Role capabilities
+        const adds = [];
+        
+        // shortcut scan/add logic placeholder
+        adds.push({ icon:'qr_code_scanner', label:'Scan', color:'text-brand-primary', bg:'bg-slate-100', action:"showToast('Fitur Scan segera hadir!')" });
+
+        if(['sekretaris','super_admin'].includes(ROLE)) {
+            adds.push({ icon:'folder_open', label:'Arsip', color:'text-blue-600', bg:'bg-blue-50', action:"alert('Buka Modal Arsip')" }); // Placeholder logic
+        }
+        if(['bendahara','super_admin'].includes(ROLE)) {
+            adds.push({ icon:'casino', label:'Undi', color:'text-purple-600', bg:'bg-purple-50', action:"alert('Buka Undian')" });
+        }
+        
+        // Default shortcuts
+        adds.push({ icon:'notifications', label:'Info', color:'text-orange-500', bg:'bg-orange-50', action:"switchView('home')" });
+        adds.push({ icon:'logout', label:'Keluar', color:'text-red-500', bg:'bg-red-50', action:"$('#logoutBtn').click()" });
+
+        adds.forEach(a => {
+            grid.innerHTML += `
+                <div onclick="${a.action}" class="flex flex-col items-center gap-2 cursor-pointer active:scale-90 transition-transform">
+                    <div class="w-12 h-12 rounded-2xl ${a.bg} flex items-center justify-center shadow-sm">
+                        <span class="material-symbols-rounded ${a.color} text-xl">${a.icon}</span>
+                    </div>
+                    <span class="text-[10px] font-bold text-slate-500">${a.label}</span>
+                </div>
+            `;
+        });
+    }
+
+    // --- VIEW SWITCHER ---
+    window.switchView = (id) => {
+        document.querySelectorAll('.view-section').forEach(el => {
+            el.classList.remove('active');
+            setTimeout(() => { if(!el.classList.contains('active')) el.style.display='none'; }, 200);
+        });
+        
+        const t = $(`view-${id}`);
+        if(t) { t.style.display='block'; setTimeout(()=>t.classList.add('active'),10); }
+
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        const nav = document.querySelector(`.nav-btn[data-target="${id}"]`);
+        if(nav) nav.classList.add('active');
+
+        // Logic Loaders
+        if(id === 'home') loadDashboard();
+        if(id === 'finance') loadFinance();
+        if(id === 'users') loadUsers();
+        if(id === 'events') loadEvents();
+        if(id === 'inventory') loadInventory();
+    }
+
+    // --- DASHBOARD LOGIC (CHART & DATA) ---
+    async function loadDashboard() {
+        // Load Finance Summary for Chart
+        const snap = await getDocs(query(collection(db,"financial_records"), where("status","==","approved")));
+        let inc = 0, exp = 0;
+        snap.forEach(d => {
+            const val = Number(d.data().amount);
+            if(d.data().type==='income') inc+=val; else exp+=val;
+        });
+
+        const bal = inc - exp;
+        $("cardBalance").textContent = "Rp " + bal.toLocaleString('id-ID');
+        $("cardIncome").textContent = "+ Rp " + inc.toLocaleString('id-ID');
+        $("cardExpense").textContent = "- Rp " + exp.toLocaleString('id-ID');
+
+        // Render Chart.js
+        const ctx = $("miniChart").getContext('2d');
+        if(chartInstance) chartInstance.destroy();
+        
+        chartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Masuk', 'Keluar'],
+                datasets: [{
+                    data: [inc, exp],
+                    backgroundColor: ['rgba(255,255,255,0.2)', 'rgba(255,255,255,0.05)'],
+                    borderWidth: 0,
+                    hoverOffset: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                animation: { animateScale: true, animateRotate: true }
+            }
+        });
+
+        // Recent Info
+        const infoSnap = await getDocs(query(collection(db,"notifications"), orderBy("createdAt","desc"), limit(3)));
+        const infoList = $("homeInfoList"); infoList.innerHTML = "";
+        if(infoSnap.empty) infoList.innerHTML = `<p class="text-xs text-slate-400 italic text-center">Tidak ada aktivitas terbaru.</p>`;
+        
+        infoSnap.forEach(d => {
+            const n = d.data();
+            infoList.innerHTML += `
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex gap-3 items-start">
+                     <div class="bg-blue-50 text-blue-500 p-2 rounded-xl shrink-0"><span class="material-symbols-rounded text-lg">info</span></div>
+                     <div>
+                        <h4 class="text-xs font-bold text-brand-primary">${n.title}</h4>
+                        <p class="text-[10px] text-slate-500 leading-relaxed line-clamp-2">${n.body}</p>
+                     </div>
+                </div>
+            `;
+        });
+    }
+
+    // --- FINANCE LOGIC ---
+    let finDataCache = [];
+    async function loadFinance() {
+        const btn = $("addFinBtn");
+        if(['super_admin','bendahara'].includes(ROLE)) { btn.classList.remove('hidden'); btn.onclick = openFinanceModal; } 
+        else btn.classList.add('hidden');
+
+        const snap = await getDocs(query(collection(db,"financial_records"), orderBy("createdAt","desc"), limit(50)));
+        finDataCache = [];
+        snap.forEach(d => finDataCache.push({ id:d.id, ...d.data() }));
+        renderFinanceList(finDataCache);
+    }
+
+    window.filterFinance = (type) => {
+        ['All','Inc','Exp'].forEach(t => $(`tabFin${t}`).className = "flex-1 py-2 text-[10px] font-bold rounded-lg text-slate-400 hover:text-brand-primary transition-colors");
+        
+        if(type === 'all') {
+            $(`tabFinAll`).className = "flex-1 py-2 text-[10px] font-bold rounded-lg bg-slate-100 text-brand-primary transition-colors";
+            renderFinanceList(finDataCache);
+        } else {
+            $(`tabFin${type==='income'?'Inc':'Exp'}`).className = "flex-1 py-2 text-[10px] font-bold rounded-lg bg-slate-100 text-brand-primary transition-colors";
+            renderFinanceList(finDataCache.filter(f => f.type === type));
+        }
+    }
+
+    function renderFinanceList(data) {
+        const list = $("finList"); list.innerHTML = "";
+        data.forEach(f => {
+            const isInc = f.type === 'income';
+            list.innerHTML += `
+                <div class="bg-white p-4 rounded-2xl flex justify-between items-center border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full ${isInc ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'} flex items-center justify-center shrink-0">
+                            <span class="material-symbols-rounded text-xl">${isInc ? 'arrow_downward' : 'arrow_upward'}</span>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-brand-primary line-clamp-1">${f.note}</p>
+                            <p class="text-[10px] text-slate-400 font-medium">${new Date(f.createdAt?.seconds*1000).toLocaleDateString('id-ID')}</p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold ${isInc?'text-green-500':'text-red-500'}">${isInc?'+':'-'} ${Number(f.amount).toLocaleString('id-ID')}</span>
+                </div>
+            `;
+        });
+    }
+
+    window.openFinanceModal = () => {
+        const html = `
+            <div class="grid grid-cols-2 gap-3 mb-3">
+                <button type="button" onclick="this.classList.toggle('ring-2'); $('finType').value='income'" class="p-3 rounded-xl bg-green-50 text-green-600 font-bold text-xs border border-green-100 text-center">PEMASUKAN</button>
+                <button type="button" onclick="this.classList.toggle('ring-2'); $('finType').value='expense'" class="p-3 rounded-xl bg-red-50 text-red-600 font-bold text-xs border border-red-100 text-center">PENGELUARAN</button>
+                <input type="hidden" id="finType" value="income">
+            </div>
+            <input id="finAmt" type="number" class="w-full p-4 bg-slate-50 rounded-xl mb-3 font-bold text-lg outline-none focus:ring-2 focus:ring-accent/20 transition-all" placeholder="Rp 0">
+            <textarea id="finNote" class="w-full p-4 bg-slate-50 rounded-xl font-medium outline-none focus:ring-2 focus:ring-accent/20 transition-all resize-none" placeholder="Keterangan transaksi..."></textarea>
+        `;
+        showModal("Catat Transaksi", html, async () => {
+             const amt = $("finAmt").value;
+             if(!amt) return showToast("Nominal wajib diisi!", "error");
+             await addDoc(collection(db,"financial_records"), {
+                 type: $("finType").value, amount: amt, note: $("finNote").value, status: 'approved', createdAt: serverTimestamp()
+             });
+             closeModal(); showToast("Transaksi berhasil disimpan!", "success"); loadFinance();
+        });
+    }
+
+    // --- USERS & EVENTS (Simplified for brevity but using same "Max" style) ---
+    async function loadUsers() {
+        const list = $("userList"); list.innerHTML = "";
+        const snap = await getDocs(query(collection(db,"users"), orderBy("name")));
+        $("userCount").textContent = snap.size;
+        
+        snap.forEach(d => {
+            const u = d.data();
+            list.innerHTML += `
+                <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-3">
+                    <img src="${u.photo?.url || 'https://via.placeholder.com/150'}" class="w-10 h-10 rounded-full object-cover border border-slate-100">
+                    <div>
+                        <h4 class="text-xs font-bold text-brand-primary">${u.name}</h4>
+                        <span class="text-[9px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded font-bold uppercase">${u.role||'Anggota'}</span>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    async function loadEvents() {
+        const list = $("eventList"); list.innerHTML = "";
+        const btn = $("addEventBtn");
+        if(['super_admin','ketua','sekretaris'].includes(ROLE)) { btn.classList.remove('hidden'); btn.onclick = openEventModal; }
+
+        const snap = await getDocs(query(collection(db,"activities"), orderBy("createdAt","desc")));
+        snap.forEach(d => {
+             const x = d.data();
+             list.innerHTML += `
+                <div class="bg-white p-5 rounded-[1.5rem] shadow-sm border border-slate-100 relative overflow-hidden group">
+                     <div class="absolute top-0 left-0 w-1.5 h-full bg-accent"></div>
+                     <h3 class="text-sm font-bold text-brand-primary">${x.title}</h3>
+                     <div class="flex gap-4 mt-2 text-[10px] text-slate-500 font-bold">
+                         <span class="flex items-center gap-1"><span class="material-symbols-rounded text-sm">event</span> ${x.date}</span>
+                         <span class="flex items-center gap-1"><span class="material-symbols-rounded text-sm">location_on</span> ${x.location}</span>
+                     </div>
+                </div>
+             `;
+        });
+    }
+
+    window.openEventModal = () => {
+        const html = `
+            <input id="evTitle" class="w-full p-3 bg-slate-50 rounded-xl mb-3 outline-none font-bold" placeholder="Nama Acara">
+            <input id="evDate" type="date" class="w-full p-3 bg-slate-50 rounded-xl mb-3 outline-none text-xs font-bold text-slate-500">
+            <input id="evLoc" class="w-full p-3 bg-slate-50 rounded-xl outline-none font-bold" placeholder="Lokasi">
+        `;
+        showModal("Tambah Jadwal", html, async () => {
+             await addDoc(collection(db,"activities"), {
+                 title: $("evTitle").value, date: $("evDate").value, location: $("evLoc").value, status: 'approved', createdAt: serverTimestamp()
+             });
+             closeModal(); showToast("Jadwal ditambahkan", "success"); loadEvents();
+        });
+    }
+    
+    // --- ID CARD GENERATOR (Holographic Effect) ---
+    window.showIdCard = () => {
+        const html = `
+            <div class="w-full aspect-[1.586] rounded-2xl relative overflow-hidden text-white shadow-2xl transform transition-transform hover:scale-105 duration-500">
+                <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-black"></div>
+                <div class="absolute inset-0 opacity-30 bg-gradient-to-tr from-transparent via-white/20 to-transparent w-[200%] h-full animate-[shimmer_3s_infinite]"></div>
+                
+                <div class="absolute inset-0 p-5 flex flex-col justify-between z-10">
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded bg-white/10 backdrop-blur-md flex items-center justify-center font-black">K</div>
+                            <span class="text-[10px] tracking-[0.2em] font-bold opacity-70">KARTEJI MEMBER</span>
+                        </div>
+                        <img src="https://via.placeholder.com/30" class="opacity-50 grayscale">
+                    </div>
+
+                    <div class="flex gap-4 items-center mt-4">
+                        <div class="w-16 h-16 rounded-xl overflow-hidden border-2 border-white/20 shadow-lg">
+                            <img src="${ME.photo?.url || 'https://via.placeholder.com/100'}" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold leading-none mb-1">${ME.name.toUpperCase()}</h3>
+                            <p class="text-[10px] text-accent font-bold tracking-wider">${ROLES[ROLE].label.toUpperCase()}</p>
+                            <p class="text-[8px] text-slate-400 mt-1 font-mono">${ME.uid.substring(0,12).toUpperCase()}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-end mt-auto">
+                        <div class="text-[8px] opacity-50">
+                            <p>Bergabung</p>
+                            <p class="font-bold">2025</p>
+                        </div>
+                        <div class="h-6 w-20 bg-white/20 rounded-sm"></div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center text-xs text-slate-400 mt-4">Tunjukkan kartu ini saat kegiatan.</p>
+        `;
+        showModal("Kartu Digital", html, null);
+    }
+
+    // --- GLOBAL UTILS ---
+    window.showModal = (title, body, onSave) => {
+        $("modalTitle").innerText = title;
+        $("modalBody").innerHTML = body;
+        const btn = $("modalSubmitBtn");
+        if(onSave) { btn.style.display = 'block'; const n = btn.cloneNode(true); btn.parentNode.replaceChild(n, btn); n.onclick = onSave; } 
+        else { btn.style.display = 'none'; }
+        $("crudModal").classList.remove("hidden");
+        $("crudModal").classList.add("flex");
+    }
+    window.closeModal = () => $("crudModal").classList.add("hidden");
+
+    window.upload = async (file) => {
+        const fd = new FormData(); fd.append("file", file); fd.append("upload_preset", UPLOAD_PRESET);
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:"POST",body:fd});
+        const d = await res.json(); return { url:d.secure_url };
+    }
+    
+    // Profile Save
+    window.saveProfile = async () => {
+         const btn = event.target; btn.innerText = "MENYIMPAN..."; btn.disabled = true;
+         try {
+             const data = { name:$("editName").value, phone:$("editPhone").value, address:$("editAddress").value };
+             if(newProfileFile) data.photo = await upload(newProfileFile);
+             await updateDoc(doc(db,"users", ME.uid), data);
+             showToast("Profil berhasil disimpan!", "success");
+             setTimeout(()=>location.reload(), 1000);
+         } catch(e) { showToast("Gagal menyimpan", "error"); btn.innerText="SIMPAN"; btn.disabled=false; }
+    }
+    
+    window.previewProfileImage = (i) => {
+        if(i.files[0]) { newProfileFile = i.files[0]; const r = new FileReader(); r.onload=(e)=>$("profileImage").src=e.target.result; r.readAsDataURL(i.files[0]); }
+    }
+
+    $("logoutBtn").onclick = () => signOut(auth).then(()=>location.href="login.html");
   </script>
-
 </body>
 </html>
