@@ -160,7 +160,7 @@
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
     import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    // Konfigurasi Firebase Anda
+    // Konfigurasi Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
       authDomain: "katar-9cac3.firebaseapp.com",
@@ -202,7 +202,7 @@
       if (!email) return setMsg("Email wajib diisi");
       if (!password || password.length < 6) return setMsg("Password minimal 6 karakter");
 
-      // Loading state
+      // Loading state (Fitur v1.1)
       btn.disabled = true;
       btn.classList.add("opacity-70", "cursor-not-allowed");
       btn.querySelector("span").textContent = "Memproses...";
@@ -212,7 +212,7 @@
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         const uid = cred.user.uid;
 
-        // Simpan ke Firestore (Tanpa RT/RW)
+        // Simpan ke Firestore (Smart User Creation v1.1)
         await setDoc(doc(db, "users", uid), {
           name: name,
           email: email,
@@ -223,7 +223,7 @@
           createdAt: serverTimestamp()
         });
 
-        // Sukses -> Ke Dashboard
+        // Sukses
         window.location.href = "dashboard.html";
 
       } catch (err) {
