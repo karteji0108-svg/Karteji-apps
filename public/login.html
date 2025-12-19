@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Login | KARTEJI</title>
+  <title>Masuk | KARTEJI</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <script>
@@ -16,29 +16,26 @@
           fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
           colors: {
             brand: {
-              dark: '#0B1120',  
               primary: '#0F172A', // Navy Utama
-              light: '#334155',
             },
             accent: {
               DEFAULT: '#F97316', // Orange
-              glow: '#fdba74',
             }
           },
           animation: {
-            'blob': 'blob 7s infinite',
-            'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            'blob': 'blob 10s infinite',
           },
           keyframes: {
+            slideUp: {
+              'from': { transform: 'translateY(20px)', opacity: '0' },
+              'to': { transform: 'translateY(0)', opacity: '1' }
+            },
             blob: {
               '0%': { transform: 'translate(0px, 0px) scale(1)' },
               '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
               '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
               '100%': { transform: 'translate(0px, 0px) scale(1)' },
-            },
-            slideUp: {
-              'from': { transform: 'translateY(40px)', opacity: '0' },
-              'to': { transform: 'translateY(0)', opacity: '1' }
             }
           }
         }
@@ -47,123 +44,112 @@
   </script>
 
   <style>
-    /* Premium Light Glass Effect */
     .glass-card {
       background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 -10px 40px rgba(0,0,0,0.05);
-      border-top: 1px solid rgba(255,255,255,0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.1);
     }
     body::-webkit-scrollbar { display: none; }
+    * { -webkit-tap-highlight-color: transparent; }
   </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 h-screen w-screen overflow-hidden relative selection:bg-orange-200">
+<body class="bg-slate-50 text-slate-800 h-screen w-screen overflow-hidden relative">
 
   <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-    <div class="absolute top-[-10%] left-[-20%] w-96 h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-    <div class="absolute top-[20%] right-[-20%] w-96 h-96 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000"></div>
+    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-orange-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
   </div>
 
-  <div class="absolute top-0 left-0 right-0 z-40 pt-10 px-6 flex items-center justify-between">
-    <a href="./index.html" class="text-slate-500 font-semibold text-sm hover:text-brand-primary transition-colors flex items-center gap-2">
-      <span class="material-symbols-rounded text-xl">arrow_back</span>
+  <div class="absolute top-0 left-0 right-0 z-40 pt-6 px-6">
+    <a href="index.html" class="inline-flex items-center gap-2 text-slate-400 hover:text-brand-primary transition-colors font-semibold text-sm py-2">
+      <span class="material-symbols-rounded text-lg">arrow_back</span>
       Kembali
     </a>
-
-    <div class="flex items-center gap-2 text-brand-primary font-bold text-sm">
-      <img src="./assets/img/logo.png" onerror="this.src='https://placehold.co/64x64/0F172A/FFF?text=KT'"
-        class="w-8 h-8 object-contain" alt="logo">
-      <span class="tracking-wide">KARTEJI</span>
-    </div>
   </div>
 
-  <section class="absolute inset-0 z-30 flex flex-col justify-end">
-
-    <div class="glass-card rounded-t-[2.5rem] p-8 pb-10 w-full animate-slide-up">
+  <section class="absolute inset-0 z-30 flex flex-col justify-center items-center px-6">
+    
+    <div class="glass-card w-full max-w-[380px] rounded-3xl p-8 animate-slide-up">
+      
       <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-50 rounded-2xl mb-4 shadow-sm">
-          <span class="material-symbols-rounded text-3xl text-brand-primary">login</span>
+        <div class="inline-flex items-center justify-center w-12 h-12 bg-blue-50 rounded-xl mb-4 text-brand-primary">
+            <span class="material-symbols-rounded text-2xl">login</span>
         </div>
-        <h1 class="text-3xl font-extrabold text-brand-primary mb-2">Login Akun</h1>
-        <p class="text-slate-500 text-sm">Masuk untuk melanjutkan ke dashboard.</p>
+        <h1 class="text-2xl font-bold text-brand-primary tracking-tight">Selamat Datang</h1>
+        <p class="text-slate-500 text-sm mt-1">Masuk ke Dashboard Warga</p>
       </div>
 
       <div class="space-y-5">
         
-        <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 ml-1">Email / No. HP</label>
-          <div class="relative group">
-            <span class="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-primary transition-colors text-xl">mail</span>
+        <div class="relative group">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-primary transition-colors">
+                <span class="material-symbols-rounded text-xl">mail</span>
+            </div>
             <input
               id="email"
               type="email"
-              placeholder="Contoh: budi@warga.com"
-              class="w-full pl-12 pr-4 py-4 rounded-xl border border-slate-200 bg-white text-brand-primary placeholder-slate-400 outline-none focus:border-brand-primary focus:ring-4 focus:ring-blue-500/10 transition-all font-medium"
+              placeholder="Alamat Email"
+              class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-brand-primary placeholder-slate-400 text-sm font-medium outline-none focus:bg-white focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
               autocomplete="email"
             />
-          </div>
         </div>
 
-        <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 ml-1">Kata Sandi</label>
-          <div class="relative group">
-            <span class="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-primary transition-colors text-xl">lock</span>
+        <div class="relative group">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-primary transition-colors">
+                <span class="material-symbols-rounded text-xl">lock</span>
+            </div>
             <input
               id="password"
               type="password"
-              placeholder="••••••••"
-              class="w-full pl-12 pr-12 py-4 rounded-xl border border-slate-200 bg-white text-brand-primary placeholder-slate-400 outline-none focus:border-brand-primary focus:ring-4 focus:ring-blue-500/10 transition-all font-medium"
-              autocomplete="current-password"
+              placeholder="Password"
+              class="w-full pl-12 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-brand-primary placeholder-slate-400 text-sm font-medium outline-none focus:bg-white focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
             />
-            <button id="togglePass" type="button"
-              class="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg px-2 py-2 text-slate-400 hover:text-brand-primary transition-colors active:scale-95">
-              <span id="eyeIcon" class="material-symbols-rounded text-xl">visibility</span>
+            <button id="togglePass" type="button" class="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-brand-primary transition-colors rounded-lg hover:bg-slate-100">
+                <span id="eyeIcon" class="material-symbols-rounded text-xl">visibility</span>
             </button>
-          </div>
         </div>
 
-        <div class="flex items-center justify-between min-h-[18px]">
-          <span id="msg" class="text-xs text-red-500 font-medium"></span>
-          <a href="#" class="text-xs font-semibold text-brand-primary hover:text-accent">Lupa Sandi?</a>
+        <div class="flex items-center justify-end">
+            <a href="#" class="text-xs font-semibold text-slate-400 hover:text-brand-primary transition-colors">Lupa Password?</a>
+        </div>
+
+        <div class="text-center min-h-[20px]">
+            <span id="msg" class="text-xs text-red-500 font-semibold animate-pulse"></span>
         </div>
 
         <button
           id="loginBtn"
-          class="w-full bg-brand-primary hover:bg-brand-dark text-white font-bold py-4 rounded-2xl shadow-xl shadow-slate-300/50 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed group"
+          class="w-full bg-brand-primary hover:bg-slate-800 text-white font-bold py-4 rounded-2xl shadow-lg shadow-slate-300 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
         >
-          <span>Masuk Sekarang</span>
-          <span class="material-symbols-rounded group-hover:translate-x-1 transition-transform">arrow_forward</span>
+          <span>Masuk</span>
+          <span class="material-symbols-rounded text-lg">login</span>
         </button>
       </div>
 
-      <div class="my-6 flex items-center gap-3">
-        <div class="h-px flex-1 bg-slate-200"></div>
-        <span class="text-xs font-medium text-slate-400">ATAU</span>
-        <div class="h-px flex-1 bg-slate-200"></div>
+      <div class="mt-8 text-center">
+        <p class="text-sm text-slate-500">
+          Belum punya akun? 
+          <a href="register.html" class="font-bold text-accent hover:text-orange-600 transition-colors ml-1">
+            Daftar
+          </a>
+        </p>
       </div>
-
-      <div class="text-center">
-        <p class="text-xs text-slate-500 font-medium">Belum terdaftar sebagai warga?</p>
-        <a href="./register.html"
-          class="mt-2 inline-flex items-center justify-center gap-2 text-sm font-bold text-accent hover:text-orange-600 transition-colors">
-          Daftar Akun Baru
-          <span class="material-symbols-rounded text-lg">person_add</span>
-        </a>
-      </div>
-
-      <p class="text-center text-[10px] text-slate-400 mt-8 font-medium tracking-wide">
-        © 2025 KARANG TARUNA CILOSARI BARAT
-      </p>
     </div>
+
+    <p class="absolute bottom-6 text-[10px] text-slate-400 font-medium">
+      &copy; 2025 Cilosari Barat
+    </p>
   </section>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { getFirestore, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
+    // Konfigurasi Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
       authDomain: "katar-9cac3.firebaseapp.com",
@@ -175,17 +161,18 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const auth = getAuth(app);
+    const db = getFirestore(app); // Inisialisasi Firestore untuk update status
 
     const emailEl = document.getElementById("email");
     const passEl = document.getElementById("password");
     const msgEl = document.getElementById("msg");
     const btn = document.getElementById("loginBtn");
-
-    // Toggle Password
     const togglePass = document.getElementById("togglePass");
     const eyeIcon = document.getElementById("eyeIcon");
+
+    function setMsg(text) { msgEl.textContent = text || ""; }
+
     togglePass.addEventListener("click", () => {
       const isPass = passEl.type === "password";
       passEl.type = isPass ? "text" : "password";
@@ -196,24 +183,40 @@
       const email = emailEl.value.trim();
       const password = passEl.value;
 
-      if (!email || !password) {
-        msgEl.textContent = "⚠️ Email dan password wajib diisi";
-        return;
-      }
+      if (!email || !password) return setMsg("Email dan Password wajib diisi");
 
-      // Loading state
       btn.disabled = true;
+      btn.classList.add("opacity-70", "cursor-not-allowed");
       const originalText = btn.innerHTML;
       btn.innerHTML = `<span class="material-symbols-rounded animate-spin">progress_activity</span> Memproses...`;
-      msgEl.textContent = "";
+      setMsg("");
 
       try {
-        await signInWithEmailAndPassword(auth, email, password);
-        window.location.href = "./dashboard.html";
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const uid = userCredential.user.uid;
+
+        // Update Status User jadi Online (Fitur v1.1)
+        try {
+            await updateDoc(doc(db, "users", uid), {
+                onlineState: "online",
+                lastActiveAt: serverTimestamp()
+            });
+        } catch (e) {
+            console.log("Gagal update status, tapi login tetap lanjut", e);
+        }
+
+        window.location.href = "dashboard.html";
+
       } catch (err) {
         console.error(err);
-        msgEl.textContent = "❌ Login gagal. Cek email/password Anda.";
+        const code = err.code;
+        if (code === "auth/invalid-credential") setMsg("Email atau Password salah.");
+        else if (code === "auth/user-not-found") setMsg("Akun tidak ditemukan.");
+        else if (code === "auth/wrong-password") setMsg("Password salah.");
+        else setMsg("Gagal masuk. Periksa koneksi.");
+        
         btn.disabled = false;
+        btn.classList.remove("opacity-70", "cursor-not-allowed");
         btn.innerHTML = originalText;
       }
     }
@@ -221,7 +224,7 @@
     btn.addEventListener("click", doLogin);
 
     [emailEl, passEl].forEach(el => {
-      el.addEventListener("keydown", (e) => {
+      el.addEventListener("keypress", (e) => {
         if (e.key === "Enter") doLogin();
       });
     });
