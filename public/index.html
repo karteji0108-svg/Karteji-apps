@@ -76,32 +76,23 @@
   </div>
 
   <section id="splash-screen" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-brand-primary transition-all duration-1000">
-    
     <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 24px 24px;"></div>
-
     <div class="relative z-10 flex flex-col items-center">
       <div class="relative mb-8">
         <div class="absolute -inset-4 bg-accent/20 rounded-full blur-xl animate-pulse"></div>
         <div class="relative bg-white w-24 h-24 rounded-3xl shadow-2xl flex items-center justify-center animate-float overflow-hidden p-2">
-          
           <img src="./assets/img/logo.png" 
                onerror="this.style.display='none'; this.nextElementSibling.style.display='block'" 
                class="w-full h-full object-contain" 
                alt="Logo Karteji" />
-               
           <span class="material-symbols-rounded text-6xl text-brand-primary hidden absolute">diversity_3</span>
-          
         </div>
       </div>
-
       <div class="text-center space-y-2 overflow-hidden">
-        <h1 class="text-4xl font-extrabold text-white tracking-tight">
-          KARTEJI
-        </h1>
+        <h1 class="text-4xl font-extrabold text-white tracking-tight">KARTEJI</h1>
         <p class="text-slate-400 text-sm tracking-widest uppercase font-medium">App Karang Taruna Digital</p>
       </div>
     </div>
-
     <div class="absolute bottom-16 w-48 h-1.5 bg-slate-800 rounded-full overflow-hidden">
       <div id="loading-bar" class="h-full bg-gradient-to-r from-orange-500 to-yellow-400 w-0 transition-all duration-[2000ms] ease-out"></div>
     </div>
@@ -109,7 +100,6 @@
 
 
   <section id="onboarding-screen" class="absolute inset-0 z-40 hidden flex-col justify-between pt-10 pb-8 px-6 transition-opacity duration-700 opacity-0">
-    
     <div class="flex justify-between items-center z-20">
       <div class="flex items-center gap-2">
         <div class="w-8 h-8 bg-brand-primary rounded-lg flex items-center justify-center text-white">
@@ -121,7 +111,6 @@
     </div>
 
     <div class="flex-1 relative flex items-center justify-center">
-      
       <div class="slide absolute w-full text-center transition-all duration-700 ease-out slide-active" data-index="0">
         <div class="relative w-64 h-64 mx-auto mb-8">
             <div class="absolute inset-0 border-2 border-dashed border-slate-300 rounded-full animate-spin-slow"></div>
@@ -133,9 +122,7 @@
             </div>
         </div>
         <h2 class="text-3xl font-extrabold text-brand-primary mb-3 leading-tight">Satu Aplikasi,<br>Semua Urusan.</h2>
-        <p class="text-slate-500 px-4 leading-relaxed">
-            Kelola organisasi dari HP. Surat, data anggota, hingga jadwal rapat kini jadi lebih praktis.
-        </p>
+        <p class="text-slate-500 px-4 leading-relaxed">Kelola organisasi dari HP. Surat, data anggota, hingga jadwal rapat kini jadi lebih praktis.</p>
       </div>
 
       <div class="slide absolute w-full text-center transition-all duration-700 ease-out slide-enter" data-index="1">
@@ -148,9 +135,7 @@
             </div>
         </div>
         <h2 class="text-3xl font-extrabold text-brand-primary mb-3 leading-tight">Kas Transparan<br>& Akuntabel.</h2>
-        <p class="text-slate-500 px-4 leading-relaxed">
-            Pantau uang kas real-time. Setiap pemasukan dan pengeluaran tercatat dengan bukti foto.
-        </p>
+        <p class="text-slate-500 px-4 leading-relaxed">Pantau uang kas real-time. Setiap pemasukan dan pengeluaran tercatat dengan bukti foto.</p>
       </div>
 
       <div class="slide absolute w-full text-center transition-all duration-700 ease-out slide-enter" data-index="2">
@@ -163,11 +148,8 @@
             </div>
         </div>
         <h2 class="text-3xl font-extrabold text-brand-primary mb-3 leading-tight">Titik Kumpul<br>Otomatis.</h2>
-        <p class="text-slate-500 px-4 leading-relaxed">
-            Fitur unik untuk mengundi lokasi tuan rumah arisan/rapat secara adil tanpa drama.
-        </p>
+        <p class="text-slate-500 px-4 leading-relaxed">Fitur unik untuk mengundi lokasi tuan rumah arisan/rapat secara adil tanpa drama.</p>
       </div>
-
     </div>
 
     <div class="z-20">
@@ -176,7 +158,6 @@
         <div class="dot w-2 h-2 rounded-full bg-slate-300 transition-all duration-300"></div>
         <div class="dot w-2 h-2 rounded-full bg-slate-300 transition-all duration-300"></div>
       </div>
-
       <button id="btn-next" class="w-full bg-brand-primary text-white font-bold py-4 rounded-2xl shadow-xl shadow-slate-300/50 active:scale-95 transition-all flex items-center justify-center gap-3 relative overflow-hidden group">
         <span class="relative z-10">Lanjut</span>
         <span class="material-symbols-rounded relative z-10 group-hover:translate-x-1 transition-transform">arrow_forward</span>
@@ -192,6 +173,13 @@
     <div class="glass-card w-full rounded-t-[2.5rem] p-8 pb-10 translate-y-full transition-transform duration-500 ease-out" id="auth-card">
       <div class="w-12 h-1.5 bg-slate-300 rounded-full mx-auto mb-8"></div>
 
+      <div class="relative w-full h-40 rounded-2xl overflow-hidden mb-6 group">
+        <video autoplay loop muted playsinline class="w-full h-full object-cover">
+            <source src="assets/video/kegiatan.mp4" type="video/mp4">
+            
+            <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover" alt="Hiasan Header">
+        </video>
+      </div>
       <div class="text-center mb-8">
         <h2 class="text-3xl font-extrabold text-brand-primary mb-2">Mari Mulai!</h2>
         <p class="text-slate-500">Masuk untuk akses fitur Karang Taruna.</p>
