@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>KARTEJI - Premium</title>
+  <meta name="theme-color" content="#0F172A"> <title>KARTEJI - Premium</title>
 
   <link rel="apple-touch-icon" sizes="180x180" href="assets/icon-ios-180.png">
   <script src="https://cdn.tailwindcss.com"></script>
-  
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -17,15 +16,8 @@
         extend: {
           fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
           colors: {
-            brand: {
-              dark: '#0B1120',  
-              primary: '#0F172A', // Navy Utama
-              light: '#334155',
-            },
-            accent: {
-              DEFAULT: '#F97316', // Orange
-              glow: '#fdba74',
-            }
+            brand: { dark: '#0B1120', primary: '#0F172A', light: '#334155' },
+            accent: { DEFAULT: '#F97316', glow: '#fdba74' }
           },
           animation: {
             'float': 'float 6s ease-in-out infinite',
@@ -35,10 +27,7 @@
             'slide-up-fade': 'slideUpFade 0.6s ease-out forwards',
           },
           keyframes: {
-            float: {
-              '0%, 100%': { transform: 'translateY(0)' },
-              '50%': { transform: 'translateY(-15px)' },
-            },
+            float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-15px)' } },
             blob: {
               '0%': { transform: 'translate(0px, 0px) scale(1)' },
               '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
@@ -61,45 +50,22 @@
   </script>
 
   <style>
-    /* Glass Effect */
     .glass-card {
-      background: rgba(255, 255, 255, 0.75);
+      background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.6);
       box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
     }
-    
     body::-webkit-scrollbar { display: none; }
     
-    /* Slide Transitions Logic */
-    .slide {
-        position: absolute;
-        width: 100%;
-        transition: all 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
-        opacity: 0;
-    }
-    
-    /* Posisi Slide */
-    .slide-active { 
-        opacity: 1; 
-        transform: translateX(0) scale(1); 
-        z-index: 10;
-    }
-    
-    /* Slide yang menunggu di Kanan */
-    .slide-next { 
-        opacity: 0; 
-        transform: translateX(100%) scale(0.9); 
-        z-index: 0;
-    }
-    
-    /* Slide yang sudah lewat di Kiri */
-    .slide-prev { 
-        opacity: 0; 
-        transform: translateX(-100%) scale(0.9); 
-        z-index: 0;
-    }
+    .slide { position: absolute; width: 100%; transition: all 0.5s cubic-bezier(0.4, 0.0, 0.2, 1); opacity: 0; }
+    .slide-active { opacity: 1; transform: translateX(0) scale(1); z-index: 10; }
+    .slide-next { opacity: 0; transform: translateX(100%) scale(0.9); z-index: 0; }
+    .slide-prev { opacity: 0; transform: translateX(-100%) scale(0.9); z-index: 0; }
+
+    /* Animasi Form Switch */
+    .form-enter { animation: slideUpFade 0.4s ease-out forwards; }
   </style>
 </head>
 
@@ -113,28 +79,22 @@
 
   <section id="splash-screen" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-brand-primary transition-all duration-1000">
     <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 24px 24px;"></div>
-    
     <div class="relative z-10 flex flex-col items-center">
       <div class="relative mb-8">
         <div class="absolute -inset-4 bg-accent/20 rounded-full blur-xl animate-pulse"></div>
-        
         <div class="relative bg-white w-24 h-24 rounded-3xl shadow-2xl flex items-center justify-center overflow-hidden p-2 opacity-0 animate-elastic-pop" style="animation-delay: 100ms;">
           <img src="assets/img/logo.png" alt="Logo KARTEJI" class="w-full h-full object-contain">
         </div>
-
       </div>
-
       <div class="text-center space-y-2 overflow-hidden opacity-0 animate-slide-up-fade" style="animation-delay: 400ms;">
         <h1 class="text-4xl font-extrabold text-white tracking-tight">KARTEJI</h1>
         <p class="text-slate-400 text-sm tracking-widest uppercase font-medium">App Karang Taruna Digital</p>
       </div>
     </div>
-
     <div class="absolute bottom-16 w-48 h-1.5 bg-slate-800 rounded-full overflow-hidden opacity-0 animate-slide-up-fade" style="animation-delay: 800ms;">
       <div id="loading-bar" class="h-full bg-gradient-to-r from-orange-500 to-yellow-400 w-0 transition-all duration-[2000ms] ease-out"></div>
     </div>
   </section>
-
 
   <section id="onboarding-screen" class="absolute inset-0 z-40 hidden flex-col justify-between pt-10 pb-8 px-6 transition-opacity duration-700 opacity-0">
     <div class="flex justify-between items-center z-20">
@@ -148,70 +108,56 @@
     </div>
 
     <div class="flex-1 relative flex items-center justify-center" id="slides-container">
-      
       <div class="slide slide-active text-center" data-index="0">
         <div class="relative w-64 h-64 mx-auto mb-8">
             <div class="absolute inset-0 border-2 border-dashed border-slate-300 rounded-full animate-spin-slow"></div>
             <div class="absolute inset-4 bg-gradient-to-tr from-blue-100 to-indigo-50 rounded-full flex items-center justify-center shadow-lg shadow-blue-100 animate-float">
                 <span class="material-symbols-rounded text-[5rem] text-brand-primary drop-shadow-xl">diversity_3</span>
             </div>
-            <div class="absolute -right-2 top-10 bg-white p-2 rounded-xl shadow-lg animate-bounce delay-100">
-                <span class="material-symbols-rounded text-orange-500 text-xl">favorite</span>
-            </div>
         </div>
-        <h2 class="text-3xl font-extrabold text-brand-primary mb-3 leading-tight">Satu Aplikasi,<br>Semua Urusan.</h2>
-        <p class="text-slate-500 px-4 leading-relaxed">Kelola organisasi dari HP. Surat, data anggota, hingga jadwal rapat kini jadi lebih praktis.</p>
+        <h2 class="text-3xl font-extrabold text-brand-primary mb-3">Satu Aplikasi,<br>Semua Urusan.</h2>
+        <p class="text-slate-500 px-4">Kelola organisasi dari HP. Surat, data anggota, hingga jadwal rapat kini jadi lebih praktis.</p>
       </div>
-
       <div class="slide slide-next text-center" data-index="1">
         <div class="relative w-64 h-64 mx-auto mb-8">
             <div class="absolute inset-4 bg-gradient-to-tr from-orange-100 to-yellow-50 rounded-full flex items-center justify-center shadow-lg shadow-orange-100 animate-float">
                 <span class="material-symbols-rounded text-[5rem] text-orange-500 drop-shadow-xl">account_balance_wallet</span>
             </div>
-             <div class="absolute left-0 bottom-10 bg-white px-3 py-1 rounded-full shadow-lg animate-pulse">
-                <span class="text-xs font-bold text-green-600">+Rp 50.000</span>
-            </div>
         </div>
-        <h2 class="text-3xl font-extrabold text-brand-primary mb-3 leading-tight">Kas Transparan<br>& Akuntabel.</h2>
-        <p class="text-slate-500 px-4 leading-relaxed">Pantau uang kas real-time. Setiap pemasukan dan pengeluaran tercatat dengan bukti foto.</p>
+        <h2 class="text-3xl font-extrabold text-brand-primary mb-3">Kas Transparan<br>& Akuntabel.</h2>
+        <p class="text-slate-500 px-4">Pantau uang kas real-time. Setiap pemasukan dan pengeluaran tercatat dengan bukti foto.</p>
       </div>
-
       <div class="slide slide-next text-center" data-index="2">
         <div class="relative w-64 h-64 mx-auto mb-8">
             <div class="absolute inset-4 bg-gradient-to-tr from-emerald-100 to-teal-50 rounded-full flex items-center justify-center shadow-lg shadow-emerald-100 animate-float">
                 <span class="material-symbols-rounded text-[5rem] text-emerald-600 drop-shadow-xl">location_on</span>
             </div>
-             <div class="absolute right-4 bottom-16 bg-brand-primary text-white p-2 rounded-xl shadow-xl transform rotate-12">
-                <span class="material-symbols-rounded text-xl">shuffle</span>
-            </div>
         </div>
-        <h2 class="text-3xl font-extrabold text-brand-primary mb-3 leading-tight">Titik Kumpul<br>Otomatis.</h2>
-        <p class="text-slate-500 px-4 leading-relaxed">Fitur unik untuk mengundi lokasi tuan rumah arisan/rapat secara adil tanpa drama.</p>
+        <h2 class="text-3xl font-extrabold text-brand-primary mb-3">Titik Kumpul<br>Otomatis.</h2>
+        <p class="text-slate-500 px-4">Fitur unik untuk mengundi lokasi tuan rumah arisan/rapat secara adil.</p>
       </div>
     </div>
 
     <div class="z-20">
       <div class="flex justify-center gap-2 mb-8">
-        <div class="dot w-8 h-2 rounded-full bg-brand-primary transition-all duration-300"></div>
-        <div class="dot w-2 h-2 rounded-full bg-slate-300 transition-all duration-300"></div>
-        <div class="dot w-2 h-2 rounded-full bg-slate-300 transition-all duration-300"></div>
+        <div class="dot w-8 h-2 rounded-full bg-brand-primary"></div>
+        <div class="dot w-2 h-2 rounded-full bg-slate-300"></div>
+        <div class="dot w-2 h-2 rounded-full bg-slate-300"></div>
       </div>
       <button id="btn-next" class="w-full bg-brand-primary text-white font-bold py-4 rounded-2xl shadow-xl shadow-slate-300/50 active:scale-95 transition-all flex items-center justify-center gap-3 relative overflow-hidden group">
         <span class="relative z-10" id="btn-text">Lanjut</span>
-        <span class="material-symbols-rounded relative z-10 group-hover:translate-x-1 transition-transform" id="btn-icon">arrow_forward</span>
-        <div class="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+        <span class="material-symbols-rounded relative z-10 group-hover:translate-x-1 transition-transform">arrow_forward</span>
       </button>
     </div>
   </section>
 
-
   <section id="auth-screen" class="absolute inset-0 z-30 hidden items-end justify-center bg-black/20 backdrop-blur-sm transition-opacity duration-500 opacity-0">
-    <div class="absolute inset-0"></div>
+    <div class="absolute inset-0" onclick="closeAuthIfPossible()"></div> 
 
-    <div class="glass-card w-full rounded-t-[2.5rem] p-8 pb-10 translate-y-full transition-transform duration-500 ease-out" id="auth-card">
-      <div class="w-12 h-1.5 bg-slate-300 rounded-full mx-auto mb-8"></div>
+    <div class="glass-card w-full rounded-t-[2.5rem] p-8 pb-10 translate-y-full transition-transform duration-500 ease-out flex flex-col max-h-[90vh] overflow-y-auto" id="auth-card">
+      <div class="w-12 h-1.5 bg-slate-300 rounded-full mx-auto mb-6 shrink-0"></div>
 
-      <div class="relative w-full h-40 rounded-2xl overflow-hidden mb-6 group shadow-lg">
+      <div class="relative w-full h-32 rounded-2xl overflow-hidden mb-6 group shadow-lg shrink-0">
         <video autoplay loop muted playsinline class="w-full h-full object-cover">
             <source src="assets/video/kegiatan.mp4" type="video/mp4">
             <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover" alt="Hiasan Header">
@@ -219,23 +165,75 @@
         <div class="absolute inset-0 bg-gradient-to-t from-brand-primary/20 to-transparent pointer-events-none"></div>
       </div>
 
-      <div class="text-center mb-8">
-        <h2 class="text-3xl font-extrabold text-brand-primary mb-2">Mari Mulai!</h2>
-        <p class="text-slate-500">Masuk untuk akses fitur Karang Taruna.</p>
+      <div id="view-menu" class="form-enter">
+        <div class="text-center mb-6">
+          <h2 class="text-3xl font-extrabold text-brand-primary mb-2">Mari Mulai!</h2>
+          <p class="text-slate-500">Masuk untuk akses fitur Karang Taruna.</p>
+        </div>
+        <div class="space-y-4">
+          <button onclick="switchView('login')" class="w-full bg-brand-primary text-white font-bold py-4 rounded-2xl shadow-lg shadow-slate-900/20 active:scale-95 transition-transform flex justify-center items-center gap-2">
+              Masuk dengan Email / HP
+          </button>
+          <button onclick="switchView('register')" class="w-full bg-white text-brand-primary border border-slate-200 font-bold py-4 rounded-2xl shadow-sm active:scale-95 transition-transform flex justify-center items-center gap-2">
+             <span class="material-symbols-rounded text-accent">person_add</span>
+             Daftar Anggota Baru
+          </button>
+        </div>
       </div>
 
-      <div class="space-y-4">
-        <button onclick="alert('Ke Halaman Login')" class="w-full bg-brand-primary text-white font-bold py-4 rounded-2xl shadow-lg shadow-slate-900/20 active:scale-95 transition-transform flex justify-center items-center gap-2">
-            Masuk dengan Email / HP
-        </button>
-        
-        <button onclick="alert('Ke Halaman Daftar')" class="w-full bg-white text-brand-primary border border-slate-200 font-bold py-4 rounded-2xl shadow-sm active:scale-95 transition-transform flex justify-center items-center gap-2">
-           <span class="material-symbols-rounded text-accent">person_add</span>
-           Daftar Anggota Baru
-        </button>
+      <div id="view-login" class="hidden form-enter">
+        <div class="flex items-center gap-2 mb-6 cursor-pointer text-slate-400 hover:text-brand-primary w-fit" onclick="switchView('menu')">
+            <span class="material-symbols-rounded">arrow_back</span>
+            <span class="text-sm font-semibold">Kembali</span>
+        </div>
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-brand-primary">Selamat Datang!</h2>
+            <p class="text-slate-500 text-sm">Silakan login akun Anda.</p>
+        </div>
+        <form onsubmit="event.preventDefault(); alert('Proses Login...')" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-1 ml-1">Email / No. HP</label>
+                <input type="text" placeholder="Contoh: 08123456789" class="w-full px-5 py-4 rounded-xl bg-white border border-slate-200 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all font-medium text-brand-primary">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-1 ml-1">Password</label>
+                <input type="password" placeholder="••••••••" class="w-full px-5 py-4 rounded-xl bg-white border border-slate-200 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all font-medium text-brand-primary">
+                <div class="text-right mt-2">
+                    <a href="#" class="text-xs text-accent font-semibold">Lupa Password?</a>
+                </div>
+            </div>
+            <button class="w-full bg-brand-primary text-white font-bold py-4 rounded-2xl shadow-lg mt-4 active:scale-95 transition-transform">
+                Masuk Sekarang
+            </button>
+        </form>
       </div>
 
-      <p class="text-center text-xs text-slate-400 mt-8 font-medium">
+      <div id="view-register" class="hidden form-enter">
+        <div class="flex items-center gap-2 mb-6 cursor-pointer text-slate-400 hover:text-brand-primary w-fit" onclick="switchView('menu')">
+            <span class="material-symbols-rounded">arrow_back</span>
+            <span class="text-sm font-semibold">Kembali</span>
+        </div>
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-brand-primary">Buat Akun</h2>
+            <p class="text-slate-500 text-sm">Gabung jadi bagian dari kami.</p>
+        </div>
+        <form onsubmit="event.preventDefault(); alert('Proses Daftar...')" class="space-y-3">
+            <div>
+                <input type="text" placeholder="Nama Lengkap" class="w-full px-5 py-3.5 rounded-xl bg-white border border-slate-200 focus:outline-none focus:border-brand-primary transition-all text-sm font-medium">
+            </div>
+            <div>
+                <input type="tel" placeholder="Nomor WhatsApp" class="w-full px-5 py-3.5 rounded-xl bg-white border border-slate-200 focus:outline-none focus:border-brand-primary transition-all text-sm font-medium">
+            </div>
+            <div>
+                <input type="password" placeholder="Buat Password" class="w-full px-5 py-3.5 rounded-xl bg-white border border-slate-200 focus:outline-none focus:border-brand-primary transition-all text-sm font-medium">
+            </div>
+            <button class="w-full bg-accent text-white font-bold py-4 rounded-2xl shadow-lg mt-4 active:scale-95 transition-transform">
+                Daftar Sekarang
+            </button>
+        </form>
+      </div>
+
+      <p class="text-center text-xs text-slate-400 mt-6 font-medium shrink-0">
         Versi 1.1.0 &bull; Cilosari Barat
       </p>
     </div>
@@ -257,10 +255,7 @@
 
     // --- LIFECYCLE ---
     window.onload = () => {
-        // Start Loading Animation
         setTimeout(() => { loading.style.width = '100%'; }, 500); 
-
-        // Transition Splash -> Onboarding
         setTimeout(() => {
             splash.style.opacity = '0';
             setTimeout(() => {
@@ -271,7 +266,7 @@
         }, 2500); 
     };
 
-    // --- NAVIGATION LOGIC ---
+    // --- NAVIGATION ---
     btnNext.addEventListener('click', () => {
         if(currentIndex < slides.length - 1) {
             goToSlide(currentIndex + 1);
@@ -282,16 +277,13 @@
 
     function goToSlide(newIndex) {
         if (newIndex > currentIndex) {
-            // Maju (Next)
-            slides[currentIndex].className = "slide slide-prev text-center"; // Slide lama geser ke kiri
-            slides[newIndex].className = "slide slide-active text-center";   // Slide baru masuk
+            slides[currentIndex].className = "slide slide-prev text-center"; 
+            slides[newIndex].className = "slide slide-active text-center";   
         } else {
-            // Mundur (Back)
-            slides[currentIndex].className = "slide slide-next text-center"; // Slide lama geser ke kanan
-            slides[newIndex].className = "slide slide-active text-center";   // Slide sebelumnya masuk
+            slides[currentIndex].className = "slide slide-next text-center"; 
+            slides[newIndex].className = "slide slide-active text-center";   
         }
         
-        // Reset class untuk slide lain agar tetap rapi di tumpukan
         slides.forEach((s, i) => {
             if(i !== currentIndex && i !== newIndex) {
                 if (i < newIndex) s.className = "slide slide-prev text-center";
@@ -304,16 +296,10 @@
     }
 
     function updateUI() {
-        // Update Dots
         dots.forEach((dot, i) => {
-            if(i === currentIndex) {
-                dot.className = "dot w-8 h-2 rounded-full bg-brand-primary transition-all duration-300";
-            } else {
-                dot.className = "dot w-2 h-2 rounded-full bg-slate-300 transition-all duration-300";
-            }
+            if(i === currentIndex) dot.className = "dot w-8 h-2 rounded-full bg-brand-primary transition-all duration-300";
+            else dot.className = "dot w-2 h-2 rounded-full bg-slate-300 transition-all duration-300";
         });
-
-        // Update Button Style
         if(currentIndex === slides.length - 1) {
             btnText.innerText = "Mulai Sekarang";
             btnNext.classList.remove('bg-brand-primary');
@@ -325,41 +311,29 @@
         }
     }
 
-    // --- SWIPE GESTURE LOGIC (NEW) ---
+    // --- SWIPE GESTURE ---
     let touchStartX = 0;
     let touchEndX = 0;
     const touchSurface = document.getElementById('onboarding-screen');
 
-    touchSurface.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-    }, {passive: true});
-
+    touchSurface.addEventListener('touchstart', (e) => touchStartX = e.changedTouches[0].screenX, {passive: true});
     touchSurface.addEventListener('touchend', (e) => {
         touchEndX = e.changedTouches[0].screenX;
         handleSwipe();
     }, {passive: true});
 
     function handleSwipe() {
-        const threshold = 50; // Jarak usap minimal (px)
-        
-        // Swipe Kiri (Next)
+        const threshold = 50; 
         if (touchEndX < touchStartX - threshold) {
-            if(currentIndex < slides.length - 1) {
-                goToSlide(currentIndex + 1);
-            } else {
-                finishOnboarding();
-            }
+            if(currentIndex < slides.length - 1) goToSlide(currentIndex + 1);
+            else finishOnboarding();
         }
-        
-        // Swipe Kanan (Back)
         if (touchEndX > touchStartX + threshold) {
-            if(currentIndex > 0) {
-                goToSlide(currentIndex - 1);
-            }
+            if(currentIndex > 0) goToSlide(currentIndex - 1);
         }
     }
 
-    // --- AUTH TRANSITION ---
+    // --- AUTH LOGIC (IN-PLACE SWITCH) ---
     function finishOnboarding() {
         onboarding.style.opacity = '0';
         setTimeout(() => {
@@ -370,6 +344,23 @@
                 authCard.classList.remove('translate-y-full');
             }, 50);
         }, 500);
+    }
+
+    function switchView(viewName) {
+        // Ambil elemen
+        const menu = document.getElementById('view-menu');
+        const login = document.getElementById('view-login');
+        const register = document.getElementById('view-register');
+
+        // Sembunyikan semua dulu
+        menu.classList.add('hidden');
+        login.classList.add('hidden');
+        register.classList.add('hidden');
+
+        // Tampilkan yang dipilih
+        if (viewName === 'menu') menu.classList.remove('hidden');
+        if (viewName === 'login') login.classList.remove('hidden');
+        if (viewName === 'register') register.classList.remove('hidden');
     }
   </script>
 </body>
