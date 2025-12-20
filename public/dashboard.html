@@ -137,6 +137,17 @@
         </div>
     </div>
 
+    <div id="winnerModal" class="fixed inset-0 z-[70] hidden items-center justify-center p-6 bg-slate-900/90 backdrop-blur-md transition-all">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-[3rem] p-8 text-center relative shadow-2xl shadow-orange-500/20 border-4 border-accent animate-float">
+            <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 bg-accent rounded-full border-8 border-slate-900 flex items-center justify-center shadow-xl">
+                <span class="material-symbols-rounded text-white text-5xl">emoji_events</span>
+            </div>
+            <h3 class="mt-10 text-xs font-bold text-slate-400 uppercase tracking-widest">TUAN RUMAH BERIKUTNYA</h3>
+            <h2 id="winnerText" class="text-3xl font-black text-brand-primary dark:text-white mt-2 mb-6">...</h2>
+            <button onclick="$('winnerModal').classList.add('hidden')" class="w-full py-3 bg-slate-100 dark:bg-slate-700 rounded-xl font-bold text-sm hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">TUTUP</button>
+        </div>
+    </div>
+
     <header class="sticky top-0 z-30 px-6 pt-10 pb-4 bg-gradient-to-b from-slate-50 via-slate-50/95 to-transparent dark:from-brand-dark dark:via-brand-dark/95 transition-colors">
         <div class="flex justify-between items-start">
             <div class="flex flex-col">
@@ -148,7 +159,7 @@
             </div>
             
             <div class="flex gap-3">
-                <button onclick="refreshAllData()" class="w-11 h-11 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center active:scale-90 text-slate-500 dark:text-slate-300 transition-all hover:shadow-md">
+                <button id="btnRefresh" onclick="refreshAllData()" class="w-11 h-11 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center active:scale-90 text-slate-500 dark:text-slate-300 transition-all hover:shadow-md">
                     <span class="material-symbols-rounded animate-spin-slow">sync</span>
                 </button>
                 <button onclick="switchView('profile')" class="relative group active:scale-95 transition-transform">
@@ -471,7 +482,6 @@
         // 4. PERMISSIONS MATRIX (Siapa bisa apa)
         const PERMS = {
             manageUsers: ['super_admin', 'ketua', 'wakil_ketua'],
-            // Rule Khusus: Ketua/Wakil bisa ubah role selain super_admin
             changeRole: ['super_admin', 'ketua', 'wakil_ketua'], 
             manageFinance: ['super_admin', 'bendahara'],
             approveFinance: ['super_admin', 'wakil_ketua', 'ketua'],
@@ -552,10 +562,19 @@
         };
 
         window.refreshAllData = async () => {
-            const btn = event.currentTarget.querySelector('span');
-            btn.classList.add('animate-spin');
-            await Promise.all([loadHome(), loadUsers(), loadFinance('all'), loadActivities()]);
-            setTimeout(() => btn.classList.remove('animate-spin'), 1000);
+            // FIX: Menggunakan ID khusus daripada event.currentTarget agar aman dipanggil dari kode lain
+            const btn = $("btnRefresh");
+            if(btn) {
+                const icon = btn.querySelector('span');
+                if(icon) icon.classList.add('animate-spin');
+                
+                await Promise.all([loadHome(), loadUsers(), loadFinance('all'), loadActivities()]);
+                
+                setTimeout(() => icon.classList.remove('animate-spin'), 1000);
+            } else {
+                // Fallback jika dipanggil tanpa tombol visible
+                await Promise.all([loadHome(), loadUsers(), loadFinance('all'), loadActivities()]);
+            }
             Swal.fire({ icon: 'success', title: 'Data Diperbarui', timer: 1000, showConfirmButton: false, toast: true, position: 'top' });
         };
 
@@ -882,7 +901,7 @@
                 jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
             html2pdf().set(opt).from(element).save();
-        };
+        }
 
         // --- MODULE 4: ACTIVITIES ---
         async function loadActivities() {
@@ -1174,7 +1193,7 @@
             const cands=uSnap.docs.map(d=>({id:d.id,...d.data()})).filter(u=>u.role!=='super_admin'&&!hosted.includes(u.id));
             
             setTimeout(async()=>{
-                btn.innerHTML = "ACAK LOKASI BARU"; btn.classList.remove("animate-pulse");
+                btn.innerHTML = `<span class="material-symbols-rounded group-hover:rotate-180 transition-transform duration-500">casino</span> ACAK LOKASI BARU`; btn.classList.remove("animate-pulse");
                 if(cands.length===0) return Swal.fire("Selesai", "Semua anggota sudah mendapat giliran!", "info");
                 
                 const w = cands[Math.floor(Math.random()*cands.length)];
@@ -1182,6 +1201,7 @@
                 
                 $("winnerText").textContent = w.name; 
                 $("winnerModal").classList.remove('hidden');
+                $("winnerModal").classList.add('flex');
                 
                 loadRaffle(); 
                 logAction("Arisan", `Pemenang: ${w.name}`);
@@ -1241,7 +1261,8 @@
             if(i.files[0]) { newProfileFile=i.files[0]; const r=new FileReader(); r.onload=e=>$("profileImage").src=e.target.result; r.readAsDataURL(i.files[0]); } 
         }
         
-        window.showIdCard = () => showModal("KARTU DIGITAL", `
+        window.showIdCard = () => {
+            showModal("KARTU DIGITAL", `
             <div class="bg-gradient-to-br from-slate-900 to-black text-white p-6 rounded-2xl shadow-xl relative overflow-hidden border border-white/10">
                 <div class="absolute -top-10 -right-10 w-32 h-32 bg-accent/20 rounded-full blur-2xl"></div>
                 <div class="flex items-center justify-between mb-4">
@@ -1257,6 +1278,7 @@
                     </div>
                 </div>
             </div>`, null);
+        }
             
         window.signOutUser = () => signOut(auth);
         $("logoutBtn").onclick = window.signOutUser;
