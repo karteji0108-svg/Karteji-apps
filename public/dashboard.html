@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>KARTEJI PRO | Sistem Organisasi Terpadu</title>
+    <title>KARTEJI PRO | Fixed Version</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -62,10 +62,10 @@
             <div class="absolute top-0 left-0 w-full h-full border-4 border-slate-200 dark:border-slate-800 rounded-full"></div>
             <div class="absolute top-0 left-0 w-full h-full border-4 border-accent rounded-full border-t-transparent animate-spin"></div>
         </div>
-        <p class="text-xs font-bold text-slate-500 dark:text-slate-400 animate-pulse tracking-widest uppercase">Memuat Aplikasi...</p>
+        <p class="text-xs font-bold text-slate-500 dark:text-slate-400 animate-pulse tracking-widest uppercase">Memuat...</p>
     </div>
 
-    <div id="crudModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm transition-all opacity-0 scale-95">
+    <div id="crudModal" class="fixed inset-0 z-[9990] hidden items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm transition-all opacity-0 scale-95">
         <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-[2.5rem] p-6 relative shadow-2xl border border-white/20">
             <div class="flex justify-between items-center mb-6">
                 <h2 id="modalTitle" class="text-xl font-extrabold text-brand-primary dark:text-white uppercase tracking-tight pl-2 border-l-4 border-accent">Judul</h2>
@@ -80,7 +80,7 @@
         </div>
     </div>
 
-    <div id="winnerModal" class="fixed inset-0 z-[70] hidden items-center justify-center p-6 bg-slate-900/90 backdrop-blur-md transition-all">
+    <div id="winnerModal" class="fixed inset-0 z-[9995] hidden items-center justify-center p-6 bg-slate-900/90 backdrop-blur-md transition-all">
         <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-[3rem] p-8 text-center relative shadow-2xl shadow-orange-500/20 border-4 border-accent animate-float">
             <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 bg-accent rounded-full border-8 border-slate-900 flex items-center justify-center shadow-xl"><span class="material-symbols-rounded text-white text-5xl">emoji_events</span></div>
             <h3 class="mt-10 text-xs font-bold text-slate-400 uppercase tracking-widest">TUAN RUMAH BERIKUTNYA</h3>
@@ -93,10 +93,10 @@
         <div class="flex justify-between items-start">
             <div class="flex flex-col">
                 <div class="flex items-center gap-2 mb-1">
-                    <span id="headerRole" class="text-[10px] font-bold text-accent uppercase tracking-widest bg-accent-light dark:bg-orange-900/30 px-2 py-0.5 rounded-md border border-orange-200 dark:border-orange-800/30">Memuat...</span>
-                    <span id="headerOnline" class="w-2 h-2 bg-green-500 rounded-full animate-pulse" title="Online"></span>
+                    <span id="headerRole" class="text-[10px] font-bold text-accent uppercase tracking-widest bg-accent-light dark:bg-orange-900/30 px-2 py-0.5 rounded-md border border-orange-200 dark:border-orange-800/30">...</span>
+                    <span id="headerOnline" class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                 </div>
-                <h1 id="headerName" class="text-2xl font-black text-brand-primary dark:text-white leading-none tracking-tight">Menghubungkan...</h1>
+                <h1 id="headerName" class="text-2xl font-black text-brand-primary dark:text-white leading-none tracking-tight">Loading...</h1>
             </div>
             <div class="flex gap-3">
                 <button id="btnRefresh" onclick="refreshAllData()" class="w-11 h-11 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center active:scale-90 text-slate-500 dark:text-slate-300 transition-all hover:shadow-md"><span class="material-symbols-rounded animate-spin-slow">sync</span></button>
@@ -138,9 +138,7 @@
                     <button onclick="switchView('users')" class="flex flex-col items-center gap-2 group"><div class="w-14 h-14 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center text-blue-500 shadow-sm border border-slate-100 dark:border-slate-700 group-active:scale-95 transition-all"><span class="material-symbols-rounded text-2xl">groups</span></div><span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">Anggota</span></button>
                     <button onclick="switchView('inventory')" class="flex flex-col items-center gap-2 group"><div class="w-14 h-14 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center text-purple-500 shadow-sm border border-slate-100 dark:border-slate-700 group-active:scale-95 transition-all"><span class="material-symbols-rounded text-2xl">inventory_2</span></div><span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">Aset</span></button>
                     <button onclick="switchView('voting')" class="flex flex-col items-center gap-2 group"><div class="w-14 h-14 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center text-pink-500 shadow-sm border border-slate-100 dark:border-slate-700 group-active:scale-95 transition-all"><span class="material-symbols-rounded text-2xl">how_to_vote</span></div><span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">Voting</span></button>
-                    
                     <button onclick="switchView('logs')" id="btnLogs" class="hidden flex-col items-center gap-2 group"><div class="w-14 h-14 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center text-slate-500 shadow-sm border border-slate-100 dark:border-slate-700 group-active:scale-95 transition-all"><span class="material-symbols-rounded text-2xl">history</span></div><span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">Log</span></button>
-                    
                     <button onclick="switchView('admin')" id="btnAdmin" class="hidden flex-col items-center gap-2 group col-span-4 mt-2"><div class="w-full h-10 bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl flex items-center justify-center text-white shadow-md active:scale-95 transition-all gap-2"><span class="material-symbols-rounded text-sm">admin_panel_settings</span> <span class="text-xs font-bold">PANEL ADMIN & EXPORT</span></div></button>
                 </div>
             </div>
@@ -154,9 +152,8 @@
         <section id="view-news" class="view-section">
             <div class="sticky top-0 bg-slate-50 dark:bg-brand-dark pb-2 z-10 pt-2 px-1">
                 <h2 class="text-2xl font-bold text-brand-primary dark:text-white mb-1">Berita Semarang</h2>
-                <p class="text-xs text-slate-400 mb-4">Kabar Kudu Reti & Informasi Organisasi</p>
                 <div class="flex bg-white dark:bg-slate-800 p-1.5 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 mb-4">
-                    <button onclick="loadNews('external')" id="tabNewsExt" class="flex-1 py-2 rounded-lg text-xs font-bold bg-brand-primary text-white shadow-md">Semarang (Kudu Reti)</button>
+                    <button onclick="loadNews('external')" id="tabNewsExt" class="flex-1 py-2 rounded-lg text-xs font-bold bg-brand-primary text-white shadow-md">Semarang</button>
                     <button onclick="loadNews('internal')" id="tabNewsInt" class="flex-1 py-2 rounded-lg text-xs font-bold text-slate-400">Info Organisasi</button>
                 </div>
             </div>
@@ -166,7 +163,6 @@
 
         <section id="view-admin" class="view-section">
             <h2 class="text-2xl font-bold text-brand-primary dark:text-white px-1 mb-1">Panel Admin</h2>
-            <p class="text-xs text-slate-400 px-1 mb-6">Pusat Kontrol Organisasi</p>
             <div class="space-y-4">
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
                     <h3 class="font-bold text-sm mb-3 dark:text-white flex items-center gap-2"><span class="material-symbols-rounded text-accent">campaign</span> Broadcast Pengumuman</h3>
@@ -180,16 +176,12 @@
                         <button onclick="exportData('finance')" class="py-3 bg-blue-50 text-blue-600 rounded-xl text-xs font-bold border border-blue-100">DATA KEUANGAN</button>
                     </div>
                 </div>
-                <div id="dangerZone" class="bg-red-50 dark:bg-red-900/10 p-5 rounded-2xl border border-red-100 dark:border-red-900/30 hidden">
-                    <h3 class="font-bold text-sm mb-3 text-red-600 flex items-center gap-2"><span class="material-symbols-rounded">warning</span> DANGER ZONE</h3>
-                    <button onclick="nukeDatabase()" class="w-full py-3 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700">RESET TOTAL DATABASE</button>
-                </div>
             </div>
         </section>
 
         <section id="view-users" class="view-section">
             <div class="flex justify-between items-center mb-6 px-1">
-                <div><h2 class="text-2xl font-bold text-brand-primary dark:text-white">Anggota</h2><p class="text-xs text-slate-400">Data Pengurus & Member</p></div>
+                <div><h2 class="text-2xl font-bold text-brand-primary dark:text-white">Anggota</h2></div>
                 <div class="relative w-40"><span class="material-symbols-rounded absolute left-3 top-2 text-slate-400 text-lg">search</span><input type="text" onkeyup="filterList('userList', this.value)" placeholder="Cari..." class="w-full pl-9 pr-3 py-2 bg-white dark:bg-slate-800 rounded-xl text-xs font-bold border border-slate-200 dark:border-slate-700 outline-none focus:border-accent transition-colors"></div>
             </div>
             <div id="userList" class="space-y-3 pb-20"></div>
@@ -197,9 +189,9 @@
 
         <section id="view-finance" class="view-section">
             <div class="flex justify-between items-center mb-6 px-1">
-                <div><h2 class="text-2xl font-bold text-brand-primary dark:text-white">Keuangan</h2><p class="text-xs text-slate-400">Laporan Kas Masuk/Keluar</p></div>
+                <div><h2 class="text-2xl font-bold text-brand-primary dark:text-white">Keuangan</h2></div>
                 <div class="flex gap-2">
-                    <button onclick="downloadPDF('financeReport', 'Laporan_Keuangan_Karteji')" class="w-10 h-10 bg-red-50 text-red-500 rounded-full flex items-center justify-center active:scale-90 border border-red-100 shadow-sm" title="Download PDF"><span class="material-symbols-rounded">picture_as_pdf</span></button>
+                    <button onclick="downloadPDF('financeReport', 'Laporan_Keuangan_Karteji')" class="w-10 h-10 bg-red-50 text-red-500 rounded-full flex items-center justify-center active:scale-90 border border-red-100 shadow-sm"><span class="material-symbols-rounded">picture_as_pdf</span></button>
                     <button id="btnAddFinance" onclick="openFinanceModal()" class="w-10 h-10 bg-brand-primary text-white rounded-full hidden items-center justify-center shadow-lg shadow-slate-300 active:scale-90 transition-transform"><span class="material-symbols-rounded">add</span></button>
                 </div>
             </div>
@@ -213,7 +205,7 @@
 
         <section id="view-activities" class="view-section">
             <div class="flex justify-between items-center mb-6 px-1">
-                <div><h2 class="text-2xl font-bold text-brand-primary dark:text-white">Kegiatan</h2><p class="text-xs text-slate-400">Agenda & Program Kerja</p></div>
+                <div><h2 class="text-2xl font-bold text-brand-primary dark:text-white">Kegiatan</h2></div>
                 <button id="btnAddActivity" onclick="openActivityModal()" class="w-10 h-10 bg-blue-600 text-white rounded-full hidden items-center justify-center shadow-lg shadow-blue-200 active:scale-90 transition-transform"><span class="material-symbols-rounded">add</span></button>
             </div>
             <div id="actList" class="grid grid-cols-1 gap-4 pb-20"></div>
@@ -221,7 +213,7 @@
 
         <section id="view-inventory" class="view-section">
             <div class="flex justify-between items-center mb-6 px-1">
-                <div><h2 class="text-2xl font-bold text-brand-primary dark:text-white">Inventaris</h2><p class="text-xs text-slate-400">Daftar Aset Barang</p></div>
+                <div><h2 class="text-2xl font-bold text-brand-primary dark:text-white">Inventaris</h2></div>
                 <button id="btnAddInv" onclick="openInventoryModal()" class="w-10 h-10 bg-purple-600 text-white rounded-full hidden items-center justify-center shadow-lg shadow-purple-200 active:scale-90 transition-transform"><span class="material-symbols-rounded">add</span></button>
             </div>
             <div id="invList" class="grid grid-cols-2 gap-3 pb-20"></div>
@@ -229,14 +221,14 @@
 
         <section id="view-voting" class="view-section">
             <div class="flex justify-between items-center mb-6 px-1">
-                <div><h2 class="text-2xl font-bold text-brand-primary dark:text-white">E-Voting</h2><p class="text-xs text-slate-400">Pemungutan Suara</p></div>
+                <div><h2 class="text-2xl font-bold text-brand-primary dark:text-white">E-Voting</h2></div>
                 <button id="btnAddVote" onclick="openVoteModal()" class="w-10 h-10 bg-pink-600 text-white rounded-full hidden items-center justify-center shadow-lg shadow-pink-200 active:scale-90 transition-transform"><span class="material-symbols-rounded">add</span></button>
             </div>
             <div id="voteList" class="space-y-4 pb-20"></div>
         </section>
 
         <section id="view-logs" class="view-section">
-            <div class="mb-6 px-1"><h2 class="text-2xl font-bold text-brand-primary dark:text-white">Audit Log</h2><p class="text-xs text-slate-400">Rekam Jejak Aktivitas Sistem</p></div>
+            <div class="mb-6 px-1"><h2 class="text-2xl font-bold text-brand-primary dark:text-white">Audit Log</h2></div>
             <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-4">
                 <div id="logList" class="space-y-3 pb-4 text-xs font-mono max-h-[70vh] overflow-y-auto custom-scrollbar"></div>
             </div>
@@ -244,7 +236,7 @@
 
         <section id="view-docs" class="view-section">
             <div class="sticky top-0 bg-slate-50 dark:bg-brand-dark pb-2 z-10 transition-colors pt-2">
-                <h2 class="text-2xl font-bold text-brand-primary dark:text-white px-1 mb-1">Arsip Digital</h2><p class="text-xs text-slate-400 px-1 mb-4">Surat & Dokumen Organisasi</p>
+                <h2 class="text-2xl font-bold text-brand-primary dark:text-white px-1 mb-1">Arsip Digital</h2>
                 <div class="flex bg-white dark:bg-slate-800 p-1.5 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 mb-4">
                     <button onclick="switchDocTab('surat')" id="tabSurat" class="flex-1 py-2 rounded-lg text-xs font-bold bg-brand-primary text-white transition-all shadow-md">Surat</button>
                     <button onclick="switchDocTab('notulen')" id="tabNotulen" class="flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-brand-primary transition-all">Notulen</button>
@@ -302,6 +294,9 @@
     </nav>
 
     <script type="module">
+        // 1. ERROR TRAP: JIKA SCRIPT MATI, USER DIBERITAHU
+        window.onerror = function(msg, url, line) { alert("Aplikasi Error: " + msg); return false; };
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
         import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
@@ -325,7 +320,6 @@
         let ME = null; let ME_UID = null; let ROLE = 'anggota'; let newProfileFile = null;
         let currentDocTab = 'surat'; let financeFilter = 'all'; let chartInstance = null; let newsTab = 'external';
 
-        // 50 FEATURE MATRIX
         const PERMS = {
             manageUsers: ['super_admin', 'ketua', 'wakil_ketua'],
             changeRole: ['super_admin', 'ketua', 'wakil_ketua'], 
@@ -346,11 +340,33 @@
 
         window.toggleLoader = (show) => { const l = $("globalLoader"); if(show) { l.classList.remove('hidden'); l.classList.add('flex'); } else { l.classList.remove('flex'); l.classList.add('hidden'); } };
         window.closeModal = () => { $("crudModal").classList.remove('scale-100', 'opacity-100'); $("crudModal").classList.add('scale-95', 'opacity-0'); setTimeout(() => $("crudModal").classList.add('hidden'), 200); };
+        
+        // --- CORE UI FUNCTION: SHOW MODAL ---
         window.showModal = (title, body, onSave) => {
-            $("modalTitle").textContent = title; $("modalBody").innerHTML = body;
-            const btn = $("modalSubmitBtn"); const newBtn = btn.cloneNode(true); btn.parentNode.replaceChild(newBtn, btn);
-            newBtn.onclick = onSave; newBtn.style.display = onSave ? 'block' : 'none';
-            const modal = $("crudModal"); modal.classList.remove('hidden'); setTimeout(() => { modal.classList.remove('scale-95', 'opacity-0'); modal.classList.add('scale-100', 'opacity-100'); modal.classList.add('flex'); }, 10);
+            $("modalTitle").textContent = title; 
+            $("modalBody").innerHTML = body;
+            const btn = $("modalSubmitBtn"); 
+            const newBtn = btn.cloneNode(true); 
+            btn.parentNode.replaceChild(newBtn, btn);
+            
+            newBtn.onclick = async () => {
+                newBtn.textContent = "MEMPROSES...";
+                newBtn.disabled = true;
+                try {
+                    await onSave();
+                } catch(e) {
+                    console.error(e);
+                    Swal.fire('Error', e.message, 'error');
+                } finally {
+                    newBtn.textContent = "SIMPAN";
+                    newBtn.disabled = false;
+                }
+            };
+            newBtn.style.display = onSave ? 'block' : 'none';
+            const modal = $("crudModal"); 
+            modal.classList.remove('hidden'); 
+            modal.classList.add('flex');
+            setTimeout(() => { modal.classList.remove('scale-95', 'opacity-0'); modal.classList.add('scale-100', 'opacity-100'); }, 10);
         };
 
         window.switchView = (id) => {
@@ -358,11 +374,17 @@
             const target = $(`view-${id}`); target.style.display = 'block'; setTimeout(() => target.classList.add('active'), 50);
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             const activeBtn = document.querySelector(`.nav-btn[data-target="${id}"]`); if(activeBtn) activeBtn.classList.add('active');
+            
+            // Execute loader based on ID
             if(id==='home') loadHome(); if(id==='users') loadUsers(); if(id==='finance') loadFinance(financeFilter); if(id==='activities') loadActivities(); if(id==='inventory') loadInventory(); if(id==='voting') loadVoting(); if(id==='docs') loadDocs(); if(id==='raffle') loadRaffle(); if(id==='logs') loadLogs(); if(id==='profile') loadProfile(); if(id==='news') loadNews(newsTab);
         };
 
         window.refreshAllData = async () => {
-            const btn = $("btnRefresh"); if(btn) { const icon = btn.querySelector('span'); if(icon) icon.classList.add('animate-spin'); const p = [loadHome(), loadUsers(), loadFinance(financeFilter), loadActivities(), loadInventory(), loadVoting(), loadDocs(), loadRaffle(), loadNews(newsTab)]; if(hasPerm('viewLogs')) p.push(loadLogs()); await Promise.all(p); setTimeout(() => icon.classList.remove('animate-spin'), 1000); }
+            const btn = $("btnRefresh"); if(btn) { const icon = btn.querySelector('span'); if(icon) icon.classList.add('animate-spin'); 
+            const p = [loadHome(), loadUsers(), loadFinance(financeFilter), loadActivities(), loadInventory(), loadVoting(), loadDocs(), loadRaffle(), loadNews(newsTab)]; 
+            if(hasPerm('viewLogs')) p.push(loadLogs()); 
+            await Promise.all(p); 
+            setTimeout(() => icon.classList.remove('animate-spin'), 1000); }
             Swal.fire({ icon: 'success', title: 'Data Diperbarui', timer: 1000, showConfirmButton: false, toast: true, position: 'top' });
         };
         window.filterList = (listId, val) => { Array.from($(listId).children).forEach(el => { el.style.display = el.innerText.toLowerCase().includes(val.toLowerCase()) ? 'block' : 'none'; }); };
@@ -373,86 +395,64 @@
 
         onAuthStateChanged(auth, async (u) => {
             if(!u) return location.href = "login.html"; ME_UID = u.uid; toggleLoader(true);
-            try { const s = await getDoc(doc(db,"users",u.uid)); if(!s.exists()) { alert("User data missing!"); return signOut(auth); } ME = s.data(); ROLE = ME.role || 'anggota'; setupUI(); if(hasPerm('viewLogs')) $("btnLogs").classList.replace('hidden','flex'); if(hasPerm('adminPanel')) $("btnAdmin").classList.replace('hidden','flex'); if(hasPerm('dangerZone')) $("dangerZone").classList.remove('hidden'); updateDoc(doc(db,"users",ME_UID), { lastSeen: serverTimestamp() }); switchView('home'); } catch(e) { console.error(e); } toggleLoader(false);
+            try { 
+                const s = await getDoc(doc(db,"users",u.uid)); 
+                if(!s.exists()) { alert("User data missing!"); return signOut(auth); } 
+                ME = s.data(); ROLE = ME.role || 'anggota'; 
+                setupUI(); 
+                if(hasPerm('viewLogs')) $("btnLogs").classList.replace('hidden','flex'); 
+                if(hasPerm('adminPanel')) $("btnAdmin").classList.replace('hidden','flex'); 
+                if(hasPerm('dangerZone')) $("dangerZone").classList.remove('hidden'); 
+                if(hasPerm('manageNews')) $("btnAddNews").classList.replace('hidden','flex');
+                updateDoc(doc(db,"users",ME_UID), { lastSeen: serverTimestamp() }); 
+                switchView('home'); 
+            } catch(e) { console.error(e); alert("Koneksi Database Gagal"); } 
+            toggleLoader(false);
         });
 
         function setupUI() {
             $("headerName").textContent = ME.name; $("headerPhoto").src = ME.photo?.url || "https://via.placeholder.com/150"; $("headerRole").textContent = ROLE.replace('_', ' ');
-            if(hasPerm('manageFinance')) $("btnAddFinance").classList.replace('hidden','flex'); if(hasPerm('manageActivity')) $("btnAddActivity").classList.replace('hidden','flex'); if(hasPerm('manageDocs')) $("btnAddDoc").classList.replace('hidden','flex'); if(hasPerm('manageInv')) $("btnAddInv").classList.replace('hidden','flex'); if(hasPerm('manageVote')) $("btnAddVote").classList.replace('hidden','flex'); if(hasPerm('manageNews')) $("btnAddNews").classList.replace('hidden','flex');
+            if(hasPerm('manageFinance')) $("btnAddFinance").classList.replace('hidden','flex'); 
+            if(hasPerm('manageActivity')) $("btnAddActivity").classList.replace('hidden','flex'); 
+            if(hasPerm('manageDocs')) $("btnAddDoc").classList.replace('hidden','flex'); 
+            if(hasPerm('manageInv')) $("btnAddInv").classList.replace('hidden','flex'); 
+            if(hasPerm('manageVote')) $("btnAddVote").classList.replace('hidden','flex'); 
+            
             const nav = $("navContainer"); nav.innerHTML = ''; const mkBtn = (id, ic, lb, cen=false) => cen ? `<div class="relative -top-6"><button onclick="switchView('${id}')" class="nav-btn w-16 h-16 bg-brand-primary dark:bg-white text-white dark:text-brand-primary rounded-full flex items-center justify-center shadow-xl hover:scale-105 active:scale-95 transition-all ring-4 ring-white dark:ring-brand-dark" data-target="${id}"><span class="material-symbols-rounded text-3xl">${ic}</span></button></div>` : `<button onclick="switchView('${id}')" class="nav-btn group flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="${id}"><span class="material-symbols-rounded text-2xl text-slate-400 dark:text-slate-600 transition-colors group-hover:text-brand-primary dark:group-hover:text-white">${ic}</span><p class="text-[9px] font-bold text-slate-400 dark:text-slate-600 transition-colors group-hover:text-brand-primary dark:group-hover:text-white">${lb}</p></button>`;
             let html = mkBtn('home','grid_view','Home'); if(ROLE==='sekretaris') html += mkBtn('docs','folder_open','Arsip'); else if(ROLE==='bendahara') html += mkBtn('raffle','casino','Undi'); else if(hasPerm('manageUsers')) html += mkBtn('users','group','Tim'); else html += mkBtn('users','groups','Grup'); html += mkBtn('profile','person','Saya',true); html += mkBtn('activities','event_note','Acara'); html += mkBtn('finance','account_balance_wallet','Kas'); nav.innerHTML = html; document.querySelector(`.nav-btn[data-target="home"]`)?.classList.add('active');
         }
 
-        // ADMIN FUNCTIONS
-        window.postAnnouncement = async () => { if(!$("bcText").value) return; toggleLoader(true); await addDoc(collection(db,"announcements"), { text:$("bcText").value, createdAt:serverTimestamp() }); logAction("Broadcast", "Kirim pengumuman"); $("bcText").value=''; toggleLoader(false); Swal.fire('Terkirim','','success'); loadHome(); };
+        // ADMIN & NEWS
+        window.postAnnouncement = async () => { if(!$("bcText").value) return; await addDoc(collection(db,"announcements"), { text:$("bcText").value, createdAt:serverTimestamp() }); logAction("Broadcast", "Kirim pengumuman"); $("bcText").value=''; Swal.fire('Terkirim','','success'); loadHome(); };
         window.exportData = async (type) => {
             const col = type==='users'?'users':'financial_records'; const snap = await getDocs(collection(db,col)); let csv = type==='users' ? 'Nama,Role,HP,Alamat\n' : 'Tipe,Jumlah,Ket,Tanggal\n';
             snap.forEach(d => { const x=d.data(); if(type==='users') csv += `"${x.name}","${x.role}","${x.phone||'-'}","${x.address||'-'}"\n`; else csv += `"${x.type}","${x.amount}","${x.note}","${new Date((x.createdAt?.seconds||0)*1000).toLocaleDateString()}"\n`; });
             const b = new Blob([csv],{type:'text/csv'}); const u = URL.createObjectURL(b); const a = document.createElement('a'); a.href=u; a.download=`export_${type}.csv`; a.click();
         };
         window.nukeDatabase = async () => {
-            Swal.fire({title:'RESET SYSTEM?', text:'Hapus semua data (User, Kas, Kegiatan)? Password Super Admin diperlukan.', input:'password', showCancelButton:true, confirmButtonColor:'#d33'}).then(async r=>{
+            Swal.fire({title:'RESET SYSTEM?', text:'Hapus semua data? Password Super Admin diperlukan.', input:'password', showCancelButton:true, confirmButtonColor:'#d33'}).then(async r=>{
                 if(r.isConfirmed && r.value==='admin123') { toggleLoader(true); const cols = ['financial_records','activities','inventory','polls','audit_logs','gathering_history','letters','minutes','articles']; for(const c of cols) { const s = await getDocs(collection(db,c)); s.forEach(async d=>await deleteDoc(doc(db,c,d.id))); } toggleLoader(false); Swal.fire('SYSTEM WIPED','Database bersih.','success'); refreshAllData(); } else if(r.isConfirmed) Swal.fire('Salah Password','','error');
             });
         };
-
-        // NEWS MODULE
         window.loadNews = async (tab) => {
             newsTab = tab; $("newsList").innerHTML = '<p class="text-center text-xs text-slate-400 py-4">Memuat Berita...</p>';
             if(tab === 'external') {
                 $("tabNewsExt").className = "flex-1 py-2 rounded-lg text-xs font-bold bg-brand-primary text-white shadow-md transition-all"; $("tabNewsInt").className = "flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 transition-all";
-                // Using RSS to JSON for Semarang News (Suara Merdeka/Antara/Google)
                 try {
-                    const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.suaramerdeka.com/feed/tag/semarang');
-                    const data = await res.json();
-                    let html = '';
-                    if(data.items && data.items.length > 0) {
-                        data.items.slice(0,10).forEach(item => {
-                            // Extract image if available or use placeholder
-                            const img = item.enclosure?.link || item.thumbnail || "https://via.placeholder.com/400x200?text=Semarang+News";
-                            html += `
-                            <a href="${item.link}" target="_blank" class="block bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-700 shadow-sm active:scale-95 transition-transform">
-                                <div class="h-32 bg-slate-200 relative"><img src="${img}" class="w-full h-full object-cover"></div>
-                                <div class="p-4">
-                                    <h4 class="font-bold text-sm text-brand-primary dark:text-white line-clamp-2 leading-tight mb-1">${item.title}</h4>
-                                    <p class="text-[10px] text-slate-400 flex items-center gap-1"><span class="material-symbols-rounded text-xs">calendar_today</span> ${item.pubDate.split(' ')[0]}</p>
-                                </div>
-                            </a>`;
-                        });
-                        $("newsList").innerHTML = html;
-                    } else { $("newsList").innerHTML = '<p class="text-center text-xs text-slate-400">Gagal memuat berita eksternal.</p>'; }
+                    const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.suaramerdeka.com/feed/tag/semarang'); const data = await res.json();
+                    let html = ''; if(data.items && data.items.length > 0) { data.items.slice(0,10).forEach(item => { const img = item.enclosure?.link || item.thumbnail || "https://via.placeholder.com/400x200?text=Semarang+News"; html += `<a href="${item.link}" target="_blank" class="block bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-700 shadow-sm active:scale-95 transition-transform"><div class="h-32 bg-slate-200 relative"><img src="${img}" class="w-full h-full object-cover"></div><div class="p-4"><h4 class="font-bold text-sm text-brand-primary dark:text-white line-clamp-2 leading-tight mb-1">${item.title}</h4><p class="text-[10px] text-slate-400 flex items-center gap-1"><span class="material-symbols-rounded text-xs">calendar_today</span> ${item.pubDate.split(' ')[0]}</p></div></a>`; }); $("newsList").innerHTML = html; } else { $("newsList").innerHTML = '<p class="text-center text-xs text-slate-400">Gagal memuat berita.</p>'; }
                 } catch(e) { $("newsList").innerHTML = '<p class="text-center text-xs text-slate-400">Koneksi berita error.</p>'; }
             } else {
                 $("tabNewsInt").className = "flex-1 py-2 rounded-lg text-xs font-bold bg-brand-primary text-white shadow-md transition-all"; $("tabNewsExt").className = "flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 transition-all";
                 const snap = await getDocs(query(collection(db,"articles"), orderBy("createdAt","desc")));
-                let html = '';
-                snap.forEach(d => {
-                    const n = d.data();
-                    html += `
-                    <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-100 dark:border-slate-700 shadow-sm">
-                        <h4 class="font-bold text-sm text-brand-primary dark:text-white mb-1">${n.title}</h4>
-                        <p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-3 mb-2">${n.body}</p>
-                        <div class="flex justify-between items-center text-[10px] text-slate-400">
-                            <span>Oleh: ${n.by}</span>
-                            <span>${new Date((n.createdAt?.seconds||0)*1000).toLocaleDateString()}</span>
-                        </div>
-                        ${hasPerm('manageNews') ? `<button onclick="deleteDocData('articles','${d.id}')" class="mt-2 text-red-500 text-[10px] font-bold">HAPUS</button>` : ''}
-                    </div>`;
-                });
-                $("newsList").innerHTML = html || '<p class="text-center text-xs text-slate-400">Belum ada info internal.</p>';
+                let html = ''; snap.forEach(d => { const n = d.data(); html += `<div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-100 dark:border-slate-700 shadow-sm"><h4 class="font-bold text-sm text-brand-primary dark:text-white mb-1">${n.title}</h4><p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-3 mb-2">${n.body}</p><div class="flex justify-between items-center text-[10px] text-slate-400"><span>Oleh: ${n.by}</span><span>${new Date((n.createdAt?.seconds||0)*1000).toLocaleDateString()}</span></div>${hasPerm('manageNews') ? `<button onclick="deleteDocData('articles','${d.id}')" class="mt-2 text-red-500 text-[10px] font-bold">HAPUS</button>` : ''}</div>`; }); $("newsList").innerHTML = html || '<p class="text-center text-xs text-slate-400">Belum ada info internal.</p>';
             }
         };
-        window.openNewsModal = () => {
-            showModal("TULIS BERITA", `<input id="nTitle" class="w-full p-3 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl mb-3 outline-none" placeholder="Judul Berita"><textarea id="nBody" class="w-full p-3 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl h-32 outline-none resize-none" placeholder="Isi berita..."></textarea>`, async()=>{
-                if(!$("nTitle").value) return;
-                await addDoc(collection(db,"articles"), {title:$("nTitle").value, body:$("nBody").value, by:ME.name, createdAt:serverTimestamp()});
-                logAction("Post Berita", $("nTitle").value); closeModal(); loadNews('internal');
-            });
-        };
+        window.openNewsModal = () => { showModal("TULIS BERITA", `<input id="nTitle" class="w-full p-3 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl mb-3 outline-none" placeholder="Judul Berita"><textarea id="nBody" class="w-full p-3 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl h-32 outline-none resize-none" placeholder="Isi berita..."></textarea>`, async()=>{ if(!$("nTitle").value) return Swal.fire('Error','Judul wajib diisi','warning'); await addDoc(collection(db,"articles"), {title:$("nTitle").value, body:$("nBody").value, by:ME.name, createdAt:serverTimestamp()}); logAction("Post Berita", $("nTitle").value); closeModal(); loadNews('internal'); }); };
 
+        // MAIN LOGIC (USERS, FINANCE, ETC)
         async function loadHome() {
-            const snap = await getDocs(collection(db,"financial_records"));
-            let bal=0, inc=0, exp=0; snap.forEach(d=>{ const f=d.data(); if(f.status==='approved'){ if(f.type==='income'){ bal+=+f.amount; inc+=+f.amount; } else{ bal-=+f.amount; exp+=+f.amount; } } });
+            const snap = await getDocs(collection(db,"financial_records")); let bal=0, inc=0, exp=0; snap.forEach(d=>{ const f=d.data(); if(f.status==='approved'){ if(f.type==='income'){ bal+=+f.amount; inc+=+f.amount; } else{ bal-=+f.amount; exp+=+f.amount; } } });
             $("homeMainStat").textContent = fmtIDR(bal); $("homeInc").textContent = fmtIDR(inc); $("homeExp").textContent = fmtIDR(exp);
             const ctx = $("finChart").getContext('2d'); if(chartInstance) chartInstance.destroy();
             chartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: ['Pemasukan', 'Pengeluaran'], datasets: [{ data: [inc, exp], backgroundColor: ['#4ade80', '#f87171'], borderColor: document.documentElement.classList.contains('dark') ? '#1E293B' : '#ffffff', borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: document.documentElement.classList.contains('dark') ? '#cbd5e1' : '#475569', font: {family: "'Plus Jakarta Sans', sans-serif", size: 10} } } }, cutout: '70%' } });
@@ -467,10 +467,7 @@
             const snap = await getDocs(query(collection(db,"users"), orderBy("name"))); list.innerHTML = '';
             snap.forEach(d => { const u = d.data(); if(d.id === ME_UID) return; const canEdit = hasPerm('changeRole') && u.role !== 'super_admin';
                 let ctr = `<span class="text-[10px] bg-slate-100 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded font-bold uppercase tracking-wider">${u.role.replace('_',' ')}</span>`;
-                if(canEdit) { 
-                    const roles = ["anggota","koordinator","sekretaris","bendahara","wakil_ketua","ketua"];
-                    ctr = `<select onchange="changeRole('${d.id}',this.value)" class="text-[10px] bg-white dark:bg-slate-900 border dark:border-slate-600 rounded p-1 uppercase font-bold outline-none cursor-pointer focus:border-accent">${roles.map(r => `<option value="${r}" ${u.role===r?'selected':''}>${r.toUpperCase().replace('_',' ')}</option>`).join('')}</select>`; 
-                }
+                if(canEdit) { const roles = ["anggota","koordinator","sekretaris","bendahara","wakil_ketua","ketua"]; ctr = `<select onchange="changeRole('${d.id}',this.value)" class="text-[10px] bg-white dark:bg-slate-900 border dark:border-slate-600 rounded p-1 uppercase font-bold outline-none cursor-pointer focus:border-accent">${roles.map(r => `<option value="${r}" ${u.role===r?'selected':''}>${r.toUpperCase().replace('_',' ')}</option>`).join('')}</select>`; }
                 list.innerHTML += `<div class="bg-white dark:bg-slate-800 p-3 rounded-2xl flex items-center gap-3 border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow"><img src="${u.photo?.url||'https://via.placeholder.com/50'}" class="w-10 h-10 rounded-full object-cover border border-slate-100 dark:border-slate-600"><div class="flex-1 min-w-0"><p class="text-sm font-bold text-brand-primary dark:text-white truncate">${u.name}</p><div class="flex items-center justify-between mt-1">${ctr}${canEdit ? `<button onclick="deleteDocData('users','${d.id}')" class="text-slate-300 hover:text-red-500 transition-colors"><span class="material-symbols-rounded text-lg">delete</span></button>` : ''}</div></div></div>`;
             });
         }
@@ -482,24 +479,16 @@
             let q = query(collection(db,"financial_records"), orderBy("createdAt","desc"), limit(50)); if(filter !== 'all') q = query(collection(db,"financial_records"), where("type","==",filter), orderBy("createdAt","desc"), limit(50));
             const snap = await getDocs(q); list.innerHTML = ''; if(snap.empty) { list.innerHTML = '<p class="text-center text-xs text-slate-400 py-10">Tidak ada data.</p>'; return; }
             snap.forEach(d => { const f = d.data(); const pending = f.status === 'pending'; const isInc = f.type === 'income'; const canManage = hasPerm('manageFinance'); const canApprove = hasPerm('approveFinance');
-                list.innerHTML += `<div class="bg-white dark:bg-slate-800 p-4 rounded-2xl flex justify-between items-center border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-all">
-                    <div class="flex items-center gap-3 overflow-hidden"><div class="w-10 h-10 rounded-full ${isInc?'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400':'bg-red-50 text-red-500 dark:bg-red-900/20 dark:text-red-400'} flex items-center justify-center shrink-0"><span class="material-symbols-rounded">${isInc?'arrow_downward':'arrow_upward'}</span></div><div class="min-w-0"><p class="text-sm font-bold text-brand-primary dark:text-white line-clamp-1">${f.note}</p><p class="text-[10px] ${pending?'text-accent font-bold':'text-slate-400'}">${pending?'MENUNGGU ACC':new Date((f.createdAt?.seconds||0)*1000).toLocaleDateString()}</p></div></div>
-                    <div class="flex items-center gap-2 pl-2"><p class="text-sm font-bold ${isInc?'text-green-600 dark:text-green-400':'text-red-500 dark:text-red-400'} whitespace-nowrap">${fmtIDR(f.amount)}</p>
-                    ${pending&&canApprove ? `<button onclick="approveData('financial_records','${d.id}')" class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center animate-pulse shadow-lg"><span class="material-symbols-rounded text-sm">check</span></button>` : ''}
-                    ${canManage ? `<div class="flex gap-1"><button onclick="openEditFinance('${d.id}')" class="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-700 text-slate-400 hover:text-blue-500 flex items-center justify-center"><span class="material-symbols-rounded text-sm">edit</span></button><button onclick="deleteDocData('financial_records','${d.id}')" class="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-700 text-slate-400 hover:text-red-500 flex items-center justify-center"><span class="material-symbols-rounded text-sm">delete</span></button></div>` : ''}</div></div>`;
+                list.innerHTML += `<div class="bg-white dark:bg-slate-800 p-4 rounded-2xl flex justify-between items-center border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-all"><div class="flex items-center gap-3 overflow-hidden"><div class="w-10 h-10 rounded-full ${isInc?'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400':'bg-red-50 text-red-500 dark:bg-red-900/20 dark:text-red-400'} flex items-center justify-center shrink-0"><span class="material-symbols-rounded">${isInc?'arrow_downward':'arrow_upward'}</span></div><div class="min-w-0"><p class="text-sm font-bold text-brand-primary dark:text-white line-clamp-1">${f.note}</p><p class="text-[10px] ${pending?'text-accent font-bold':'text-slate-400'}">${pending?'MENUNGGU ACC':new Date((f.createdAt?.seconds||0)*1000).toLocaleDateString()}</p></div></div><div class="flex items-center gap-2 pl-2"><p class="text-sm font-bold ${isInc?'text-green-600 dark:text-green-400':'text-red-500 dark:text-red-400'} whitespace-nowrap">${fmtIDR(f.amount)}</p>${pending&&canApprove ? `<button onclick="approveData('financial_records','${d.id}')" class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center animate-pulse shadow-lg"><span class="material-symbols-rounded text-sm">check</span></button>` : ''}${canManage ? `<div class="flex gap-1"><button onclick="openEditFinance('${d.id}')" class="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-700 text-slate-400 hover:text-blue-500 flex items-center justify-center"><span class="material-symbols-rounded text-sm">edit</span></button><button onclick="deleteDocData('financial_records','${d.id}')" class="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-700 text-slate-400 hover:text-red-500 flex items-center justify-center"><span class="material-symbols-rounded text-sm">delete</span></button></div>` : ''}</div></div>`;
             });
         }
         window.openEditFinance = async (id) => { toggleLoader(true); const snap = await getDoc(doc(db,"financial_records",id)); toggleLoader(false); if(!snap.exists()) return; const d = snap.data(); showModal("EDIT KAS", `<input id="eAmt" type="number" value="${d.amount}" class="w-full p-4 mb-3 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl font-bold text-lg outline-none" placeholder="Rp"><textarea id="eNote" class="w-full p-4 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl text-sm outline-none resize-none h-24">${d.note}</textarea>`, async()=>{ await updateDoc(doc(db,"financial_records",id), { amount:$("eAmt").value, note:$("eNote").value }); logAction("Edit Kas", d.note); closeModal(); loadFinance(financeFilter); loadHome(); }); }
-        window.openFinanceModal = () => { showModal("CATAT KAS", `<div class="grid grid-cols-2 gap-3 mb-4"><label class="cursor-pointer"><input type="radio" name="ftype" value="income" class="peer sr-only" checked><div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700 border-2 border-transparent peer-checked:border-green-500 peer-checked:bg-green-50 dark:peer-checked:bg-green-900/20 text-center text-xs font-bold transition-all">MASUK (+)</div></label><label class="cursor-pointer"><input type="radio" name="ftype" value="expense" class="peer sr-only"><div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700 border-2 border-transparent peer-checked:border-red-500 peer-checked:bg-red-50 dark:peer-checked:bg-red-900/20 text-center text-xs font-bold transition-all">KELUAR (-)</div></label></div><input id="fAmt" type="number" class="w-full p-4 mb-3 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl font-black text-lg outline-none focus:ring-2 ring-accent" placeholder="Rp 0"><textarea id="fNote" class="w-full p-4 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl text-sm outline-none focus:ring-2 ring-accent resize-none h-24" placeholder="Keterangan transaksi..."></textarea>`, async()=>{ const type=document.querySelector('input[name="ftype"]:checked').value; const amt=$("fAmt").value; const note=$("fNote").value; if(!amt||!note) return; await addDoc(collection(db,"financial_records"),{type, amount:amt, note, status:(hasPerm('approveFinance')?'approved':'pending'), createdAt:serverTimestamp(), createdBy:ME.uid}); logAction("Input Kas", `${type}: ${amt}`); closeModal(); loadFinance('all'); loadHome(); }); }
+        window.openFinanceModal = () => { showModal("CATAT KAS", `<div class="grid grid-cols-2 gap-3 mb-4"><label class="cursor-pointer"><input type="radio" name="ftype" value="income" class="peer sr-only" checked><div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700 border-2 border-transparent peer-checked:border-green-500 peer-checked:bg-green-50 dark:peer-checked:bg-green-900/20 text-center text-xs font-bold transition-all">MASUK (+)</div></label><label class="cursor-pointer"><input type="radio" name="ftype" value="expense" class="peer sr-only"><div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700 border-2 border-transparent peer-checked:border-red-500 peer-checked:bg-red-50 dark:peer-checked:bg-red-900/20 text-center text-xs font-bold transition-all">KELUAR (-)</div></label></div><input id="fAmt" type="number" class="w-full p-4 mb-3 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl font-black text-lg outline-none focus:ring-2 ring-accent" placeholder="Rp 0"><textarea id="fNote" class="w-full p-4 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl text-sm outline-none focus:ring-2 ring-accent resize-none h-24" placeholder="Keterangan transaksi..."></textarea>`, async()=>{ const type=document.querySelector('input[name="ftype"]:checked').value; const amt=$("fAmt").value; const note=$("fNote").value; if(!amt||!note) return Swal.fire('Error','Isi semua data','warning'); await addDoc(collection(db,"financial_records"),{type, amount:amt, note, status:(hasPerm('approveFinance')?'approved':'pending'), createdAt:serverTimestamp(), createdBy:ME.uid}); logAction("Input Kas", `${type}: ${amt}`); closeModal(); loadFinance('all'); loadHome(); }); }
 
         async function loadActivities() {
             const list = $("actList"); const snap = await getDocs(query(collection(db,"activities"), orderBy("createdAt","desc"))); list.innerHTML = '';
             snap.forEach(d => { const x = d.data(); const canManage = hasPerm('manageActivity');
-                list.innerHTML += `<div class="bg-white dark:bg-slate-800 rounded-[1.5rem] overflow-hidden border border-slate-100 dark:border-slate-700 shadow-sm relative group hover:shadow-lg transition-all">
-                    <div class="h-36 bg-slate-200 relative overflow-hidden"><img src="${x.cover?.url||'https://via.placeholder.com/400x200'}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"><div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>${x.status==='pending'?'<div class="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center text-white font-bold text-xs tracking-widest border-2 border-white/20 m-2 rounded-xl">MENUNGGU ACC</div>':''}<span class="absolute bottom-3 left-3 bg-white/20 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-lg border border-white/20">${x.date}</span></div>
-                    <div class="p-5 flex justify-between items-start"><div><h4 class="font-bold text-lg text-brand-primary dark:text-white leading-tight mb-1">${x.title}</h4><p class="text-xs text-slate-400">Organized by Karteji</p></div>
-                    ${canManage ? `<div class="flex gap-2"><button onclick="openEditActivity('${d.id}')" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-400 hover:text-blue-500 flex items-center justify-center"><span class="material-symbols-rounded text-sm">edit</span></button><button onclick="deleteDocData('activities','${d.id}')" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-400 hover:text-red-500 flex items-center justify-center"><span class="material-symbols-rounded text-sm">delete</span></button></div>` : ''}</div>
-                    ${(x.status==='pending'&&hasPerm('approveActivity'))?`<button onclick="approveData('activities','${d.id}')" class="absolute top-3 right-3 bg-green-500 text-white w-10 h-10 rounded-full shadow-lg flex items-center justify-center"><span class="material-symbols-rounded">check</span></button>`:''}</div>`;
+                list.innerHTML += `<div class="bg-white dark:bg-slate-800 rounded-[1.5rem] overflow-hidden border border-slate-100 dark:border-slate-700 shadow-sm relative group hover:shadow-lg transition-all"><div class="h-36 bg-slate-200 relative overflow-hidden"><img src="${x.cover?.url||'https://via.placeholder.com/400x200'}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"><div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>${x.status==='pending'?'<div class="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center text-white font-bold text-xs tracking-widest border-2 border-white/20 m-2 rounded-xl">MENUNGGU ACC</div>':''}<span class="absolute bottom-3 left-3 bg-white/20 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-lg border border-white/20">${x.date}</span></div><div class="p-5 flex justify-between items-start"><div><h4 class="font-bold text-lg text-brand-primary dark:text-white leading-tight mb-1">${x.title}</h4><p class="text-xs text-slate-400">Organized by Karteji</p></div>${canManage ? `<div class="flex gap-2"><button onclick="openEditActivity('${d.id}')" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-400 hover:text-blue-500 flex items-center justify-center"><span class="material-symbols-rounded text-sm">edit</span></button><button onclick="deleteDocData('activities','${d.id}')" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-400 hover:text-red-500 flex items-center justify-center"><span class="material-symbols-rounded text-sm">delete</span></button></div>` : ''}</div>${(x.status==='pending'&&hasPerm('approveActivity'))?`<button onclick="approveData('activities','${d.id}')" class="absolute top-3 right-3 bg-green-500 text-white w-10 h-10 rounded-full shadow-lg flex items-center justify-center"><span class="material-symbols-rounded">check</span></button>`:''}</div>`;
             });
         }
         window.openEditActivity = async (id) => { toggleLoader(true); const snap = await getDoc(doc(db,"activities",id)); toggleLoader(false); if(!snap.exists()) return; const d = snap.data(); showModal("EDIT KEGIATAN", `<input id="eaTitle" value="${d.title}" class="w-full p-4 mb-3 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl font-bold text-sm outline-none" placeholder="Nama"><input id="eaDate" type="date" value="${d.date}" class="w-full p-4 mb-3 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl text-sm outline-none">`, async()=>{ await updateDoc(doc(db,"activities",id), { title:$("eaTitle").value, date:$("eaDate").value }); logAction("Edit Kegiatan", d.title); closeModal(); loadActivities(); }); }
@@ -522,12 +511,12 @@
         window.openVoteModal=()=>{ showModal("BUAT VOTING",`<input id="vQ" class="w-full p-4 mb-3 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl font-bold text-sm outline-none" placeholder="Tanya..."><input id="vO1" class="w-full p-3 mb-2 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl text-sm outline-none" placeholder="Opsi 1"><input id="vO2" class="w-full p-3 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl text-sm outline-none" placeholder="Opsi 2">`,async()=>{if(!$("vQ").value)return; await addDoc(collection(db,"polls"),{question:$("vQ").value,options:[$("vO1").value,$("vO2").value],votes:{[$("vO1").value]:0,[$("vO2").value]:0},createdAt:serverTimestamp()}); logAction("Buat Voting",$("vQ").value); closeModal(); loadVoting();}); }
         window.castVote=async(id,opt)=>{const k=`voted_${id}`; if(localStorage.getItem(k))return Swal.fire('Oops','Sudah memilih.','warning'); const r=doc(db,"polls",id); const s=await getDoc(r); if(!s.exists())return; const v=s.data().votes; v[opt]=(v[opt]||0)+1; await updateDoc(r,{votes:v}); localStorage.setItem(k,true); loadVoting(); Swal.fire({icon:'success',title:'Masuk!',timer:1000,showConfirmButton:false});}
         async function loadDocs(){const list=$("docList"); list.innerHTML=''; const col={surat:'letters',notulen:'minutes'}[currentDocTab]; const snap=await getDocs(query(collection(db,col),orderBy("createdAt","desc"))); snap.forEach(d=>{const x=d.data(); list.innerHTML+=`<div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm flex justify-between items-center mb-2"><div class="flex items-center gap-3"><div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center text-blue-600 dark:text-blue-400"><span class="material-symbols-rounded">description</span></div><div><h4 class="font-bold text-sm text-brand-primary dark:text-white line-clamp-1">${x.title}</h4><p class="text-[10px] text-slate-400">${new Date((x.createdAt?.seconds||0)*1000).toLocaleDateString()}</p></div></div>${hasPerm('manageDocs')?`<button onclick="deleteDocData('${col}','${d.id}')" class="w-8 h-8 rounded-full hover:bg-red-50 flex items-center justify-center text-slate-300 hover:text-red-500 transition-colors"><span class="material-symbols-rounded text-lg">delete</span></button>`:''}</div>`;}); $("btnAddDoc").onclick=()=>{const l=currentDocTab==='surat'?'Nomor Surat':'Isi'; showModal("TAMBAH DATA",`<input id="dTitle" class="w-full p-3 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl mb-3 outline-none" placeholder="Judul"><textarea id="dBody" class="w-full p-3 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl h-24 outline-none resize-none" placeholder="${l}"></textarea>`,async()=>{await addDoc(collection(db,col),{title:$("dTitle").value,body:$("dBody").value,createdAt:serverTimestamp()}); logAction("Arsip",$("dTitle").value); closeModal(); loadDocs();});}}
-        
         async function loadLogs() { const list = $("logList"); list.innerHTML = '<p class="text-center text-xs">Memuat...</p>'; try { const snap = await getDocs(query(collection(db,"audit_logs"), orderBy("createdAt","desc"), limit(30))); list.innerHTML = ''; snap.forEach(d => { const l = d.data(); list.innerHTML += `<div class="border-l-2 border-slate-200 dark:border-slate-600 pl-3 py-1 ml-1 relative"><div class="absolute -left-[5px] top-2 w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-500"></div><p class="font-bold text-xs text-brand-primary dark:text-white">${l.action}</p><p class="text-[10px] text-slate-500 dark:text-slate-400 truncate w-full">${l.detail}</p><div class="flex justify-between items-center mt-1"><span class="text-[9px] bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-500 dark:text-slate-300">${l.by} (${l.role})</span><span class="text-[9px] text-slate-400">${new Date((l.createdAt?.seconds||0)*1000).toLocaleString()}</span></div></div>`; }); } catch(e){ list.innerHTML='<p class="text-red-500 text-xs text-center">Log belum siap.</p>'; } }
         async function loadRaffle() { const snap = await getDocs(collection(db,"gathering_history")); if(!snap.empty) { const s = snap.docs.map(d=>d.data()).sort((a,b)=>b.createdAt-a.createdAt); $("currentHost").textContent = s[0].userName; $("lastDate").textContent = "Terpilih: " + new Date((s[0].createdAt?.seconds||0)*1000).toLocaleDateString(); } const uSnap = await getDocs(collection(db,"users")); const hosted = snap.docs.map(d=>d.data().userId); const list = $("raffleList"); list.innerHTML = ''; uSnap.forEach(d=>{ const u=d.data(); if(u.role==='super_admin')return; const done=hosted.includes(d.id); list.innerHTML += `<div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700 flex justify-between items-center ${done?'opacity-50 grayscale':''}"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full ${done?'bg-slate-300':'bg-green-500'}"></span><span class="font-bold text-xs dark:text-white">${u.name}</span></div><span class="text-[9px] font-bold px-2 py-0.5 rounded ${done?'bg-slate-100 dark:bg-slate-700 text-slate-400':'bg-green-100 text-green-600'}">${done?'SUDAH':'BELUM'}</span></div>`; }); }
         window.runRaffle=async()=>{if(!hasPerm('runRaffle'))return; const btn=$("raffleBtn"); btn.innerHTML = "MENGACAK..."; btn.classList.add("animate-pulse"); const uSnap=await getDocs(collection(db,"users")); const hSnap=await getDocs(collection(db,"gathering_history")); const hosted=hSnap.docs.map(d=>d.data().userId); const cands=uSnap.docs.map(d=>({id:d.id,...d.data()})).filter(u=>u.role!=='super_admin'&&!hosted.includes(u.id)); setTimeout(async()=>{btn.innerHTML = `<span class="material-symbols-rounded group-hover:rotate-180 transition-transform duration-500">casino</span> ACAK LOKASI BARU`; btn.classList.remove("animate-pulse"); if(cands.length===0) return Swal.fire("Selesai", "Semua sudah giliran!", "info"); const w = cands[Math.floor(Math.random()*cands.length)]; await addDoc(collection(db,"gathering_history"),{userId:w.id,userName:w.name,createdAt:serverTimestamp()}); $("winnerText").textContent = w.name; $("winnerModal").classList.remove('hidden'); $("winnerModal").classList.add('flex'); loadRaffle(); logAction("Arisan", w.name);}, 2000);}
         window.resetRaffleHistory = async () => { if(!hasPerm('runRaffle')) return; Swal.fire({title:'Reset Arisan?', text:'Semua riwayat akan dihapus!', icon:'warning', showCancelButton:true, confirmButtonText:'Ya, Reset', confirmButtonColor:'#d33'}).then(async r=>{ if(r.isConfirmed) { const snap = await getDocs(collection(db,"gathering_history")); const p = snap.docs.map(d => deleteDoc(doc(db,"gathering_history", d.id))); await Promise.all(p); logAction("Reset Arisan", "Menghapus semua riwayat"); loadRaffle(); Swal.fire('Selesai','Data direset.','success'); } }); }
 
+        // GENERIC CRUD
         window.deleteDocData = async (col, id) => { Swal.fire({ title: 'Hapus?', text: "Tak bisa balik!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Hapus' }).then(async(r) => { if(r.isConfirmed) { await deleteDoc(doc(db,col,id)); logAction("Hapus", col); refreshAllData(); } }); }
         window.approveData = async (col, id) => { Swal.fire({ title: 'Setujui?', icon: 'question', showCancelButton: true, confirmButtonText: 'Ya' }).then(async(r) => { if(r.isConfirmed) { await updateDoc(doc(db,col,id),{status:'approved'}); logAction("Approve", col); refreshAllData(); } }); }
         async function upload(file) { const fd = new FormData(); fd.append("file",file); fd.append("upload_preset",UPLOAD_PRESET); const r=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:"POST",body:fd}); const d=await r.json(); return {url:d.secure_url}; }
@@ -538,7 +527,7 @@
         window.downloadPDF = (elemId, filename) => { const element = $(elemId); const opt = { margin: 0.5, filename: filename + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } }; html2pdf().set(opt).from(element).save(); }
         window.signOutUser = () => signOut(auth); $("logoutBtn").onclick = window.signOutUser;
 
-        // SIMULASI ROLE
+        // SIMULASI ROLE (DEV)
         window.showRoleSimulator = () => {
             const roles = ['ketua', 'wakil_ketua', 'sekretaris', 'bendahara', 'koordinator', 'anggota', 'super_admin'];
             const opts = roles.map(r => `<button onclick="simulateRole('${r}')" class="w-full py-3 bg-slate-100 dark:bg-slate-700 rounded-xl mb-2 font-bold uppercase hover:bg-accent hover:text-white transition-colors">${r.replace('_', ' ')}</button>`).join('');
