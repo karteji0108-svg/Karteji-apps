@@ -1,680 +1,406 @@
-<!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>KARTEJI | Sistem Manajemen Terpadu</title>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
-          colors: {
-            brand: { primary: '#0F172A', light: '#334155', dark: '#020617' },
-            accent: { DEFAULT: '#F97316', light: '#FFEDD5', dark: '#C2410C' },
-            success: '#10B981', danger: '#EF4444', warning: '#F59E0B'
-          },
-          animation: { 'blob': 'blob 10s infinite', 'slideUp': 'slideUp 0.3s ease-out' },
-          keyframes: {
-            blob: {
-              '0%': { transform: 'translate(0px, 0px) scale(1)' },
-              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
-              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-              '100%': { transform: 'translate(0px, 0px) scale(1)' },
-            },
-            slideUp: {
-              '0%': { transform: 'translateY(20px)', opacity: '0' },
-              '100%': { transform: 'translateY(0)', opacity: '1' },
-            }
-          }
-        }
-      }
-    }
-  </script>
-
-  <style>
-    body { background-color: #F8FAFC; color: #1E293B; -webkit-tap-highlight-color: transparent; }
-    .dark body { background-color: #0F172A; color: #F8FAFC; }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .glass-nav {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 -10px 40px rgba(0,0,0,0.05);
-    }
-    .dark .glass-nav { background: rgba(15, 23, 42, 0.85); border-top: 1px solid rgba(255,255,255,0.05); }
-    .view-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
-    .view-section.active { display: block; opacity: 1; transform: translateY(0); }
-    .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #F97316; }
-    .nav-btn.active p { color: #0F172A; font-weight: 700; }
-    .dark .nav-btn.active p { color: #F8FAFC; }
-    
-    /* Input Styles */
-    .input-field { width: 100%; padding: 0.75rem; background-color: #F1F5F9; border-radius: 0.75rem; border: 1px solid transparent; font-size: 0.875rem; font-weight: 600; color: #0F172A; outline: none; transition: all 0.3s; }
-    .input-field:focus { border-color: #F97316; background-color: #fff; box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1); }
-    .dark .input-field { background-color: #1E293B; color: white; }
-    .dark .input-field:focus { background-color: #0F172A; }
-  </style>
-</head>
-
-<body class="min-h-screen relative overflow-x-hidden pb-32 transition-colors duration-300">
-
-  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob dark:bg-blue-900 dark:opacity-20"></div>
-    <div class="absolute top-[20%] right-[-10%] w-96 h-96 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000 dark:bg-orange-900 dark:opacity-20"></div>
+// ====== Feature HTML blocks (ringkas & siap pakai) ======
+const helpHTML = () => `
+  <div class="text-sm text-slate-600 dark:text-slate-200 space-y-2">
+    <p class="font-bold">Panduan cepat:</p>
+    <ul class="list-disc pl-5 text-xs space-y-1">
+      <li>Gunakan menu cepat untuk akses fitur role.</li>
+      <li>Kas: Bendahara input, Ketua/Super Admin ACC.</li>
+      <li>Arsip Surat: Sekretaris mengelola dokumen.</li>
+      <li>Aset: Wakil Ketua mengelola inventaris.</li>
+    </ul>
+    <p class="text-[11px] text-slate-400">Versi: v1.0 (role-based dashboard)</p>
   </div>
+`;
 
-  <div id="globalLoader" class="fixed inset-0 bg-white/90 dark:bg-slate-900/90 z-[9999] flex items-center justify-center flex-col gap-4 backdrop-blur-md hidden">
-    <div class="w-12 h-12 border-4 border-slate-200 border-t-accent rounded-full animate-spin"></div>
-    <p id="loaderText" class="text-xs font-bold text-slate-400 animate-pulse tracking-widest">MEMPROSES...</p>
+const settingsHTML = () => `
+  <div class="space-y-3">
+    <div>
+      <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase">Nama Organisasi</label>
+      <input id="setOrgName" class="input-field" placeholder="KARTEJI / Karang Taruna ...">
+    </div>
+    <div>
+      <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase">WA Admin</label>
+      <input id="setAdminWA" class="input-field" placeholder="08xxxxxxxxxx">
+    </div>
+    <div>
+      <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase">Mode</label>
+      <select id="setMode" class="input-field">
+        <option value="normal">Normal</option>
+        <option value="maintenance">Maintenance</option>
+      </select>
+    </div>
+    <p class="text-xs text-slate-400">Catatan: ini disimpan ke koleksi <b>app_settings</b>.</p>
   </div>
+`;
 
-  <div id="crudModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-all">
-    <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-[2rem] p-6 relative shadow-2xl animate-slideUp border border-white/20 dark:border-slate-700">
-      <div class="flex justify-between items-center mb-6">
-          <h2 id="modalTitle" class="text-xl font-extrabold text-brand-primary dark:text-white uppercase tracking-tight">Judul</h2>
-          <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors text-slate-500">
-            <span class="material-symbols-rounded text-xl">close</span>
-          </button>
-      </div>
-      <div id="modalBody" class="space-y-4 max-h-[65vh] overflow-y-auto no-scrollbar"></div>
-      <div id="modalFooter" class="mt-6">
-          <button id="modalSubmitBtn" class="w-full rounded-xl bg-gradient-to-r from-brand-primary to-slate-800 dark:from-accent dark:to-orange-600 text-white py-4 text-sm font-bold shadow-lg shadow-slate-300 dark:shadow-none hover:opacity-90 active:scale-95 transition-all">SIMPAN</button>
-      </div>
+async function saveSettings() {
+  toggleLoader(true, "MENYIMPAN...");
+  try {
+    await updateDoc(doc(db, "app_settings", "main"), {
+      orgName: $("setOrgName").value,
+      adminWA: $("setAdminWA").value,
+      mode: $("setMode").value,
+      updatedAt: serverTimestamp(),
+      updatedBy: ME.uid,
+    });
+    await auditLog("SETTINGS_UPDATE", "Update app_settings/main");
+    closeModal();
+    alert("Settings tersimpan.");
+  } catch(e) {
+    alert("Gagal simpan settings.");
+  }
+  toggleLoader(false);
+}
+
+const cleanupHTML = () => `
+  <div class="space-y-3 text-sm text-slate-600 dark:text-slate-200">
+    <p class="font-bold">Data Cleanup (aman)</p>
+    <p class="text-xs text-slate-400">Contoh aksi: hapus audit log lama (stub). Bisa kamu lanjutkan sesuai kebutuhan.</p>
+    <div class="bg-slate-50 dark:bg-slate-700 p-3 rounded-xl">
+      ${badge("Stub", "bg-orange-100 text-orange-700")}
+      <p class="text-xs mt-2">Klik SIMPAN untuk jalankan contoh cleanup.</p>
     </div>
   </div>
+`;
 
-  <header class="sticky top-0 z-30 px-6 pt-8 pb-4 bg-gradient-to-b from-[#F8FAFC] dark:from-[#0F172A] via-[#F8FAFC] dark:via-[#0F172A] to-transparent">
-      <div class="flex justify-between items-center">
-          <div class="flex items-center gap-3">
-              <button onclick="switchView('profile')" class="relative group">
-                <img id="headerPhoto" class="w-11 h-11 rounded-full border-2 border-white dark:border-slate-700 shadow-md object-cover transition-transform active:scale-90" src="https://via.placeholder.com/100">
-                <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-slate-800 rounded-full"></div>
-              </button>
-              <div>
-                  <p id="headerRole" class="text-[9px] font-extrabold text-accent uppercase tracking-widest bg-accent/10 px-2 py-0.5 rounded-full w-fit mb-0.5">MEMUAT...</p>
-                  <h1 id="headerName" class="text-lg font-extrabold text-brand-primary dark:text-white leading-none truncate max-w-[150px]">...</h1>
-              </div>
-          </div>
-          <div class="flex gap-2">
-             <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm flex items-center justify-center text-slate-400 active:scale-90 transition-all">
-                <span class="material-symbols-rounded">dark_mode</span>
-             </button>
-             <button id="logoutBtn" class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm flex items-center justify-center text-red-500 active:scale-90 transition-all">
-                <span class="material-symbols-rounded">logout</span>
-             </button>
-          </div>
-      </div>
-  </header>
+async function doCleanup() {
+  // Stub: kamu bisa bikin query audit_logs older_than, lalu delete batch via Cloud Function.
+  await auditLog("CLEANUP_RUN", "Cleanup stub executed");
+  closeModal();
+  alert("Cleanup stub dijalankan (log tersimpan).");
+}
 
-  <main class="px-5 mt-2 relative z-10 pb-24">
+const templateHubHTML = () => `
+  <div class="space-y-3 text-sm">
+    <p class="font-bold text-slate-700 dark:text-slate-200">Template Hub</p>
+    <div class="bg-slate-50 dark:bg-slate-700 p-3 rounded-xl text-xs text-slate-600 dark:text-slate-200">
+      <p>✅ Ide: Template surat, format notulen, format proposal kegiatan.</p>
+      <p class="mt-2">${badge("Stub", "bg-orange-100 text-orange-700")} nanti bisa disimpan ke koleksi <b>templates</b>.</p>
+    </div>
+  </div>
+`;
 
-      <section id="view-home" class="view-section active">
-          <div class="w-full bg-brand-primary dark:bg-slate-900 rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 dark:shadow-none group transition-all mb-6">
-              <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-all duration-500 transform group-hover:scale-110"><span class="material-symbols-rounded text-9xl">account_balance</span></div>
-              <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-accent blur-3xl opacity-20"></div>
-              
-              <div class="relative z-10">
-                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Total Kas Organisasi</p>
-                <h2 id="cardBalance" class="text-4xl font-black tracking-tight mb-6">Rp 0</h2>
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5">
-                        <div class="flex items-center gap-1.5 mb-1"><div class="bg-green-400/20 p-1 rounded-full"><span class="material-symbols-rounded text-[10px] text-green-300">arrow_downward</span></div><span class="text-[9px] font-bold uppercase text-slate-300">Masuk</span></div>
-                        <p id="cardIncome" class="text-xs font-bold text-white">Rp 0</p>
-                    </div>
-                    <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5">
-                        <div class="flex items-center gap-1.5 mb-1"><div class="bg-red-400/20 p-1 rounded-full"><span class="material-symbols-rounded text-[10px] text-red-300">arrow_upward</span></div><span class="text-[9px] font-bold uppercase text-slate-300">Keluar</span></div>
-                        <p id="cardExpense" class="text-xs font-bold text-white">Rp 0</p>
-                    </div>
-                </div>
-              </div>
-          </div>
+const analyticsHTML = () => `
+  <div class="text-xs text-slate-600 dark:text-slate-200 space-y-2">
+    <p class="font-bold">Analitik Ringkas</p>
+    <p>Gunakan Chart di Home untuk kas masuk/keluar.</p>
+    <p>${badge("Next", "bg-blue-100 text-blue-700")} Bisa tambah grafik bulanan (group by month).</p>
+  </div>
+`;
 
-          <div id="quickMenuGrid" class="grid grid-cols-4 gap-3 mb-6">
-              </div>
-
-          <div id="chartSection" class="bg-white dark:bg-slate-800 rounded-[2rem] p-5 shadow-sm border border-slate-100 dark:border-slate-700 mb-6 hidden">
-             <div class="flex items-center gap-2 mb-4">
-                <span class="material-symbols-rounded text-accent text-lg">pie_chart</span>
-                <span class="text-xs font-bold text-slate-500 uppercase">Analitik Keuangan</span>
-             </div>
-             <div class="h-48 relative w-full"><canvas id="financeChart"></canvas></div>
-          </div>
-
-          <div class="mb-6">
-             <div class="flex justify-between items-center mb-3 px-1">
-               <h3 class="text-sm font-bold text-brand-primary dark:text-white uppercase tracking-wide flex items-center gap-2"><span class="material-symbols-rounded text-accent">campaign</span> Info Penting</h3>
-               <button onclick="switchView('notifications')" class="text-xs text-accent font-bold">Lihat Semua</button>
-             </div>
-             <div id="homeNoticeList" class="space-y-3"></div>
-          </div>
-      </section>
-
-      <section id="view-users" class="view-section">
-          <div class="flex justify-between items-end mb-4 px-1">
-              <div>
-                <h2 class="text-2xl font-bold text-brand-primary dark:text-white">Anggota</h2>
-                <p class="text-xs text-slate-400">Database Organisasi</p>
-              </div>
-              <div class="flex gap-2">
-                <button onclick="exportUserData()" class="bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300 text-xs px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 active:scale-95"><span class="material-symbols-rounded text-sm">download</span> CSV</button>
-                <span id="userCountBadge" class="bg-brand-primary text-white text-xs px-3 py-1.5 rounded-full font-bold flex items-center">0</span>
-              </div>
-          </div>
-          <div class="mb-4 relative">
-             <span class="material-symbols-rounded absolute left-3 top-2.5 text-slate-400 text-lg">search</span>
-             <input type="text" onkeyup="filterList('userList', this.value)" placeholder="Cari nama anggota..." class="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-accent">
-          </div>
-          <div id="userList" class="space-y-3"></div>
-      </section>
-
-      <section id="view-finance" class="view-section">
-          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] dark:bg-[#0F172A] py-2 z-10 transition-colors">
-            <div>
-                <h2 class="text-2xl font-bold text-brand-primary dark:text-white">Keuangan</h2>
-                <p class="text-xs text-slate-400">Laporan & Transaksi</p>
-            </div>
-            <div id="financeActions" class="flex gap-2">
-                </div>
-          </div>
-          <div class="flex bg-white dark:bg-slate-800 p-1 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 mb-4">
-             <button onclick="filterFinance('all')" class="flex-1 py-2 text-[10px] font-bold rounded-lg bg-brand-primary text-white transition-all">SEMUA</button>
-             <button onclick="filterFinance('income')" class="flex-1 py-2 text-[10px] font-bold rounded-lg text-slate-400 hover:text-brand-primary transition-all">MASUK</button>
-             <button onclick="filterFinance('expense')" class="flex-1 py-2 text-[10px] font-bold rounded-lg text-slate-400 hover:text-brand-primary transition-all">KELUAR</button>
-          </div>
-          <div id="finList" class="space-y-3"></div>
-      </section>
-
-      <section id="view-activities" class="view-section">
-         <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] dark:bg-[#0F172A] py-2 z-10">
-            <div><h2 class="text-2xl font-bold text-brand-primary dark:text-white">Kegiatan</h2><p class="text-xs text-slate-400">Jadwal & Agenda</p></div>
-            <button id="btnAddActivity" class="hidden w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"><span class="material-symbols-rounded">add</span></button>
-         </div>
-         <div id="actList" class="grid grid-cols-1 gap-4"></div>
-      </section>
-
-      <section id="view-inventory" class="view-section">
-          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] dark:bg-[#0F172A] py-2 z-10">
-            <div><h2 class="text-2xl font-bold text-brand-primary dark:text-white">Inventaris</h2><p class="text-xs text-slate-400">Aset Organisasi</p></div>
-            <button id="btnAddInventory" class="hidden w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"><span class="material-symbols-rounded">add</span></button>
-         </div>
-         <div id="invList" class="grid grid-cols-2 gap-3"></div>
-      </section>
-
-      <section id="view-letters" class="view-section">
-          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] dark:bg-[#0F172A] py-2 z-10">
-            <div><h2 class="text-2xl font-bold text-brand-primary dark:text-white">Arsip Surat</h2><p class="text-xs text-slate-400">Administrasi</p></div>
-            <button id="btnAddLetter" class="hidden w-10 h-10 bg-teal-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"><span class="material-symbols-rounded">add</span></button>
-         </div>
-         <div id="letterList" class="space-y-3"></div>
-      </section>
-
-      <section id="view-notifications" class="view-section">
-          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] dark:bg-[#0F172A] py-2 z-10">
-            <div><h2 class="text-2xl font-bold text-brand-primary dark:text-white">Papan Info</h2><p class="text-xs text-slate-400">Pengumuman Resmi</p></div>
-            <button id="btnAddNotif" class="hidden w-10 h-10 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"><span class="material-symbols-rounded">add</span></button>
-         </div>
-         <div id="notifList" class="space-y-3"></div>
-      </section>
-
-      <section id="view-profile" class="view-section">
-        <div class="flex flex-col items-center pt-4 pb-20">
-            <div class="relative group cursor-pointer active:scale-95 transition-transform" onclick="$('profileUpload').click()">
-                <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white dark:border-slate-700 shadow-xl shadow-slate-200 dark:shadow-none">
-                <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><span class="material-symbols-rounded text-white">photo_camera</span></div>
-                <div class="absolute bottom-1 right-1 bg-accent p-1.5 rounded-full border-2 border-white dark:border-slate-800 shadow-sm"><span class="material-symbols-rounded text-white text-sm block">edit</span></div>
-            </div>
-            <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
-            
-            <h2 id="profileNameDisplay" class="text-xl font-bold text-brand-primary dark:text-white mt-4 mb-0.5">Nama User</h2>
-            <div id="profileRoleBadge" class="px-3 py-0.5 bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200 rounded-full text-[10px] font-extrabold uppercase tracking-wide mb-1">ROLE</div>
-            <p id="profileEmailDisplay" class="text-sm text-slate-400">email@user.com</p>
-
-            <div class="grid grid-cols-2 gap-3 w-full mt-6 px-1">
-                 <button onclick="generateIDCard()" class="bg-slate-800 dark:bg-white dark:text-slate-900 text-white py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-lg"><span class="material-symbols-rounded text-lg">badge</span> KARTU DIGITAL</button>
-                 <button onclick="showQRCode()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-brand-primary dark:text-white py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-lg"><span class="material-symbols-rounded text-lg">qr_code</span> QR ABSENSI</button>
-            </div>
-
-            <div class="w-full mt-6 space-y-4 px-1">
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm space-y-4">
-                    <div><label class="text-[10px] font-bold text-slate-400 ml-1 uppercase">Nama Lengkap</label><input id="editName" type="text" class="input-field"></div>
-                    <div><label class="text-[10px] font-bold text-slate-400 ml-1 uppercase">No. WhatsApp</label><input id="editPhone" type="tel" class="input-field"></div>
-                    <div><label class="text-[10px] font-bold text-slate-400 ml-1 uppercase">Alamat</label><textarea id="editAddress" rows="2" class="input-field"></textarea></div>
-                    <div><label class="text-[10px] font-bold text-slate-400 ml-1 uppercase">Bio / Catatan</label><textarea id="editBio" rows="2" class="input-field"></textarea></div>
-                </div>
-                
-                <button onclick="saveProfile()" class="w-full bg-brand-primary text-white py-4 rounded-2xl font-bold shadow-lg hover:opacity-90 transition-all active:scale-95">SIMPAN PERUBAHAN</button>
-            </div>
+async function loadAuditLogsHTML() {
+  const snap = await getDocs(query(collection(db, "audit_logs"), orderBy("time","desc"), limit(30)));
+  let html = `<div class="space-y-2">`;
+  snap.forEach(d => {
+    const x = d.data();
+    html += `
+      <div class="bg-slate-50 dark:bg-slate-700 p-3 rounded-xl">
+        <div class="flex items-center justify-between gap-2">
+          <p class="text-xs font-bold text-slate-700 dark:text-white">${x.action || "-"}</p>
+          ${badge((x.role||"-").replaceAll("_"," "), "bg-slate-200 text-slate-700 dark:bg-slate-600 dark:text-white")}
         </div>
-      </section>
+        <p class="text-[11px] text-slate-500 dark:text-slate-200 mt-1">${x.desc || ""}</p>
+        <p class="text-[10px] text-slate-400 mt-1">${x.actor || "-"} • ${dateID(x.time)}</p>
+      </div>
+    `;
+  });
+  html += `</div>`;
+  return html;
+}
 
-  </main>
+async function loadSystemHealthHTML() {
+  const users = await getCount("users");
+  const fin = await getCount("financial_records");
+  const act = await getCount("activities");
+  const inv = await getCount("inventory");
+  const letc = await getCount("letters");
+  const notif = await getCount("notifications");
+  return `
+    <div class="grid grid-cols-2 gap-3 text-xs">
+      <div class="bg-slate-50 dark:bg-slate-700 p-3 rounded-xl">${badge("Users")} <p class="text-lg font-black mt-1">${users}</p></div>
+      <div class="bg-slate-50 dark:bg-slate-700 p-3 rounded-xl">${badge("Kas")} <p class="text-lg font-black mt-1">${fin}</p></div>
+      <div class="bg-slate-50 dark:bg-slate-700 p-3 rounded-xl">${badge("Kegiatan")} <p class="text-lg font-black mt-1">${act}</p></div>
+      <div class="bg-slate-50 dark:bg-slate-700 p-3 rounded-xl">${badge("Aset")} <p class="text-lg font-black mt-1">${inv}</p></div>
+      <div class="bg-slate-50 dark:bg-slate-700 p-3 rounded-xl">${badge("Surat")} <p class="text-lg font-black mt-1">${letc}</p></div>
+      <div class="bg-slate-50 dark:bg-slate-700 p-3 rounded-xl">${badge("Info")} <p class="text-lg font-black mt-1">${notif}</p></div>
+    </div>
+  `;
+}
 
-  <nav class="fixed bottom-0 w-full glass-nav pb-6 pt-2 px-4 z-50 rounded-t-[2rem]">
-      <div id="bottomNav" class="flex justify-between items-center max-w-sm mx-auto">
-         </div>
-  </nav>
+// ====== Approval Center (basic real) ======
+async function loadApprovalCenterHTML() {
+  // Pending finance
+  const finSnap = await getDocs(query(collection(db,"financial_records"), where("status","==","pending"), orderBy("createdAt","desc"), limit(20)));
+  let finHTML = "";
+  finSnap.forEach(d => {
+    const f = d.data();
+    finHTML += `
+      <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 rounded-xl">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-xs font-bold">${f.note || "-"}</p>
+            <p class="text-[10px] text-slate-400">${dateID(f.createdAt)} • ${f.type}</p>
+            <p class="text-sm font-black ${f.type==="income"?"text-green-600":"text-red-500"}">${money(f.amount)}</p>
+          </div>
+          ${(isKetua()||isSuper()) ? `
+            <button class="text-[10px] bg-green-500 text-white px-2 py-1 rounded-lg font-bold"
+              onclick="approveFin('${d.id}')">ACC</button>` : ''
+          }
+        </div>
+      </div>
+    `;
+  });
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+  return `
+    <div class="space-y-3">
+      <div class="flex items-center justify-between">
+        <p class="text-sm font-extrabold text-slate-700 dark:text-white">Menunggu ACC</p>
+        ${badge("Finance Pending")}
+      </div>
+      <div class="space-y-2">${finHTML || `<p class="text-xs text-slate-400 text-center">Tidak ada pending.</p>`}</div>
+      <div class="bg-slate-50 dark:bg-slate-700 p-3 rounded-xl text-xs text-slate-600 dark:text-slate-200">
+        <p>${badge("Next", "bg-blue-100 text-blue-700")} Tambah approval kegiatan / surat / aset (kalau perlu).</p>
+      </div>
+    </div>
+  `;
+}
 
-    // 1. CONFIGURATION
-    const firebaseConfig = { apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs", authDomain: "katar-9cac3.firebaseapp.com", projectId: "katar-9cac3", storageBucket: "katar-9cac3.firebasestorage.app", messagingSenderId: "1017734829960", appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d" };
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const CLOUD_NAME = "dbxktcwug";
-    const UPLOAD_PRESET = "Karteji";
-
-    window.$ = (id) => document.getElementById(id);
-    let ME = null; 
-    let newProfileFile = null;
-    let financeChartInstance = null;
-
-    // 2. GLOBAL UTILS
-    window.toggleLoader = (show, msg="MEMUAT...") => { const l=$("globalLoader"); $("loaderText").innerText=msg; show?(l.classList.remove('hidden'),l.classList.add('flex')):(l.classList.add('hidden'),l.classList.remove('flex')); };
-    window.closeModal = () => $("crudModal").classList.add('hidden');
-    window.showModal = (title, body, onSave) => {
-        $("modalTitle").textContent = title; $("modalBody").innerHTML = body;
-        $("crudModal").classList.remove('hidden'); $("crudModal").classList.add('flex');
-        const btn = $("modalSubmitBtn");
-        if(onSave) { btn.style.display='block'; const nBtn=btn.cloneNode(true); btn.parentNode.replaceChild(nBtn, btn); nBtn.onclick=onSave; } 
-        else { btn.style.display='none'; }
-    };
-    window.toggleDarkMode = () => { document.documentElement.classList.toggle('dark'); localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'; };
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
-
-    async function upload(file) {
-        if(!file || !file.type.startsWith('image/')) return null;
-        const fd = new FormData(); fd.append("file", file); fd.append("upload_preset", UPLOAD_PRESET);
-        try { const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {method:"POST",body:fd}); const d=await res.json(); return {url:d.secure_url}; } catch(e){ alert("Upload Gagal"); return null; }
-    }
-
-    async function auditLog(action, desc) {
-        try { await addDoc(collection(db, "audit_logs"), { actor: ME.name, role: ME.role, action, desc, time: serverTimestamp() }); } catch(e){}
-    }
-
-    // 3. AUTH LOGIC
-    onAuthStateChanged(auth, async (user) => {
-        if (!user) return window.location.href = "login.html";
-        toggleLoader(true);
-        try {
-            const snap = await getDoc(doc(db, "users", user.uid));
-            if(!snap.exists()) { await signOut(auth); return alert("Akun tidak ditemukan!"); }
-            ME = { uid: user.uid, ...snap.data() };
-            initApp();
-        } catch(e) { console.error(e); }
-        toggleLoader(false);
+// ====== Broadcast (real: create notifications) ======
+function openBroadcastModal() {
+  showModal("Broadcast Pengumuman", `
+    <input id="bTitle" class="input-field mb-2" placeholder="Judul broadcast">
+    <textarea id="bBody" class="input-field mb-2 h-24" placeholder="Isi broadcast..."></textarea>
+    <select id="bLvl" class="input-field">
+      <option value="normal">Info Biasa</option>
+      <option value="important">Penting!</option>
+    </select>
+    <p class="text-[11px] text-slate-400 mt-2">Broadcast akan masuk ke Papan Info.</p>
+  `, async () => {
+    await addDoc(collection(db, "notifications"), {
+      title: $("bTitle").value,
+      body: $("bBody").value,
+      level: $("bLvl").value,
+      createdAt: serverTimestamp(),
+      createdBy: ME.uid
     });
+    await auditLog("BROADCAST", $("bTitle").value);
+    closeModal();
+    loadNotifications(50);
+    loadHomeData();
+  });
+}
 
-    function initApp() {
-        $("headerName").textContent = ME.name;
-        $("headerRole").textContent = ME.role.replace('_', ' ');
-        $("headerPhoto").src = ME.photo?.url || "https://via.placeholder.com/150";
-        $("profileImage").src = ME.photo?.url || "https://via.placeholder.com/150";
-        
-        setupRoleFeatures();
-        renderNavigation();
-        loadHomeData();
-        updateDoc(doc(db, "users", ME.uid), { lastSeen: serverTimestamp() }); // Online status
-    }
+// ====== Ketua extras (mostly stub) ======
+const reportHTML = () => `
+  <div class="space-y-3">
+    <p class="text-xs text-slate-500 dark:text-slate-200">Generate laporan ringkas (stub). Bisa dikembangkan jadi PDF detail.</p>
+    <select id="rType" class="input-field">
+      <option value="finance">Laporan Keuangan</option>
+      <option value="activities">Laporan Kegiatan</option>
+      <option value="inventory">Laporan Inventaris</option>
+    </select>
+    <p class="text-[11px] text-slate-400">Klik SIMPAN untuk generate.</p>
+  </div>
+`;
+async function generateReport() {
+  await auditLog("REPORT_GENERATE", `type=${$("rType").value}`);
+  closeModal();
+  alert("Report stub dibuat (log tersimpan).");
+}
 
-    // 4. ROLE & PERMISSION SYSTEM
-    const hasRole = (roles) => roles.includes(ME.role);
-    const isSuper = () => ME.role === 'super_admin';
-    const isKetua = () => ME.role === 'ketua';
-    
-    function setupRoleFeatures() {
-        // Quick Menu Builder (10 Features per Role logic mixed here)
-        const qm = $("quickMenuGrid"); qm.innerHTML = "";
-        const menus = [];
+const kpiHTML = () => `
+  <div class="text-xs text-slate-600 dark:text-slate-200 space-y-2">
+    <p class="font-bold">KPI (stub)</p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li>Anggota aktif</li>
+      <li>Kegiatan per bulan</li>
+      <li>Kas masuk/keluar bulanan</li>
+    </ul>
+  </div>
+`;
 
-        // Common
-        menus.push({icon:'calendar_month', lbl:'Jadwal', fn:"switchView('activities')"});
-        menus.push({icon:'campaign', lbl:'Info', fn:"switchView('notifications')"});
+const taskHTML = () => `
+  <div class="space-y-3">
+    <input id="tTitle" class="input-field" placeholder="Judul tugas">
+    <textarea id="tDesc" class="input-field h-20" placeholder="Deskripsi tugas"></textarea>
+    <select id="tTo" class="input-field">
+      <option value="sekretaris">Sekretaris</option>
+      <option value="bendahara">Bendahara</option>
+      <option value="wakil_ketua">Wakil Ketua</option>
+      <option value="anggota">Anggota</option>
+    </select>
+  </div>
+`;
+async function createTask() {
+  await addDoc(collection(db, "tasks"), {
+    title: $("tTitle").value,
+    desc: $("tDesc").value,
+    toRole: $("tTo").value,
+    status: "open",
+    createdAt: serverTimestamp(),
+    createdBy: ME.uid
+  });
+  await auditLog("TASK_CREATE", $("tTitle").value);
+  closeModal();
+  alert("Tugas dibuat.");
+}
 
-        // Role Specific
-        if(isSuper() || isKetua()) {
-            menus.push({icon:'gavel', lbl:'Approval', fn:"alert('Fitur Approval Center')"});
-            menus.push({icon:'summarize', lbl:'Laporan', fn:"alert('Fitur Generate PDF Report')"});
-            if(isSuper()) menus.push({icon:'database', lbl:'Backup', fn:"exportAllData()"}); // New Feature
-        }
-        if(hasRole(['bendahara', 'super_admin'])) {
-            menus.push({icon:'receipt_long', lbl:'Tagihan', fn:"alert('Fitur Invoice Generator')"});
-            menus.push({icon:'savings', lbl:'Target', fn:"alert('Fitur Financial Goals')"});
-        }
-        if(hasRole(['sekretaris', 'super_admin'])) {
-            menus.push({icon:'draw', lbl:'Surat', fn:"switchView('letters')"});
-            menus.push({icon:'edit_document', lbl:'Notulen', fn:"alert('Fitur Notulen Rapat')"});
-        }
-        if(hasRole(['wakil_ketua', 'super_admin'])) {
-            menus.push({icon:'inventory_2', lbl:'Aset', fn:"switchView('inventory')"});
-            menus.push({icon:'qr_code_scanner', lbl:'Scan QR', fn:"alert('Fitur Scanner')"});
-        }
-        if(ME.role === 'anggota') {
-            menus.push({icon:'how_to_vote', lbl:'Voting', fn:"alert('Fitur Voting')"});
-            menus.push({icon:'emergency', lbl:'Darurat', fn:"alert('Kontak Darurat')"});
-        }
+const memberInsightHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} Insight anggota akan pakai data absensi/aktivitas.</div>`;
+const budgetHTML = () => `
+  <div class="space-y-3">
+    <input id="bYear" type="number" class="input-field" placeholder="Tahun (mis: 2026)">
+    <input id="bAmount" type="number" class="input-field" placeholder="Target total budget (Rp)">
+    <p class="text-[11px] text-slate-400">Disimpan ke koleksi <b>budget_plans</b>.</p>
+  </div>
+`;
+async function saveBudget() {
+  await addDoc(collection(db,"budget_plans"), {
+    year: Number($("bYear").value || 0),
+    total: Number($("bAmount").value || 0),
+    createdAt: serverTimestamp(),
+    createdBy: ME.uid
+  });
+  await auditLog("BUDGET_CREATE", `${$("bYear").value} - ${$("bAmount").value}`);
+  closeModal();
+  alert("Budget plan tersimpan.");
+}
+const meetingHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} nanti tarik dari koleksi notulen.</div>`;
+const signHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} tanda tangan digital bisa pakai canvas + upload.</div>`;
 
-        qm.innerHTML = menus.map(m => `
-            <div onclick="${m.fn}" class="bg-white dark:bg-slate-800 p-3 rounded-2xl flex flex-col items-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer border border-slate-100 dark:border-slate-700">
-                <div class="p-2 rounded-full bg-slate-50 dark:bg-slate-700 text-brand-primary dark:text-white"><span class="material-symbols-rounded text-xl">${m.icon}</span></div>
-                <span class="text-[9px] font-bold text-slate-600 dark:text-slate-300 text-center leading-none">${m.lbl}</span>
-            </div>
-        `).join('');
+// ====== Wakil Ketua stubs + minimal collections ======
+const borrowHTML = () => `
+  <div class="space-y-3">
+    <input id="brItem" class="input-field" placeholder="Nama barang">
+    <input id="brQty" type="number" class="input-field" placeholder="Jumlah">
+    <input id="brBorrower" class="input-field" placeholder="Nama peminjam">
+    <p class="text-[11px] text-slate-400">Disimpan ke koleksi <b>borrows</b>.</p>
+  </div>
+`;
+async function createBorrow() {
+  await addDoc(collection(db,"borrows"), {
+    item: $("brItem").value,
+    qty: Number($("brQty").value || 0),
+    borrower: $("brBorrower").value,
+    status: "borrowed",
+    createdAt: serverTimestamp(),
+    createdBy: ME.uid
+  });
+  await auditLog("BORROW_CREATE", $("brItem").value);
+  closeModal();
+  alert("Peminjaman dicatat.");
+}
+const maintenanceHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} jadwal perawatan aset.</div>`;
+async function saveMaintenance(){ await auditLog("MAINTENANCE_SAVE","stub"); closeModal(); alert("Saved (stub)"); }
+const incidentHTML = () => `
+  <div class="space-y-3">
+    <input id="inTitle" class="input-field" placeholder="Judul insiden">
+    <textarea id="inBody" class="input-field h-20" placeholder="Detail insiden..."></textarea>
+  </div>
+`;
+async function createIncident(){
+  await addDoc(collection(db,"incidents"), { title:$("inTitle").value, body:$("inBody").value, createdAt:serverTimestamp(), createdBy:ME.uid });
+  await auditLog("INCIDENT_CREATE",$("inTitle").value);
+  closeModal(); alert("Insiden dicatat.");
+}
+const scannerHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} scanner QR butuh library kamera (html5-qrcode).</div>`;
+const attendanceHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} kontrol absensi kegiatan.</div>`;
+const vendorHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} daftar vendor.</div>`;
+const assetValueHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} depresiasi aset.</div>`;
+const securityHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} jadwal keamanan.</div>`;
+const mapsHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} peta lokasi kegiatan.</div>`;
 
-        // Action Buttons Visibility
-        if(hasRole(['sekretaris','super_admin'])) $("btnAddLetter").classList.remove('hidden');
-        if(hasRole(['wakil_ketua','super_admin'])) $("btnAddInventory").classList.remove('hidden');
-        if(hasRole(['ketua','wakil_ketua','sekretaris','super_admin'])) { $("btnAddActivity").classList.remove('hidden'); $("btnAddNotif").classList.remove('hidden'); }
-        
-        // Finance Chart Visibility
-        if(hasRole(['bendahara','ketua','wakil_ketua','super_admin'])) $("chartSection").classList.remove('hidden');
-    }
+// ====== Sekretaris (minimal real + stub) ======
+const letterGenHTML = () => `
+  <div class="space-y-3">
+    <input id="lgSubject" class="input-field" placeholder="Perihal surat">
+    <input id="lgNumber" class="input-field" placeholder="Nomor surat">
+    <textarea id="lgBody" class="input-field h-24" placeholder="Isi singkat (opsional)..."></textarea>
+    <p class="text-[11px] text-slate-400">Akan masuk ke Arsip Surat (tanpa file, text-only).</p>
+  </div>
+`;
+async function createLetterFromTemplate(){
+  await addDoc(collection(db,"letters"), {
+    subject: $("lgSubject").value,
+    number: $("lgNumber").value,
+    body: $("lgBody").value,
+    createdAt: serverTimestamp(),
+    createdBy: ME.uid
+  });
+  await auditLog("LETTER_CREATE", $("lgNumber").value);
+  closeModal();
+  loadLetters();
+  alert("Surat text-only tersimpan.");
+}
 
-    function renderNavigation() {
-        const nav = $("bottomNav");
-        let items = [{id:'home', icon:'grid_view', lbl:'Home'}];
-        
-        if(hasRole(['super_admin','ketua','wakil_ketua','sekretaris','bendahara'])) items.push({id:'users', icon:'group', lbl:'Anggota'});
-        if(hasRole(['bendahara','super_admin','ketua'])) items.push({id:'finance', icon:'account_balance_wallet', lbl:'Kas'});
-        if(hasRole(['sekretaris'])) items.push({id:'letters', icon:'folder', lbl:'Arsip'});
-        if(hasRole(['wakil_ketua'])) items.push({id:'inventory', icon:'inventory_2', lbl:'Aset'});
-        if(ME.role === 'anggota') items.push({id:'activities', icon:'event', lbl:'Acara'});
+const notulenHTML = () => `
+  <div class="space-y-3">
+    <input id="ntTitle" class="input-field" placeholder="Judul rapat">
+    <textarea id="ntBody" class="input-field h-28" placeholder="Notulen..."></textarea>
+    <p class="text-[11px] text-slate-400">Disimpan ke koleksi <b>notulen</b>.</p>
+  </div>
+`;
+async function createNotulen(){
+  await addDoc(collection(db,"notulen"), { title:$("ntTitle").value, body:$("ntBody").value, createdAt:serverTimestamp(), createdBy:ME.uid });
+  await auditLog("NOTULEN_CREATE", $("ntTitle").value);
+  closeModal(); alert("Notulen tersimpan.");
+}
+const agendaHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} agenda rapat.</div>`;
+async function saveAgenda(){ await auditLog("AGENDA_SAVE","stub"); closeModal(); alert("Saved (stub)"); }
+const incomingHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} surat masuk.</div>`;
+const outgoingHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} surat keluar.</div>`;
+const draftNotifHTML = () => `
+  <div class="space-y-3">
+    <input id="dnTitle" class="input-field" placeholder="Judul draft">
+    <textarea id="dnBody" class="input-field h-24" placeholder="Isi draft..."></textarea>
+    <p class="text-[11px] text-slate-400">Disimpan ke koleksi <b>notif_drafts</b>.</p>
+  </div>
+`;
+async function createDraftNotif(){
+  await addDoc(collection(db,"notif_drafts"), { title:$("dnTitle").value, body:$("dnBody").value, createdAt:serverTimestamp(), createdBy:ME.uid });
+  await auditLog("DRAFT_NOTIF_CREATE", $("dnTitle").value);
+  closeModal(); alert("Draft disimpan.");
+}
+const tagHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} tagging arsip.</div>`;
 
-        // Profile is always float
-        let html = items.map(i => `
-            <button onclick="switchView('${i.id}')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="${i.id}">
-                <span class="material-symbols-rounded text-2xl text-slate-400 dark:text-slate-500 transition-colors">${i.icon}</span>
-                <p class="text-[10px] font-medium text-slate-400 dark:text-slate-500 transition-colors">${i.lbl}</p>
-            </button>
-        `).join('');
-        
-        html += `<div class="relative -top-6"><button onclick="switchView('profile')" class="nav-btn w-14 h-14 bg-brand-primary dark:bg-accent text-white rounded-full flex items-center justify-center shadow-xl hover:scale-105 active:scale-95 transition-all ring-4 ring-white dark:ring-slate-900" data-target="profile"><span class="material-symbols-rounded text-3xl">person</span></button></div>`;
-        nav.innerHTML = html;
-        window.switchView('home');
-    }
+// ====== Bendahara stubs ======
+const invoiceHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} invoice generator.</div>`;
+const duesHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} manajemen iuran.</div>`;
+const donationHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} campaign donasi.</div>`;
+const budgetVsHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} budget vs aktual.</div>`;
+const reconcileHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} rekonsil bank.</div>`;
+const proofHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} validasi bukti.</div>`;
+const taxHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} catatan pajak.</div>`;
 
-    window.switchView = (id) => {
-        document.querySelectorAll('.view-section').forEach(el => { el.classList.remove('active'); setTimeout(()=>el.style.display='none', 200); });
-        const t = $(`view-${id}`); if(t){ t.style.display='block'; setTimeout(()=>t.classList.add('active'), 10); }
-        
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        const btn = document.querySelector(`.nav-btn[data-target="${id}"]`); if(btn) btn.classList.add('active');
+// ====== Anggota minimal real (proposal & issue) ======
+const rsvpHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} RSVP kegiatan.</div>`;
+const proposalHTML = () => `
+  <div class="space-y-3">
+    <input id="pTitle" class="input-field" placeholder="Judul usulan">
+    <textarea id="pBody" class="input-field h-24" placeholder="Detail usulan..."></textarea>
+    <p class="text-[11px] text-slate-400">Disimpan ke koleksi <b>proposals</b>.</p>
+  </div>
+`;
+async function submitProposal(){
+  await addDoc(collection(db,"proposals"), { title:$("pTitle").value, body:$("pBody").value, status:"new", createdAt:serverTimestamp(), createdBy:ME.uid });
+  await auditLog("PROPOSAL_SUBMIT", $("pTitle").value);
+  closeModal(); alert("Usulan terkirim.");
+}
+const issueHTML = () => `
+  <div class="space-y-3">
+    <input id="isTitle" class="input-field" placeholder="Judul masalah">
+    <textarea id="isBody" class="input-field h-24" placeholder="Detail masalah..."></textarea>
+    <p class="text-[11px] text-slate-400">Disimpan ke koleksi <b>issues</b>.</p>
+  </div>
+`;
+async function submitIssue(){
+  await addDoc(collection(db,"issues"), { title:$("isTitle").value, body:$("isBody").value, status:"open", createdAt:serverTimestamp(), createdBy:ME.uid });
+  await auditLog("ISSUE_SUBMIT", $("isTitle").value);
+  closeModal(); alert("Laporan terkirim.");
+}
 
-        // Lazy Load Data
-        if(id==='users') loadUsers();
-        if(id==='finance') loadFinance();
-        if(id==='activities') loadActivities();
-        if(id==='inventory') loadInventory();
-        if(id==='letters') loadLetters();
-        if(id==='notifications') loadNotifications();
-        if(id==='profile') loadProfileData();
-    }
-
-    // 5. CRUD: USERS
-    async function loadUsers() {
-        const list = $("userList"); list.innerHTML = '<p class="text-center text-xs opacity-50">Memuat data...</p>';
-        const snap = await getDocs(query(collection(db, "users"), orderBy("name")));
-        $("userCountBadge").innerText = snap.size; list.innerHTML = '';
-        
-        snap.forEach(d => {
-            const u = d.data();
-            const canEdit = isSuper() || (isKetua() && u.role !== 'super_admin');
-            list.innerHTML += `
-                <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl flex items-center justify-between border border-slate-100 dark:border-slate-700 shadow-sm">
-                   <div class="flex items-center gap-3">
-                       <img src="${u.photo?.url || 'https://via.placeholder.com/50'}" class="w-10 h-10 rounded-full object-cover bg-slate-100">
-                       <div>
-                          <p class="text-sm font-bold text-brand-primary dark:text-white">${u.name}</p>
-                          <p class="text-[10px] text-slate-400 uppercase font-bold">${u.role.replace('_',' ')}</p>
-                       </div>
-                   </div>
-                   ${canEdit && d.id !== ME.uid ? `<button onclick="editRole('${d.id}','${u.role}')" class="w-8 h-8 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center text-brand-primary dark:text-white"><span class="material-symbols-rounded text-sm">edit</span></button>` : ''}
-                </div>
-            `;
-        });
-    }
-    window.editRole = (uid, oldRole) => {
-        const roles = ['anggota','sekretaris','bendahara','wakil_ketua','ketua','super_admin'];
-        const opts = roles.map(r => `<option value="${r}" ${r===oldRole?'selected':''}>${r.toUpperCase()}</option>`).join('');
-        showModal("Ubah Peran", `<select id="newRole" class="input-field mb-2">${opts}</select>`, async () => {
-            await updateDoc(doc(db,"users",uid), {role:$("newRole").value});
-            closeModal(); loadUsers(); auditLog("ROLE_CHANGE", `User ${uid} to ${$("newRole").value}`);
-        });
-    }
-
-    // 6. CRUD: FINANCE
-    async function loadFinance(filter='all') {
-        const list = $("finList"); list.innerHTML = '<p class="text-center text-xs opacity-50">Memuat...</p>';
-        let q = query(collection(db,"financial_records"), orderBy("createdAt","desc"));
-        if(filter !== 'all') q = query(collection(db,"financial_records"), where("type","==",filter), orderBy("createdAt","desc"));
-        
-        const snap = await getDocs(q); list.innerHTML = '';
-        if(hasRole(['bendahara','super_admin'])) {
-            $("financeActions").innerHTML = `<button onclick="addFinance()" class="w-8 h-8 bg-brand-primary text-white rounded-full flex items-center justify-center shadow"><span class="material-symbols-rounded text-lg">add</span></button>`;
-        }
-
-        snap.forEach(d => {
-            const f = d.data();
-            const isInc = f.type === 'income';
-            const isPending = f.status === 'pending';
-            const canApp = (isKetua() || isSuper()) && isPending;
-            
-            list.innerHTML += `
-               <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl flex justify-between items-start border border-slate-100 dark:border-slate-700 shadow-sm relative group">
-                  <div class="flex items-start gap-3">
-                     <div class="w-10 h-10 rounded-full ${isInc?'bg-green-100 text-green-600':'bg-red-100 text-red-500'} flex items-center justify-center shrink-0"><span class="material-symbols-rounded">${isInc?'arrow_downward':'arrow_upward'}</span></div>
-                     <div>
-                        <p class="text-sm font-bold text-brand-primary dark:text-white line-clamp-1">${f.note}</p>
-                        <p class="text-[10px] text-slate-400">${new Date(f.createdAt?.seconds*1000).toLocaleDateString()}</p>
-                        ${isPending ? '<span class="text-[9px] bg-orange-100 text-orange-600 px-1.5 rounded font-bold">MENUNGGU ACC</span>' : '<span class="text-[9px] text-green-500 font-bold">VERIFIED</span>'}
-                     </div>
-                  </div>
-                  <div class="text-right">
-                     <p class="text-sm font-bold ${isInc?'text-green-600':'text-red-500'}">${isInc?'+':'-'} ${Number(f.amount).toLocaleString()}</p>
-                     ${canApp ? `<button onclick="approveFin('${d.id}')" class="text-[10px] bg-green-500 text-white px-2 py-1 rounded mt-1 shadow hover:bg-green-600">ACC</button>` : ''}
-                     ${(isSuper() || isBendahara()) ? `<button onclick="deleteDocData('financial_records','${d.id}')" class="text-[10px] text-red-500 mt-1 block w-full text-right opacity-0 group-hover:opacity-100">Hapus</button>` : ''}
-                  </div>
-               </div>
-            `;
-        });
-    }
-    window.addFinance = () => {
-        showModal("Catat Keuangan", `
-           <select id="fType" class="input-field mb-3"><option value="income">Pemasukan (+)</option><option value="expense">Pengeluaran (-)</option></select>
-           <input id="fAmt" type="number" class="input-field mb-3" placeholder="Nominal (Rp)">
-           <input id="fNote" class="input-field mb-3" placeholder="Keterangan">
-           <div class="bg-slate-50 dark:bg-slate-700 p-3 rounded-xl"><p class="text-[10px] mb-1">Bukti Transfer</p><input type="file" id="fProof" class="text-xs text-slate-500"></div>
-        `, async () => {
-             toggleLoader(true);
-             try {
-                let proof = null; if($("fProof").files[0]) proof = await upload($("fProof").files[0]);
-                await addDoc(collection(db, "financial_records"), {
-                    type: $("fType").value, amount: $("fAmt").value, note: $("fNote").value,
-                    proof, status: (isKetua()||isSuper() ? 'approved' : 'pending'), createdBy: ME.uid, createdAt: serverTimestamp()
-                });
-                closeModal(); loadFinance();
-             } catch(e) { alert("Error"); }
-             toggleLoader(false);
-        });
-    };
-    window.approveFin = async (id) => { if(confirm("Setujui transaksi?")) { await updateDoc(doc(db,"financial_records",id),{status:'approved'}); loadFinance(); } };
-
-    // 7. CRUD: ACTIVITIES
-    async function loadActivities() {
-        const list = $("actList"); list.innerHTML = "";
-        const snap = await getDocs(query(collection(db, "activities"), orderBy("createdAt", "desc")));
-        snap.forEach(d => {
-            const x = d.data();
-            list.innerHTML += `
-              <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[1.5rem] overflow-hidden shadow-sm relative group">
-                  ${x.cover?.url ? `<div class="h-32 w-full bg-cover bg-center" style="background-image:url('${x.cover.url}')"></div>` : ''}
-                  <div class="p-4">
-                      <span class="text-[10px] text-blue-600 bg-blue-50 px-2 py-1 rounded-md font-bold">${x.date || 'Segera'}</span>
-                      <h4 class="font-bold text-lg text-brand-primary dark:text-white mt-1">${x.title}</h4>
-                      <p class="text-[11px] text-slate-400 flex items-center gap-1"><span class="material-symbols-rounded text-sm">location_on</span> ${x.location}</p>
-                  </div>
-                  ${(isSuper() || isSekretaris() || isKetua()) ? `<button onclick="deleteDocData('activities','${d.id}')" class="absolute top-2 right-2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center text-red-500 shadow"><span class="material-symbols-rounded text-sm">delete</span></button>` : ''}
-              </div>
-            `;
-        });
-    }
-    $("btnAddActivity").onclick = () => {
-        showModal("Tambah Kegiatan", `
-            <input id="aTitle" class="input-field mb-2" placeholder="Nama Kegiatan">
-            <input id="aDate" type="date" class="input-field mb-2">
-            <input id="aLoc" class="input-field mb-2" placeholder="Lokasi">
-            <input id="aCover" type="file" class="text-xs">
-        `, async () => {
-            toggleLoader(true);
-            let cover = null; if($("aCover").files[0]) cover = await upload($("aCover").files[0]);
-            await addDoc(collection(db, "activities"), { title:$("aTitle").value, date:$("aDate").value, location:$("aLoc").value, cover, createdAt:serverTimestamp(), status:'approved' });
-            closeModal(); loadActivities(); toggleLoader(false);
-        });
-    }
-
-    // 8. CRUD: INVENTORY, LETTERS, NOTIFICATIONS (Generic Handlers)
-    async function loadGeneric(col, listId, renderFn) {
-        const list = $(listId); list.innerHTML = '';
-        const snap = await getDocs(query(collection(db, col), orderBy("createdAt", "desc")));
-        snap.forEach(d => list.innerHTML += renderFn(d.id, d.data()));
-    }
-
-    async function loadInventory() {
-        loadGeneric('inventory', 'invList', (id, d) => `
-            <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm relative">
-                <p class="text-[10px] ${d.status==='bad'?'text-red-500':'text-green-500'} font-bold uppercase mb-1">${d.qty} Unit • ${d.status==='bad'?'Rusak':'Baik'}</p>
-                <h4 class="text-xs font-bold text-brand-primary dark:text-white line-clamp-1">${d.name}</h4>
-                ${(isSuper()||isWakil()) ? `<button onclick="deleteDocData('inventory','${id}')" class="absolute bottom-2 right-2 text-red-500"><span class="material-symbols-rounded text-sm">delete</span></button>`:''}
-            </div>
-        `);
-    }
-    $("btnAddInventory").onclick = () => {
-        showModal("Tambah Aset", `<input id="iName" class="input-field mb-2" placeholder="Nama Barang"><input id="iQty" type="number" class="input-field mb-2" placeholder="Jumlah"><select id="iStat" class="input-field"><option value="good">Baik</option><option value="bad">Rusak</option></select>`, async()=>{
-            await addDoc(collection(db,"inventory"), {name:$("iName").value, qty:$("iQty").value, status:$("iStat").value, createdAt:serverTimestamp()});
-            closeModal(); loadInventory();
-        });
-    }
-
-    async function loadLetters() {
-        loadGeneric('letters', 'letterList', (id, d) => `
-            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm relative">
-                <span class="text-[9px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-bold">${d.number}</span>
-                <h4 class="text-sm font-bold text-brand-primary dark:text-white mt-1">${d.subject}</h4>
-                ${d.file ? `<a href="${d.file.url}" target="_blank" class="text-[10px] text-accent underline block mt-1">Unduh File</a>` : ''}
-                ${(isSuper()||isSekretaris()) ? `<button onclick="deleteDocData('letters','${id}')" class="absolute top-2 right-2 text-red-500"><span class="material-symbols-rounded text-sm">delete</span></button>`:''}
-            </div>
-        `);
-    }
-    $("btnAddLetter").onclick = () => {
-        showModal("Arsip Surat", `<input id="lSub" class="input-field mb-2" placeholder="Perihal"><input id="lNo" class="input-field mb-2" placeholder="Nomor Surat"><input id="lFile" type="file" class="text-xs">`, async()=>{
-            toggleLoader(true);
-            let file = null; if($("lFile").files[0]) file = await upload($("lFile").files[0]);
-            await addDoc(collection(db,"letters"), {subject:$("lSub").value, number:$("lNo").value, file, createdAt:serverTimestamp()});
-            closeModal(); loadLetters(); toggleLoader(false);
-        });
-    }
-
-    async function loadNotifications(limitCount=50) {
-        const list = $("notifList"); list.innerHTML = '';
-        const q = query(collection(db, "notifications"), orderBy("createdAt", "desc"), limit(limitCount));
-        const snap = await getDocs(q);
-        // Also fill home list
-        const homeList = $("homeNoticeList"); if(homeList) homeList.innerHTML = '';
-        
-        snap.forEach(d => {
-            const x = d.data();
-            const html = `
-                <div class="bg-white dark:bg-slate-800 border-l-4 ${x.level==='important'?'border-red-500':'border-accent'} p-4 rounded-xl shadow-sm relative group mb-3">
-                    <h4 class="font-bold text-xs uppercase text-brand-primary dark:text-white mb-1 flex items-center gap-1">${x.level==='important'?'<span class="material-symbols-rounded text-red-500 text-sm">warning</span>':''} ${x.title}</h4>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">${x.body}</p>
-                    ${(isSuper()||isKetua()||isSekretaris()) ? `<button onclick="deleteDocData('notifications','${d.id}')" class="absolute top-2 right-2 text-slate-300 hover:text-red-500"><span class="material-symbols-rounded text-sm">close</span></button>`:''}
-                </div>
-            `;
-            list.innerHTML += html;
-            if(homeList && list.children.length <= 3) homeList.innerHTML += html;
-        });
-    }
-    $("btnAddNotif").onclick = () => {
-        showModal("Buat Pengumuman", `<input id="nTitle" class="input-field mb-2" placeholder="Judul"><textarea id="nBody" class="input-field mb-2 h-20" placeholder="Isi pesan..."></textarea><select id="nLvl" class="input-field"><option value="normal">Info Biasa</option><option value="important">Penting!</option></select>`, async()=>{
-            await addDoc(collection(db,"notifications"), {title:$("nTitle").value, body:$("nBody").value, level:$("nLvl").value, createdAt:serverTimestamp()});
-            closeModal(); loadNotifications();
-        });
-    }
-
-    // 9. DASHBOARD DATA
-    async function loadHomeData() {
-        const snap = await getDocs(query(collection(db, "financial_records"), where("status", "==", "approved")));
-        let inc = 0, exp = 0;
-        snap.forEach(d => { const f=d.data(); if(f.type==='income') inc+=Number(f.amount); else exp+=Number(f.amount); });
-        $("cardBalance").innerText = `Rp ${(inc-exp).toLocaleString('id-ID')}`;
-        $("cardIncome").innerText = `Rp ${inc.toLocaleString('id-ID')}`;
-        $("cardExpense").innerText = `Rp ${exp.toLocaleString('id-ID')}`;
-        
-        loadNotifications(3);
-        if(hasRole(['bendahara','ketua','super_admin'])) renderChart(inc, exp);
-    }
-
-    function renderChart(inc, exp) {
-        const ctx = $("financeChart").getContext('2d');
-        if(financeChartInstance) financeChartInstance.destroy();
-        financeChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: ['Masuk', 'Keluar'], datasets: [{ data: [inc, exp], backgroundColor: ['#4ade80', '#f87171'], borderWidth:0 }] }, options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'right',labels:{color:'#94a3b8'}}} } });
-    }
-
-    // 10. PROFILE & FEATURES
-    window.saveProfile = async () => {
-        toggleLoader(true);
-        try {
-            let d = { name:$("editName").value, phone:$("editPhone").value, address:$("editAddress").value, bio:$("editBio").value };
-            if(newProfileFile) { const u = await upload(newProfileFile); d.photo = u; }
-            await updateDoc(doc(db, "users", ME.uid), d);
-            alert("Profil disimpan!");
-        } catch(e) { alert("Gagal"); }
-        toggleLoader(false);
-    }
-    
-    async function loadProfileData() {
-        const snap = await getDoc(doc(db,"users",ME.uid)); const d=snap.data();
-        $("editName").value = d.name||""; $("editPhone").value = d.phone||""; $("editAddress").value = d.address||""; $("editBio").value = d.bio||"";
-    }
-
-    // NEW FEATURES IMPLEMENTATION
-    window.generateIDCard = () => {
-        showModal("KARTU ANGGOTA", `
-            <div id="idCardNode" class="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-6 rounded-2xl relative overflow-hidden shadow-2xl">
-               <div class="flex justify-between items-start mb-6"><img src="https://via.placeholder.com/40" class="w-10 rounded"><span class="text-xs font-bold tracking-[0.3em] opacity-50">KARTEJI</span></div>
-               <div class="flex gap-4 items-center">
-                  <img src="${ME.photo?.url}" class="w-20 h-20 rounded-lg object-cover border-2 border-white/20">
-                  <div><h3 class="text-xl font-bold uppercase">${ME.name}</h3><p class="text-xs text-orange-400 font-bold mt-1">${ME.role.toUpperCase()}</p><p class="text-[10px] mt-2 opacity-50 font-mono">${ME.uid.substring(0,8).toUpperCase()}</p></div>
-               </div>
-            </div>
-            <button onclick="downloadPDF()" class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg text-xs font-bold">DOWNLOAD PDF</button>
-        `);
-    }
-    window.downloadPDF = () => { const doc = new jspdf.jsPDF(); doc.text("Kartu Anggota Karteji", 10, 10); doc.save("IDCard.pdf"); } // Simple mock for now
-    window.showQRCode = () => {
-        showModal("QR ABSENSI", `<div id="qrcode" class="flex justify-center my-4"></div><p class="text-center text-xs">Tunjukkan ke petugas</p>`);
-        new QRCode($("qrcode"), { text: ME.uid, width: 128, height: 128 });
-    }
-    window.exportUserData = () => { alert("Mengunduh database user.csv..."); } // Mock logic
-    window.exportAllData = () => { alert("Backup Full JSON sedang diproses..."); } // Mock logic
-
-    // Generic Delete
-    window.deleteDocData = async (col, id) => { if(confirm("Hapus data ini?")) { await deleteDoc(doc(db, col, id)); initApp(); } }
-
-    $("logoutBtn").onclick = () => signOut(auth).then(()=>location.href="login.html");
-  </script>
-</body>
-</html>
+const volunteerHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} daftar relawan.</div>`;
+const votingHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} voting.</div>`;
+const umkmHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} UMKM/marketplace.</div>`;
+const badgeHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} badge & poin.</div>`;
+const emergencyHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} kontak darurat.</div>`;
+const chatHTML = () => `<div class="text-xs text-slate-600 dark:text-slate-200">${badge("Stub","bg-orange-100 text-orange-700")} forum internal.</div>`;
