@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Karteji Super Dashboard</title>
+  <title>Karteji Dashboard Stable</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
@@ -16,14 +16,12 @@
         extend: {
           fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
           colors: {
-            brand: { primary: '#0F172A', light: '#1E293B', lighter: '#334155' },
-            accent: { DEFAULT: '#6366F1', light: '#818CF8', dark: '#4F46E5' }, // Indigo theme
-            surface: '#F1F5F9'
+            brand: { primary: '#0F172A', light: '#1E293B' },
+            accent: { DEFAULT: '#6366F1', light: '#818CF8', dark: '#4F46E5' }
           },
           animation: {
             'blob': 'blob 10s infinite',
-            'float': 'float 6s ease-in-out infinite',
-            'pulse-soft': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite'
           },
           keyframes: {
             blob: {
@@ -31,10 +29,6 @@
               '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
               '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
               '100%': { transform: 'translate(0px, 0px) scale(1)' },
-            },
-            float: {
-              '0%, 100%': { transform: 'translateY(0)' },
-              '50%': { transform: 'translateY(-10px)' },
             }
           }
         }
@@ -43,92 +37,98 @@
   </script>
 
   <style>
-    body { background-color: #F1F5F9; color: #0F172A; -webkit-tap-highlight-color: transparent; }
+    body { background-color: #F8FAFC; color: #0F172A; -webkit-tap-highlight-color: transparent; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     
-    /* Premium Glass Effect */
-    .glass-panel {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
-    }
-    
+    /* Glass Effect Stable */
     .glass-nav {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(255,255,255,0.8);
-      box-shadow: 0 -10px 40px rgba(99, 102, 241, 0.1); /* Indigo shadow */
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(226, 232, 240, 0.8);
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
     }
 
-    .view-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-    .view-section.active { display: block; opacity: 1; transform: translateY(0); }
+    /* View Transition Logic - Fixed for Flickering */
+    .view-section {
+      display: none;
+      opacity: 0;
+      transform: translateY(5px);
+      transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    }
     
-    .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #4F46E5; transform: translateY(-2px); }
+    .view-section.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #4F46E5; }
     .nav-btn.active p { color: #4F46E5; font-weight: 800; }
     
-    /* Custom Scroll for modal */
-    .custom-scroll::-webkit-scrollbar { width: 4px; }
-    .custom-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+    .custom-scroll::-webkit-scrollbar { width: 3px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
   </style>
 </head>
 
 <body class="min-h-screen relative overflow-x-hidden pb-32 selection:bg-indigo-200 selection:text-indigo-900">
 
   <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-[100px] opacity-60 animate-blob"></div>
-    <div class="absolute top-[20%] right-[-10%] w-96 h-96 bg-indigo-200 rounded-full mix-blend-multiply filter blur-[100px] opacity-60 animate-blob animation-delay-2000"></div>
-    <div class="absolute bottom-[-10%] left-[20%] w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-[100px] opacity-60 animate-blob animation-delay-4000"></div>
+    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-purple-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
+    <div class="absolute top-[20%] right-[-10%] w-96 h-96 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
   </div>
 
-  <div id="globalLoader" class="fixed inset-0 bg-white/90 z-[9999] flex items-center justify-center flex-col gap-4 backdrop-blur-md hidden">
-    <div class="relative w-16 h-16">
-        <div class="absolute top-0 left-0 w-full h-full border-4 border-indigo-100 rounded-full"></div>
-        <div class="absolute top-0 left-0 w-full h-full border-4 border-indigo-500 rounded-full border-t-transparent animate-spin"></div>
-    </div>
-    <p class="text-xs font-bold text-indigo-900 animate-pulse tracking-[0.2em]">MEMUAT DATA...</p>
+  <div id="globalLoader" class="fixed inset-0 bg-white/95 z-[9999] flex items-center justify-center flex-col gap-4 backdrop-blur-sm hidden">
+    <div class="w-12 h-12 border-4 border-slate-100 border-t-indigo-600 rounded-full animate-spin"></div>
+    <p class="text-xs font-bold text-slate-400 animate-pulse tracking-widest">MEMPROSES...</p>
   </div>
 
   <div id="gate" class="fixed inset-0 bg-slate-900 z-[9998] hidden items-center justify-center p-6 text-center">
-    <div class="bg-white p-8 rounded-[2rem] shadow-2xl max-w-sm w-full relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 to-orange-500"></div>
-        <span class="material-symbols-rounded text-red-500 text-6xl mb-4 bg-red-50 p-4 rounded-full">lock</span>
-        <h2 class="text-2xl font-black text-slate-800 mb-2">Akses Ditolak</h2>
-        <p class="text-slate-500 text-sm mb-6">Sesi Anda telah berakhir atau Anda tidak memiliki izin.</p>
-        <a href="login.html" class="block w-full bg-slate-800 text-white py-3 rounded-xl font-bold hover:bg-slate-900 transition-all hover:shadow-lg">Login Ulang</a>
+    <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full">
+        <span class="material-symbols-rounded text-red-500 text-5xl mb-4">lock</span>
+        <h2 class="text-xl font-bold text-slate-800">Akses Ditolak</h2>
+        <p class="text-slate-500 text-sm mb-6">Sesi berakhir atau tidak ada izin.</p>
+        <a href="login.html" class="block w-full bg-slate-800 text-white py-3 rounded-xl font-bold">Login Ulang</a>
     </div>
   </div>
 
-  <div id="crudModal" class="fixed inset-0 z-[60] hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-sm transition-all duration-300">
-    <div class="bg-white w-full sm:max-w-md rounded-t-[2rem] sm:rounded-[2rem] p-6 relative shadow-[0_-10px_40px_rgba(0,0,0,0.2)] animate-[slideUp_0.3s_ease-out] max-h-[90vh] flex flex-col">
-      <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6 sm:hidden"></div> <div class="flex justify-between items-center mb-6">
-          <h2 id="modalTitle" class="text-xl font-black text-slate-800 tracking-tight leading-none">Judul</h2>
-          <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-red-100 hover:text-red-500 transition-colors text-slate-500">
+  <div id="crudModal" class="fixed inset-0 z-[60] hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/50 backdrop-blur-sm transition-all duration-300">
+    <div class="bg-white w-full sm:max-w-md rounded-t-[2rem] sm:rounded-[2rem] p-6 relative shadow-2xl animate-[slideUp_0.3s_ease-out] max-h-[90vh] flex flex-col">
+      <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6 sm:hidden"></div>
+      <div class="flex justify-between items-center mb-6">
+          <h2 id="modalTitle" class="text-xl font-bold text-slate-800 tracking-tight">Judul</h2>
+          <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-red-50 hover:text-red-500 text-slate-500">
             <span class="material-symbols-rounded text-xl">close</span>
           </button>
       </div>
       <div id="modalBody" class="space-y-4 overflow-y-auto custom-scroll flex-1 p-1"></div>
-      <button id="modalSubmitBtn" class="mt-6 w-full rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white py-4 text-sm font-bold shadow-lg shadow-indigo-200 hover:shadow-indigo-400 active:scale-[0.98] transition-all">SIMPAN</button>
+      <button id="modalSubmitBtn" class="mt-6 w-full rounded-xl bg-indigo-600 text-white py-3.5 text-sm font-bold shadow-lg shadow-indigo-200 active:scale-95 transition-all">SIMPAN</button>
     </div>
   </div>
 
-  <header class="sticky top-0 z-30 px-6 pt-8 pb-4 transition-all duration-300">
-      <div class="flex justify-between items-center glass-panel p-3 rounded-full">
-          <div class="flex items-center gap-3 pl-1">
+  <div id="winnerModal" class="fixed inset-0 z-[70] hidden items-center justify-center p-6 bg-slate-900/90 backdrop-blur-md transition-all">
+      <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-8 text-center relative shadow-2xl scale-0 transition-transform duration-300" id="winnerCard">
+          <div class="w-20 h-20 bg-indigo-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-200">
+              <span class="material-symbols-rounded text-4xl">home_pin</span>
+          </div>
+          <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">TUAN RUMAH BERIKUTNYA</p>
+          <h2 id="winnerText" class="text-2xl font-black text-slate-800 mt-2 mb-6">Nama Pemenang</h2>
+          <button onclick="document.getElementById('winnerModal').classList.add('hidden')" class="w-full bg-slate-800 text-white py-3 rounded-xl font-bold">Mantap!</button>
+      </div>
+  </div>
+
+  <header class="sticky top-0 z-30 px-5 pt-6 pb-3 bg-[#F8FAFC]/90 backdrop-blur-sm">
+      <div class="flex justify-between items-center bg-white p-2 pr-3 rounded-full shadow-sm border border-slate-100">
+          <div class="flex items-center gap-3">
               <button onclick="switchView('profile')" class="relative group active:scale-95 transition-transform">
-                <img id="headerPhoto" class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover" src="https://via.placeholder.com/100">
+                <img id="headerPhoto" class="w-10 h-10 rounded-full border border-slate-200 object-cover" src="https://via.placeholder.com/100">
                 <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
               </button>
               <div>
-                  <div class="flex items-center gap-1">
-                      <p id="roleBadge" class="text-[9px] font-extrabold text-white bg-indigo-500 px-2 py-0.5 rounded-full uppercase tracking-wider">...</p>
-                      <div id="notifDot" class="w-2 h-2 bg-red-500 rounded-full hidden animate-pulse"></div>
-                  </div>
+                  <p id="roleBadge" class="text-[9px] font-extrabold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full uppercase tracking-wider w-fit">...</p>
                   <h1 id="headerName" class="text-sm font-bold text-slate-700 leading-tight truncate w-32">Memuat...</h1>
               </div>
           </div>
-          <button id="logoutBtn" class="w-10 h-10 rounded-full bg-white text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all flex items-center justify-center shadow-sm">
+          <button id="logoutBtn" class="w-9 h-9 rounded-full bg-slate-50 text-slate-400 hover:text-red-500 flex items-center justify-center">
             <span class="material-symbols-rounded text-xl">logout</span>
           </button>
       </div>
@@ -137,58 +137,49 @@
   <main class="px-5 mt-4 relative z-10 min-h-[75vh]">
 
       <section id="view-home" class="view-section active">
-          <div class="w-full bg-gradient-to-br from-indigo-900 to-slate-900 rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-2xl shadow-indigo-900/20 group transition-all mb-6">
-              <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity duration-700 transform group-hover:scale-110">
-                <span class="material-symbols-rounded text-9xl">account_balance_wallet</span>
-              </div>
-              <div class="absolute -bottom-20 -left-20 w-60 h-60 bg-indigo-500 rounded-full blur-[80px] opacity-30"></div>
-              
+          <div class="w-full bg-slate-900 rounded-[2rem] p-6 text-white relative overflow-hidden shadow-xl shadow-slate-200 group transition-all mb-6">
+              <div class="absolute top-0 right-0 p-5 opacity-10"><span class="material-symbols-rounded text-8xl">account_balance_wallet</span></div>
               <div class="relative z-10">
                 <div class="flex justify-between items-start mb-2">
-                    <p class="text-[10px] font-bold uppercase tracking-widest text-indigo-200">Total Kas Organisasi</p>
-                    <button onclick="refreshAll()" class="text-indigo-300 hover:text-white transition-colors"><span class="material-symbols-rounded text-sm">refresh</span></button>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Total Kas</p>
+                    <button onclick="refreshAll()" class="text-slate-400 hover:text-white"><span class="material-symbols-rounded text-sm">refresh</span></button>
                 </div>
-                <h2 id="cardBalance" class="text-4xl font-black tracking-tight mb-6">Rp 0</h2>
+                <h2 id="cardBalance" class="text-3xl font-black tracking-tight mb-6">Rp 0</h2>
 
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-white/10 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/5 hover:bg-white/20 transition-colors">
-                        <div class="flex items-center gap-1.5 mb-1"><span class="material-symbols-rounded text-[12px] text-emerald-400 bg-emerald-500/20 p-1 rounded-full">arrow_downward</span><span class="text-[9px] uppercase font-bold text-slate-300">Pemasukan</span></div>
-                        <p id="cardIncome" class="text-sm font-bold text-white">Rp 0</p>
+                    <div class="bg-white/10 backdrop-blur-md px-3 py-2.5 rounded-xl border border-white/5">
+                        <div class="flex items-center gap-1 mb-1"><span class="material-symbols-rounded text-[12px] text-green-400">arrow_downward</span><span class="text-[9px] uppercase font-bold text-slate-300">Masuk</span></div>
+                        <p id="cardIncome" class="text-xs font-bold text-white">Rp 0</p>
                     </div>
-                    <div class="bg-white/10 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/5 hover:bg-white/20 transition-colors">
-                        <div class="flex items-center gap-1.5 mb-1"><span class="material-symbols-rounded text-[12px] text-rose-400 bg-rose-500/20 p-1 rounded-full">arrow_upward</span><span class="text-[9px] uppercase font-bold text-slate-300">Pengeluaran</span></div>
-                        <p id="cardExpense" class="text-sm font-bold text-white">Rp 0</p>
+                    <div class="bg-white/10 backdrop-blur-md px-3 py-2.5 rounded-xl border border-white/5">
+                        <div class="flex items-center gap-1 mb-1"><span class="material-symbols-rounded text-[12px] text-red-400">arrow_upward</span><span class="text-[9px] uppercase font-bold text-slate-300">Keluar</span></div>
+                        <p id="cardExpense" class="text-xs font-bold text-white">Rp 0</p>
                     </div>
                 </div>
 
-                <div id="pendingInfoBox" class="hidden mt-4 bg-orange-500/20 border border-orange-500/30 rounded-2xl p-3 flex items-center justify-between cursor-pointer hover:bg-orange-500/30 transition-all" onclick="switchView('approvals')">
-                   <div class="flex items-center gap-3">
-                       <div class="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center animate-pulse"><span class="material-symbols-rounded text-lg">pending</span></div>
-                       <div><p class="text-[10px] uppercase font-bold text-orange-100">Perlu Persetujuan</p><p id="pendingCountText" class="text-sm font-bold text-white leading-none">0 Item</p></div>
+                <div id="pendingInfoBox" class="hidden mt-4 bg-orange-500/20 border border-orange-500/30 rounded-xl p-2.5 flex items-center justify-between cursor-pointer" onclick="switchView('approvals')">
+                   <div class="flex items-center gap-2">
+                       <div class="w-6 h-6 rounded-full bg-orange-500 text-white flex items-center justify-center animate-pulse"><span class="material-symbols-rounded text-xs">pending</span></div>
+                       <div><p class="text-[9px] uppercase font-bold text-orange-200">Perlu ACC</p><p id="pendingCountText" class="text-xs font-bold text-white leading-none">0 Item</p></div>
                    </div>
-                   <span class="material-symbols-rounded text-orange-200">chevron_right</span>
+                   <span class="material-symbols-rounded text-orange-200 text-sm">chevron_right</span>
                 </div>
               </div>
           </div>
 
           <div id="kanbanPreview" class="hidden mb-6">
-              <div class="flex justify-between items-center mb-2 px-1">
-                  <h3 class="text-xs font-bold text-slate-500 uppercase">Progres Proker</h3>
-                  <span class="text-[10px] bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded font-bold">3 Ongoing</span>
-              </div>
+              <h3 class="text-xs font-bold text-slate-400 uppercase mb-2 px-1">Proker Berjalan</h3>
               <div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
-                  <div class="min-w-[120px] bg-white p-3 rounded-xl border border-slate-100 shadow-sm"><p class="text-[10px] text-slate-400">Rapat Awal</p><div class="w-full bg-slate-100 h-1 mt-2 rounded"><div class="bg-green-500 h-1 w-full rounded"></div></div></div>
-                  <div class="min-w-[120px] bg-white p-3 rounded-xl border border-slate-100 shadow-sm"><p class="text-[10px] text-slate-400">Survey Lokasi</p><div class="w-full bg-slate-100 h-1 mt-2 rounded"><div class="bg-orange-500 h-1 w-1/2 rounded"></div></div></div>
+                  <div class="min-w-[120px] bg-white p-3 rounded-xl border border-slate-100 shadow-sm"><p class="text-[10px] text-slate-400">Rapat Rutin</p><div class="w-full bg-slate-100 h-1 mt-2 rounded"><div class="bg-green-500 h-1 w-3/4 rounded"></div></div></div>
+                  <div class="min-w-[120px] bg-white p-3 rounded-xl border border-slate-100 shadow-sm"><p class="text-[10px] text-slate-400">Kas Bulanan</p><div class="w-full bg-slate-100 h-1 mt-2 rounded"><div class="bg-indigo-500 h-1 w-1/2 rounded"></div></div></div>
               </div>
           </div>
 
-          <div id="myBillsSection" class="bg-gradient-to-r from-rose-50 to-orange-50 border border-rose-100 p-4 rounded-[1.5rem] mb-6 hidden shadow-sm relative overflow-hidden">
-              <div class="absolute -right-4 -top-4 w-20 h-20 bg-rose-200 rounded-full blur-2xl opacity-50"></div>
-              <div class="flex justify-between items-center mb-3 relative z-10">
-                  <h3 class="text-sm font-bold text-rose-700 flex items-center gap-2"><span class="material-symbols-rounded">receipt_long</span> Tagihan Aktif</h3>
-                  <span class="bg-white/50 px-2 py-0.5 rounded text-[10px] text-rose-600 font-bold">Segera Bayar</span>
+          <div id="myBillsSection" class="bg-rose-50 border border-rose-100 p-4 rounded-2xl mb-6 hidden">
+              <div class="flex justify-between items-center mb-2">
+                  <h3 class="text-xs font-bold text-rose-700 flex items-center gap-1"><span class="material-symbols-rounded text-sm">receipt_long</span> Tagihan Aktif</h3>
               </div>
-              <div id="myBillList" class="space-y-2 relative z-10"></div>
+              <div id="myBillList" class="space-y-2"></div>
           </div>
 
           <div class="mb-6">
@@ -196,20 +187,15 @@
               <div id="homeMenuGrid" class="grid grid-cols-4 gap-3"></div>
           </div>
 
-          <div id="adminChartSection" class="bg-white rounded-[2rem] p-5 shadow-sm border border-slate-100 mb-6 hidden">
-             <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center"><span class="material-symbols-rounded text-lg">donut_large</span></div>
-                    <div><h4 class="text-sm font-bold text-slate-800">Statistik</h4><p class="text-[10px] text-slate-400">Bulan Ini</p></div>
-                </div>
-             </div>
-             <div class="h-48 relative w-full"><canvas id="financeChart"></canvas></div>
+          <div id="adminChartSection" class="bg-white rounded-[1.5rem] p-4 shadow-sm border border-slate-100 mb-6 hidden">
+             <h4 class="text-xs font-bold text-slate-500 uppercase mb-2">Statistik Keuangan</h4>
+             <div class="h-40 relative w-full"><canvas id="financeChart"></canvas></div>
           </div>
 
           <div class="mb-24">
             <div class="flex justify-between items-end mb-3 px-1">
-                <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2"><span class="material-symbols-rounded text-indigo-500">campaign</span> Papan Info</h3>
-                <button onclick="switchView('alerts')" class="text-[10px] font-bold text-indigo-500 hover:underline">Semua</button>
+                <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2"><span class="material-symbols-rounded text-indigo-500">campaign</span> Info</h3>
+                <button onclick="switchView('alerts')" class="text-[10px] font-bold text-indigo-500">Lihat Semua</button>
             </div>
             <div id="homeNoticeList" class="space-y-3"></div>
           </div>
@@ -217,52 +203,39 @@
 
       <section id="view-finance" class="view-section">
           <div class="flex justify-between items-center mb-6 px-1">
-            <div><h2 class="text-2xl font-black text-slate-800">Keuangan</h2><p class="text-xs text-slate-500">Arus Kas & Tagihan</p></div>
+            <div><h2 class="text-2xl font-black text-slate-800">Keuangan</h2><p class="text-xs text-slate-500">Laporan & Tagihan</p></div>
             <div class="flex gap-2">
-                <button id="btnWA" onclick="generateWALink()" class="hidden w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-green-600 active:scale-90 transition-all"><span class="material-symbols-rounded">chat</span></button>
-                <button id="btnAddFin" onclick="openFinanceModal()" class="hidden w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg shadow-indigo-300 hover:bg-indigo-700 active:scale-90 transition-all"><span class="material-symbols-rounded">add</span></button>
+                <button id="btnWA" onclick="generateWALink()" class="hidden w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"><span class="material-symbols-rounded">chat</span></button>
+                <button id="btnAddFin" onclick="openFinanceModal()" class="hidden w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"><span class="material-symbols-rounded">add</span></button>
             </div>
           </div>
-          
-          <div class="bg-white p-1.5 rounded-xl flex shadow-sm border border-slate-100 mb-4">
+          <div class="bg-white p-1 rounded-xl flex shadow-sm border border-slate-100 mb-4">
               <button onclick="switchFinTab('history')" id="tabFinHist" class="flex-1 py-2 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-600 transition-all">Riwayat</button>
               <button onclick="switchFinTab('bill')" id="tabFinBill" class="flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-600 transition-all">Tagihan</button>
           </div>
-
           <div id="finContent" class="space-y-3 pb-24"></div>
       </section>
 
       <section id="view-activities" class="view-section">
           <div class="flex justify-between items-center mb-6 px-1">
-            <div><h2 class="text-2xl font-black text-slate-800">Kegiatan</h2><p class="text-xs text-slate-500">Agenda & Absensi</p></div>
-            <button id="btnAddAct" onclick="openActivityModal()" class="hidden w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg shadow-blue-300 active:scale-90 transition-all"><span class="material-symbols-rounded">add</span></button>
+            <div><h2 class="text-2xl font-black text-slate-800">Kegiatan</h2><p class="text-xs text-slate-500">Agenda & Absen</p></div>
+            <button id="btnAddAct" onclick="openActivityModal()" class="hidden w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"><span class="material-symbols-rounded">add</span></button>
           </div>
-          
-          <div id="absensiInputBox" class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm mb-6 flex flex-col gap-3 hidden relative overflow-hidden">
-              <div class="absolute top-0 right-0 w-20 h-20 bg-teal-100 rounded-full blur-xl opacity-50 -mr-5 -mt-5"></div>
-              <div class="flex items-center gap-2 relative z-10">
-                  <span class="material-symbols-rounded text-teal-600 bg-teal-50 p-1.5 rounded-lg">qr_code_scanner</span>
-                  <h4 class="text-xs font-bold text-slate-700">Presensi Rapat</h4>
-              </div>
-              <div class="flex gap-2 relative z-10">
-                  <input id="absensiCode" type="text" placeholder="Masukkan Kode Unik" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-center tracking-widest outline-none focus:border-teal-500 transition-all">
-                  <button onclick="submitAbsensi()" class="bg-teal-600 text-white px-4 rounded-xl font-bold shadow-lg shadow-teal-200 active:scale-95">HADIR</button>
-              </div>
+          <div id="absensiInputBox" class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm mb-4 flex gap-2 hidden">
+              <input id="absensiCode" type="text" placeholder="Kode Absen (Contoh: ABS-123)" class="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold uppercase text-center outline-none">
+              <button onclick="submitAbsensi()" class="bg-teal-600 text-white px-3 rounded-lg font-bold text-xs shadow-md active:scale-95">HADIR</button>
           </div>
-
           <div id="actList" class="grid grid-cols-1 gap-4 pb-24"></div>
       </section>
 
       <section id="view-users" class="view-section">
           <div class="flex justify-between items-center mb-4 px-1">
-              <div><h2 class="text-2xl font-black text-slate-800">Anggota</h2><p class="text-xs text-slate-500">Database & Peran</p></div>
-              <span id="userCountBadge" class="bg-slate-800 text-white text-xs px-3 py-1 rounded-full font-bold shadow-md">0</span>
+              <div><h2 class="text-2xl font-black text-slate-800">Anggota</h2><p class="text-xs text-slate-500">Data & Peran</p></div>
+              <span id="userCountBadge" class="bg-slate-800 text-white text-xs px-3 py-1 rounded-full font-bold">0</span>
           </div>
-          <div class="relative mb-4 group">
-             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span class="material-symbols-rounded text-slate-400 group-focus-within:text-indigo-500 transition-colors">search</span>
-             </div>
-             <input type="text" onkeyup="filterList('userList', this.value)" placeholder="Cari nama atau peran..." class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-medium outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm">
+          <div class="relative mb-4">
+             <span class="material-symbols-rounded absolute left-3 top-2.5 text-slate-400 text-lg">search</span>
+             <input type="text" onkeyup="filterList('userList', this.value)" placeholder="Cari nama..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm outline-none focus:border-indigo-500 shadow-sm">
           </div>
           <div id="userList" class="space-y-3 pb-24"></div>
       </section>
@@ -275,55 +248,38 @@
       <section id="view-profile" class="view-section">
         <div class="flex flex-col items-center pt-6 pb-24">
             <div class="relative group cursor-pointer active:scale-95 transition-transform" onclick="$('profileUpload').click()">
-                <div class="w-28 h-28 rounded-full p-1 bg-gradient-to-tr from-indigo-500 to-purple-500 shadow-xl">
-                    <img id="profileImage" src="https://via.placeholder.com/150" class="w-full h-full rounded-full object-cover border-4 border-white">
-                </div>
-                <div class="absolute bottom-1 right-1 bg-white p-2 rounded-full shadow-md text-indigo-600"><span class="material-symbols-rounded text-sm block">edit</span></div>
+                <img id="profileImage" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-xl">
+                <div class="absolute bottom-0 right-0 bg-indigo-600 p-1.5 rounded-full border-2 border-white"><span class="material-symbols-rounded text-white text-xs block">edit</span></div>
             </div>
             <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
             
-            <h2 id="profileNameDisplay" class="text-xl font-black text-slate-800 mt-4 mb-1">...</h2>
+            <h2 id="profileNameDisplay" class="text-lg font-black text-slate-800 mt-3 mb-1">...</h2>
             <div class="flex items-center gap-2 mb-2">
-                <span id="profileRoleBadge" class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-[10px] font-extrabold uppercase tracking-wide">ANGGOTA</span>
-                <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-[10px] font-bold flex items-center gap-1 border border-yellow-200">
-                    <span class="material-symbols-rounded text-[12px] text-yellow-500">military_tech</span>
-                    <span id="profilePoints">0</span> Poin
-                </span>
+                <span id="profileRoleBadge" class="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-md text-[10px] font-bold uppercase">ANGGOTA</span>
+                <span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded-md text-[10px] font-bold flex items-center gap-1"><span class="material-symbols-rounded text-[12px] text-yellow-500">star</span> <span id="profilePoints">0</span></span>
             </div>
-            <p id="profileEmailDisplay" class="text-sm text-slate-400">email@user.com</p>
+            <p id="profileEmailDisplay" class="text-xs text-slate-400">email@user.com</p>
 
-            <button onclick="showIdCard()" class="mt-6 w-full max-w-xs bg-slate-800 text-white py-3 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-slate-300 hover:bg-slate-900 active:scale-95 transition-all">
-                <span class="material-symbols-rounded">badge</span> Tampilkan ID Card
-            </button>
+            <button onclick="showIdCard()" class="mt-4 bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 active:scale-95 transition-transform"><span class="material-symbols-rounded text-sm">badge</span> ID Card</button>
 
             <div class="w-full mt-8 px-1">
-                <h3 class="text-xs font-bold text-slate-400 uppercase mb-3 ml-2">Edit Informasi</h3>
-                <div class="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm space-y-4">
-                    <div class="relative">
-                        <span class="material-symbols-rounded absolute left-3 top-3.5 text-slate-300 text-sm">person</span>
-                        <input id="editName" type="text" class="w-full pl-9 p-3 bg-slate-50 rounded-xl border-none text-sm font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-100 transition-all placeholder-slate-400" placeholder="Nama Lengkap">
-                    </div>
-                    <div class="relative">
-                        <span class="material-symbols-rounded absolute left-3 top-3.5 text-slate-300 text-sm">call</span>
-                        <input id="editPhone" type="tel" class="w-full pl-9 p-3 bg-slate-50 rounded-xl border-none text-sm font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-100 transition-all placeholder-slate-400" placeholder="No. WhatsApp">
-                    </div>
-                    <div class="relative">
-                        <span class="material-symbols-rounded absolute left-3 top-3 text-slate-300 text-sm">home_pin</span>
-                        <textarea id="editAddress" rows="2" class="w-full pl-9 p-3 bg-slate-50 rounded-xl border-none text-sm font-medium text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-100 transition-all resize-none placeholder-slate-400" placeholder="Alamat Domisili"></textarea>
-                    </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                    <input id="editName" type="text" class="w-full p-3 bg-slate-50 rounded-xl border-none text-sm font-bold placeholder-slate-400" placeholder="Nama Lengkap">
+                    <input id="editPhone" type="tel" class="w-full p-3 bg-slate-50 rounded-xl border-none text-sm font-bold placeholder-slate-400" placeholder="No. WhatsApp">
+                    <textarea id="editAddress" rows="2" class="w-full p-3 bg-slate-50 rounded-xl border-none text-sm font-medium resize-none placeholder-slate-400" placeholder="Alamat Domisili"></textarea>
                 </div>
-                <button onclick="saveProfile()" class="mt-4 w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 rounded-2xl font-bold shadow-xl shadow-indigo-200 active:scale-[0.98] transition-all">SIMPAN PERUBAHAN</button>
+                <button onclick="saveProfile()" class="mt-4 w-full bg-indigo-600 text-white py-3.5 rounded-xl font-bold shadow-lg shadow-indigo-200 active:scale-95 transition-transform">SIMPAN</button>
             </div>
         </div>
       </section>
 
   </main>
 
-  <nav class="fixed bottom-0 w-full glass-nav pb-safe pt-3 px-4 z-50 rounded-t-[2.5rem]">
-      <div id="bottomNavContainer" class="flex justify-between items-center max-w-sm mx-auto pb-4"></div>
+  <nav class="fixed bottom-0 w-full glass-nav pb-6 pt-2 px-4 z-50 rounded-t-[2rem]">
+      <div id="bottomNavContainer" class="flex justify-between items-center max-w-sm mx-auto"></div>
   </nav>
 
-  <div id="moreMenu" class="fixed bottom-24 right-4 bg-white/95 backdrop-blur-xl rounded-[2rem] shadow-2xl border border-slate-100 p-3 z-40 hidden flex-col gap-2 w-52 transition-all duration-300 origin-bottom-right max-h-[60vh] overflow-y-auto custom-scroll ring-1 ring-black/5"></div>
+  <div id="moreMenu" class="fixed bottom-24 right-4 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-slate-100 p-2 z-40 hidden flex-col gap-1 w-48 transition-all duration-300 origin-bottom-right max-h-[60vh] overflow-y-auto custom-scroll"></div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
@@ -339,7 +295,7 @@
     let ME_UID = null, ME_ROLE = null, ME_DATA = null;
     let financeChartInstance = null; let currentFinTab = 'history';
 
-    // --- ROLE CONFIG & FEATURE FLAGS (THE BRAIN) ---
+    // --- ROLE CONFIG & FEATURE FLAGS ---
     const ROLE_CONFIG = {
         super_admin: { badge: "SUPER ADMIN", nav: ['home', 'users', 'finance', 'more', 'profile'], features: ['manage_all', 'audit_logs', 'lockdown', 'db_export', 'shadow_login'] },
         ketua: { badge: "KETUA", nav: ['home', 'users', 'finance', 'more', 'profile'], features: ['kanban', 'approval_center', 'leaderboard', 'renstra', 'poll_control'] },
@@ -356,17 +312,39 @@
     window.showModal = (t,h,cb) => { $("modalTitle").textContent=t; $("modalBody").innerHTML=h; $("crudModal").classList.remove('hidden'); $("crudModal").classList.add('flex'); const b=$("modalSubmitBtn"); cb ? (b.style.display='block', b.onclick=cb) : b.style.display='none'; };
     async function upload(f) { const d=new FormData(); d.append("file",f); d.append("upload_preset",UPLOAD_PRESET); const r=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:"POST",body:d}); return (await r.json()).secure_url; }
     
-    // --- NAVIGATION ENGINE ---
+    // --- NAVIGATION ENGINE (FIXED FLICKERING) ---
     window.switchView = (v) => {
-        // Handle "tools" views mapping
+        // Map tools views
         if(['docs','titik-kumpul','inventory','suggestions'].includes(v)) { loadTools(v); v='tools'; }
         
-        document.querySelectorAll('.view-section').forEach(e => { e.classList.remove('active'); setTimeout(()=>e.style.display='none',300); });
-        $(`view-${v}`).style.display='block'; setTimeout(()=>$(`view-${v}`).classList.add('active'),10);
-        $("moreMenu").classList.add("hidden"); $("moreMenu").classList.remove("flex");
+        // Hide all others specifically
+        const targetId = `view-${v}`;
+        document.querySelectorAll('.view-section').forEach(e => {
+            if(e.id !== targetId) {
+                e.classList.remove('active');
+                if(e.style.display !== 'none') setTimeout(() => { if(!e.classList.contains('active')) e.style.display='none'; }, 300);
+            }
+        });
+
+        // Show target
+        const target = $(targetId);
+        if(target) {
+            target.style.display = 'block';
+            setTimeout(() => target.classList.add('active'), 10);
+            
+            // Data Loaders
+            if(v==='home') loadHome(); 
+            else if(v==='users') loadUsers(); 
+            else if(v==='finance') loadFinance(); 
+            else if(v==='activities') loadActivities();
+            else if(v==='profile') loadProfile();
+        }
         
-        if(v==='home') loadHome(); if(v==='users') loadUsers(); if(v==='finance') loadFinance(); if(v==='activities') loadActivities();
-        if(v==='profile') loadProfile();
+        // UI Updates
+        $("moreMenu").classList.add("hidden"); $("moreMenu").classList.remove("flex");
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        const activeBtn = document.querySelector(`.nav-btn[data-target="${v}"]`);
+        if(activeBtn) activeBtn.classList.add('active');
     };
 
     // --- INIT ---
@@ -375,6 +353,7 @@
         ME_UID = u.uid; toggleLoader(true);
         const s = await getDoc(doc(db,"users",ME_UID));
         if(s.exists()) { ME_DATA=s.data(); ME_ROLE=ME_DATA.role||'anggota'; setupDash(); }
+        else { await signOut(auth); location.href="login.html"; }
         toggleLoader(false);
     });
 
@@ -382,197 +361,133 @@
         $("headerName").textContent = ME_DATA.name; $("headerPhoto").src = ME_DATA.photo?.url || "https://via.placeholder.com/150";
         const cfg = ROLE_CONFIG[ME_ROLE] || ROLE_CONFIG['anggota']; $("roleBadge").textContent = cfg.badge;
         
-        // Build Bottom Nav (Smart Icons)
+        // Build Nav
         const nav = $("bottomNavContainer"); nav.innerHTML = "";
         const icons = { home:'grid_view', users:'groups', finance:'account_balance_wallet', activities:'event_note', docs:'folder', 'titik-kumpul':'location_on', profile:'person', more:'apps' };
         cfg.nav.forEach(n => {
-            if(n==='profile') nav.innerHTML += `<div class="-top-8 relative"><button onclick="switchView('profile')" class="nav-btn w-16 h-16 bg-gradient-to-tr from-indigo-600 to-purple-600 text-white rounded-full flex items-center justify-center shadow-xl shadow-indigo-300 ring-4 ring-white/50"><span class="material-symbols-rounded text-3xl">person</span></button></div>`;
-            else if(n==='more') nav.innerHTML += `<button onclick="toggleMoreMenu()" class="nav-btn flex flex-col items-center gap-1 p-2 w-14"><span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">apps</span><p class="text-[9px] font-bold text-slate-400 transition-colors">Menu</p></button>`;
-            else nav.innerHTML += `<button onclick="switchView('${n}')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14"><span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">${icons[n]}</span><p class="text-[9px] font-bold text-slate-400 transition-colors">${n.charAt(0).toUpperCase()+n.slice(1)}</p></button>`;
+            if(n==='profile') nav.innerHTML += `<div class="-top-6 relative"><button onclick="switchView('profile')" class="nav-btn w-14 h-14 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-xl ring-4 ring-white active:scale-95 transition-all"><span class="material-symbols-rounded text-3xl">person</span></button></div>`;
+            else if(n==='more') nav.innerHTML += `<button onclick="toggleMoreMenu()" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all"><span class="material-symbols-rounded text-2xl text-slate-400">apps</span><p class="text-[9px] font-bold text-slate-400">Menu</p></button>`;
+            else nav.innerHTML += `<button onclick="switchView('${n}')" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="${n}"><span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">${icons[n]}</span><p class="text-[9px] font-bold text-slate-400 transition-colors">${n.charAt(0).toUpperCase()+n.slice(1)}</p></button>`;
         });
 
-        // Build Features Menu (Based on 5 New Features)
-        const menu = $("moreMenu"); menu.innerHTML = "";
-        const feats = cfg.features;
+        // Build Menu
+        const menu = $("moreMenu"); menu.innerHTML = ""; const f = cfg.features;
+        const addM = (i,t,v,c) => menu.innerHTML += `<button onclick="switchView('${v}'); toggleMoreMenu()" class="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl w-full text-left transition-colors"><div class="bg-${c}-50 text-${c}-600 p-1.5 rounded-lg"><span class="material-symbols-rounded text-lg">${i}</span></div><span class="text-xs font-bold text-slate-600">${t}</span></button>`;
         
-        // Common Tools mapped to roles
-        if(feats.includes('manage_all') || feats.includes('manage_docs')) menu.innerHTML += menuBtn('folder', 'Arsip Dokumen', 'docs', 'blue');
-        if(feats.includes('manage_all') || feats.includes('inv_audit')) menu.innerHTML += menuBtn('inventory_2', 'Inventaris', 'inventory', 'purple');
-        if(feats.includes('manage_all') || feats.includes('wa_bill')) menu.innerHTML += menuBtn('casino', 'Undian Arisan', 'titik-kumpul', 'orange');
-        if(feats.includes('anon_box')) menu.innerHTML += menuBtn('mail', 'Kotak Saran', 'suggestions', 'teal');
-        
-        // Specific Feature Buttons (Triggers)
-        if(feats.includes('wa_bill')) $("btnWA").classList.remove('hidden');
-        if(feats.includes('input_fin')) $("btnAddFin").classList.remove('hidden');
-        if(feats.includes('input_act')) $("btnAddAct").classList.remove('hidden');
-        if(feats.includes('absensi_input') || feats.includes('qr_absensi')) $("absensiInputBox").classList.remove('hidden');
-        if(feats.includes('kanban')) $("kanbanPreview").classList.remove('hidden');
-        
-        loadHome();
+        if(f.includes('manage_all')||f.includes('manage_docs')) addM('folder','Arsip','docs','blue');
+        if(f.includes('manage_all')||f.includes('inv_audit')) addM('inventory_2','Inventaris','inventory','purple');
+        if(f.includes('manage_all')||f.includes('raffle')) addM('casino','Undian','titik-kumpul','orange');
+        if(f.includes('anon_box')||f.includes('manage_all')) addM('mail','Kotak Saran','suggestions','teal');
+
+        // Initial Triggers
+        if(f.includes('wa_bill')) $("btnWA").classList.remove('hidden');
+        if(f.includes('input_fin')) $("btnAddFin").classList.remove('hidden');
+        if(f.includes('input_act')) $("btnAddAct").classList.remove('hidden');
+        if(f.includes('absensi_input')||f.includes('qr_absensi')) $("absensiInputBox").classList.remove('hidden');
+        if(f.includes('kanban')) $("kanbanPreview").classList.remove('hidden');
+
+        // Set initial view explicitly to HOME
+        switchView('home');
     }
-    const menuBtn = (icon, text, view, color) => `<button onclick="switchView('${view}'); toggleMoreMenu()" class="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl w-full text-left transition-colors"><div class="bg-${color}-50 text-${color}-600 p-2 rounded-lg"><span class="material-symbols-rounded text-lg">${icon}</span></div><span class="text-xs font-bold text-slate-600">${text}</span></button>`;
+    
     window.toggleMoreMenu = () => { const m=$("moreMenu"); m.classList.contains("hidden") ? (m.classList.remove("hidden"),m.classList.add("flex")) : (m.classList.add("hidden"),m.classList.remove("flex")); }
 
-    // --- 1. HOME & DASHBOARD LOGIC ---
+    // --- 1. HOME ---
     async function loadHome() {
-        // Finance Stats
         const qFin = query(collection(db,"financial_records"), orderBy("createdAt","desc"));
         const snapF = await getDocs(qFin); let bal=0, inc=0, exp=0, pend=0;
         snapF.forEach(d=>{ const f=d.data(); if(f.status==='approved'){ const a=Number(f.amount); if(f.type==='income'){bal+=a;inc+=a}else{bal-=a;exp+=a} } else pend++; });
         $("cardBalance").textContent = `Rp ${bal.toLocaleString('id-ID')}`; $("cardIncome").textContent = `Rp ${inc.toLocaleString()}`; $("cardExpense").textContent = `Rp ${exp.toLocaleString()}`;
         
-        // Approval Box
-        const qAct = query(collection(db,"activities"), where("status","==","pending"));
-        const snapA = await getDocs(qAct); pend += snapA.size;
-        if(ROLE_CONFIG[ME_ROLE].features.includes('approval_center') && pend > 0) { $("pendingInfoBox").classList.remove('hidden'); $("pendingCountText").textContent = `${pend} Pending`; }
-
-        // Chart & Shortcuts
+        const qAct = query(collection(db,"activities"), where("status","==","pending")); const snapA = await getDocs(qAct); pend += snapA.size;
+        if(ROLE_CONFIG[ME_ROLE].features.includes('approval_center') && pend > 0) { $("pendingInfoBox").classList.remove('hidden'); $("pendingCountText").textContent = `${pend} Item`; }
         if(ME_ROLE==='super_admin' || ME_ROLE==='ketua') { $("adminChartSection").classList.remove('hidden'); renderChart(inc, exp); }
-        renderShortcuts();
-        loadAlerts(true);
+        
+        renderShortcuts(); loadAlerts(true);
         if(ROLE_CONFIG[ME_ROLE].features.includes('personal_fin')) loadMyBills();
     }
 
     function renderShortcuts() {
         const g=$("homeMenuGrid"); g.innerHTML=""; const f=ROLE_CONFIG[ME_ROLE].features;
-        const add = (i,t,c,clk) => g.innerHTML+=`<div onclick="${clk}" class="bg-white p-3 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-sm active:scale-95 border border-slate-100"><span class="material-symbols-rounded text-2xl text-${c}-600 bg-${c}-50 p-2.5 rounded-full">${i}</span><span class="text-[9px] font-bold text-slate-600 text-center leading-tight">${t}</span></div>`;
+        const add = (i,t,c,clk) => g.innerHTML+=`<div onclick="${clk}" class="bg-white p-3 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-sm active:scale-95 border border-slate-100 transition-all cursor-pointer"><span class="material-symbols-rounded text-2xl text-${c}-600 bg-${c}-50 p-2.5 rounded-full">${i}</span><span class="text-[9px] font-bold text-slate-600 text-center leading-tight">${t}</span></div>`;
         
-        // Dynamic Shortcuts per Role Features
         if(f.includes('input_fin')) add('add_card','Catat Kas','emerald','openFinanceModal()');
         if(f.includes('wa_bill')) add('chat','Tagih WA','green','generateWALink()');
         if(f.includes('smart_surat')) add('description','Buat Surat','blue','openSmartSurat()');
         if(f.includes('qr_absensi')) add('qr_code_2','QR Absen','indigo','openQrGen()');
-        if(f.includes('kanban')) add('view_kanban','Proker','orange','alert("Fitur Proker")');
         
-        // Default
         add('calendar_month','Jadwal','purple',"switchView('activities')");
         add('person_search','Cari Teman','rose',"switchView('users')");
     }
 
     function renderChart(i,e) {
         if(financeChartInstance) financeChartInstance.destroy();
-        financeChartInstance = new Chart($("financeChart"), { type:'doughnut', data:{labels:['Masuk','Keluar'], datasets:[{data:[i,e], backgroundColor:['#10B981','#F43F5E'], borderWidth:0}]}, options:{responsive:true, maintainAspectRatio:false, cutout:'70%', plugins:{legend:{position:'right',labels:{font:{size:10, family:'Plus Jakarta Sans'}, boxWidth:10}}}}});
+        financeChartInstance = new Chart($("financeChart"), { type:'doughnut', data:{labels:['Masuk','Keluar'], datasets:[{data:[i,e], backgroundColor:['#10B981','#F43F5E'], borderWidth:0}]}, options:{responsive:true, maintainAspectRatio:false, cutout:'75%', plugins:{legend:{position:'right',labels:{font:{size:10, family:'Plus Jakarta Sans'}, boxWidth:10}}}}});
     }
 
-    // --- 2. FINANCE (With WA Billing) ---
+    // --- 2. FINANCE ---
     window.switchFinTab = (t) => { currentFinTab=t; $("tabFinHist").className=t==='history'?"flex-1 py-2 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-600 transition-all":"flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-600 transition-all"; $("tabFinBill").className=t==='bill'?"flex-1 py-2 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-600 transition-all":"flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-600 transition-all"; loadFinance(); }
-    
     async function loadFinance() {
         const l=$("finContent"); l.innerHTML="";
         if(currentFinTab === 'history') {
             const snap = await getDocs(query(collection(db,"financial_records"), orderBy("createdAt","desc"), limit(20)));
             snap.forEach(d=>{
                 const f=d.data(); const isInc=f.type==='income';
-                l.innerHTML+=`<div class="bg-white p-4 rounded-2xl flex justify-between items-center border border-slate-100 shadow-sm"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full ${isInc?'bg-emerald-50 text-emerald-600':'bg-rose-50 text-rose-600'} flex items-center justify-center"><span class="material-symbols-rounded">${isInc?'arrow_downward':'arrow_upward'}</span></div><div><p class="text-sm font-bold text-slate-800">${f.note}</p><p class="text-[10px] text-slate-400">${f.category||'Umum'} • ${new Date(f.createdAt?.seconds*1000).toLocaleDateString()}</p></div></div><span class="text-xs font-bold ${isInc?'text-emerald-600':'text-rose-600'}">${isInc?'+':'-'} ${Number(f.amount).toLocaleString()}</span></div>`;
+                l.innerHTML+=`<div class="bg-white p-3 rounded-2xl flex justify-between items-center border border-slate-100 shadow-sm"><div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full ${isInc?'bg-emerald-50 text-emerald-600':'bg-rose-50 text-rose-600'} flex items-center justify-center"><span class="material-symbols-rounded text-lg">${isInc?'arrow_downward':'arrow_upward'}</span></div><div><p class="text-xs font-bold text-slate-800 line-clamp-1">${f.note}</p><p class="text-[9px] text-slate-400">${new Date(f.createdAt?.seconds*1000).toLocaleDateString()}</p></div></div><span class="text-xs font-bold ${isInc?'text-emerald-600':'text-rose-600'}">${isInc?'+':'-'} ${Number(f.amount).toLocaleString()}</span></div>`;
             });
         } else {
-            // Billing View (Fitur Baru Bendahara)
-            if(ROLE_CONFIG[ME_ROLE].features.includes('wa_bill')) {
-                l.innerHTML = `<div class="bg-blue-50 p-4 rounded-2xl border border-blue-100 mb-4 text-center"><button onclick="openCreateBill()" class="bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg shadow-blue-200">Buat Tagihan Baru</button></div>`;
-            }
+            if(ROLE_CONFIG[ME_ROLE].features.includes('wa_bill')) l.innerHTML = `<button onclick="openCreateBill()" class="w-full bg-blue-600 text-white p-3 rounded-xl text-xs font-bold shadow-lg mb-3">Buat Tagihan Baru</button>`;
             const snap = await getDocs(query(collection(db,"bills"), orderBy("createdAt","desc")));
-            snap.forEach(d=>{
-                const b=d.data();
-                l.innerHTML+=`<div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex justify-between items-center mb-2"><div class="flex flex-col"><span class="text-xs font-bold text-slate-700">${b.title}</span><span class="text-[10px] text-slate-400">${b.status==='paid'?'Lunas':'Belum Lunas'}</span></div><span class="text-xs font-bold">Rp ${Number(b.amount).toLocaleString()}</span></div>`;
-            });
+            snap.forEach(d=>{ const b=d.data(); l.innerHTML+=`<div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex justify-between items-center"><div class="flex flex-col"><span class="text-xs font-bold text-slate-700">${b.title}</span><span class="text-[9px] text-slate-400">${b.status==='paid'?'Lunas':'Belum Lunas'}</span></div><span class="text-xs font-bold">Rp ${Number(b.amount).toLocaleString()}</span></div>`; });
         }
     }
-    
-    // Feature: Bendahara WA Link
-    window.generateWALink = () => {
-        const msg = encodeURIComponent("Halo anggota, mohon segera lunasi iuran kas bulan ini ya. Terima kasih!");
-        window.open(`https://wa.me/?text=${msg}`, '_blank');
-    }
-    window.openCreateBill = () => {
-        showModal("Buat Tagihan", `<input id="bTitle" class="w-full p-3 bg-slate-50 rounded-xl mb-2 font-bold text-sm" placeholder="Judul (Mis: Kas Agustus)"><input id="bAmt" type="number" class="w-full p-3 bg-slate-50 rounded-xl text-sm" placeholder="Jumlah (Rp)">`, async()=>{
-            toggleLoader(true); const t=$("bTitle").value, a=$("bAmt").value;
-            // Logic: Create bill for all users (simplified)
-            await addDoc(collection(db,"bills"),{title:t, amount:a, status:'unpaid', createdAt:serverTimestamp()});
-            closeModal(); loadFinance(); toggleLoader(false);
-        });
-    }
-    
-    // Feature: Personal Finance (Member)
-    async function loadMyBills() {
-        const s = await getDocs(query(collection(db,"bills"), where("status","==","unpaid"), limit(1))); // Simplified logic
-        if(!s.empty) {
-            $("myBillsSection").classList.remove('hidden');
-            $("myBillList").innerHTML = `<div class="bg-white p-3 rounded-xl border border-rose-100 flex justify-between items-center"><span class="text-xs font-bold text-slate-700">Iuran Wajib</span><button class="bg-rose-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold">Bayar</button></div>`;
-        }
-    }
+    window.generateWALink = () => window.open(`https://wa.me/?text=${encodeURIComponent("Halo, mohon lunasi kas.")}`, '_blank');
+    window.openCreateBill = () => showModal("Tagihan", `<input id="bTitle" class="w-full p-3 bg-slate-50 rounded-xl mb-2 text-sm" placeholder="Judul"><input id="bAmt" type="number" class="w-full p-3 bg-slate-50 rounded-xl text-sm" placeholder="Nominal">`, async()=>{ await addDoc(collection(db,"bills"),{title:$("bTitle").value, amount:$("bAmt").value, status:'unpaid', createdAt:serverTimestamp()}); closeModal(); loadFinance(); });
+    async function loadMyBills() { const s = await getDocs(query(collection(db,"bills"), where("status","==","unpaid"), limit(1))); if(!s.empty) { $("myBillsSection").classList.remove('hidden'); $("myBillList").innerHTML = `<div class="bg-white p-3 rounded-xl border border-rose-100 flex justify-between items-center"><span class="text-xs font-bold text-slate-700">Tagihan Aktif</span><button class="bg-rose-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold">Bayar</button></div>`; } }
 
-    // --- 3. ACTIVITIES & SMART ABSENSI ---
+    // --- 3. ACTIVITIES ---
     async function loadActivities() {
         const l=$("actList"); l.innerHTML=""; const snap=await getDocs(query(collection(db,"activities"), orderBy("createdAt","desc")));
-        snap.forEach(d=>{
-            const x=d.data();
-            l.innerHTML+=`<div class="bg-white border border-slate-100 rounded-[1.5rem] overflow-hidden shadow-sm group"><div class="h-32 bg-slate-100 relative"><img src="${x.cover?.url||'https://via.placeholder.com/300x150'}" class="w-full h-full object-cover"></div><div class="p-4"><span class="text-[9px] text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded mb-2 inline-block">${x.date||'Segera'}</span><h4 class="font-bold text-slate-800 leading-tight">${x.title}</h4></div></div>`;
-        });
+        snap.forEach(d=>{ const x=d.data(); l.innerHTML+=`<div class="bg-white border border-slate-100 rounded-[1.5rem] overflow-hidden shadow-sm group"><div class="h-28 bg-slate-100 relative"><img src="${x.cover?.url||'https://via.placeholder.com/300x100'}" class="w-full h-full object-cover"></div><div class="p-3"><span class="text-[9px] text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded mb-1 inline-block">${x.date||'Segera'}</span><h4 class="font-bold text-sm text-slate-800 line-clamp-1">${x.title}</h4></div></div>`; });
     }
-    
-    // Feature: Smart Surat (Sekretaris)
-    window.openSmartSurat = () => {
-        const h = `<select id="stType" class="w-full p-3 bg-slate-50 rounded-xl text-sm font-bold mb-3"><option>Surat Undangan Rapat</option><option>Surat Peminjaman Alat</option></select><input id="stDest" class="w-full p-3 bg-slate-50 rounded-xl text-sm font-bold mb-3" placeholder="Tujuan Surat"><button class="w-full bg-slate-800 text-white py-3 rounded-xl text-xs font-bold" onclick="alert('PDF Generated (Simulasi)')">GENERATE PDF</button>`;
-        showModal("Smart Surat Generator", h);
-    }
-    // Feature: QR Code Gen (Sekretaris)
-    window.openQrGen = () => showModal("QR Absensi", `<div class="flex justify-center py-4"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=ABSENSI-${Date.now()}" class="rounded-xl border border-slate-200"></div><p class="text-center text-xs text-slate-400">Scan untuk absen</p>`);
-    
-    // Feature: Absensi Input
-    window.submitAbsensi = () => { if($("absensiCode").value) { alert("Absensi Berhasil Dicatat!"); $("absensiCode").value=""; } }
+    window.openSmartSurat = () => showModal("Buat Surat", `<input class="w-full p-3 bg-slate-50 rounded-xl mb-2 text-sm" placeholder="Tujuan Surat"><button class="w-full bg-slate-800 text-white py-3 rounded-xl text-xs font-bold" onclick="alert('PDF Created')">GENERATE</button>`);
+    window.openQrGen = () => showModal("QR Absen", `<div class="flex justify-center"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=ABS-${Date.now()}" class="rounded-xl"></div>`);
+    window.submitAbsensi = () => { if($("absensiCode").value) { alert("Hadir!"); $("absensiCode").value=""; } }
 
-    // --- 4. USERS & GAMIFICATION ---
+    // --- 4. USERS ---
     async function loadUsers() {
         const l=$("userList"); l.innerHTML=""; const snap=await getDocs(query(collection(db,"users"),orderBy("name")));
         $("userCountBadge").textContent=snap.size;
-        snap.forEach(d=>{
-            const u=d.data();
-            // Feature: Gamification Badges visual
-            const badge = u.points > 100 ? '🥇' : (u.points > 50 ? '🥈' : '');
-            l.innerHTML+=`<div class="bg-white p-3 rounded-2xl flex items-center gap-3 border border-slate-100 shadow-sm"><img src="${u.photo?.url||'https://via.placeholder.com/50'}" class="w-10 h-10 rounded-full object-cover bg-slate-200"><div><p class="text-xs font-bold text-slate-800">${u.name} ${badge}</p><p class="text-[10px] text-slate-400 uppercase">${u.role}</p></div></div>`;
-        });
+        snap.forEach(d=>{ const u=d.data(); l.innerHTML+=`<div class="bg-white p-3 rounded-2xl flex items-center gap-3 border border-slate-100 shadow-sm"><img src="${u.photo?.url||'https://via.placeholder.com/50'}" class="w-10 h-10 rounded-full object-cover bg-slate-200"><div><p class="text-xs font-bold text-slate-800">${u.name}</p><p class="text-[9px] text-slate-400 uppercase">${u.role}</p></div></div>`; });
     }
 
-    // --- 5. TOOLS VIEW CONTROLLER ---
-    async function loadTools(view) {
+    // --- 5. TOOLS ---
+    async function loadTools(v) {
         const h=$("toolsHeader"); const c=$("toolsContent"); c.innerHTML="";
-        if(view === 'docs') {
-            h.innerHTML = `<div><h2 class="text-2xl font-black text-slate-800">Arsip</h2><p class="text-xs text-slate-500">Penyimpanan Digital</p></div>`;
-            c.innerHTML = `<div class="grid grid-cols-2 gap-3"><div class="bg-white p-4 rounded-2xl border border-slate-100 flex flex-col items-center justify-center gap-2"><span class="material-symbols-rounded text-3xl text-blue-500">folder</span><span class="text-xs font-bold">Surat Masuk</span></div><div class="bg-white p-4 rounded-2xl border border-slate-100 flex flex-col items-center justify-center gap-2"><span class="material-symbols-rounded text-3xl text-orange-500">folder</span><span class="text-xs font-bold">Proposal</span></div></div>`;
-        } else if (view === 'titik-kumpul') {
-            h.innerHTML = `<div><h2 class="text-2xl font-black text-slate-800">Undian</h2><p class="text-xs text-slate-500">Arisan & Lokasi</p></div>`;
-            loadRaffle(); // Call existing function
-        } else if (view === 'suggestions') {
-            h.innerHTML = `<div><h2 class="text-2xl font-black text-slate-800">Kotak Saran</h2><p class="text-xs text-slate-500">Aspirasi Anonim</p></div>`;
-            c.innerHTML = `<textarea class="w-full p-4 bg-white rounded-2xl border border-slate-200 h-32 text-sm resize-none mb-3" placeholder="Tulis saran membangun..."></textarea><button class="w-full bg-teal-600 text-white py-3 rounded-xl font-bold shadow-lg" onclick="alert('Terkirim!')">KIRIM SARAN</button>`;
-        }
+        if(v === 'docs') { h.innerHTML = `<h2 class="text-2xl font-black text-slate-800">Arsip</h2>`; c.innerHTML = `<div class="grid grid-cols-2 gap-3"><div class="bg-white p-4 rounded-2xl border border-slate-100 text-center"><span class="material-symbols-rounded text-3xl text-blue-500">folder</span><p class="text-xs font-bold mt-2">Surat</p></div></div>`; } 
+        else if (v === 'titik-kumpul') { h.innerHTML = `<h2 class="text-2xl font-black text-slate-800">Undian</h2>`; loadRaffle(); }
+        else if (v === 'suggestions') { h.innerHTML = `<h2 class="text-2xl font-black text-slate-800">Saran</h2>`; c.innerHTML = `<textarea class="w-full p-4 bg-white rounded-2xl border border-slate-200 h-32 text-sm resize-none mb-3" placeholder="Tulis saran..."></textarea><button class="w-full bg-teal-600 text-white py-3 rounded-xl font-bold" onclick="alert('Terkirim!')">KIRIM</button>`; }
     }
 
     // --- STANDARD CRUD ---
-    window.openFinanceModal = () => {
-        const h=`<select id="fT" class="w-full p-3 bg-slate-50 rounded-xl mb-3 font-bold text-sm"><option value="income">Pemasukan</option><option value="expense">Pengeluaran</option></select><input id="fA" type="number" class="w-full p-3 bg-slate-50 rounded-xl mb-3 text-sm" placeholder="Jumlah (Rp)"><input id="fN" class="w-full p-3 bg-slate-50 rounded-xl mb-3 text-sm" placeholder="Catatan">`;
-        showModal("Input Kas", h, async()=>{ toggleLoader(true); await addDoc(collection(db,"financial_records"),{type:$("fT").value, amount:$("fA").value, note:$("fN").value, status:'approved', createdAt:serverTimestamp()}); closeModal(); loadHome(); loadFinance(); toggleLoader(false); });
-    }
-    window.openActivityModal = () => {
-        const h=`<input id="aT" class="w-full p-3 bg-slate-50 rounded-xl mb-3 font-bold text-sm" placeholder="Judul Acara"><input id="aD" type="date" class="w-full p-3 bg-slate-50 rounded-xl mb-3 text-sm">`;
-        showModal("Buat Kegiatan", h, async()=>{ toggleLoader(true); await addDoc(collection(db,"activities"),{title:$("aT").value, date:$("aD").value, status:'approved', createdAt:serverTimestamp()}); closeModal(); loadHome(); loadActivities(); toggleLoader(false); });
-    }
+    window.openFinanceModal = () => showModal("Catat Kas", `<select id="fT" class="w-full p-3 bg-slate-50 rounded-xl mb-2 text-sm"><option value="income">Masuk</option><option value="expense">Keluar</option></select><input id="fA" type="number" class="w-full p-3 bg-slate-50 rounded-xl mb-2 text-sm" placeholder="Rp"><input id="fN" class="w-full p-3 bg-slate-50 rounded-xl mb-2 text-sm" placeholder="Catatan">`, async()=>{ await addDoc(collection(db,"financial_records"),{type:$("fT").value, amount:$("fA").value, note:$("fN").value, status:'approved', createdAt:serverTimestamp()}); closeModal(); loadHome(); loadFinance(); });
+    window.openActivityModal = () => showModal("Agenda Baru", `<input id="aT" class="w-full p-3 bg-slate-50 rounded-xl mb-2 text-sm" placeholder="Judul"><input id="aD" type="date" class="w-full p-3 bg-slate-50 rounded-xl mb-2 text-sm">`, async()=>{ await addDoc(collection(db,"activities"),{title:$("aT").value, date:$("aD").value, status:'approved', createdAt:serverTimestamp()}); closeModal(); loadHome(); loadActivities(); });
 
     // --- PROFILE ---
     async function loadProfile() {
-        $("profileNameDisplay").textContent=ME_DATA.name; $("profileEmailDisplay").textContent=ME_DATA.email;
-        $("profileRoleBadge").textContent=ME_ROLE; $("profilePoints").textContent=ME_DATA.points||0;
-        $("profileImage").src=ME_DATA.photo?.url||"https://via.placeholder.com/150";
-        $("editName").value=ME_DATA.name||""; $("editPhone").value=ME_DATA.phone||""; $("editAddress").value=ME_DATA.address||"";
+        $("profileNameDisplay").textContent=ME_DATA.name; $("profileEmailDisplay").textContent=ME_DATA.email; $("profileRoleBadge").textContent=ME_ROLE.replace('_',' '); $("profilePoints").textContent=ME_DATA.points||0; $("profileImage").src=ME_DATA.photo?.url||"https://via.placeholder.com/150"; $("editName").value=ME_DATA.name||""; $("editPhone").value=ME_DATA.phone||""; $("editAddress").value=ME_DATA.address||"";
     }
     window.saveProfile=async()=>{ toggleLoader(true); let u={name:$("editName").value, phone:$("editPhone").value, address:$("editAddress").value}; if(newProfileFile) u.photo=await upload(newProfileFile); await updateDoc(doc(db,"users",ME_UID),u); alert("Disimpan"); loadProfile(); toggleLoader(false); }
     window.previewProfileImage=(i)=>{ if(i.files[0]){ newProfileFile=i.files[0]; const r=new FileReader(); r.onload=e=>$("profileImage").src=e.target.result; r.readAsDataURL(i.files[0]); } }
-    
-    window.showIdCard=()=>{ showModal("Kartu Anggota", `<div class="bg-gradient-to-br from-indigo-900 to-slate-900 text-white p-5 rounded-2xl relative overflow-hidden"><div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500 rounded-full blur-[50px] opacity-50"></div><h3 class="text-xl font-black relative z-10">${ME_DATA.name}</h3><p class="text-sm text-indigo-200 uppercase tracking-widest mb-4 relative z-10">${ME_ROLE}</p><div class="w-full h-1 bg-white/20 rounded mb-4"></div><p class="text-[10px] text-slate-400">ID: ${ME_UID}</p></div>`); }
+    window.showIdCard=()=>{ showModal("Kartu Anggota", `<div class="bg-gradient-to-br from-indigo-900 to-slate-900 text-white p-5 rounded-2xl overflow-hidden relative"><h3 class="text-xl font-black relative z-10">${ME_DATA.name}</h3><p class="text-sm text-indigo-200 uppercase tracking-widest mb-4 relative z-10">${ME_ROLE}</p><p class="text-[10px] text-slate-400">ID: ${ME_UID.substring(0,8)}</p></div>`); }
 
-    // ALERTS & NOTICES
+    // ALERTS & RAFFLE
     async function loadAlerts(home=false) { const l=$(home?"homeNoticeList":"homeNoticeList"); l.innerHTML=""; const snap=await getDocs(query(collection(db,"notifications"), orderBy("createdAt","desc"), limit(2))); snap.forEach(d=>{ l.innerHTML+=`<div class="bg-indigo-50 border border-indigo-100 p-3 rounded-xl"><h4 class="text-xs font-bold text-indigo-900 uppercase mb-1">${d.data().title}</h4><p class="text-[10px] text-indigo-600 line-clamp-2">${d.data().body}</p></div>`; }); }
-
+    async function loadRaffle() { const l=$("raffleList"); l.innerHTML=""; const uSnap=await getDocs(query(collection(db,"users"),orderBy("name"))); uSnap.forEach(d=>{ if(d.data().role!=='super_admin') l.innerHTML+=`<div class="bg-white p-2 rounded-lg flex justify-between items-center border border-slate-100"><span class="text-xs font-bold">${d.data().name}</span><span class="text-[9px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-500">BELUM</span></div>`; }); if(ROLE_CONFIG[ME_ROLE].features.includes('raffle')) $("raffleBtn").classList.remove('hidden'); }
+    window.runRaffle=async()=>{ const btn=$("raffleBtn"); btn.innerHTML="MENGACAK..."; setTimeout(()=>{ $("winnerText").textContent="Anggota Terpilih"; $("winnerModal").classList.remove('hidden'); btn.innerHTML="ACAK LAGI"; },2000); }
+    window.exportTableToCSV=(t)=>{ alert("Download "+t+" CSV dimulai..."); }
+    window.filterList=(id,q)=>{ Array.from($(id).children).forEach(e=>e.style.display=e.innerText.toLowerCase().includes(q.toLowerCase())?'flex':'none'); }
+    async function refreshAll() { await Promise.all([loadHome()]); }
     $("logoutBtn").onclick=async()=>{ await signOut(auth); location.href="login.html"; }
   </script>
 </body>
