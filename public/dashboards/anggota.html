@@ -21,6 +21,7 @@
           animation: { 
             'blob': 'blob 10s infinite',
             'slide-in-top': 'slideInTop 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
           },
           keyframes: {
             blob: {
@@ -53,6 +54,18 @@
     .view-section.active { display: block; opacity: 1; transform: translateY(0); }
     .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #F97316; }
     .nav-btn.active p { color: #0F172A; font-weight: 700; }
+    .progress-bar { transition: width 1s ease-in-out; }
+    
+    /* Online Indicator Pulse */
+    .online-ring {
+        box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+        animation: ringPulse 2s infinite;
+    }
+    @keyframes ringPulse {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+    }
   </style>
 </head>
 
@@ -61,6 +74,7 @@
   <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
     <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
     <div class="absolute top-[20%] right-[-10%] w-96 h-96 bg-orange-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
+    <div class="absolute bottom-[-20%] left-[20%] w-80 h-80 bg-purple-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-4000"></div>
   </div>
 
   <div id="toastContainer" class="fixed top-4 left-0 right-0 z-[100] flex flex-col items-center gap-2 pointer-events-none px-4"></div>
@@ -116,12 +130,31 @@
   <main class="px-5 mt-2 relative z-10">
 
       <section id="view-home" class="view-section active">
+          
+          <div id="arisanWidget" class="hidden w-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-[2rem] p-1 mb-6 shadow-xl shadow-purple-200 relative overflow-hidden group">
+             <div class="bg-white/10 backdrop-blur-sm rounded-[1.8rem] p-5 flex items-center gap-4 relative z-10">
+                <div class="relative">
+                    <img id="arisanPhoto" src="https://via.placeholder.com/100" class="w-14 h-14 rounded-full border-2 border-white shadow-md object-cover">
+                    <div class="absolute -top-2 -right-2 bg-yellow-400 text-yellow-900 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm animate-bounce">WINNER</div>
+                </div>
+                <div class="flex-1">
+                    <p class="text-[10px] font-bold text-purple-100 uppercase tracking-widest mb-0.5">Pemenang Arisan</p>
+                    <h3 id="arisanName" class="text-xl font-extrabold text-white leading-none">...</h3>
+                    <p id="arisanDate" class="text-[10px] text-purple-100 mt-1">Periode Bulan Ini</p>
+                </div>
+                <span class="material-symbols-rounded text-4xl text-white/20">celebration</span>
+             </div>
+          </div>
+
           <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 group transition-all mb-6">
               <div class="absolute top-0 right-0 p-4 opacity-5"><span class="material-symbols-rounded text-9xl">account_balance_wallet</span></div>
               <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-accent blur-3xl opacity-20"></div>
               
               <div class="relative z-10">
-                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Saldo Kas Organisasi</p>
+                <div class="flex justify-between items-start mb-1">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-300">Saldo Kas Organisasi</p>
+                    <span class="text-[9px] bg-white/20 px-2 py-0.5 rounded text-white font-bold">Transparan</span>
+                </div>
                 <h2 id="cardBalance" class="text-4xl font-black tracking-tight mb-6">Rp 0</h2>
 
                 <div class="flex gap-2">
@@ -147,12 +180,25 @@
               <div onclick="switchView('kegiatan')" class="bg-white border border-slate-100 p-4 rounded-[1.5rem] flex flex-col items-center justify-center gap-2 shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer h-28 relative overflow-hidden">
                   <div class="absolute -right-4 -top-4 w-16 h-16 bg-blue-50 rounded-full opacity-50"></div>
                   <span class="material-symbols-rounded text-3xl text-blue-500">calendar_month</span>
-                  <span class="text-xs font-bold text-brand-primary">Cek Jadwal</span>
+                  <span class="text-xs font-bold text-brand-primary">Lihat Jadwal</span>
               </div>
+              
+              <div onclick="switchView('voting')" class="bg-white border border-slate-100 p-4 rounded-[1.5rem] flex flex-col items-center justify-center gap-2 shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer h-28 relative overflow-hidden">
+                  <div class="absolute -right-4 -top-4 w-16 h-16 bg-purple-50 rounded-full opacity-50"></div>
+                  <span class="material-symbols-rounded text-3xl text-purple-500">how_to_vote</span>
+                  <span class="text-xs font-bold text-brand-primary">Ikut Voting</span>
+              </div>
+
               <div onclick="showIdCard()" class="bg-white border border-slate-100 p-4 rounded-[1.5rem] flex flex-col items-center justify-center gap-2 shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer h-28 relative overflow-hidden">
                   <div class="absolute -right-4 -top-4 w-16 h-16 bg-orange-50 rounded-full opacity-50"></div>
                   <span class="material-symbols-rounded text-3xl text-accent">badge</span>
-                  <span class="text-xs font-bold text-brand-primary">Kartu Saya</span>
+                  <span class="text-xs font-bold text-brand-primary">Kartu Anggota</span>
+              </div>
+
+               <div onclick="switchView('keuangan')" class="bg-white border border-slate-100 p-4 rounded-[1.5rem] flex flex-col items-center justify-center gap-2 shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer h-28 relative overflow-hidden">
+                  <div class="absolute -right-4 -top-4 w-16 h-16 bg-green-50 rounded-full opacity-50"></div>
+                  <span class="material-symbols-rounded text-3xl text-green-600">receipt_long</span>
+                  <span class="text-xs font-bold text-brand-primary">Cek Iuran</span>
               </div>
           </div>
 
@@ -167,11 +213,25 @@
           </div>
       </section>
 
+      <section id="view-voting" class="view-section">
+        <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
+            <div>
+                <h2 class="text-2xl font-bold text-brand-primary">E-Voting</h2>
+                <p class="text-xs text-slate-400">Suara anda menentukan masa depan</p>
+            </div>
+        </div>
+        <div id="votingList" class="space-y-6 pb-20">
+            <div class="animate-pulse space-y-4">
+                <div class="h-40 bg-slate-200 rounded-2xl w-full"></div>
+            </div>
+        </div>
+      </section>
+
       <section id="view-kegiatan" class="view-section">
           <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
             <div>
                 <h2 class="text-2xl font-bold text-brand-primary">Kegiatan</h2>
-                <p class="text-xs text-slate-400">Jadwal acara organisasi</p>
+                <p class="text-xs text-slate-400">Agenda & Jadwal Organisasi</p>
             </div>
           </div>
           <div id="actList" class="space-y-4 pb-20"></div>
@@ -181,12 +241,21 @@
           <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
             <div>
                 <h2 class="text-2xl font-bold text-brand-primary">Laporan Kas</h2>
-                <p class="text-xs text-slate-400">Transparansi dana</p>
+                <p class="text-xs text-slate-400">Riwayat Iuran & Transaksi</p>
             </div>
-            <div class="bg-blue-50 px-3 py-1 rounded-full">
-                <p class="text-[10px] font-bold text-blue-600">READ ONLY</p>
+            <div class="bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
+                <p class="text-[10px] font-bold text-blue-600 flex items-center gap-1">
+                    <span class="material-symbols-rounded text-sm">visibility</span> READ ONLY
+                </p>
             </div>
           </div>
+          
+          <div class="flex gap-2 mb-4 overflow-x-auto no-scrollbar pb-2">
+              <button onclick="filterFinance('all')" class="bg-brand-primary text-white px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap shadow-md">Semua</button>
+              <button onclick="filterFinance('income')" class="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">Pemasukan</button>
+              <button onclick="filterFinance('expense')" class="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">Pengeluaran</button>
+          </div>
+
           <div id="finList" class="space-y-3 pb-20"></div>
       </section>
 
@@ -194,15 +263,17 @@
           <div class="flex justify-between items-center mb-4 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
             <div>
                 <h2 class="text-2xl font-bold text-brand-primary">Anggota</h2>
-                <p class="text-xs text-slate-400">Teman organisasi</p>
+                <p class="text-xs text-slate-400">Daftar teman organisasi</p>
             </div>
-            <div id="onlineBadge" class="text-[10px] bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold flex items-center gap-1 shadow-sm">
+            <div id="onlineBadgeContainer" class="hidden text-[10px] bg-white border border-green-100 text-green-700 px-3 py-1.5 rounded-full font-bold flex items-center gap-1.5 shadow-sm">
                 <span class="relative flex h-2 w-2">
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                   <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                </span> Live
+                </span>
+                <span id="onlineCountText">0 Online</span>
             </div>
           </div>
+          
           <div id="memberList" class="grid grid-cols-3 sm:grid-cols-4 gap-4 pb-20"></div>
       </section>
 
@@ -290,7 +361,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc, collection, getDocs, query, where, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc, collection, getDocs, query, where, orderBy, limit, serverTimestamp, arrayUnion, increment } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
@@ -309,10 +380,11 @@
 
     window.$ = (id) => document.getElementById(id);
     let ME_UID = null;
+    let ME_DATA = null; 
     let newProfileFile = null;
     const fmtIDR = (n) => Number(n||0).toLocaleString("id-ID");
 
-    // --- UX UTILS (Toast & Animations) ---
+    // --- UX UTILS ---
     window.showToast = (msg, type = 'success') => {
         const container = $('toastContainer');
         const el = document.createElement('div');
@@ -383,16 +455,16 @@
         
         if(viewId === 'home') refreshAll();
         if(viewId === 'profile') loadProfileData();
+        if(viewId === 'voting') loadPolls();
     };
 
     // --- ID CARD FEATURE ---
     window.showIdCard = async () => {
         toggleLoader(true);
         try {
-            const snap = await getDoc(doc(db, "users", ME_UID));
-            const u = snap.data();
+            const u = ME_DATA || (await getDoc(doc(db, "users", ME_UID))).data();
             const html = `
-                <div class="bg-gradient-to-br from-slate-800 to-black text-white p-4 rounded-xl relative overflow-hidden shadow-xl border border-slate-600">
+                <div class="bg-gradient-to-br from-slate-800 to-black text-white p-4 rounded-xl relative overflow-hidden shadow-xl border border-slate-600 transition-all hover:scale-105 duration-300">
                     <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
                     <div class="flex justify-between items-start">
                         <img src="https://via.placeholder.com/40" class="w-8 h-8 rounded mb-2"> 
@@ -403,7 +475,7 @@
                          <div>
                             <h3 class="text-lg font-bold leading-none">${u.name || 'Nama Anggota'}</h3>
                             <p class="text-[10px] text-slate-400 mt-1 uppercase">${u.role || 'Anggota'}</p>
-                            <p class="text-[9px] text-slate-500 mt-0.5">${ME_UID.substring(0,8).toUpperCase()}</p>
+                            <p class="text-[9px] text-slate-500 mt-0.5 font-mono">${ME_UID.substring(0,8).toUpperCase()}</p>
                          </div>
                     </div>
                     <div class="mt-4 pt-2 border-t border-white/10 flex justify-between items-end">
@@ -412,7 +484,10 @@
                             <p class="text-[10px] font-bold">2025</p>
                          </div>
                          <div class="text-right">
-                             <div class="w-24 h-6 bg-white rounded-sm mb-1"></div> </div>
+                             <div class="w-24 h-6 bg-white/20 rounded-sm mb-1 flex items-center justify-center overflow-hidden">
+                                <div class="w-full h-1 bg-white/30"></div>
+                             </div> 
+                         </div>
                     </div>
                 </div>
                 <p class="text-center text-xs text-slate-400 mt-4">Tunjukkan kartu ini saat kegiatan.</p>
@@ -442,6 +517,7 @@
         }
     }
 
+    // --- HEARTBEAT & AUTH ---
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
           $("gate").classList.remove("hidden");
@@ -454,24 +530,146 @@
       const snap = await getDoc(doc(db, "users", user.uid));
       if (!snap.exists()) { showToast("User tidak ditemukan", "error"); return; }
 
-      const me = snap.data();
+      ME_DATA = snap.data();
       toggleLoader(false);
       
-      // Header Info
-      const pUrl = me.photo?.url || "https://via.placeholder.com/150";
-      $("headerName").textContent = me.name || "Anggota";
+      const pUrl = ME_DATA.photo?.url || "https://via.placeholder.com/150";
+      $("headerName").textContent = ME_DATA.name || "Anggota";
       $("headerPhoto").src = pUrl;
       
       refreshAll();
       loadProfileData();
       
-      // Online Status Update
-      setInterval(() => updateDoc(doc(db, "users", ME_UID), { lastSeen: serverTimestamp() }), 60000);
+      // Heartbeat: Update 'lastSeen' immediately then every 60s
+      const updatePresence = () => updateDoc(doc(db, "users", ME_UID), { lastSeen: serverTimestamp() });
+      updatePresence();
+      setInterval(updatePresence, 60000);
     });
 
     window.refreshAll = async () => {
-        showToast("Memperbarui data...");
-        await Promise.all([loadActivities(), loadNotifications(), loadFinance(), loadMembers()]);
+        showToast("Sinkronisasi data...");
+        await Promise.all([
+            loadActivities(), 
+            loadNotifications(), 
+            loadFinance(), 
+            loadMembers(),
+            loadArisanWinner()
+        ]);
+    }
+
+    async function loadArisanWinner() {
+        try {
+            const q = query(collection(db, "arisan"), orderBy("date", "desc"), limit(1));
+            const snap = await getDocs(q);
+            if(!snap.empty) {
+                const data = snap.docs[0].data();
+                $("arisanWidget").classList.remove("hidden");
+                $("arisanName").textContent = data.winnerName || "Belum Ada";
+                $("arisanPhoto").src = data.winnerPhoto || "https://via.placeholder.com/100";
+                
+                const date = data.date ? new Date(data.date.seconds * 1000) : new Date();
+                $("arisanDate").textContent = "Pemenang Periode " + date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+            } else {
+                $("arisanWidget").classList.add("hidden");
+            }
+        } catch(e) {
+            $("arisanWidget").classList.add("hidden");
+        }
+    }
+
+    // --- VOTING ---
+    window.loadPolls = async () => {
+        const list = $("votingList");
+        list.innerHTML = `<div class="flex justify-center py-10"><div class="w-8 h-8 border-4 border-slate-200 border-t-purple-500 rounded-full animate-spin"></div></div>`;
+        
+        try {
+            const q = query(collection(db, "polls"), where("status", "==", "active"), orderBy("createdAt", "desc"));
+            const snap = await getDocs(q);
+            list.innerHTML = "";
+
+            if (snap.empty) {
+                list.innerHTML = `
+                    <div class="text-center py-10 bg-white rounded-3xl border border-slate-100">
+                        <span class="material-symbols-rounded text-4xl text-slate-300 mb-2">how_to_vote</span>
+                        <p class="text-slate-500 font-bold text-sm">Tidak ada voting aktif.</p>
+                        <p class="text-xs text-slate-400 mt-1">Kembali lagi nanti ya!</p>
+                    </div>`;
+                return;
+            }
+
+            snap.forEach(docSnap => {
+                const poll = docSnap.data();
+                const pid = docSnap.id;
+                const hasVoted = poll.voters && poll.voters.includes(ME_UID);
+                const totalVotes = poll.options.reduce((acc, curr) => acc + (curr.count || 0), 0);
+
+                let optionsHtml = '';
+                poll.options.forEach((opt, idx) => {
+                    if (hasVoted) {
+                        const percent = totalVotes === 0 ? 0 : Math.round(((opt.count || 0) / totalVotes) * 100);
+                        optionsHtml += `
+                            <div class="mb-3">
+                                <div class="flex justify-between text-xs font-bold mb-1 text-slate-600">
+                                    <span>${opt.text}</span>
+                                    <span>${percent}% (${opt.count || 0})</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                                    <div class="bg-purple-500 h-3 rounded-full progress-bar" style="width: ${percent}%"></div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        optionsHtml += `
+                            <button onclick="submitVote('${pid}', ${idx})" class="w-full text-left p-3 rounded-xl border border-slate-200 mb-2 hover:border-purple-500 hover:bg-purple-50 transition-all flex items-center justify-between group">
+                                <span class="font-bold text-sm text-slate-700 group-hover:text-purple-700">${opt.text}</span>
+                                <span class="material-symbols-rounded text-slate-300 group-hover:text-purple-500">radio_button_unchecked</span>
+                            </button>
+                        `;
+                    }
+                });
+
+                list.innerHTML += `
+                    <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden">
+                         ${hasVoted ? '<div class="absolute top-0 right-0 bg-green-100 text-green-700 text-[9px] font-bold px-3 py-1 rounded-bl-xl">SUDAH MEMILIH</div>' : ''}
+                        <h3 class="font-bold text-lg text-brand-primary mb-2">${poll.title}</h3>
+                        <p class="text-xs text-slate-400 mb-4">${poll.description || 'Silakan pilih salah satu opsi di bawah.'}</p>
+                        <div class="space-y-1">
+                            ${optionsHtml}
+                        </div>
+                    </div>
+                `;
+            });
+        } catch (e) {
+            list.innerHTML = `<p class="text-center text-red-500 text-xs">Gagal memuat voting.</p>`;
+        }
+    };
+
+    window.submitVote = async (pollId, optionIdx) => {
+        if(!confirm("Yakin dengan pilihan anda?")) return;
+        toggleLoader(true);
+        try {
+            const pollRef = doc(db, "polls", pollId);
+            const pSnap = await getDoc(pollRef);
+            if(!pSnap.exists()) throw new Error("Poll hilang");
+            
+            const pData = pSnap.data();
+            if(pData.voters && pData.voters.includes(ME_UID)) throw new Error("Sudah memilih!");
+
+            const newOptions = [...pData.options];
+            newOptions[optionIdx].count = (newOptions[optionIdx].count || 0) + 1;
+
+            await updateDoc(pollRef, {
+                options: newOptions,
+                voters: arrayUnion(ME_UID)
+            });
+
+            showToast("Suara berhasil direkam!");
+            loadPolls(); 
+        } catch(e) {
+            showToast(e.message || "Gagal voting", "error");
+        } finally {
+            toggleLoader(false);
+        }
     }
 
     async function loadProfileData() {
@@ -532,7 +730,6 @@
         }
     }
 
-    // --- DATA LOADERS ---
     async function loadActivities() {
       const list = $("actList");
       const snap = await getDocs(query(collection(db, "activities"), where("status","==","approved"), orderBy("createdAt","desc")));
@@ -571,62 +768,97 @@
       });
     }
 
+    window.allFinanceData = []; 
+    window.filterFinance = (type) => {
+        const list = $("finList");
+        list.innerHTML = "";
+        
+        document.querySelectorAll('[onclick^="filterFinance"]').forEach(b => {
+            if(b.getAttribute('onclick').includes(type)) {
+                b.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
+                b.classList.add('bg-brand-primary', 'text-white');
+            } else {
+                b.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
+                b.classList.remove('bg-brand-primary', 'text-white');
+            }
+        });
+
+        const filtered = type === 'all' ? window.allFinanceData : window.allFinanceData.filter(f => f.type === type);
+        if(filtered.length === 0) { list.innerHTML = `<p class="text-center text-xs text-slate-400 py-4">Tidak ada data.</p>`; return; }
+
+        filtered.forEach(f => {
+             const isInc = f.type === 'income';
+             list.innerHTML += `
+                <div class="bg-white border border-slate-100 p-4 rounded-2xl flex justify-between items-center shadow-sm animate-slide-in-top">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full ${isInc ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'} flex items-center justify-center">
+                            <span class="material-symbols-rounded text-xl">${isInc ? 'arrow_downward' : 'arrow_upward'}</span>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-brand-primary uppercase line-clamp-1">${f.note || 'Transaksi'}</p>
+                            <p class="text-[10px] text-slate-400">${new Date(f.createdAt?.seconds*1000).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                    <span class="font-bold text-xs ${isInc?'text-green-600':'text-red-500'}">${isInc?'+':'-'} Rp ${fmtIDR(f.amount)}</span>
+                </div>
+            `;
+        });
+    }
+
     async function loadFinance() {
-      const list = $("finList");
       const snap = await getDocs(query(collection(db, "financial_records"), where("status","==","approved"), orderBy("createdAt","desc")));
       let bal = 0, inc = 0, exp = 0;
-      list.innerHTML = "";
+      window.allFinanceData = [];
       
       snap.forEach(d => {
         const f = d.data();
+        window.allFinanceData.push(f);
         const amt = Number(f.amount) || 0;
         if(f.type === "income") { inc += amt; bal += amt; } 
         else { exp += amt; bal -= amt; }
-        
-        const isInc = f.type === 'income';
-        list.innerHTML += `
-            <div class="bg-white border border-slate-100 p-4 rounded-2xl flex justify-between items-center shadow-sm">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full ${isInc ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'} flex items-center justify-center">
-                        <span class="material-symbols-rounded text-xl">${isInc ? 'arrow_downward' : 'arrow_upward'}</span>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold text-brand-primary uppercase line-clamp-1">${f.note || 'Transaksi'}</p>
-                        <p class="text-[10px] text-slate-400">${new Date(f.createdAt?.seconds*1000).toLocaleDateString()}</p>
-                    </div>
-                </div>
-                <span class="font-bold text-xs ${isInc?'text-green-600':'text-red-500'}">${isInc?'+':'-'} Rp ${fmtIDR(f.amount)}</span>
-            </div>
-        `;
       });
       
-      // Animate Numbers
       animateValue($("cardBalance"), 0, bal, 1500);
       $("cardIncome").textContent = `Rp ${fmtIDR(inc)}`;
       $("cardExpense").textContent = `Rp ${fmtIDR(exp)}`;
+      filterFinance('all');
     }
 
+    // --- MEMBERS (UPDATED FOR LIVE STATUS) ---
     async function loadMembers() {
       const list = $("memberList");
       const snap = await getDocs(query(collection(db, "users"), orderBy("name","asc")));
       list.innerHTML = "";
       const now = Date.now();
+      let onlineCount = 0;
       
       snap.forEach(d => {
         const u = d.data();
         const last = u.lastSeen?.toDate ? u.lastSeen.toDate().getTime() : 0;
-        const isOnline = last && (now - last) <= (120000); // 2 menit
+        // 2 minutes Threshold for "Online"
+        const isOnline = last && (now - last) <= (120000); 
         
+        if(isOnline) onlineCount++;
+
         list.innerHTML += `
             <div class="bg-white border border-slate-100 p-3 rounded-2xl flex flex-col items-center gap-2 relative group shadow-sm transition-transform hover:scale-105">
                 <div class="relative">
-                    <img src="${u.photo?.url || 'https://via.placeholder.com/100'}" class="h-14 w-14 rounded-full object-cover border border-slate-100 ${!isOnline && 'grayscale opacity-60'}">
-                    ${isOnline ? '<span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full animate-pulse shadow-md"></span>' : ''}
+                    <img src="${u.photo?.url || 'https://via.placeholder.com/100'}" class="h-14 w-14 rounded-full object-cover border-2 ${isOnline ? 'border-white online-ring' : 'border-slate-100 grayscale opacity-60'}">
+                    ${isOnline ? '<span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></span>' : ''}
                 </div>
                 <p class="text-[10px] font-bold text-brand-primary uppercase truncate w-full text-center">${u.name || 'User'}</p>
             </div>
         `;
       });
+
+      // Update Header Badge
+      const badge = $("onlineBadgeContainer");
+      if(onlineCount > 0) {
+        badge.classList.remove('hidden');
+        $("onlineCountText").innerText = `${onlineCount} Online`;
+      } else {
+        badge.classList.add('hidden');
+      }
     }
 
     $("logoutBtn").onclick = () => signOut(auth).then(() => location.href = "login.html");
