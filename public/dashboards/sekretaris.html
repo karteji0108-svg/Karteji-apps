@@ -115,6 +115,7 @@
   <main class="px-5 mt-2 relative z-10">
 
       <section id="view-home" class="view-section active">
+          
           <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 group transition-all">
               <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500 transform group-hover:scale-110"><span class="material-symbols-rounded text-9xl">folder_shared</span></div>
               <div class="relative z-10">
@@ -140,7 +141,17 @@
               </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-3 mt-6">
+          <div class="bg-white rounded-[1.5rem] p-5 shadow-sm border border-slate-100 mt-4 flex items-center justify-between">
+             <div>
+                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Info Saldo Kas (Organisasi)</p>
+                 <h2 id="homeBalance" class="text-2xl font-black text-brand-primary">Rp 0</h2>
+             </div>
+             <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center">
+                 <span class="material-symbols-rounded">savings</span>
+             </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 mt-4">
               <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-36 relative group overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer active:scale-95" onclick="switchView('surat')">
                    <div class="absolute inset-0 bg-gradient-to-br from-sky-50 to-transparent opacity-50"></div>
                    <div class="relative z-10">
@@ -225,11 +236,11 @@
                         <input id="editName" type="text" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-sky-500">
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">call</span> No. WhatsApp</label>
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">call</span> No. WhatsApp / HP</label>
                         <input id="editPhone" type="tel" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-sky-500">
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">home_pin</span> Alamat</label>
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">home_pin</span> Alamat Domisili</label>
                         <textarea id="editAddress" rows="2" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-sky-500 resize-none"></textarea>
                     </div>
                 </div>
@@ -308,6 +319,18 @@
         setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 3000);
     };
 
+    function animateValue(obj, start, end, duration) {
+        if(!obj) return;
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            obj.innerHTML = "Rp " + Math.floor(progress * (end - start) + start).toLocaleString('id-ID');
+            if (progress < 1) { window.requestAnimationFrame(step); }
+        };
+        window.requestAnimationFrame(step);
+    }
+
     window.toggleLoader = (show) => {
         const l = $("globalLoader");
         if(show) { l.classList.remove('hidden'); l.classList.add('flex'); } else { l.classList.add('hidden'); l.classList.remove('flex'); }
@@ -360,15 +383,29 @@
         toggleLoader(false);
     });
 
-    // --- HOME STATS ---
+    // --- HOME STATS & FINANCE CHECK ---
     async function loadHomeStats() {
         try {
+            // Count Docs
             const notul = await getDocs(collection(db, "minutes"));
             const surat = await getDocs(collection(db, "letters"));
             const arsip = await getDocs(collection(db, "archives"));
             $("countMinutes").textContent = notul.size;
             $("countLetters").textContent = surat.size;
             $("totalDocs").textContent = notul.size + surat.size + arsip.size;
+
+            // Check Finance Balance (Read Only)
+            const finSnap = await getDocs(query(collection(db, "financial_records")));
+            let bal = 0;
+            finSnap.forEach(d => {
+                const f = d.data();
+                if(f.status === 'approved') {
+                    const amt = Number(f.amount) || 0;
+                    if(f.type === 'income') bal += amt; else bal -= amt;
+                }
+            });
+            animateValue($("homeBalance"), 0, bal, 1500);
+
         } catch (e) { console.error(e); }
     }
 
