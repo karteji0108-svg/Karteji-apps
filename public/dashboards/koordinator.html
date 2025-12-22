@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Koordinator | Event & Logistic</title>
+  <title>Koordinator | Full Dashboard</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
@@ -22,6 +22,7 @@
           animation: { 
             'blob': 'blob 10s infinite',
             'bounce-slow': 'bounce 3s infinite',
+            'elastic-pop': 'elasticPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
           },
           keyframes: {
             blob: {
@@ -29,6 +30,11 @@
               '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
               '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
               '100%': { transform: 'translate(0px, 0px) scale(1)' },
+            },
+            elasticPop: {
+              '0%': { opacity: '0', transform: 'scale(0.5)' },
+              '60%': { opacity: '1', transform: 'scale(1.1)' },
+              '100%': { opacity: '1', transform: 'scale(1)' },
             }
           }
         }
@@ -40,11 +46,11 @@
     body { background-color: #F8FAFC; color: #1E293B; -webkit-tap-highlight-color: transparent; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .glass-nav {
-      background: rgba(255, 255, 255, 0.90);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-top: 1px solid rgba(15, 23, 42, 0.05);
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.03);
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.05);
     }
     .view-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
     .view-section.active { display: block; opacity: 1; transform: translateY(0); }
@@ -69,7 +75,7 @@
   </div>
 
   <div id="gate" class="fixed inset-0 bg-slate-900 z-[9998] hidden items-center justify-center p-6 text-center backdrop-blur-sm">
-    <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full animate-[slideInTop_0.5s]">
+    <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full animate-elastic-pop">
         <div class="bg-red-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
             <span class="material-symbols-rounded text-red-500 text-4xl">lock</span>
         </div>
@@ -83,23 +89,21 @@
     <div class="w-full max-w-sm text-center relative">
         <button onclick="closeRaffle()" class="absolute -top-12 right-0 text-white/50 hover:text-white"><span class="material-symbols-rounded text-3xl">close</span></button>
         <p class="text-purple-300 font-bold tracking-[0.2em] text-xs mb-6 uppercase">Mesin Pengundian Arisan</p>
-        
         <div class="bg-white rounded-[2rem] p-2 shadow-2xl shadow-purple-500/20 mb-8 border-4 border-purple-500 relative overflow-hidden">
             <div class="absolute inset-0 bg-purple-50 opacity-50" style="background-image: radial-gradient(#8B5CF6 1px, transparent 1px); background-size: 10px 10px;"></div>
             <div class="relative py-10 px-4">
-                <div id="raffleDisplay" class="text-4xl font-black text-slate-800 slot-machine-text min-h-[60px] flex items-center justify-center break-words leading-tight">???</div>
+                <div id="raffleDisplay" class="text-4xl font-black text-slate-800 slot-machine-text min-h-[60px] flex items-center justify-center break-words leading-tight">SIAP!</div>
             </div>
         </div>
-
         <button id="btnSpin" onclick="startSpin()" class="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white py-5 rounded-2xl font-black text-xl shadow-lg shadow-purple-500/40 active:scale-95 transition-transform flex items-center justify-center gap-2">
             <span class="material-symbols-rounded">casino</span> PUTAR RODA
         </button>
-        <p id="raffleStatus" class="mt-4 text-slate-400 text-xs">Siap mengundi dari <span id="eligibleCountDisplay">0</span> anggota</p>
+        <p id="raffleStatus" class="mt-4 text-slate-400 text-xs">Kandidat Tersedia: <span id="eligibleCountDisplay" class="font-bold text-white">0</span> orang</p>
     </div>
   </div>
 
   <div id="winnerOverlay" class="fixed inset-0 z-[90] hidden items-center justify-center p-6 bg-black/80 backdrop-blur-md">
-      <div class="bg-white w-full max-w-xs rounded-[2rem] p-8 text-center relative animate-[elasticPop_0.8s_ease-out]">
+      <div class="bg-white w-full max-w-xs rounded-[2rem] p-8 text-center relative animate-elastic-pop">
           <div class="w-24 h-24 bg-yellow-400 text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl border-4 border-white -mt-16">
               <span class="material-symbols-rounded text-5xl">emoji_events</span>
           </div>
@@ -163,60 +167,56 @@
               <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 relative group overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer active:scale-95" onclick="openPollModal()">
                    <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent opacity-50"></div>
                    <div class="relative z-10 text-blue-600 mb-2"><span class="material-symbols-rounded text-3xl">how_to_vote</span></div>
-                   <div>
-                       <h3 class="text-xs font-bold text-brand-primary">Buat Voting</h3>
-                       <p class="text-[10px] text-slate-400">Jajak pendapat</p>
-                   </div>
+                   <div><h3 class="text-xs font-bold text-brand-primary">Voting</h3><p class="text-[10px] text-slate-400">Jajak pendapat</p></div>
               </div>
-              <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 relative group overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer active:scale-95" onclick="switchView('kegiatan')">
-                   <div class="absolute inset-0 bg-gradient-to-br from-pink-50 to-transparent opacity-50"></div>
-                   <div class="relative z-10 text-pink-600 mb-2"><span class="material-symbols-rounded text-3xl">calendar_month</span></div>
-                   <div>
-                       <h3 class="text-xs font-bold text-brand-primary">Acara</h3>
-                       <p class="text-[10px] text-slate-400">Jadwal kegiatan</p>
-                   </div>
+              <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 relative group overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer active:scale-95" onclick="openInventoryModal()">
+                   <div class="absolute inset-0 bg-gradient-to-br from-emerald-50 to-transparent opacity-50"></div>
+                   <div class="relative z-10 text-emerald-600 mb-2"><span class="material-symbols-rounded text-3xl">inventory_2</span></div>
+                   <div><h3 class="text-xs font-bold text-brand-primary">Barang</h3><p class="text-[10px] text-slate-400">Input Aset</p></div>
               </div>
           </div>
 
           <div class="mt-6">
-              <h3 class="text-sm font-bold text-brand-primary uppercase tracking-wide mb-3 px-1">Riwayat Pemenang</h3>
+              <h3 class="text-sm font-bold text-brand-primary uppercase tracking-wide mb-3 px-1">Pemenang Arisan</h3>
               <div id="winnerHistory" class="space-y-3 pb-20"></div>
           </div>
       </section>
 
-      <section id="view-inventory" class="view-section">
-          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
-            <div>
-                <h2 class="text-2xl font-bold text-brand-primary">Inventaris</h2>
-                <p class="text-xs text-slate-400">Manajemen Barang</p>
-            </div>
-            <button onclick="openInventoryModal()" class="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform">
-                <span class="material-symbols-rounded">add</span>
-            </button>
-          </div>
-          <div id="invList" class="grid grid-cols-2 gap-3 pb-20"></div>
-      </section>
-
       <section id="view-kegiatan" class="view-section">
           <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
-            <div>
-                <h2 class="text-2xl font-bold text-brand-primary">Acara</h2>
-                <p class="text-xs text-slate-400">Agenda Organisasi</p>
-            </div>
-            <button onclick="openEventModal()" class="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform">
-                <span class="material-symbols-rounded">add</span>
-            </button>
+            <div><h2 class="text-2xl font-bold text-brand-primary">Acara</h2><p class="text-xs text-slate-400">Agenda Kegiatan</p></div>
+            <button onclick="openEventModal()" class="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"><span class="material-symbols-rounded">add</span></button>
           </div>
           <div id="eventList" class="grid grid-cols-1 gap-4 pb-20"></div>
+      </section>
+
+      <section id="view-info" class="view-section">
+          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
+            <div><h2 class="text-2xl font-bold text-brand-primary">Info</h2><p class="text-xs text-slate-400">Papan Pengumuman</p></div>
+            <button onclick="openInfoModal()" class="w-10 h-10 bg-orange-500 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"><span class="material-symbols-rounded">campaign</span></button>
+          </div>
+          <div id="infoList" class="space-y-3 pb-20"></div>
+      </section>
+
+      <section id="view-kas" class="view-section">
+          <div class="flex justify-between items-center mb-4 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
+            <div><h2 class="text-2xl font-bold text-brand-primary">Kas</h2><p class="text-xs text-slate-400">Monitor Keuangan</p></div>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm mb-4 flex justify-between items-center">
+              <div>
+                  <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">Total Saldo</p>
+                  <h2 id="kasBalance" class="text-3xl font-black text-brand-primary">Rp 0</h2>
+              </div>
+              <div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center"><span class="material-symbols-rounded">account_balance_wallet</span></div>
+          </div>
+          <div id="kasList" class="space-y-3 pb-20"></div>
       </section>
 
       <section id="view-profile" class="view-section">
         <div class="flex flex-col items-center pt-4 pb-20">
             <div class="relative group cursor-pointer active:scale-95 transition-transform" onclick="$('profileUpload').click()">
                 <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl shadow-slate-200">
-                <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span class="material-symbols-rounded text-white">photo_camera</span>
-                </div>
+                <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><span class="material-symbols-rounded text-white">photo_camera</span></div>
             </div>
             <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
             
@@ -231,23 +231,20 @@
             <div class="w-full mt-8 space-y-4 px-1">
                 <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm space-y-4">
                     <div>
-                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">badge</span> Nama Lengkap</label>
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase">Nama Lengkap</label>
                         <input id="editName" type="text" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-purple-500">
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">call</span> No. WhatsApp</label>
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase">No. WhatsApp</label>
                         <input id="editPhone" type="tel" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-purple-500">
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">home_pin</span> Alamat</label>
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase">Alamat</label>
                         <textarea id="editAddress" rows="2" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-purple-500 resize-none"></textarea>
                     </div>
                 </div>
-                
                 <button onclick="saveProfile()" class="w-full bg-brand-primary text-white py-4 rounded-2xl font-bold shadow-lg shadow-slate-300 hover:bg-slate-800 transition-all active:scale-95">SIMPAN PROFIL</button>
-                <button id="logoutBtn" class="w-full bg-red-50 text-red-500 py-4 rounded-2xl font-bold hover:bg-red-100 transition-all active:scale-95 flex items-center justify-center gap-2">
-                    <span class="material-symbols-rounded">logout</span> KELUAR
-                </button>
+                <button id="logoutBtn" class="w-full bg-red-50 text-red-500 py-4 rounded-2xl font-bold hover:bg-red-100 transition-all active:scale-95 flex items-center justify-center gap-2"><span class="material-symbols-rounded">logout</span> KELUAR</button>
             </div>
         </div>
       </section>
@@ -256,14 +253,14 @@
 
   <nav class="fixed bottom-0 w-full glass-nav pb-6 pt-2 px-4 z-50 rounded-t-[2rem]">
       <div class="flex justify-between items-center max-w-sm mx-auto">
-          <button onclick="switchView('home')" class="nav-btn active flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="home">
-              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">casino</span>
-              <p class="text-[10px] font-medium text-slate-400 transition-colors">Arisan</p>
+          <button onclick="switchView('home')" class="nav-btn active flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="home">
+              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">home</span>
+              <p class="text-[9px] font-medium text-slate-400 transition-colors">Home</p>
           </button>
           
-          <button onclick="switchView('inventory')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="inventory">
-              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">inventory_2</span>
-              <p class="text-[10px] font-medium text-slate-400 transition-colors">Barang</p>
+          <button onclick="switchView('kegiatan')" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="kegiatan">
+              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">event</span>
+              <p class="text-[9px] font-medium text-slate-400 transition-colors">Acara</p>
           </button>
 
           <div class="relative -top-6">
@@ -272,9 +269,14 @@
             </button>
           </div>
 
-          <button onclick="switchView('kegiatan')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="kegiatan">
-              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">event_note</span>
-              <p class="text-[10px] font-medium text-slate-400 transition-colors">Acara</p>
+          <button onclick="switchView('info')" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="info">
+              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">campaign</span>
+              <p class="text-[9px] font-medium text-slate-400 transition-colors">Info</p>
+          </button>
+
+          <button onclick="switchView('kas')" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="kas">
+              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">account_balance_wallet</span>
+              <p class="text-[9px] font-medium text-slate-400 transition-colors">Kas</p>
           </button>
       </div>
   </nav>
@@ -309,11 +311,23 @@
         const container = $('toastContainer');
         const el = document.createElement('div');
         const color = type === 'error' ? 'bg-red-500' : 'bg-slate-800';
-        el.className = `${color} text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 animate-[slideInTop_0.5s_ease-out] pointer-events-auto min-w-[200px] backdrop-blur-sm bg-opacity-90`;
+        el.className = `${color} text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 animate-elastic-pop pointer-events-auto min-w-[200px] backdrop-blur-sm bg-opacity-90`;
         el.innerHTML = `<span class="material-symbols-rounded text-lg">${type==='error'?'error':'check_circle'}</span><span class="text-xs font-bold">${msg}</span>`;
         container.appendChild(el);
         setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 3000);
     };
+
+    function animateValue(obj, start, end, duration) {
+        if(!obj) return;
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            obj.innerHTML = "Rp " + Math.floor(progress * (end - start) + start).toLocaleString('id-ID');
+            if (progress < 1) { window.requestAnimationFrame(step); }
+        };
+        window.requestAnimationFrame(step);
+    }
 
     window.toggleLoader = (show) => {
         const l = $("globalLoader");
@@ -339,8 +353,9 @@
         const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`); if(activeBtn) activeBtn.classList.add('active');
         
         if(viewId === 'home') loadArisanHistory();
-        if(viewId === 'inventory') loadInventory();
         if(viewId === 'kegiatan') loadEvents();
+        if(viewId === 'info') loadInfo();
+        if(viewId === 'kas') loadFinance();
         if(viewId === 'profile') loadProfileData();
     };
 
@@ -361,12 +376,12 @@
                 toggleLoader(false); $("gate").classList.remove("hidden"); $("gate").classList.add("flex"); return;
             }
             UID = user.uid;
-            await Promise.all([loadArisanHistory(), loadEvents(), loadInventory(), loadProfileData()]);
+            await Promise.all([loadArisanHistory(), loadEvents(), loadInfo(), loadFinance(), loadProfileData()]);
         } catch(e) { console.error(e); }
         toggleLoader(false);
     });
 
-    // --- ARISAN LOGIC (INCLUSIVE) ---
+    // --- ARISAN LOGIC ---
     async function loadArisanHistory() {
         const list = $("winnerHistory"); list.innerHTML = "";
         try {
@@ -378,48 +393,31 @@
             }
             histSnap.forEach(d => {
                 const w = d.data();
-                list.innerHTML += `
-                    <div class="bg-white p-4 rounded-2xl flex items-center justify-between border border-slate-100 shadow-sm">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600"><span class="material-symbols-rounded">emoji_events</span></div>
-                            <div><p class="text-sm font-bold text-brand-primary">${w.name}</p><p class="text-[10px] text-slate-400">${new Date(w.createdAt.seconds*1000).toLocaleDateString()}</p></div>
-                        </div>
-                    </div>
-                `;
+                list.innerHTML += `<div class="bg-white p-4 rounded-2xl flex items-center justify-between border border-slate-100 shadow-sm"><div class="flex items-center gap-3"><div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600"><span class="material-symbols-rounded">emoji_events</span></div><div><p class="text-sm font-bold text-brand-primary">${w.name}</p><p class="text-[10px] text-slate-400">${new Date(w.createdAt.seconds*1000).toLocaleDateString()}</p></div></div></div>`;
             });
         } catch(e) { console.error(e); }
     }
 
     window.openRaffleModal = async () => {
-        toggleLoader(true);
-        candidates = [];
+        toggleLoader(true); candidates = [];
         try {
             const histSnap = await getDocs(collection(db, "arisan_history"));
             const wonIds = histSnap.docs.map(d => d.data().uid);
-            
             const usersSnap = await getDocs(collection(db, "users"));
-            // Roles yang ikut arisan
             const eligibleRoles = ['ketua', 'wakil_ketua', 'sekretaris', 'bendahara', 'koordinator', 'anggota'];
 
             usersSnap.forEach(d => {
                 const u = d.data();
-                // Filter: Role yang diizinkan & Belum menang
-                if(eligibleRoles.includes(u.role) && !wonIds.includes(d.id)) {
-                    candidates.push({ id: d.id, name: u.name });
-                }
+                const userRole = u.role ? u.role : 'anggota';
+                if(eligibleRoles.includes(userRole) && !wonIds.includes(d.id)) { candidates.push({ id: d.id, name: u.name }); }
             });
 
-            if(candidates.length === 0) {
-                alert("Semua anggota sudah menang! Reset arisan diperlukan.");
-                toggleLoader(false); return;
-            }
+            if(candidates.length === 0) { alert("Semua sudah menang!"); toggleLoader(false); return; }
 
             $("eligibleCountDisplay").textContent = candidates.length;
             $("raffleModal").classList.remove("hidden"); $("raffleModal").classList.add("flex");
-            $("raffleDisplay").textContent = "???";
             $("btnSpin").disabled = false; $("btnSpin").classList.remove("opacity-50");
-
-        } catch(e) { showToast("Gagal memuat", "error"); } finally { toggleLoader(false); }
+        } catch(e) { showToast("Error", "error"); } finally { toggleLoader(false); }
     }
 
     window.closeRaffle = () => $("raffleModal").classList.add("hidden");
@@ -459,69 +457,66 @@
         toggleLoader(true);
         try {
             await addDoc(collection(db, "arisan_history"), { uid: tempWinner.id, name: tempWinner.name, createdAt: serverTimestamp() });
-            $("winnerOverlay").classList.add("hidden"); loadArisanHistory(); showToast("Pemenang disimpan!");
-        } catch(e) { showToast("Gagal simpan", "error"); } finally { toggleLoader(false); }
+            $("winnerOverlay").classList.add("hidden"); loadArisanHistory(); showToast("Disimpan!");
+        } catch(e) { showToast("Gagal", "error"); } finally { toggleLoader(false); }
     }
 
-    // --- INVENTARIS (NEW FEATURE) ---
-    async function loadInventory() {
-        const list = $("invList"); list.innerHTML = "";
-        const snap = await getDocs(query(collection(db, "inventory"), orderBy("createdAt", "desc")));
+    // --- INFO (PENGUMUMAN) ---
+    async function loadInfo() {
+        const list = $("infoList"); list.innerHTML = "";
+        const snap = await getDocs(query(collection(db, "notifications"), orderBy("createdAt", "desc")));
         snap.forEach(d => {
-            const i = d.data();
-            list.innerHTML += `
-                <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group">
-                    ${i.image ? `<img src="${i.image.url}" class="w-full h-24 object-cover rounded-xl mb-2">` : '<div class="w-full h-24 bg-slate-100 rounded-xl mb-2 flex items-center justify-center text-slate-300"><span class="material-symbols-rounded">image</span></div>'}
-                    <h4 class="text-sm font-bold text-brand-primary">${i.name}</h4>
-                    <p class="text-[10px] text-slate-400 mb-1">${i.qty} Unit &bull; ${i.status}</p>
-                    <button onclick="deleteDocData('inventory','${d.id}')" class="absolute top-2 right-2 bg-white/80 p-1 rounded-full text-red-500 hover:bg-red-500 hover:text-white transition-colors"><span class="material-symbols-rounded text-sm">delete</span></button>
-                </div>
-            `;
+            const n = d.data();
+            list.innerHTML += `<div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm relative"><h4 class="text-sm font-bold text-brand-primary mb-1">${n.title}</h4><p class="text-xs text-slate-500">${n.body}</p><button onclick="deleteDocData('notifications','${d.id}')" class="absolute top-2 right-2 text-slate-300 hover:text-red-500"><span class="material-symbols-rounded text-sm">close</span></button></div>`;
         });
     }
 
+    window.openInfoModal = () => {
+        const html = `
+            <input id="infoT" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 mb-2 font-bold text-sm" placeholder="Judul">
+            <textarea id="infoB" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 mb-2 text-sm" placeholder="Isi pesan..."></textarea>
+        `;
+        showModal("BUAT PENGUMUMAN", html, async () => {
+            if(!$("infoT").value) return showToast("Judul wajib", "error");
+            toggleLoader(true);
+            try { await addDoc(collection(db, "notifications"), { title:$("infoT").value, body:$("infoB").value, createdAt:serverTimestamp() }); closeModal(); loadInfo(); showToast("Terkirim"); } catch(e){ showToast("Gagal", "error"); } finally { toggleLoader(false); }
+        });
+    }
+
+    // --- KAS (READ ONLY) ---
+    async function loadFinance() {
+        const list = $("kasList"); list.innerHTML = "";
+        const snap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc")));
+        let bal = 0;
+        snap.forEach(d => {
+            const f = d.data();
+            if(f.status==='approved') {
+                const amt = Number(f.amount);
+                if(f.type==='income') bal += amt; else bal -= amt;
+                list.innerHTML += `<div class="bg-white p-3 rounded-xl border border-slate-100 flex justify-between items-center"><div><p class="text-xs font-bold text-brand-primary">${f.note}</p><p class="text-[10px] text-slate-400">${new Date(f.createdAt.seconds*1000).toLocaleDateString()}</p></div><span class="text-xs font-bold ${f.type==='income'?'text-green-600':'text-red-500'}">${f.type==='income'?'+':'-'} ${amt.toLocaleString()}</span></div>`;
+            }
+        });
+        animateValue($("kasBalance"), 0, bal, 1500);
+    }
+
+    // --- ACARA & INVENTORY ---
     window.openInventoryModal = () => {
         const html = `
             <input id="invName" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 mb-2 font-bold text-sm" placeholder="Nama Barang">
             <input id="invQty" type="number" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 mb-2 text-sm" placeholder="Jumlah">
-            <select id="invStatus" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 mb-2 text-sm font-bold"><option value="Baik">Kondisi Baik</option><option value="Rusak">Rusak</option></select>
-            <input id="invImg" type="file" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-purple-100 file:text-purple-700 hover:file:bg-purple-200">
+            <input id="invImg" type="file" class="w-full text-xs">
         `;
         showModal("TAMBAH BARANG", html, async () => {
-            if(!$("invName").value) return showToast("Isi nama barang", "error");
+            if(!$("invName").value) return showToast("Isi nama", "error");
             toggleLoader(true);
             try {
-                let image = null;
-                if($("invImg").files[0]) image = await upload($("invImg").files[0]);
-                await addDoc(collection(db, "inventory"), { name: $("invName").value, qty: $("invQty").value, status: $("invStatus").value, image, createdAt: serverTimestamp() });
-                closeModal(); loadInventory(); showToast("Barang disimpan");
+                let image = null; if($("invImg").files[0]) image = await upload($("invImg").files[0]);
+                await addDoc(collection(db, "inventory"), { name: $("invName").value, qty: $("invQty").value, status: "Baik", image, createdAt: serverTimestamp() });
+                closeModal(); showToast("Disimpan");
             } catch(e) { showToast("Gagal", "error"); } finally { toggleLoader(false); }
         });
     }
 
-    // --- POLLING (NEW FEATURE) ---
-    window.openPollModal = () => {
-        const html = `
-            <input id="pollQ" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 mb-3 font-bold text-sm" placeholder="Pertanyaan (Misal: Liburan kemana?)">
-            <div class="space-y-2 mb-3">
-                <input class="poll-opt w-full p-2 rounded-lg bg-slate-50 border border-slate-200 text-xs" placeholder="Opsi 1">
-                <input class="poll-opt w-full p-2 rounded-lg bg-slate-50 border border-slate-200 text-xs" placeholder="Opsi 2">
-            </div>
-            <p class="text-[10px] text-slate-400">Voting akan muncul di beranda anggota.</p>
-        `;
-        showModal("BUAT VOTING", html, async () => {
-            const q = $("pollQ").value;
-            const opts = Array.from(document.querySelectorAll(".poll-opt")).map(i => i.value).filter(v => v);
-            if(!q || opts.length < 2) return showToast("Minimal 2 opsi", "error");
-            toggleLoader(true);
-            try {
-                await addDoc(collection(db, "polls"), { question: q, options: opts.map(o => ({ text: o, votes: 0 })), active: true, createdAt: serverTimestamp() });
-                closeModal(); showToast("Voting dibuat!");
-            } catch(e) { showToast("Gagal", "error"); } finally { toggleLoader(false); }
-        });
-    }
-
-    // --- ACARA & UMUM ---
     window.openEventModal = () => {
         const html = `
             <input id="evTitle" class="w-full p-3 bg-slate-50 rounded-xl mb-2 text-sm font-bold" placeholder="Nama Acara">
@@ -531,7 +526,7 @@
         showModal("TAMBAH ACARA", html, async () => {
             if(!$("evTitle").value) return showToast("Judul wajib", "error");
             toggleLoader(true);
-            try { await addDoc(collection(db, "activities"), { title: $("evTitle").value, date: $("evDate").value, location: $("evLoc").value, status: "approved", createdAt: serverTimestamp() }); closeModal(); loadEvents(); showToast("Acara disimpan"); } catch(e) { showToast("Gagal", "error"); } finally { toggleLoader(false); }
+            try { await addDoc(collection(db, "activities"), { title: $("evTitle").value, date: $("evDate").value, location: $("evLoc").value, status: "approved", createdAt: serverTimestamp() }); closeModal(); loadEvents(); showToast("Disimpan"); } catch(e) { showToast("Gagal", "error"); } finally { toggleLoader(false); }
         });
     }
 
@@ -544,10 +539,24 @@
         });
     }
 
+    // --- POLLING ---
+    window.openPollModal = () => {
+        const html = `
+            <input id="pollQ" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 mb-3 font-bold text-sm" placeholder="Pertanyaan">
+            <div class="space-y-2 mb-3"><input class="poll-opt w-full p-2 rounded-lg bg-slate-50 border border-slate-200 text-xs" placeholder="Opsi 1"><input class="poll-opt w-full p-2 rounded-lg bg-slate-50 border border-slate-200 text-xs" placeholder="Opsi 2"></div>
+        `;
+        showModal("BUAT VOTING", html, async () => {
+            const q = $("pollQ").value; const opts = Array.from(document.querySelectorAll(".poll-opt")).map(i => i.value).filter(v => v);
+            if(!q || opts.length < 2) return showToast("Minimal 2 opsi", "error");
+            toggleLoader(true);
+            try { await addDoc(collection(db, "polls"), { question: q, options: opts.map(o => ({ text: o, votes: 0 })), active: true, createdAt: serverTimestamp() }); closeModal(); showToast("Voting dibuat!"); } catch(e) { showToast("Gagal", "error"); } finally { toggleLoader(false); }
+        });
+    }
+
     window.deleteDocData = async (col, id) => {
         if(!confirm("Hapus?")) return;
         toggleLoader(true);
-        try { await deleteDoc(doc(db, col, id)); if(col==='inventory') loadInventory(); if(col==='activities') loadEvents(); } catch(e){ showToast("Gagal","error"); } finally { toggleLoader(false); }
+        try { await deleteDoc(doc(db, col, id)); if(col==='activities') loadEvents(); if(col==='notifications') loadInfo(); } catch(e){ showToast("Gagal","error"); } finally { toggleLoader(false); }
     }
 
     // --- PROFILE ---
