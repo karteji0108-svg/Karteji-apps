@@ -44,18 +44,14 @@
   </script>
 
   <style>
-    /* Efek Kaca Lebih Halus */
     .glass-card {
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.1);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
     }
-    
     body::-webkit-scrollbar { display: none; }
-    
-    /* Hilangkan highlight biru standar saat klik di HP */
     * { -webkit-tap-highlight-color: transparent; }
   </style>
 </head>
@@ -68,7 +64,7 @@
   </div>
 
   <div class="absolute top-0 left-0 right-0 z-40 pt-6 px-6">
-    <a href="index.html" class="inline-flex items-center gap-2 text-slate-400 hover:text-brand-primary transition-colors font-semibold text-sm py-2">
+    <a href="index.html" class="inline-flex items-center gap-2 text-slate-500 hover:text-brand-primary transition-colors font-bold text-sm py-2 bg-white/50 backdrop-blur-sm px-3 rounded-full shadow-sm">
       <span class="material-symbols-rounded text-lg">arrow_back</span>
       Kembali
     </a>
@@ -76,81 +72,85 @@
 
   <section class="absolute inset-0 z-30 flex flex-col justify-center items-center px-6">
     
-    <div class="glass-card w-full max-w-[380px] rounded-3xl p-8 animate-slide-up">
+    <div class="glass-card w-full max-w-[380px] rounded-[2rem] p-8 animate-slide-up relative z-10">
       
       <div class="text-center mb-8">
-        <h1 class="text-2xl font-bold text-brand-primary tracking-tight">Buat Akun Baru</h1>
-        <p class="text-slate-500 text-sm mt-1">Gabung Karang Taruna Digital</p>
+        <div class="inline-flex items-center justify-center w-14 h-14 bg-brand-primary rounded-2xl mb-4 text-white shadow-lg shadow-brand-primary/30">
+            <span class="material-symbols-rounded text-3xl">person_add</span>
+        </div>
+        <h1 class="text-2xl font-extrabold text-brand-primary tracking-tight">Buat Akun</h1>
+        <p class="text-slate-500 text-sm mt-1 font-medium">Bergabung di Karang Taruna</p>
       </div>
 
       <div class="space-y-5">
         
         <div class="relative group">
-            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-primary transition-colors">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-accent transition-colors">
                 <span class="material-symbols-rounded text-xl">badge</span>
             </div>
             <input
               id="name"
               type="text"
               placeholder="Nama Lengkap"
-              class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-brand-primary placeholder-slate-400 text-sm font-medium outline-none focus:bg-white focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
+              class="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-brand-primary placeholder-slate-400 text-sm font-bold outline-none focus:bg-white focus:border-accent focus:ring-4 focus:ring-orange-50 transition-all"
               autocomplete="name"
             />
         </div>
 
         <div class="relative group">
-            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-primary transition-colors">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-accent transition-colors">
                 <span class="material-symbols-rounded text-xl">mail</span>
             </div>
             <input
               id="email"
               type="email"
               placeholder="Alamat Email"
-              class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-brand-primary placeholder-slate-400 text-sm font-medium outline-none focus:bg-white focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
+              class="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-brand-primary placeholder-slate-400 text-sm font-bold outline-none focus:bg-white focus:border-accent focus:ring-4 focus:ring-orange-50 transition-all"
               autocomplete="email"
             />
         </div>
 
         <div class="relative group">
-            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-primary transition-colors">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-accent transition-colors">
                 <span class="material-symbols-rounded text-xl">lock</span>
             </div>
             <input
               id="password"
               type="password"
-              placeholder="Password (Min. 6 karakter)"
-              class="w-full pl-12 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-brand-primary placeholder-slate-400 text-sm font-medium outline-none focus:bg-white focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
+              placeholder="Password (Min. 6 Karakter)"
+              class="w-full pl-12 pr-12 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-brand-primary placeholder-slate-400 text-sm font-bold outline-none focus:bg-white focus:border-accent focus:ring-4 focus:ring-orange-50 transition-all"
             />
-            <button id="togglePass" type="button" class="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-brand-primary transition-colors rounded-lg hover:bg-slate-100">
+            <button id="togglePass" type="button" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-brand-primary transition-colors rounded-xl hover:bg-slate-100 active:scale-90">
                 <span id="eyeIcon" class="material-symbols-rounded text-xl">visibility</span>
             </button>
         </div>
 
         <div class="text-center min-h-[20px]">
-            <span id="msg" class="text-xs text-red-500 font-semibold animate-pulse"></span>
+            <span id="msg" class="text-xs text-red-500 font-bold hidden bg-red-50 px-3 py-1 rounded-full animate-pulse"></span>
         </div>
 
         <button
           id="registerBtn"
-          class="w-full bg-brand-primary hover:bg-slate-800 text-white font-bold py-4 rounded-2xl shadow-lg shadow-slate-300 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+          class="w-full bg-brand-primary hover:bg-slate-800 text-white font-bold py-4 rounded-2xl shadow-xl shadow-slate-900/20 transition-all active:scale-[0.98] flex items-center justify-center gap-3 relative overflow-hidden group"
         >
-          <span>Daftar Sekarang</span>
-          <span class="material-symbols-rounded text-lg">arrow_forward</span>
+          <span class="relative z-10">Daftar Sekarang</span>
+          <span class="material-symbols-rounded relative z-10 text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
+          <div class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
         </button>
       </div>
 
-      <div class="mt-8 text-center">
-        <p class="text-sm text-slate-500">
+      <div class="mt-8 text-center pt-6 border-t border-slate-100">
+        <p class="text-sm text-slate-500 font-medium">
           Sudah punya akun? 
-          <a href="login.html" class="font-bold text-accent hover:text-orange-600 transition-colors ml-1">
-            Login
+          <a href="login.html" class="font-extrabold text-accent hover:text-orange-600 transition-colors ml-1">
+            Masuk Sini
           </a>
         </p>
       </div>
     </div>
 
-    <p class="absolute bottom-6 text-[10px] text-slate-400 font-medium">
-      &copy; 2025 Cilosari Barat
+    <p class="absolute bottom-8 text-[10px] text-slate-400 font-bold tracking-widest opacity-60">
+      &copy; 2025 KARTEJI
     </p>
   </section>
 
@@ -183,16 +183,23 @@
     const togglePass = document.getElementById("togglePass");
     const eyeIcon = document.getElementById("eyeIcon");
 
-    function setMsg(text) { msgEl.textContent = text || ""; }
+    function setMsg(text) { 
+        if(text) {
+            msgEl.textContent = text;
+            msgEl.classList.remove('hidden');
+        } else {
+            msgEl.classList.add('hidden');
+        }
+    }
 
-    // Fitur Lihat Password
+    // Toggle Password Visibility
     togglePass.addEventListener("click", () => {
       const isPass = passEl.type === "password";
       passEl.type = isPass ? "text" : "password";
       eyeIcon.textContent = isPass ? "visibility_off" : "visibility";
     });
 
-    // Fungsi Daftar
+    // Register Function
     async function doRegister() {
       const name = nameEl.value.trim();
       const email = emailEl.value.trim();
@@ -202,41 +209,41 @@
       if (!email) return setMsg("Email wajib diisi");
       if (!password || password.length < 6) return setMsg("Password minimal 6 karakter");
 
-      // Loading state (Fitur v1.1)
       btn.disabled = true;
       btn.classList.add("opacity-70", "cursor-not-allowed");
-      btn.querySelector("span").textContent = "Memproses...";
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<span class="material-symbols-rounded animate-spin text-xl">progress_activity</span> <span class="ml-2">Mendaftarkan...</span>`;
       setMsg("");
 
       try {
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         const uid = cred.user.uid;
 
-        // Simpan ke Firestore (Smart User Creation v1.1)
+        // Create User Profile in Firestore
         await setDoc(doc(db, "users", uid), {
           name: name,
           email: email,
           role: "anggota",
           photo: null,
-          onlineState: "offline",
+          onlineState: "online", // Set online immediately
           lastActiveAt: serverTimestamp(),
           createdAt: serverTimestamp()
         });
 
-        // Sukses
+        // Redirect
         window.location.href = "dashboard.html";
 
       } catch (err) {
         console.error(err);
         const code = err.code;
         if (code === "auth/email-already-in-use") setMsg("Email sudah terdaftar.");
-        else if (code === "auth/invalid-email") setMsg("Email tidak valid.");
+        else if (code === "auth/invalid-email") setMsg("Format email salah.");
         else if (code === "auth/weak-password") setMsg("Password terlalu lemah.");
-        else setMsg("Gagal mendaftar. Cek koneksi.");
-      } finally {
+        else setMsg("Gagal mendaftar. Cek koneksi internet.");
+        
         btn.disabled = false;
         btn.classList.remove("opacity-70", "cursor-not-allowed");
-        btn.querySelector("span").textContent = "Daftar Sekarang";
+        btn.innerHTML = originalText;
       }
     }
 
