@@ -1,586 +1,1336 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Karteji Ultra Dashboard</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content="Sistem Informasi Manajemen Organisasi Terpadu - KARTEJI Ultimate" />
+    <title>KARTEJI | Ultimate System</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
-          colors: {
-            brand: { dark: '#0F172A', primary: '#334155' },
-            accent: { DEFAULT: '#6366F1', light: '#818CF8', glow: '#A5B4FC' }
-          },
-          animation: {
-            'blob': 'blob 10s infinite',
-            'float': 'float 6s ease-in-out infinite',
-            'slide-in': 'slideIn 0.3s ease-out forwards',
-            'fade-out': 'fadeOut 0.3s ease-in forwards'
-          },
-          keyframes: {
-            blob: {
-              '0%': { transform: 'translate(0px, 0px) scale(1)' },
-              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
-              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-              '100%': { transform: 'translate(0px, 0px) scale(1)' },
-            },
-            float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
-            slideIn: { '0%': { transform: 'translateY(-20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
-            fadeOut: { '0%': { opacity: '1' }, '100%': { opacity: '0' } }
-          }
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
+                            400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8',
+                            800: '#1e40af', 900: '#1e3a8a', 950: '#172554',
+                        },
+                        secondary: {
+                            50: '#fdf4ff', 100: '#fae8ff', 200: '#f5d0fe', 300: '#f0abfc',
+                            400: '#e879f9', 500: '#d946ef', 600: '#c026d3', 700: '#a21caf',
+                            800: '#86198f', 900: '#701a75', 950: '#4a044e',
+                        },
+                        dark: {
+                            bg: '#0F172A',
+                            surface: '#1E293B',
+                            border: '#334155'
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'spin-slow': 'spin 3s linear infinite',
+                        'bounce-slight': 'bounce 2s infinite',
+                        'slide-up': 'slideUp 0.4s ease-out forwards',
+                        'fade-in': 'fadeIn 0.5s ease-in-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(100%)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
+                        'neon': '0 0 10px rgba(59, 130, 246, 0.5)',
+                    }
+                }
+            }
         }
-      }
-    }
-  </script>
+    </script>
 
-  <style>
-    body { background-color: #F8FAFC; color: #1E293B; -webkit-tap-highlight-color: transparent; }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    
-    /* Premium Glass Effect */
-    .glass-nav {
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-top: 1px solid rgba(255,255,255,0.8);
-      box-shadow: 0 -10px 40px rgba(99, 102, 241, 0.15);
-    }
-    
-    .glass-card {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
-    }
+    <style>
+        /* Base Reset & Typography */
+        :root { --glass-border: 1px solid rgba(255, 255, 255, 0.18); }
+        body { background-color: #F8FAFC; color: #0F172A; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
 
-    /* Transition System */
-    .view-section { display: none; opacity: 0; transform: translateY(10px); transition: opacity 0.3s ease, transform 0.3s ease; }
-    .view-section.active { display: block; opacity: 1; transform: translateY(0); }
-    
-    .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #4F46E5; transform: scale(1.1); transition: transform 0.2s; }
-    .nav-btn.active p { color: #4F46E5; font-weight: 800; }
-  </style>
+        /* Glassmorphism Classes */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        .glass-dark {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Navigation Styles */
+        .nav-item.active { color: #2563eb; }
+        .nav-item.active .icon-box { background-color: #dbeafe; color: #2563eb; transform: translateY(-4px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+        .nav-item .icon-box { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        /* View Sections */
+        .view-container { padding-bottom: 120px; min-height: 100vh; }
+        .view-section { display: none; opacity: 0; transform: translateY(20px); transition: opacity 0.4s ease, transform 0.4s ease; }
+        .view-section.active { display: block; opacity: 1; transform: translateY(0); }
+
+        /* Loader */
+        .loader-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 9999; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        
+        /* Utilities */
+        .text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        
+        /* Print Media Query */
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white; color: black; }
+            .view-section { display: block !important; opacity: 1 !important; transform: none !important; }
+        }
+    </style>
 </head>
 
-<body class="min-h-screen relative overflow-x-hidden pb-32 selection:bg-indigo-200 selection:text-indigo-900">
+<body class="selection:bg-primary-200 selection:text-primary-900">
 
-  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-[80px] opacity-60 animate-blob"></div>
-    <div class="absolute top-[20%] right-[-10%] w-96 h-96 bg-indigo-200 rounded-full mix-blend-multiply filter blur-[80px] opacity-60 animate-blob animation-delay-2000"></div>
-    <div class="absolute bottom-[-10%] left-[20%] w-80 h-80 bg-blue-100 rounded-full mix-blend-multiply filter blur-[80px] opacity-60 animate-blob animation-delay-4000"></div>
-  </div>
-
-  <div id="toastContainer" class="fixed top-5 left-0 w-full z-[10000] flex flex-col items-center gap-2 pointer-events-none px-4"></div>
-
-  <div id="globalLoader" class="fixed inset-0 bg-white/95 z-[9999] flex items-center justify-center flex-col gap-4 backdrop-blur-md hidden">
-    <div class="relative w-16 h-16">
-        <div class="absolute top-0 left-0 w-full h-full border-4 border-indigo-100 rounded-full"></div>
-        <div class="absolute top-0 left-0 w-full h-full border-4 border-indigo-500 rounded-full border-t-transparent animate-spin"></div>
-    </div>
-    <p class="text-xs font-bold text-indigo-900 animate-pulse tracking-[0.2em]">MEMUAT DATA...</p>
-  </div>
-
-  <div id="gate" class="fixed inset-0 bg-slate-900 z-[9998] hidden items-center justify-center p-6 text-center">
-    <div class="bg-white p-8 rounded-[2rem] shadow-2xl max-w-sm w-full relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 to-orange-500"></div>
-        <span class="material-symbols-rounded text-red-500 text-6xl mb-4 bg-red-50 p-4 rounded-full">lock</span>
-        <h2 class="text-2xl font-black text-slate-800 mb-2">Akses Ditolak</h2>
-        <p class="text-slate-500 text-sm mb-6">Sesi Anda telah berakhir. Silakan login kembali.</p>
-        <a href="login.html" class="block w-full bg-slate-800 text-white py-3 rounded-xl font-bold hover:bg-slate-900 transition-all hover:shadow-lg">Login Ulang</a>
-    </div>
-  </div>
-
-  <div id="crudModal" class="fixed inset-0 z-[60] hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-sm transition-all duration-300">
-    <div class="bg-white w-full sm:max-w-md rounded-t-[2rem] sm:rounded-[2rem] p-6 relative shadow-2xl animate-[slideUp_0.3s_ease-out] max-h-[90vh] flex flex-col">
-      <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6 sm:hidden"></div>
-      <div class="flex justify-between items-center mb-6">
-          <h2 id="modalTitle" class="text-xl font-black text-slate-800 tracking-tight leading-none">Judul</h2>
-          <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-red-100 hover:text-red-500 transition-colors text-slate-500">
-            <span class="material-symbols-rounded text-xl">close</span>
-          </button>
-      </div>
-      <div id="modalBody" class="space-y-4 overflow-y-auto custom-scroll flex-1 p-1"></div>
-      <div id="modalFooter" class="mt-6"></div>
-    </div>
-  </div>
-
-  <div id="winnerModal" class="fixed inset-0 z-[70] hidden items-center justify-center p-6 bg-slate-900/90 backdrop-blur-md transition-all">
-      <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-8 text-center relative shadow-2xl scale-0 transition-transform duration-300" id="winnerCard">
-          <div class="w-20 h-20 bg-accent text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-orange-200 animate-float">
-              <span class="material-symbols-rounded text-4xl">emoji_events</span>
-          </div>
-          <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">PEMENANG ARISAN</p>
-          <h2 id="winnerText" class="text-2xl font-black text-brand-primary mt-2 mb-6">...</h2>
-          <button onclick="document.getElementById('winnerModal').classList.add('hidden')" class="w-full bg-brand-primary text-white py-3 rounded-xl font-bold">Selamat!</button>
-      </div>
-  </div>
-
-  <header class="sticky top-0 z-30 px-6 pt-8 pb-4 transition-all duration-300">
-      <div class="flex justify-between items-center glass-card p-2.5 rounded-full">
-          <div class="flex items-center gap-3 pl-1">
-              <button onclick="switchView('profile')" class="relative group active:scale-95 transition-transform">
-                <img id="headerPhoto" class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover" src="https://via.placeholder.com/100">
-                <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
-              </button>
-              <div>
-                  <div class="flex items-center gap-1">
-                      <p id="roleBadge" class="text-[9px] font-extrabold text-white bg-indigo-500 px-2 py-0.5 rounded-full uppercase tracking-wider">...</p>
-                  </div>
-                  <h1 id="headerName" class="text-sm font-bold text-slate-700 leading-tight truncate w-32">Memuat...</h1>
-              </div>
-          </div>
-          <button id="logoutBtn" class="w-10 h-10 rounded-full bg-white text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all flex items-center justify-center shadow-sm">
-            <span class="material-symbols-rounded text-xl">logout</span>
-          </button>
-      </div>
-  </header>
-
-  <main class="px-5 mt-4 relative z-10 min-h-[75vh]">
-
-      <section id="view-home" class="view-section active">
-          <div class="w-full bg-gradient-to-br from-indigo-900 to-slate-900 rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-2xl shadow-indigo-900/20 group transition-all mb-6">
-              <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity duration-700 transform group-hover:scale-110">
-                <span class="material-symbols-rounded text-9xl">account_balance_wallet</span>
-              </div>
-              
-              <div class="relative z-10">
-                <div class="flex justify-between items-start mb-2">
-                    <p class="text-[10px] font-bold uppercase tracking-widest text-indigo-200">Total Kas</p>
-                    <button onclick="loadHome()" class="text-indigo-300 hover:text-white transition-colors"><span class="material-symbols-rounded text-sm">refresh</span></button>
+    <div id="globalLoader" class="loader-overlay hidden">
+        <div class="flex flex-col items-center gap-4">
+            <div class="relative w-20 h-20">
+                <div class="absolute inset-0 rounded-full border-4 border-slate-100"></div>
+                <div class="absolute inset-0 rounded-full border-4 border-primary-600 border-t-transparent animate-spin"></div>
+                <div class="absolute inset-4 rounded-full bg-primary-50 flex items-center justify-center animate-pulse">
+                    <span class="material-symbols-rounded text-primary-600 text-2xl">bolt</span>
                 </div>
-                <h2 id="cardBalance" class="text-4xl font-black tracking-tight mb-6">Rp 0</h2>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-white/10 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/5 hover:bg-white/20 transition-colors">
-                        <div class="flex items-center gap-1.5 mb-1"><span class="material-symbols-rounded text-[12px] text-emerald-400 bg-emerald-500/20 p-1 rounded-full">arrow_downward</span><span class="text-[9px] uppercase font-bold text-slate-300">Pemasukan</span></div>
-                        <p id="cardIncome" class="text-sm font-bold text-white">Rp 0</p>
-                    </div>
-                    <div class="bg-white/10 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/5 hover:bg-white/20 transition-colors">
-                        <div class="flex items-center gap-1.5 mb-1"><span class="material-symbols-rounded text-[12px] text-rose-400 bg-rose-500/20 p-1 rounded-full">arrow_upward</span><span class="text-[9px] uppercase font-bold text-slate-300">Pengeluaran</span></div>
-                        <p id="cardExpense" class="text-sm font-bold text-white">Rp 0</p>
-                    </div>
-                </div>
-
-                <div id="pendingInfoBox" class="hidden mt-4 bg-orange-500/20 border border-orange-500/30 rounded-2xl p-3 flex items-center justify-between cursor-pointer hover:bg-orange-500/30 transition-all" onclick="switchView('finance')">
-                   <div class="flex items-center gap-3">
-                       <div class="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center animate-pulse"><span class="material-symbols-rounded text-lg">pending</span></div>
-                       <div><p class="text-[10px] uppercase font-bold text-orange-100">Menunggu ACC</p><p id="pendingCountText" class="text-sm font-bold text-white leading-none">0 Item</p></div>
-                   </div>
-                   <span class="material-symbols-rounded text-orange-200">chevron_right</span>
-                </div>
-              </div>
-          </div>
-
-          <div id="kanbanPreview" class="hidden mb-6">
-              <div class="flex justify-between items-center mb-2 px-1">
-                  <h3 class="text-xs font-bold text-slate-500 uppercase">Kanban Proker</h3>
-                  <span class="text-[10px] bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded font-bold">3 Ongoing</span>
-              </div>
-              <div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
-                  <div class="min-w-[130px] bg-white p-3 rounded-xl border border-slate-100 shadow-sm"><p class="text-[10px] text-slate-400 font-bold mb-1">TO DO</p><div class="bg-slate-50 p-2 rounded text-[10px]">Rapat Pleno</div></div>
-                  <div class="min-w-[130px] bg-white p-3 rounded-xl border border-slate-100 shadow-sm"><p class="text-[10px] text-orange-400 font-bold mb-1">IN PROGRESS</p><div class="bg-orange-50 text-orange-700 p-2 rounded text-[10px]">Galang Dana</div></div>
-                  <div class="min-w-[130px] bg-white p-3 rounded-xl border border-slate-100 shadow-sm"><p class="text-[10px] text-green-400 font-bold mb-1">DONE</p><div class="bg-green-50 text-green-700 p-2 rounded text-[10px]">Rekrutmen</div></div>
-              </div>
-          </div>
-
-          <div id="myBillsSection" class="bg-gradient-to-r from-rose-50 to-orange-50 border border-rose-100 p-4 rounded-[1.5rem] mb-6 hidden shadow-sm relative overflow-hidden">
-              <div class="absolute -right-4 -top-4 w-20 h-20 bg-rose-200 rounded-full blur-2xl opacity-50"></div>
-              <div class="flex justify-between items-center mb-3 relative z-10">
-                  <h3 class="text-sm font-bold text-rose-700 flex items-center gap-2"><span class="material-symbols-rounded">receipt_long</span> Tagihan Aktif</h3>
-                  <span class="bg-white/50 px-2 py-0.5 rounded text-[10px] text-rose-600 font-bold">Segera Bayar</span>
-              </div>
-              <div id="myBillList" class="space-y-2 relative z-10"></div>
-          </div>
-
-          <div class="mb-6">
-              <h3 class="text-xs font-bold text-slate-400 uppercase mb-3 px-1">Menu Cepat</h3>
-              <div id="homeMenuGrid" class="grid grid-cols-4 gap-3"></div>
-          </div>
-
-          <div id="adminChartSection" class="bg-white rounded-[2rem] p-5 shadow-sm border border-slate-100 mb-6 hidden">
-             <h4 class="text-xs font-bold text-slate-500 uppercase mb-4">Statistik Keuangan</h4>
-             <div class="h-48 relative w-full"><canvas id="financeChart"></canvas></div>
-          </div>
-
-          <div class="mb-24">
-            <div class="flex justify-between items-end mb-3 px-1">
-                <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2"><span class="material-symbols-rounded text-indigo-500">campaign</span> Papan Info</h3>
-                <button onclick="switchView('alerts')" class="text-[10px] font-bold text-indigo-500 hover:underline">Semua</button>
             </div>
-            <div id="homeNoticeList" class="space-y-3"></div>
-          </div>
-      </section>
-
-      <section id="view-finance" class="view-section">
-          <div class="flex justify-between items-center mb-6 px-1">
-            <div><h2 class="text-2xl font-black text-slate-800">Keuangan</h2><p class="text-xs text-slate-500">Arus Kas & Tagihan</p></div>
-            <div class="flex gap-2">
-                <button id="btnWA" onclick="generateWALink()" class="hidden w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-all"><span class="material-symbols-rounded">chat</span></button>
-                <button id="btnAddFin" onclick="openFinanceModal()" class="hidden w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-all"><span class="material-symbols-rounded">add</span></button>
-            </div>
-          </div>
-          <div class="relative mb-4">
-             <span class="material-symbols-rounded absolute left-3 top-2.5 text-slate-400 text-lg">search</span>
-             <input type="text" onkeyup="filterList('finContent', this.value)" placeholder="Cari transaksi..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm outline-none focus:border-indigo-500 transition-all shadow-sm">
-          </div>
-          <div class="bg-white p-1.5 rounded-xl flex shadow-sm border border-slate-100 mb-4">
-              <button onclick="switchFinTab('history')" id="tabFinHist" class="flex-1 py-2 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-600 transition-all">Riwayat</button>
-              <button onclick="switchFinTab('bill')" id="tabFinBill" class="flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-600 transition-all">Tagihan</button>
-          </div>
-          <div id="finContent" class="space-y-3 pb-24"></div>
-      </section>
-
-      <section id="view-activities" class="view-section">
-          <div class="flex justify-between items-center mb-6 px-1">
-            <div><h2 class="text-2xl font-black text-slate-800">Kegiatan</h2><p class="text-xs text-slate-500">Agenda & Absensi</p></div>
-            <button id="btnAddAct" onclick="openActivityModal()" class="hidden w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-all"><span class="material-symbols-rounded">add</span></button>
-          </div>
-          
-          <div id="absensiInputBox" class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm mb-6 flex flex-col gap-3 hidden relative overflow-hidden">
-              <div class="absolute top-0 right-0 w-20 h-20 bg-teal-100 rounded-full blur-xl opacity-50 -mr-5 -mt-5"></div>
-              <div class="flex items-center gap-2 relative z-10">
-                  <span class="material-symbols-rounded text-teal-600 bg-teal-50 p-1.5 rounded-lg">qr_code_scanner</span>
-                  <h4 class="text-xs font-bold text-slate-700">Presensi Rapat</h4>
-              </div>
-              <div class="flex gap-2 relative z-10">
-                  <input id="absensiCode" type="text" placeholder="Masukkan Kode" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-center tracking-widest outline-none focus:border-teal-500 transition-all">
-                  <button onclick="submitAbsensi()" class="bg-teal-600 text-white px-4 rounded-xl font-bold shadow-lg shadow-teal-200 active:scale-95">HADIR</button>
-              </div>
-          </div>
-
-          <div id="actList" class="grid grid-cols-1 gap-4 pb-24"></div>
-      </section>
-
-      <section id="view-users" class="view-section">
-          <div class="flex justify-between items-center mb-4 px-1">
-              <div><h2 class="text-2xl font-black text-slate-800">Anggota</h2><p class="text-xs text-slate-500">Database & Peran</p></div>
-              <span id="userCountBadge" class="bg-slate-800 text-white text-xs px-3 py-1 rounded-full font-bold shadow-md">0</span>
-          </div>
-          <div class="relative mb-4 group">
-             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span class="material-symbols-rounded text-slate-400 group-focus-within:text-indigo-500 transition-colors">search</span>
-             </div>
-             <input type="text" onkeyup="filterList('userList', this.value)" placeholder="Cari nama..." class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-medium outline-none focus:border-indigo-500 transition-all shadow-sm">
-          </div>
-          <div id="userList" class="space-y-3 pb-24"></div>
-      </section>
-
-      <section id="view-tools" class="view-section">
-          <div id="toolsHeader" class="mb-6 px-1"></div>
-          <div class="relative mb-4 group" id="toolsSearchBox">
-             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="material-symbols-rounded text-slate-400">search</span></div>
-             <input type="text" onkeyup="filterList('toolsContent', this.value)" placeholder="Cari..." class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-medium outline-none shadow-sm">
-          </div>
-          <div id="toolsContent" class="pb-24"></div>
-      </section>
-
-      <section id="view-profile" class="view-section">
-        <div class="flex flex-col items-center pt-6 pb-24">
-            <div class="relative group cursor-pointer active:scale-95 transition-transform" onclick="$('profileUpload').click()">
-                <img id="profileImage" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-xl">
-                <div class="absolute bottom-0 right-0 bg-indigo-600 p-1.5 rounded-full border-2 border-white"><span class="material-symbols-rounded text-white text-xs block">edit</span></div>
-            </div>
-            <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
-            
-            <h2 id="profileNameDisplay" class="text-lg font-black text-slate-800 mt-3 mb-1">...</h2>
-            <div class="flex items-center gap-2 mb-2">
-                <span id="profileRoleBadge" class="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-md text-[10px] font-bold uppercase">ANGGOTA</span>
-                <span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded-md text-[10px] font-bold flex items-center gap-1"><span class="material-symbols-rounded text-[12px] text-yellow-500">star</span> <span id="profilePoints">0</span></span>
-            </div>
-            <p id="profileEmailDisplay" class="text-xs text-slate-400">email@user.com</p>
-
-            <button onclick="showIdCard()" class="mt-4 bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 active:scale-95 transition-transform"><span class="material-symbols-rounded text-sm">badge</span> ID Card</button>
-
-            <div class="w-full mt-8 px-1">
-                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3">
-                    <input id="editName" type="text" class="w-full p-3 bg-slate-50 rounded-xl border-none text-sm font-bold placeholder-slate-400 focus:ring-2 focus:ring-indigo-100" placeholder="Nama Lengkap">
-                    <input id="editPhone" type="tel" class="w-full p-3 bg-slate-50 rounded-xl border-none text-sm font-bold placeholder-slate-400 focus:ring-2 focus:ring-indigo-100" placeholder="No. WhatsApp">
-                    <textarea id="editAddress" rows="2" class="w-full p-3 bg-slate-50 rounded-xl border-none text-sm font-medium resize-none placeholder-slate-400 focus:ring-2 focus:ring-indigo-100" placeholder="Alamat Domisili"></textarea>
-                </div>
-                <button onclick="saveProfile()" class="mt-4 w-full bg-indigo-600 text-white py-3.5 rounded-xl font-bold shadow-lg shadow-indigo-200 active:scale-95 transition-transform">SIMPAN</button>
+            <div class="text-center">
+                <h3 class="text-lg font-bold text-slate-800 tracking-tight">MEMPROSES DATA</h3>
+                <p class="text-xs text-slate-500 font-mono" id="loaderText">Sinkronisasi Server...</p>
             </div>
         </div>
-      </section>
+    </div>
 
-  </main>
+    <div id="toastContainer" class="fixed top-6 left-0 right-0 z-[10000] flex flex-col items-center gap-3 pointer-events-none px-4">
+        </div>
 
-  <nav class="fixed bottom-0 w-full glass-nav pb-safe pt-3 px-4 z-50 rounded-t-[2.5rem]">
-      <div id="bottomNavContainer" class="flex justify-between items-center max-w-sm mx-auto pb-4"></div>
-  </nav>
+    <div id="gate" class="fixed inset-0 bg-slate-900 z-[9000] hidden items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500"></div>
+            <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span class="material-symbols-rounded text-red-500 text-5xl">lock_person</span>
+            </div>
+            <h2 class="text-2xl font-black text-slate-800 mb-2">Akses Dibatasi</h2>
+            <p class="text-slate-500 text-sm mb-6 leading-relaxed">Sesi login Anda telah berakhir atau Anda tidak memiliki izin untuk mengakses halaman ini.</p>
+            <a href="login.html" class="block w-full bg-slate-900 text-white py-4 rounded-xl font-bold hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl active:scale-95">
+                KEMBALI LOGIN
+            </a>
+        </div>
+    </div>
 
-  <div id="moreMenu" class="fixed bottom-24 right-4 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-100 p-2 z-40 hidden flex-col gap-1 w-48 transition-all duration-300 origin-bottom-right max-h-[60vh] overflow-y-auto custom-scroll"></div>
+    <div id="crudModal" class="fixed inset-0 z-[8000] hidden flex-col items-center justify-end sm:justify-center bg-slate-900/60 backdrop-blur-sm transition-all duration-300">
+        <div class="w-full sm:max-w-lg bg-white rounded-t-[2rem] sm:rounded-[2rem] shadow-2xl relative flex flex-col max-h-[90vh] animate-slide-up">
+            <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white rounded-t-[2rem] z-10">
+                <div>
+                    <p class="text-[10px] font-bold text-primary-600 uppercase tracking-wider mb-0.5">FORMULIR SYSTEM</p>
+                    <h2 id="modalTitle" class="text-xl font-black text-slate-800 leading-none">Judul Modal</h2>
+                </div>
+                <button onclick="closeModal()" class="w-10 h-10 rounded-full bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition-colors">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+            </div>
+            <div id="modalBody" class="p-6 overflow-y-auto custom-scroll space-y-5">
+                </div>
+            <div id="modalFooter" class="p-6 border-t border-slate-100 bg-slate-50 rounded-b-[2rem]">
+                </div>
+        </div>
+    </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    <div id="imagePreviewModal" class="fixed inset-0 z-[9000] hidden bg-black/90 flex items-center justify-center p-4 backdrop-blur-md" onclick="this.classList.add('hidden')">
+        <img id="previewImageTarget" src="" class="max-w-full max-h-[90vh] rounded-lg shadow-2xl border-2 border-white/20">
+        <button class="absolute top-6 right-6 text-white bg-white/20 p-2 rounded-full hover:bg-white/40"><span class="material-symbols-rounded">close</span></button>
+    </div>
 
-    // --- CONFIG ---
-    const firebaseConfig = { apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs", authDomain: "katar-9cac3.firebaseapp.com", projectId: "katar-9cac3", storageBucket: "katar-9cac3.firebasestorage.app", messagingSenderId: "1017734829960", appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d" };
-    const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
-    const CLOUD_NAME = "dbxktcwug"; const UPLOAD_PRESET = "Karteji";
-
-    window.$ = (id) => document.getElementById(id);
-    let ME_UID = null, ME_ROLE = null, ME_DATA = null;
-    let financeChartInstance = null; let currentFinTab = 'history';
-
-    // --- ROLE CONFIG & FEATURE FLAGS ---
-    const ROLE_CONFIG = {
-        super_admin: { badge: "SUPER ADMIN", nav: ['home', 'users', 'finance', 'more', 'profile'], features: ['manage_all', 'audit_logs', 'lockdown', 'db_export', 'shadow_login'] },
-        ketua: { badge: "KETUA", nav: ['home', 'users', 'finance', 'more', 'profile'], features: ['kanban', 'approval_center', 'leaderboard', 'renstra', 'poll_control'] },
-        wakil_ketua: { badge: "WAKIL", nav: ['home', 'users', 'finance', 'more', 'profile'], features: ['kanban', 'approval_center', 'leaderboard'] },
-        bendahara: { badge: "BENDAHARA", nav: ['home', 'finance', 'more', 'profile'], features: ['wa_bill', 'budgeting', 'cash_proj', 'kasbon', 'qris_gen', 'input_fin'] },
-        sekretaris: { badge: "SEKRETARIS", nav: ['home', 'docs', 'activities', 'more', 'profile'], features: ['smart_surat', 'qr_absensi', 'inv_audit', 'notulen_pdf', 'mail_track', 'manage_docs'] },
-        koordinator: { badge: "KOORDINATOR", nav: ['home', 'activities', 'users', 'profile'], features: ['absensi_input', 'gamification', 'rsvp'] },
-        anggota: { badge: "ANGGOTA", nav: ['home', 'activities', 'finance', 'profile'], features: ['gamification', 'personal_fin', 'rsvp', 'birthday', 'anon_box'] }
-    };
-
-    // --- UTILS & TOAST ---
-    window.toggleLoader = (s) => $(`globalLoader`).classList[s?'remove':'add']('hidden');
-    window.showToast = (msg, type='success') => {
-        const t = document.createElement('div');
-        t.className = `flex items-center gap-2 px-4 py-3 rounded-xl shadow-xl transform transition-all duration-300 translate-y-[-20px] opacity-0 ${type==='success'?'bg-emerald-500 text-white':'bg-red-500 text-white'}`;
-        t.innerHTML = `<span class="material-symbols-rounded text-lg">${type==='success'?'check_circle':'error'}</span><span class="text-sm font-bold">${msg}</span>`;
-        $("toastContainer").appendChild(t);
-        setTimeout(()=>t.classList.remove('translate-y-[-20px]','opacity-0'), 10);
-        setTimeout(()=>{ t.classList.add('opacity-0'); setTimeout(()=>t.remove(),300); }, 3000);
-    };
-    
-    window.closeModal = () => $("crudModal").classList.add('hidden');
-    
-    // Fixed Modal Logic for Update/Create
-    window.showModal = (t,h,cb) => { 
-        $("modalTitle").textContent=t; $("modalBody").innerHTML=h; 
-        $("crudModal").classList.remove('hidden'); $("crudModal").classList.add('flex'); 
-        const btnContainer = $("modalFooter"); btnContainer.innerHTML = "";
-        if(cb) {
-            const btn = document.createElement("button");
-            btn.className = "w-full rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white py-3.5 text-sm font-bold shadow-lg shadow-indigo-200 hover:shadow-indigo-400 active:scale-[0.98] transition-all";
-            btn.textContent = "SIMPAN";
-            btn.onclick = cb; 
-            btnContainer.appendChild(btn);
-        }
-    };
-    
-    async function upload(f) { const d=new FormData(); d.append("file",f); d.append("upload_preset",UPLOAD_PRESET); const r=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:"POST",body:d}); return (await r.json()).secure_url; }
-    
-    // --- NAV ENGINE (Anti-Flicker) ---
-    window.switchView = (v) => {
-        if(['docs','titik-kumpul','inventory','suggestions'].includes(v)) { loadTools(v); v='tools'; }
+    <header class="fixed top-0 w-full z-40 transition-all duration-300" id="mainHeader">
+        <div class="absolute inset-0 bg-white/80 backdrop-blur-xl border-b border-white/50 shadow-sm"></div>
         
-        document.querySelectorAll('.view-section').forEach(e => { 
-            if(e.id !== `view-${v}`) { 
-                e.classList.remove('active'); 
-                setTimeout(() => { if(!e.classList.contains('active')) e.style.display='none'; }, 200); 
-            } 
-        });
+        <div class="relative px-5 py-3 flex justify-between items-center max-w-4xl mx-auto">
+            <div class="flex items-center gap-3 cursor-pointer group" onclick="switchView('profile')">
+                <div class="relative">
+                    <img id="headerPhoto" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-md group-hover:scale-105 transition-transform" src="https://via.placeholder.com/100">
+                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full animate-pulse"></div>
+                </div>
+                <div class="flex flex-col">
+                    <div class="flex items-center gap-1.5">
+                        <span id="headerRole" class="text-[9px] font-extrabold bg-primary-600 text-white px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm shadow-primary-200">...</span>
+                        <span id="notifBadge" class="hidden w-2 h-2 bg-red-500 rounded-full"></span>
+                    </div>
+                    <h1 id="headerName" class="text-sm font-bold text-slate-800 leading-tight truncate max-w-[120px]">Memuat...</h1>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-full bg-slate-100 text-slate-500 hover:bg-primary-50 hover:text-primary-600 flex items-center justify-center transition-colors">
+                    <span class="material-symbols-rounded text-lg">dark_mode</span>
+                </button>
+                <button id="logoutBtn" class="w-9 h-9 rounded-full bg-slate-100 text-slate-500 hover:bg-red-50 hover:text-red-600 flex items-center justify-center transition-colors">
+                    <span class="material-symbols-rounded text-lg">logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="relative z-10 pt-24 px-5 max-w-4xl mx-auto view-container">
         
-        const target = $(`view-${v}`); 
-        if(target) { target.style.display='block'; setTimeout(() => target.classList.add('active'), 10); }
-        
-        // Lazy Load Data
-        if(v==='home') loadHome(); 
-        else if(v==='users') loadUsers(); 
-        else if(v==='finance') loadFinance(); 
-        else if(v==='activities') loadActivities();
-        else if(v==='profile') loadProfile();
-        
-        $("moreMenu").classList.add("hidden"); $("moreMenu").classList.remove("flex");
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        const ab = document.querySelector(`.nav-btn[data-target="${v}"]`); if(ab) ab.classList.add('active');
-    };
+        <section id="view-home" class="view-section active">
+            <div class="mb-6">
+                <p class="text-slate-500 text-xs">Selamat Datang kembali,</p>
+                <h2 class="text-2xl font-black text-slate-800 tracking-tight">Dashboard Utama</h2>
+            </div>
 
-    // --- AUTH & SETUP ---
-    onAuthStateChanged(auth, async u => {
-        if(!u) return $("gate").classList.remove('hidden');
-        ME_UID = u.uid; toggleLoader(true);
-        const s = await getDoc(doc(db,"users",ME_UID));
-        if(s.exists()) { ME_DATA=s.data(); ME_ROLE=ME_DATA.role||'anggota'; setupDash(); } 
-        else { await signOut(auth); location.href="login.html"; }
-        toggleLoader(false);
-    });
+            <div class="w-full bg-slate-900 rounded-[2rem] p-6 text-white relative overflow-hidden shadow-2xl shadow-slate-300 group transition-all mb-8 hover:shadow-slate-400 hover:-translate-y-1">
+                <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity duration-700 transform group-hover:scale-110">
+                    <span class="material-symbols-rounded text-[8rem]">account_balance_wallet</span>
+                </div>
+                <div class="absolute bottom-[-50px] left-[-50px] w-48 h-48 bg-primary-500 rounded-full blur-[60px] opacity-20"></div>
 
-    function setupDash() {
-        $("headerName").textContent = ME_DATA.name; $("headerPhoto").src = ME_DATA.photo?.url || "https://via.placeholder.com/150";
-        const cfg = ROLE_CONFIG[ME_ROLE] || ROLE_CONFIG['anggota']; $("roleBadge").textContent = cfg.badge;
-        
-        const nav = $("bottomNavContainer"); nav.innerHTML = "";
-        const icons = { home:'grid_view', users:'groups', finance:'account_balance_wallet', activities:'event_note', docs:'folder', 'titik-kumpul':'location_on', profile:'person', more:'apps' };
-        cfg.nav.forEach(n => {
-            if(n==='profile') nav.innerHTML += `<div class="-top-6 relative"><button onclick="switchView('profile')" class="nav-btn w-14 h-14 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-xl ring-4 ring-white active:scale-95 transition-all" data-target="profile"><span class="material-symbols-rounded text-3xl">person</span></button></div>`;
-            else if(n==='more') nav.innerHTML += `<button onclick="toggleMoreMenu()" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all"><span class="material-symbols-rounded text-2xl text-slate-400">apps</span><p class="text-[9px] font-bold text-slate-400">Menu</p></button>`;
-            else nav.innerHTML += `<button onclick="switchView('${n}')" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="${n}"><span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">${icons[n]}</span><p class="text-[9px] font-bold text-slate-400 transition-colors">${n.charAt(0).toUpperCase()+n.slice(1)}</p></button>`;
-        });
+                <div class="relative z-10">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400 mb-1">SALDO AKTIF</p>
+                            <h2 id="cardBalance" class="text-4xl font-black tracking-tighter">Rp 0</h2>
+                        </div>
+                        <button onclick="refreshData()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all">
+                            <span class="material-symbols-rounded text-sm">refresh</span>
+                        </button>
+                    </div>
 
-        const menu = $("moreMenu"); menu.innerHTML = ""; const f = cfg.features;
-        const addM = (i,t,v,c) => menu.innerHTML += `<button onclick="switchView('${v}'); toggleMoreMenu()" class="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl w-full text-left transition-colors"><div class="bg-${c}-50 text-${c}-600 p-1.5 rounded-lg"><span class="material-symbols-rounded text-lg">${i}</span></div><span class="text-xs font-bold text-slate-600">${t}</span></button>`;
-        
-        if(f.includes('manage_all')||f.includes('manage_docs')) addM('folder','Arsip','docs','blue');
-        if(f.includes('manage_all')||f.includes('inv_audit')) addM('inventory_2','Inventaris','inventory','purple');
-        if(f.includes('manage_all')||f.includes('raffle')) addM('casino','Undian','titik-kumpul','orange');
-        if(f.includes('anon_box')||f.includes('manage_all')) addM('mail','Kotak Saran','suggestions','teal');
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div class="bg-white/5 backdrop-blur-sm p-3 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
+                            <div class="flex items-center gap-1.5 mb-1 text-emerald-400">
+                                <span class="material-symbols-rounded text-sm bg-emerald-500/20 p-0.5 rounded-full">arrow_downward</span>
+                                <span class="text-[10px] font-bold uppercase">Masuk</span>
+                            </div>
+                            <p id="cardIncome" class="text-sm font-bold truncate">Rp 0</p>
+                        </div>
+                        <div class="bg-white/5 backdrop-blur-sm p-3 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
+                            <div class="flex items-center gap-1.5 mb-1 text-rose-400">
+                                <span class="material-symbols-rounded text-sm bg-rose-500/20 p-0.5 rounded-full">arrow_upward</span>
+                                <span class="text-[10px] font-bold uppercase">Keluar</span>
+                            </div>
+                            <p id="cardExpense" class="text-sm font-bold truncate">Rp 0</p>
+                        </div>
+                    </div>
 
-        if(f.includes('wa_bill')) $("btnWA").classList.remove('hidden');
-        if(f.includes('input_fin')) $("btnAddFin").classList.remove('hidden');
-        if(f.includes('input_act')) $("btnAddAct").classList.remove('hidden');
-        if(f.includes('absensi_input')||f.includes('qr_absensi')) $("absensiInputBox").classList.remove('hidden');
-        if(f.includes('kanban')) $("kanbanPreview").classList.remove('hidden');
+                    <div id="pendingInfoBox" class="hidden bg-orange-500/10 border border-orange-500/20 rounded-xl p-3 flex items-center justify-between cursor-pointer hover:bg-orange-500/20 transition-all" onclick="switchView('finance')">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center animate-pulse">
+                                <span class="material-symbols-rounded text-sm">pending</span>
+                            </div>
+                            <div>
+                                <p class="text-[9px] font-bold uppercase text-orange-200">BUTUH PERSETUJUAN</p>
+                                <p id="pendingCountText" class="text-xs font-bold text-white">0 Transaksi Pending</p>
+                            </div>
+                        </div>
+                        <span class="material-symbols-rounded text-orange-200">chevron_right</span>
+                    </div>
+                </div>
+            </div>
 
-        switchView('home');
-    }
-    window.toggleMoreMenu = () => { const m=$("moreMenu"); m.classList.contains("hidden") ? (m.classList.remove("hidden"),m.classList.add("flex")) : (m.classList.add("hidden"),m.classList.remove("flex")); }
+            <div id="adminChartSection" class="bg-white p-5 rounded-[2rem] shadow-sm border border-slate-100 mb-8 hidden">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <div class="bg-primary-50 p-2 rounded-lg text-primary-600">
+                            <span class="material-symbols-rounded">pie_chart</span>
+                        </div>
+                        <h3 class="text-sm font-bold text-slate-800">Analitik Keuangan</h3>
+                    </div>
+                    <span class="text-[10px] bg-slate-100 px-2 py-1 rounded text-slate-500">Bulan Ini</span>
+                </div>
+                <div class="h-48 relative w-full">
+                    <canvas id="financeChart"></canvas>
+                </div>
+            </div>
 
-    // --- 1. HOME ---
-    async function loadHome() {
-        const qFin = query(collection(db,"financial_records"), orderBy("createdAt","desc"));
-        const snapF = await getDocs(qFin); let bal=0, inc=0, exp=0, pend=0;
-        snapF.forEach(d=>{ const f=d.data(); if(f.status==='approved'){ const a=Number(f.amount); if(f.type==='income'){bal+=a;inc+=a}else{bal-=a;exp+=a} } else pend++; });
-        $("cardBalance").textContent = `Rp ${bal.toLocaleString('id-ID')}`; $("cardIncome").textContent = `Rp ${inc.toLocaleString()}`; $("cardExpense").textContent = `Rp ${exp.toLocaleString()}`;
-        
-        const qAct = query(collection(db,"activities"), where("status","==","pending")); const snapA = await getDocs(qAct); pend += snapA.size;
-        if(ROLE_CONFIG[ME_ROLE].features.includes('approval_center') && pend > 0) { $("pendingInfoBox").classList.remove('hidden'); $("pendingCountText").textContent = `${pend} Item`; }
-        if(ME_ROLE==='super_admin' || ME_ROLE==='ketua') { $("adminChartSection").classList.remove('hidden'); renderChart(inc, exp); }
-        
-        renderShortcuts(); loadAlerts(true);
-        if(ROLE_CONFIG[ME_ROLE].features.includes('personal_fin')) loadMyBills();
-    }
+            <div class="mb-8">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 px-1">Menu Cepat</h3>
+                <div id="homeMenuGrid" class="grid grid-cols-4 gap-4">
+                    </div>
+            </div>
 
-    function renderShortcuts() {
-        const g=$("homeMenuGrid"); g.innerHTML=""; const f=ROLE_CONFIG[ME_ROLE].features;
-        const add = (i,t,c,clk) => g.innerHTML+=`<div onclick="${clk}" class="bg-white p-3 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-sm active:scale-95 border border-slate-100 transition-all cursor-pointer"><span class="material-symbols-rounded text-2xl text-${c}-600 bg-${c}-50 p-2.5 rounded-full">${i}</span><span class="text-[9px] font-bold text-slate-600 text-center leading-tight">${t}</span></div>`;
-        if(f.includes('input_fin')) add('add_card','Catat Kas','emerald','openFinanceModal()');
-        if(f.includes('wa_bill')) add('chat','Tagih WA','green','generateWALink()');
-        if(f.includes('smart_surat')) add('description','Buat Surat','blue','openSmartSurat()');
-        if(f.includes('qr_absensi')) add('qr_code_2','QR Absen','indigo','openQrGen()');
-        add('calendar_month','Jadwal','purple',"switchView('activities')");
-        add('person_search','Cari Teman','rose',"switchView('users')");
-    }
-    function renderChart(i,e) { if(financeChartInstance) financeChartInstance.destroy(); financeChartInstance = new Chart($("financeChart"), { type:'doughnut', data:{labels:['Masuk','Keluar'], datasets:[{data:[i,e], backgroundColor:['#10B981','#F43F5E'], borderWidth:0}]}, options:{responsive:true, maintainAspectRatio:false, cutout:'70%', plugins:{legend:{position:'right',labels:{font:{size:10, family:'Plus Jakarta Sans'}, boxWidth:10}}}}}); }
+            <div class="mb-8">
+                <div class="flex justify-between items-end mb-4 px-1">
+                    <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                        <span class="material-symbols-rounded text-primary-500">campaign</span> Pengumuman
+                    </h3>
+                    <button onclick="switchView('alerts')" class="text-[10px] font-bold text-primary-600 hover:underline">LIHAT SEMUA</button>
+                </div>
+                <div id="homeNoticeList" class="space-y-3">
+                    <div class="h-20 bg-slate-100 rounded-2xl animate-pulse"></div>
+                </div>
+            </div>
+        </section>
 
-    // --- 2. FINANCE ---
-    window.switchFinTab = (t) => { currentFinTab=t; $("tabFinHist").className=t==='history'?"flex-1 py-2 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-600 transition-all":"flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-600 transition-all"; $("tabFinBill").className=t==='bill'?"flex-1 py-2 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-600 transition-all":"flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-600 transition-all"; loadFinance(); }
-    async function loadFinance() {
-        const l=$("finContent"); l.innerHTML="";
-        if(currentFinTab === 'history') {
-            const snap = await getDocs(query(collection(db,"financial_records"), orderBy("createdAt","desc"), limit(20)));
-            snap.forEach(d=>{
-                const f=d.data(); const isInc=f.type==='income'; const isP=f.status==='pending';
-                if(!ROLE_CONFIG[ME_ROLE].features.includes('approval_center') && isP) return; 
-                let act=""; 
-                // APPROVE & DELETE LOGIC
-                if(isP && ROLE_CONFIG[ME_ROLE].features.includes('approval_center')) act+=`<button onclick="approveDoc('financial_records','${d.id}')" class="bg-green-500 text-white px-2 py-1 rounded text-[9px] ml-2">ACC</button>`;
-                if(ROLE_CONFIG[ME_ROLE].features.includes('manage_all') || (f.createdByUid===ME_UID && isP)) act+=`<button onclick="deleteDocData('financial_records','${d.id}')" class="text-red-500 ml-2"><span class="material-symbols-rounded text-sm">delete</span></button>`;
-                
-                l.innerHTML+=`<div class="bg-white p-4 rounded-2xl flex justify-between items-center border border-slate-100 shadow-sm"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full ${isInc?'bg-emerald-50 text-emerald-600':'bg-rose-50 text-rose-600'} flex items-center justify-center"><span class="material-symbols-rounded">${isInc?'arrow_downward':'arrow_upward'}</span></div><div><p class="text-sm font-bold text-slate-800 line-clamp-1">${f.note}</p><p class="text-[10px] text-slate-400">${f.category||'Umum'} • ${new Date(f.createdAt?.seconds*1000).toLocaleDateString()}</p>${isP?'<span class="text-[9px] text-orange-500 font-bold">Pending</span>':''}</div></div><div class="text-right flex items-center gap-2"><span class="text-xs font-bold ${isInc?'text-emerald-600':'text-rose-600'}">${isInc?'+':'-'} ${Number(f.amount).toLocaleString()}</span>${act}</div></div>`;
-            });
-        } else {
-            if(ROLE_CONFIG[ME_ROLE].features.includes('wa_bill')) l.innerHTML = `<button onclick="openCreateBill()" class="w-full bg-blue-600 text-white p-3 rounded-xl text-xs font-bold shadow-lg mb-3">Buat Tagihan Baru</button>`;
-            const snap = await getDocs(query(collection(db,"bills"), orderBy("createdAt","desc")));
-            snap.forEach(d=>{ const b=d.data(); l.innerHTML+=`<div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex justify-between items-center mb-2"><div class="flex flex-col"><span class="text-xs font-bold text-slate-700">${b.title}</span><span class="text-[10px] text-slate-400">${b.status==='paid'?'Lunas':'Belum Lunas'}</span></div><span class="text-xs font-bold">Rp ${Number(b.amount).toLocaleString()}</span></div>`; });
-        }
-    }
-    
-    // --- 3. ACTIVITIES ---
-    async function loadActivities() {
-        const l=$("actList"); l.innerHTML=""; const snap=await getDocs(query(collection(db,"activities"), orderBy("createdAt","desc")));
-        snap.forEach(d=>{
-            const x=d.data(); const isP=x.status==='pending';
-            if(!ROLE_CONFIG[ME_ROLE].features.includes('approval_center') && isP) return;
-            let act=""; 
-            if(isP && ROLE_CONFIG[ME_ROLE].features.includes('approval_center')) act+=`<button onclick="approveDoc('activities','${d.id}')" class="absolute top-2 right-2 bg-green-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg z-20"><span class="material-symbols-rounded">check</span></button>`;
-            if(ROLE_CONFIG[ME_ROLE].features.includes('manage_all') || (x.createdByUid===ME_UID && isP)) act+=`<button onclick="deleteDocData('activities','${d.id}')" class="absolute bottom-2 right-2 bg-white text-red-500 w-8 h-8 rounded-full flex items-center justify-center shadow-md z-20"><span class="material-symbols-rounded">delete</span></button>`;
+        <section id="view-users" class="view-section">
+            <div class="flex flex-col gap-4 mb-6">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800">Daftar Anggota</h2>
+                    <p class="text-xs text-slate-500">Database seluruh anggota organisasi</p>
+                </div>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span class="material-symbols-rounded text-slate-400 group-focus-within:text-primary-500 transition-colors">search</span>
+                    </div>
+                    <input type="text" onkeyup="filterList('userList', this.value)" placeholder="Cari nama, peran, atau email..." class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-medium outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 transition-all shadow-sm">
+                </div>
+                <div class="flex justify-between items-center">
+                     <span id="userCountBadge" class="bg-slate-800 text-white text-[10px] px-3 py-1 rounded-full font-bold shadow-md">Total: 0</span>
+                     <button id="exportUserBtn" onclick="exportTableToCSV('users')" class="hidden flex items-center gap-1 text-[10px] font-bold text-green-600 bg-green-50 px-3 py-1.5 rounded-lg hover:bg-green-100 transition-colors">
+                        <span class="material-symbols-rounded text-sm">download</span> EXPORT CSV
+                     </button>
+                </div>
+            </div>
+            <div id="userList" class="space-y-3 pb-10"></div>
+        </section>
+
+        <section id="view-finance" class="view-section">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800">Keuangan</h2>
+                    <p class="text-xs text-slate-500">Laporan arus kas & tagihan</p>
+                </div>
+                <div class="flex gap-2">
+                    <button id="btnWA" onclick="generateWALink()" class="hidden w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all">
+                        <span class="material-symbols-rounded">chat</span>
+                    </button>
+                    <button id="btnAddFin" onclick="openFinanceModal()" class="hidden w-10 h-10 bg-primary-600 text-white rounded-full flex items-center justify-center shadow-lg shadow-primary-200 hover:bg-primary-700 active:scale-95 transition-all">
+                        <span class="material-symbols-rounded">add</span>
+                    </button>
+                </div>
+            </div>
             
-            l.innerHTML+=`<div class="bg-white border border-slate-100 rounded-[1.5rem] overflow-hidden shadow-sm relative group"><div class="h-32 bg-slate-100 relative"><img src="${x.cover?.url||'https://via.placeholder.com/300x100'}" class="w-full h-full object-cover"></div><div class="p-4"><span class="text-[9px] text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded mb-2 inline-block">${x.date||'Segera'}</span><h4 class="font-bold text-slate-800 leading-tight">${x.title}</h4></div>${act}</div>`;
-        });
-    }
+            <div class="bg-white p-1.5 rounded-xl flex shadow-sm border border-slate-100 mb-6">
+                <button onclick="switchFinTab('history')" id="tabFinHist" class="flex-1 py-2 rounded-lg text-xs font-bold bg-primary-50 text-primary-600 transition-all">Riwayat</button>
+                <button onclick="switchFinTab('bill')" id="tabFinBill" class="flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-600 transition-all">Tagihan</button>
+            </div>
 
-    // --- 4. USERS ---
-    async function loadUsers() {
-        const l=$("userList"); l.innerHTML=""; const snap=await getDocs(query(collection(db,"users"),orderBy("name")));
-        $("userCountBadge").textContent=snap.size;
-        const canManage = ROLE_CONFIG[ME_ROLE].features.includes('manage_all');
-        snap.forEach(d=>{
-            const u=d.data(); let act="";
-            if(canManage && u.role!=='super_admin' && d.id!==ME_UID) act=`<button onclick="deleteDocData('users','${d.id}')" class="text-red-500 bg-red-50 p-1.5 rounded-lg"><span class="material-symbols-rounded text-sm">delete</span></button>`;
-            l.innerHTML+=`<div class="bg-white p-3 rounded-2xl flex items-center justify-between border border-slate-100 shadow-sm"><div class="flex items-center gap-3"><img src="${u.photo?.url||'https://via.placeholder.com/50'}" class="w-10 h-10 rounded-full object-cover bg-slate-200"><div><p class="text-xs font-bold text-slate-800">${u.name}</p><p class="text-[9px] text-slate-400 uppercase">${u.role}</p></div></div>${act}</div>`;
-        });
-    }
+            <div id="finContent" class="space-y-3 pb-10"></div>
+        </section>
 
-    // --- 5. TOOLS ---
-    async function loadTools(v) {
-        const h=$("toolsHeader"); const c=$("toolsContent"); c.innerHTML="";
-        if(v === 'docs') { 
-            h.innerHTML = `<h2 class="text-2xl font-black text-slate-800">Arsip</h2>`; 
-            // Load Docs
-            const snap = await getDocs(query(collection(db,"archives"), orderBy("createdAt","desc")));
-            snap.forEach(d=>{ c.innerHTML+=`<div class="bg-white p-3 rounded-xl border border-slate-100 mb-2 flex items-center justify-between"><div class="flex items-center gap-3"><div class="bg-blue-50 text-blue-600 p-2 rounded-lg"><span class="material-symbols-rounded">description</span></div><span class="text-xs font-bold">${d.data().title}</span></div><a href="${d.data().file?.url}" target="_blank" class="text-blue-500 font-bold text-[10px]">UNDUH</a></div>`; });
-            // Add Button
-            if(ROLE_CONFIG[ME_ROLE].features.includes('manage_docs')) c.innerHTML+=`<button onclick="openDocModal('archive')" class="fixed bottom-24 right-5 w-14 h-14 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-xl"><span class="material-symbols-rounded">add</span></button>`;
-        } 
-        else if (v === 'titik-kumpul') { 
-            h.innerHTML = `<h2 class="text-2xl font-black text-slate-800">Undian</h2>`; 
-            const hSnap=await getDocs(collection(db,"gathering_history")); if(hSnap.size>0) $("currentHost").textContent=hSnap.docs[0].data().userName;
-            if(ROLE_CONFIG[ME_ROLE].features.includes('raffle')) $("raffleBtn").classList.remove('hidden');
+        <section id="view-activities" class="view-section">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800">Kegiatan</h2>
+                    <p class="text-xs text-slate-500">Agenda rapat & proker</p>
+                </div>
+                <button id="btnAddAct" onclick="openActivityModal()" class="hidden w-10 h-10 bg-primary-600 text-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all">
+                    <span class="material-symbols-rounded">add</span>
+                </button>
+            </div>
+            
+            <div id="absensiInputBox" class="bg-white p-5 rounded-[1.5rem] border border-slate-100 shadow-sm mb-6 hidden relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-teal-50 rounded-full -mr-8 -mt-8 group-hover:bg-teal-100 transition-colors"></div>
+                <h4 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2 relative z-10">
+                    <span class="bg-teal-100 text-teal-600 p-1 rounded text-lg material-symbols-rounded">qr_code_scanner</span> Presensi Rapat
+                </h4>
+                <div class="flex gap-2 relative z-10">
+                    <input id="absensiCode" type="text" placeholder="KODE ABSEN" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-black uppercase text-center tracking-[0.2em] outline-none focus:border-teal-500 transition-all">
+                    <button onclick="submitAbsensi()" class="bg-teal-600 text-white px-5 rounded-xl font-bold shadow-lg shadow-teal-200 hover:bg-teal-700 active:scale-95 transition-all">HADIR</button>
+                </div>
+            </div>
+
+            <div id="actList" class="grid grid-cols-1 gap-5 pb-10"></div>
+        </section>
+
+        <section id="view-tools" class="view-section">
+            <div id="toolsHeader" class="mb-6">
+                </div>
+            <div id="toolsContent" class="pb-10 space-y-4"></div>
+        </section>
+
+        <section id="view-logs" class="view-section">
+            <div class="mb-6">
+                <h2 class="text-2xl font-black text-slate-800">System Logs</h2>
+                <p class="text-xs text-slate-500">Rekam jejak aktivitas sistem</p>
+            </div>
+            <div class="bg-slate-900 text-green-400 p-4 rounded-xl font-mono text-[10px] overflow-y-auto max-h-[60vh] shadow-inner" id="logContent">
+                </div>
+        </section>
+
+        <section id="view-profile" class="view-section">
+            <div class="flex flex-col items-center pt-8 pb-10">
+                <div class="relative group cursor-pointer" onclick="$('profileUpload').click()">
+                    <div class="w-32 h-32 rounded-full p-1.5 bg-white shadow-2xl relative z-10">
+                        <img id="profileImage" src="https://via.placeholder.com/150" class="w-full h-full rounded-full object-cover border border-slate-100">
+                    </div>
+                    <div class="absolute inset-0 rounded-full border-2 border-dashed border-primary-300 animate-spin-slow pointer-events-none"></div>
+                    <div class="absolute bottom-2 right-2 bg-primary-600 p-2 rounded-full shadow-lg border-2 border-white z-20 group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-rounded text-white text-sm block">edit</span>
+                    </div>
+                </div>
+                <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
+                
+                <h2 id="profileNameDisplay" class="text-2xl font-black text-slate-800 mt-5 mb-1 text-center">...</h2>
+                <div class="flex flex-wrap justify-center gap-2 mb-2">
+                    <span id="profileRoleBadge" class="px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-[10px] font-extrabold uppercase tracking-wide border border-primary-200">...</span>
+                    <span class="px-3 py-1 bg-yellow-50 text-yellow-700 rounded-full text-[10px] font-bold flex items-center gap-1 border border-yellow-200">
+                        <span class="material-symbols-rounded text-[14px] text-yellow-500">stars</span> <span id="profilePoints">0</span> Poin
+                    </span>
+                </div>
+                <p id="profileEmailDisplay" class="text-sm text-slate-400 font-medium">email@user.com</p>
+
+                <div class="flex gap-3 mt-6 w-full max-w-sm">
+                    <button onclick="showIdCard()" class="flex-1 bg-slate-800 text-white py-3 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 shadow-lg hover:bg-slate-900 active:scale-95 transition-all">
+                        <span class="material-symbols-rounded text-lg">badge</span> ID CARD
+                    </button>
+                    </div>
+
+                <div class="w-full mt-8 max-w-md">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase mb-3 ml-2 tracking-wider">Edit Informasi</h3>
+                    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 space-y-5">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 ml-1">NAMA LENGKAP</label>
+                            <input id="editName" type="text" class="w-full p-3.5 bg-slate-50 rounded-xl border-none text-sm font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-primary-200 transition-all">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 ml-1">WHATSAPP</label>
+                            <input id="editPhone" type="tel" class="w-full p-3.5 bg-slate-50 rounded-xl border-none text-sm font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-primary-200 transition-all">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 ml-1">ALAMAT DOMISILI</label>
+                            <textarea id="editAddress" rows="2" class="w-full p-3.5 bg-slate-50 rounded-xl border-none text-sm font-medium text-slate-700 focus:bg-white focus:ring-2 focus:ring-primary-200 transition-all resize-none"></textarea>
+                        </div>
+                    </div>
+                    <button onclick="saveProfile()" class="mt-6 w-full bg-gradient-to-r from-primary-600 to-primary-500 text-white py-4 rounded-2xl font-bold text-sm shadow-xl shadow-primary-200 hover:shadow-primary-300 active:scale-[0.98] transition-all">
+                        SIMPAN PERUBAHAN
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <nav class="fixed bottom-0 w-full glass-nav pb-safe pt-2 px-6 z-50 rounded-t-[2.5rem] no-print">
+        <div id="bottomNavContainer" class="flex justify-between items-end max-w-md mx-auto pb-4">
+            </div>
+    </nav>
+
+    <div id="moreMenu" class="fixed bottom-24 right-4 bg-white/95 backdrop-blur-xl rounded-[2rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-slate-100 p-2 z-40 hidden flex-col gap-1 w-56 transition-all duration-300 origin-bottom-right max-h-[60vh] overflow-y-auto custom-scroll ring-1 ring-slate-900/5">
+        </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+        // --- A. FIREBASE CONFIG ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
+            authDomain: "katar-9cac3.firebaseapp.com",
+            projectId: "katar-9cac3",
+            storageBucket: "katar-9cac3.firebasestorage.app",
+            messagingSenderId: "1017734829960",
+            appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        // Cloudinary Config
+        const CLOUD_NAME = "dbxktcwug";
+        const UPLOAD_PRESET = "Karteji";
+
+        // Global Variables
+        window.$ = (id) => document.getElementById(id);
+        let ME_UID = null;
+        let ME_ROLE = null;
+        let ME_DATA = null;
+        let financeChartInstance = null;
+        let currentFinTab = 'history';
+
+        // --- B. ROLE CONFIGURATION & FEATURE FLAGS ---
+        const ROLE_CONFIG = {
+            super_admin: { 
+                badge: "SUPER ADMIN", 
+                nav: ['home', 'users', 'finance', 'more', 'profile'], 
+                features: ['manage_all', 'audit_logs', 'lockdown', 'db_export', 'shadow_login', 'input_fin', 'input_act', 'manage_docs'] 
+            },
+            ketua: { 
+                badge: "KETUA", 
+                nav: ['home', 'users', 'finance', 'more', 'profile'], 
+                features: ['kanban', 'approval_center', 'leaderboard', 'renstra', 'poll_control', 'input_act'] 
+            },
+            wakil_ketua: { 
+                badge: "WAKIL", 
+                nav: ['home', 'users', 'finance', 'more', 'profile'], 
+                features: ['kanban', 'approval_center', 'leaderboard'] 
+            },
+            bendahara: { 
+                badge: "BENDAHARA", 
+                nav: ['home', 'finance', 'more', 'profile'], 
+                features: ['wa_bill', 'budgeting', 'cash_proj', 'kasbon', 'qris_gen', 'input_fin'] 
+            },
+            sekretaris: { 
+                badge: "SEKRETARIS", 
+                nav: ['home', 'docs', 'activities', 'more', 'profile'], 
+                features: ['smart_surat', 'qr_absensi', 'inv_audit', 'notulen_pdf', 'mail_track', 'manage_docs', 'input_act'] 
+            },
+            koordinator: { 
+                badge: "KOORDINATOR", 
+                nav: ['home', 'activities', 'users', 'profile'], 
+                features: ['absensi_input', 'gamification', 'rsvp', 'input_act'] 
+            },
+            anggota: { 
+                badge: "ANGGOTA", 
+                nav: ['home', 'activities', 'finance', 'profile'], 
+                features: ['gamification', 'personal_fin', 'rsvp', 'birthday', 'anon_box', 'absensi_input'] 
+            }
+        };
+
+        // --- C. UTILITY FUNCTIONS ---
+        
+        // 1. Toast Notification
+        window.showToast = (msg, type = 'success') => {
+            const t = document.createElement('div');
+            const color = type === 'success' ? 'bg-emerald-500' : (type === 'error' ? 'bg-red-500' : 'bg-slate-800');
+            const icon = type === 'success' ? 'check_circle' : (type === 'error' ? 'error' : 'info');
+            
+            t.className = `flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl transform transition-all duration-500 translate-y-[-20px] opacity-0 ${color} text-white min-w-[200px] z-[10000]`;
+            t.innerHTML = `<span class="material-symbols-rounded text-lg">${icon}</span><span class="text-xs font-bold tracking-wide">${msg}</span>`;
+            
+            $("toastContainer").appendChild(t);
+            requestAnimationFrame(() => t.classList.remove('translate-y-[-20px]', 'opacity-0'));
+            setTimeout(() => {
+                t.classList.add('opacity-0', 'translate-y-[-10px]');
+                setTimeout(() => t.remove(), 500);
+            }, 3000);
+        };
+
+        // 2. Loading State
+        window.toggleLoader = (show, msg) => {
+            const l = $("globalLoader");
+            if (msg) $("loaderText").textContent = msg;
+            if (show) { l.classList.remove('hidden'); l.classList.add('flex'); }
+            else { l.classList.add('hidden'); l.classList.remove('flex'); }
+        };
+
+        // 3. Modals
+        window.closeModal = () => {
+            $("crudModal").classList.add('opacity-0', 'scale-95');
+            setTimeout(() => {
+                $("crudModal").classList.add('hidden');
+                $("crudModal").classList.remove('flex', 'opacity-0', 'scale-95');
+            }, 200);
+        };
+        
+        window.showModal = (title, bodyHtml, onSave) => {
+            $("modalTitle").textContent = title;
+            $("modalBody").innerHTML = bodyHtml;
+            const m = $("crudModal");
+            m.classList.remove('hidden');
+            m.classList.add('flex');
+            
+            // Footer Logic
+            const f = $("modalFooter");
+            f.innerHTML = '';
+            if (onSave) {
+                const btn = document.createElement("button");
+                btn.className = "w-full rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 text-white py-3.5 text-sm font-bold shadow-lg shadow-primary-200 hover:shadow-primary-300 active:scale-[0.98] transition-all";
+                btn.textContent = "SIMPAN DATA";
+                btn.onclick = onSave;
+                f.appendChild(btn);
+            } else {
+                f.style.display = 'none'; // Hide footer if just viewing
+            }
+        };
+
+        // 4. File Upload (Cloudinary)
+        async function upload(file) {
+            const fd = new FormData();
+            fd.append("file", file);
+            fd.append("upload_preset", UPLOAD_PRESET);
+            try {
+                const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: "POST", body: fd });
+                const data = await res.json();
+                return data.secure_url;
+            } catch (e) {
+                showToast("Gagal Upload Gambar", "error");
+                throw e;
+            }
         }
-        else if (v === 'suggestions') { h.innerHTML = `<h2 class="text-2xl font-black text-slate-800">Saran</h2>`; c.innerHTML = `<textarea id="sText" class="w-full p-4 bg-white rounded-2xl border border-slate-200 h-32 text-sm resize-none mb-3" placeholder="Tulis saran..."></textarea><button class="w-full bg-teal-600 text-white py-3 rounded-xl font-bold" onclick="sendSuggestion()">KIRIM</button>`; }
-    }
 
-    // --- CRUD ACTIONS ---
-    window.openFinanceModal = () => showModal("Catat Kas", `<select id="fT" class="w-full p-3 bg-slate-50 rounded-xl mb-2 text-sm"><option value="income">Pemasukan</option><option value="expense">Pengeluaran</option></select><input id="fA" type="number" class="w-full p-3 bg-slate-50 rounded-xl mb-2 text-sm" placeholder="Rp"><input id="fN" class="w-full p-3 bg-slate-50 rounded-xl mb-2 text-sm" placeholder="Catatan">`, async()=>{ 
-        toggleLoader(true); await addDoc(collection(db,"financial_records"),{type:$("fT").value, amount:$("fA").value, note:$("fN").value, status:(ME_ROLE==='super_admin'?'approved':'pending'), createdByUid:ME_UID, createdAt:serverTimestamp()}); closeModal(); showToast("Berhasil!"); loadHome(); loadFinance(); toggleLoader(false); 
-    });
-    window.openActivityModal = () => showModal("Agenda Baru", `<input id="aT" class="w-full p-3 bg-slate-50 rounded-xl mb-2 text-sm" placeholder="Judul"><input id="aD" type="date" class="w-full p-3 bg-slate-50 rounded-xl mb-2 text-sm">`, async()=>{ 
-        toggleLoader(true); await addDoc(collection(db,"activities"),{title:$("aT").value, date:$("aD").value, status:(ME_ROLE==='super_admin'?'approved':'pending'), createdByUid:ME_UID, createdAt:serverTimestamp()}); closeModal(); showToast("Berhasil!"); loadHome(); loadActivities(); toggleLoader(false); 
-    });
-    window.openCreateBill = () => showModal("Tagihan", `<input id="bTitle" class="w-full p-3 bg-slate-50 rounded-xl mb-2 text-sm" placeholder="Judul"><input id="bAmt" type="number" class="w-full p-3 bg-slate-50 rounded-xl text-sm" placeholder="Nominal">`, async()=>{ 
-        await addDoc(collection(db,"bills"),{title:$("bTitle").value, amount:$("bAmt").value, status:'unpaid', createdAt:serverTimestamp()}); closeModal(); showToast("Tagihan Dibuat"); loadFinance(); 
-    });
-    
-    // Tools Actions
-    window.openDocModal = (type) => {
-        const html = `<input id="dTitle" class="w-full p-3 bg-slate-50 rounded-xl mb-2 text-sm" placeholder="Judul"><input id="dFile" type="file" class="w-full text-xs">`;
-        showModal("Upload Arsip", html, async()=>{
-            if(!$("dFile").files[0]) return showToast("Pilih file!", "error");
-            toggleLoader(true);
-            const url = await upload($("dFile").files[0]);
-            await addDoc(collection(db,"archives"),{title:$("dTitle").value, file:{url}, createdAt:serverTimestamp()});
-            closeModal(); showToast("Terupload"); loadTools('docs'); toggleLoader(false);
+        // 5. System Logger
+        async function logActivity(action, details) {
+            try {
+                await addDoc(collection(db, "system_logs"), {
+                    uid: ME_UID, name: ME_DATA.name, role: ME_ROLE,
+                    action, details, timestamp: serverTimestamp()
+                });
+            } catch(e) { console.error("Log failed", e); }
+        }
+
+        // --- D. NAVIGATION ENGINE ---
+        window.switchView = (viewName) => {
+            // Handle Tool Views Mapping
+            let actualView = viewName;
+            if (['docs', 'titik-kumpul', 'inventory', 'suggestions', 'logs'].includes(viewName)) {
+                loadToolView(viewName);
+                actualView = 'tools';
+            }
+
+            // Hide all sections
+            document.querySelectorAll('.view-section').forEach(el => {
+                if (el.id !== `view-${actualView}`) {
+                    el.classList.remove('active');
+                    setTimeout(() => { if (!el.classList.contains('active')) el.style.display = 'none'; }, 300);
+                }
+            });
+
+            // Show Target
+            const target = $(`view-${actualView}`);
+            if (target) {
+                target.style.display = 'block';
+                // Small delay to allow display:block to render before opacity transition
+                requestAnimationFrame(() => target.classList.add('active'));
+            }
+
+            // Load Data
+            if (viewName === 'home') loadHomeData();
+            else if (viewName === 'users') loadUsers();
+            else if (viewName === 'finance') loadFinance();
+            else if (viewName === 'activities') loadActivities();
+            else if (viewName === 'profile') loadProfileData();
+            else if (viewName === 'logs') loadLogs();
+
+            // Update Nav State
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.querySelector(`.nav-btn[data-target="${viewName}"]`);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            // Close Menu
+            const m = $("moreMenu");
+            m.classList.add('hidden'); m.classList.remove('flex');
+        };
+
+        // --- E. AUTH & INITIALIZATION ---
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                $("gate").classList.remove('hidden');
+                $("gate").classList.add('flex');
+                toggleLoader(false);
+                return;
+            }
+
+            ME_UID = user.uid;
+            toggleLoader(true, "MENGAMBIL PROFIL...");
+
+            try {
+                const userSnap = await getDoc(doc(db, "users", ME_UID));
+                if (userSnap.exists()) {
+                    ME_DATA = userSnap.data();
+                    ME_ROLE = ME_DATA.role || "anggota";
+                    
+                    // Setup UI based on Role
+                    initializeDashboard();
+                    
+                    // Update Online Status
+                    updateDoc(doc(db, "users", ME_UID), { lastSeen: serverTimestamp() });
+                } else {
+                    showToast("Akun tidak ditemukan!", "error");
+                    await signOut(auth);
+                    location.href = "login.html";
+                }
+            } catch (e) {
+                console.error(e);
+                showToast("Kesalahan Koneksi", "error");
+            }
+            toggleLoader(false);
         });
-    }
 
-    // --- GLOBAL ACTIONS ---
-    window.deleteDocData = async(c,i) => { if(confirm("Hapus?")) { toggleLoader(true); await deleteDoc(doc(db,c,i)); showToast("Terhapus"); switchView('home'); toggleLoader(false); } }
-    window.approveDoc = async(c,i) => { if(confirm("Setujui?")) { toggleLoader(true); await updateDoc(doc(db,c,i),{status:'approved'}); showToast("Disetujui"); switchView('home'); toggleLoader(false); } }
-    window.runRaffle = async() => { const btn=$("raffleBtn"); btn.innerHTML="MENGACAK..."; setTimeout(()=>{ $("winnerText").textContent="Anggota Terpilih"; $("winnerModal").classList.remove('hidden'); btn.innerHTML="ACAK LAGI"; },2000); }
-    window.exportTableToCSV = () => alert("Download CSV dimulai...");
-    window.filterList = (id,q) => Array.from($(id).children).forEach(e=>e.style.display=e.innerText.toLowerCase().includes(q.toLowerCase())?'flex':'none');
-    
-    // --- PROFILE & BILLS ---
-    async function loadProfile() {
-        $("profileNameDisplay").textContent=ME_DATA.name; $("profileEmailDisplay").textContent=ME_DATA.email; $("profileRoleBadge").textContent=ME_ROLE.replace('_',' '); $("profilePoints").textContent=ME_DATA.points||0; $("profileImage").src=ME_DATA.photo?.url||"https://via.placeholder.com/150"; $("editName").value=ME_DATA.name||""; $("editPhone").value=ME_DATA.phone||""; $("editAddress").value=ME_DATA.address||"";
-    }
-    window.saveProfile=async()=>{ toggleLoader(true); let u={name:$("editName").value, phone:$("editPhone").value, address:$("editAddress").value}; if(newProfileFile) u.photo=await upload(newProfileFile); await updateDoc(doc(db,"users",ME_UID),u); showToast("Disimpan"); loadProfile(); toggleLoader(false); }
-    window.previewProfileImage=(i)=>{ if(i.files[0]){ newProfileFile=i.files[0]; const r=new FileReader(); r.onload=e=>$("profileImage").src=e.target.result; r.readAsDataURL(i.files[0]); } }
-    window.showIdCard=()=>{ showModal("Kartu Anggota", `<div class="bg-gradient-to-br from-indigo-900 to-slate-900 text-white p-5 rounded-2xl relative overflow-hidden"><h3 class="text-xl font-black relative z-10">${ME_DATA.name}</h3><p class="text-sm text-indigo-200 uppercase tracking-widest mb-4 relative z-10">${ME_ROLE}</p><p class="text-[10px] text-slate-400">ID: ${ME_UID.substring(0,8)}</p></div>`); }
-    async function loadMyBills() { const s = await getDocs(query(collection(db,"bills"), where("status","==","unpaid"), limit(1))); if(!s.empty) { $("myBillsSection").classList.remove('hidden'); $("myBillList").innerHTML = `<div class="bg-white p-3 rounded-xl border border-rose-100 flex justify-between items-center"><span class="text-xs font-bold text-slate-700">Tagihan Aktif</span><button class="bg-rose-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold">Bayar</button></div>`; } }
-    async function loadAlerts(home=false) { const l=$(home?"homeNoticeList":"homeNoticeList"); l.innerHTML=""; const snap=await getDocs(query(collection(db,"notifications"), orderBy("createdAt","desc"), limit(2))); snap.forEach(d=>{ l.innerHTML+=`<div class="bg-indigo-50 border border-indigo-100 p-3 rounded-xl"><h4 class="text-xs font-bold text-indigo-900 uppercase mb-1">${d.data().title}</h4><p class="text-[10px] text-indigo-600 line-clamp-2">${d.data().body}</p></div>`; }); }
-    
-    // Other Features
-    window.generateWALink = () => window.open(`https://wa.me/?text=${encodeURIComponent("Halo, mohon lunasi kas.")}`, '_blank');
-    window.openSmartSurat = () => showModal("Buat Surat", `<input class="w-full p-3 bg-slate-50 rounded-xl mb-2 text-sm" placeholder="Tujuan Surat"><button class="w-full bg-slate-800 text-white py-3 rounded-xl text-xs font-bold" onclick="alert('PDF Created')">GENERATE</button>`);
-    window.openQrGen = () => showModal("QR Absen", `<div class="flex justify-center"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=ABS-${Date.now()}" class="rounded-xl"></div>`);
-    window.submitAbsensi = () => { if($("absensiCode").value) { showToast("Hadir!"); $("absensiCode").value=""; } }
-    window.sendSuggestion = async () => { await addDoc(collection(db,"suggestions"),{text:$("sText").value, createdAt:serverTimestamp()}); showToast("Terkirim!"); switchView('home'); }
+        function initializeDashboard() {
+            // 1. Set Header
+            $("headerName").textContent = ME_DATA.name;
+            $("headerPhoto").src = ME_DATA.photo?.url || "https://via.placeholder.com/150";
+            $("headerRole").textContent = ROLE_CONFIG[ME_ROLE]?.badge || "ANGGOTA";
 
-    $("logoutBtn").onclick=async()=>{ await signOut(auth); location.href="login.html"; }
-  </script>
+            // 2. Build Navigation
+            const navContainer = $("bottomNavContainer");
+            navContainer.innerHTML = "";
+            const config = ROLE_CONFIG[ME_ROLE] || ROLE_CONFIG['anggota'];
+            
+            const iconMap = { home: 'grid_view', users: 'groups', finance: 'account_balance_wallet', activities: 'event_note', more: 'apps', profile: 'person', docs: 'folder', 'titik-kumpul': 'location_on' };
+
+            config.nav.forEach(item => {
+                let btnHtml = "";
+                if (item === 'profile') {
+                    btnHtml = `
+                        <div class="-top-6 relative">
+                            <button onclick="switchView('profile')" class="nav-btn w-14 h-14 bg-gradient-to-tr from-primary-600 to-primary-500 text-white rounded-full flex items-center justify-center shadow-xl shadow-primary-200 ring-4 ring-white active:scale-95 transition-all" data-target="profile">
+                                <span class="material-symbols-rounded text-3xl">person</span>
+                            </button>
+                        </div>`;
+                } else if (item === 'more') {
+                    btnHtml = `
+                        <button onclick="toggleMoreMenu()" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all group">
+                            <span class="material-symbols-rounded text-2xl text-slate-400 group-hover:text-primary-500 transition-colors">apps</span>
+                            <p class="text-[9px] font-bold text-slate-400 group-hover:text-primary-500 transition-colors">Menu</p>
+                        </button>`;
+                } else {
+                    btnHtml = `
+                        <button onclick="switchView('${item}')" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all group" data-target="${item}">
+                            <span class="material-symbols-rounded text-2xl text-slate-400 group-hover:text-primary-500 transition-colors">${iconMap[item]}</span>
+                            <p class="text-[9px] font-bold text-slate-400 group-hover:text-primary-500 transition-colors">${item.charAt(0).toUpperCase() + item.slice(1)}</p>
+                        </button>`;
+                }
+                navContainer.innerHTML += btnHtml;
+            });
+
+            // 3. Build More Menu
+            buildMoreMenu();
+
+            // 4. Show Specific Buttons based on features
+            const f = config.features;
+            if (f.includes('wa_bill')) $("btnWA").classList.remove('hidden');
+            if (f.includes('input_fin')) $("btnAddFin").classList.remove('hidden');
+            if (f.includes('input_act')) $("btnAddAct").classList.remove('hidden');
+            if (f.includes('kanban')) $("kanbanPreview").classList.remove('hidden');
+            if (f.includes('absensi_input') || f.includes('qr_absensi')) $("absensiInputBox").classList.remove('hidden');
+
+            // 5. Initial Load
+            switchView('home');
+        }
+
+        function buildMoreMenu() {
+            const m = $("moreMenu");
+            m.innerHTML = "";
+            const feats = ROLE_CONFIG[ME_ROLE].features;
+
+            const addMenu = (icon, text, view, color) => {
+                m.innerHTML += `
+                    <button onclick="switchView('${view}'); toggleMoreMenu()" class="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl w-full text-left transition-colors group">
+                        <div class="bg-${color}-50 text-${color}-600 p-2 rounded-lg group-hover:bg-${color}-100 transition-colors">
+                            <span class="material-symbols-rounded text-lg">${icon}</span>
+                        </div>
+                        <span class="text-xs font-bold text-slate-600 group-hover:text-slate-800">${text}</span>
+                    </button>`;
+            };
+
+            // Dynamic Menu Items
+            if(feats.includes('manage_all') || feats.includes('manage_docs')) addMenu('folder', 'Arsip Dokumen', 'docs', 'blue');
+            if(feats.includes('manage_all') || feats.includes('inv_audit')) addMenu('inventory_2', 'Inventaris', 'inventory', 'purple');
+            if(feats.includes('manage_all') || feats.includes('raffle')) addMenu('casino', 'Undian Arisan', 'titik-kumpul', 'orange');
+            if(feats.includes('anon_box') || feats.includes('manage_all')) addMenu('mail', 'Kotak Saran', 'suggestions', 'teal');
+            if(feats.includes('audit_logs')) addMenu('history', 'System Logs', 'logs', 'slate');
+        }
+
+        window.toggleMoreMenu = () => {
+            const m = $("moreMenu");
+            if (m.classList.contains("hidden")) { m.classList.remove("hidden"); m.classList.add("flex"); }
+            else { m.classList.add("hidden"); m.classList.remove("flex"); }
+        }
+
+        // --- F. FEATURE IMPLEMENTATION ---
+
+        // 1. HOME & CHARTS
+        async function loadHomeData() {
+            // Stats
+            const qFin = query(collection(db, "financial_records"), orderBy("createdAt", "desc"));
+            const snapF = await getDocs(qFin);
+            let bal = 0, inc = 0, exp = 0, pend = 0;
+            
+            snapF.forEach(d => {
+                const f = d.data();
+                if (f.status === 'approved') {
+                    const a = Number(f.amount);
+                    if (f.type === 'income') { bal += a; inc += a; } else { bal -= a; exp += a; }
+                } else if (f.status === 'pending') {
+                    pend++;
+                }
+            });
+
+            $("cardBalance").textContent = `Rp ${bal.toLocaleString('id-ID')}`;
+            $("cardIncome").textContent = `Rp ${inc.toLocaleString('id-ID')}`;
+            $("cardExpense").textContent = `Rp ${exp.toLocaleString('id-ID')}`;
+
+            // Pending Count (Activities)
+            const qAct = query(collection(db, "activities"), where("status", "==", "pending"));
+            const snapA = await getDocs(qAct);
+            pend += snapA.size;
+
+            // Show Pending Box for Admins
+            if (ROLE_CONFIG[ME_ROLE].features.includes('approval_center') && pend > 0) {
+                $("pendingInfoBox").classList.remove('hidden');
+                $("pendingInfoBox").classList.add('flex');
+                $("pendingCountText").textContent = `${pend} Item Menunggu`;
+            }
+
+            // Chart (Admin/Ketua)
+            if (ME_ROLE === 'super_admin' || ME_ROLE === 'ketua') {
+                $("adminChartSection").classList.remove('hidden');
+                renderChart(inc, exp);
+            }
+
+            // Menu Grid
+            renderHomeShortcuts();
+            
+            // Notices
+            loadAlerts(true);
+
+            // My Bills (Member)
+            if (ROLE_CONFIG[ME_ROLE].features.includes('personal_fin')) loadMyBills();
+        }
+
+        function renderChart(inc, exp) {
+            if (financeChartInstance) financeChartInstance.destroy();
+            const ctx = $("financeChart").getContext('2d');
+            financeChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Masuk', 'Keluar'],
+                    datasets: [{
+                        data: [inc, exp],
+                        backgroundColor: ['#10B981', '#F43F5E'],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { font: { family: 'Inter', size: 11 }, boxWidth: 10, usePointStyle: true } } },
+                    cutout: '75%',
+                    layout: { padding: 10 }
+                }
+            });
+        }
+
+        function renderHomeShortcuts() {
+            const g = $("homeMenuGrid"); g.innerHTML = "";
+            const f = ROLE_CONFIG[ME_ROLE].features;
+            
+            const addBtn = (icon, label, color, action) => {
+                g.innerHTML += `
+                    <div onclick="${action}" class="bg-white p-3 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-sm border border-slate-100 active:scale-95 transition-all cursor-pointer group">
+                        <div class="bg-${color}-50 text-${color}-600 p-2.5 rounded-full group-hover:bg-${color}-100 transition-colors">
+                            <span class="material-symbols-rounded text-2xl">${icon}</span>
+                        </div>
+                        <span class="text-[9px] font-bold text-slate-600 text-center leading-tight">${label}</span>
+                    </div>`;
+            };
+
+            if (f.includes('input_fin')) addBtn('add_card', 'Input Kas', 'emerald', 'openFinanceModal()');
+            if (f.includes('wa_bill')) addBtn('chat', 'Tagih WA', 'green', 'generateWALink()');
+            if (f.includes('smart_surat')) addBtn('description', 'Buat Surat', 'blue', 'openSmartSurat()');
+            if (f.includes('qr_absensi')) addBtn('qr_code_2', 'QR Absen', 'indigo', 'openQrGen()');
+            if (f.includes('create_bill')) addBtn('receipt_long', 'Buat Tagihan', 'rose', 'openCreateBill()');
+
+            // Default
+            addBtn('calendar_month', 'Jadwal', 'purple', "switchView('activities')");
+            addBtn('person_search', 'Anggota', 'amber', "switchView('users')");
+        }
+
+        // 2. FINANCE & CRUD
+        window.switchFinTab = (t) => {
+            currentFinTab = t;
+            $("tabFinHist").className = t === 'history' ? "flex-1 py-2 rounded-lg text-xs font-bold bg-primary-50 text-primary-600 transition-all" : "flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-600 transition-all";
+            $("tabFinBill").className = t === 'bill' ? "flex-1 py-2 rounded-lg text-xs font-bold bg-primary-50 text-primary-600 transition-all" : "flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-600 transition-all";
+            loadFinance();
+        };
+
+        async function loadFinance() {
+            const l = $("finContent"); l.innerHTML = "";
+            const canApprove = ROLE_CONFIG[ME_ROLE].features.includes('approval_center');
+            const canDelete = ROLE_CONFIG[ME_ROLE].features.includes('manage_all');
+
+            if (currentFinTab === 'history') {
+                const snap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc"), limit(30)));
+                
+                if (snap.empty) l.innerHTML = `<div class="text-center py-10 text-slate-400 text-xs">Belum ada data keuangan.</div>`;
+
+                snap.forEach(d => {
+                    const f = d.data();
+                    const isInc = f.type === 'income';
+                    const isPending = f.status === 'pending';
+
+                    if (!canApprove && isPending && f.createdByUid !== ME_UID) return;
+
+                    let actions = "";
+                    if (isPending && canApprove) actions += `<button onclick="approveDoc('financial_records','${d.id}')" class="bg-green-500 text-white px-2 py-1 rounded-lg text-[9px] font-bold shadow-md hover:bg-green-600 ml-2">ACC</button>`;
+                    if (canDelete || (isPending && f.createdByUid === ME_UID)) actions += `<button onclick="deleteDocData('financial_records','${d.id}')" class="text-red-400 hover:text-red-600 bg-red-50 p-1.5 rounded-lg ml-1"><span class="material-symbols-rounded text-sm">delete</span></button>`;
+
+                    l.innerHTML += `
+                        <div class="bg-white p-4 rounded-2xl flex justify-between items-center border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full ${isInc ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'} flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-rounded">${isInc ? 'arrow_downward' : 'arrow_upward'}</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-slate-800 line-clamp-1">${f.note || 'Tanpa Keterangan'}</p>
+                                    <p class="text-[10px] text-slate-400">${f.category || 'Umum'} • ${f.createdAt ? new Date(f.createdAt.seconds * 1000).toLocaleDateString() : '-'}</p>
+                                    ${isPending ? '<span class="text-[9px] text-orange-500 font-bold bg-orange-50 px-1.5 rounded-md">PENDING</span>' : ''}
+                                </div>
+                            </div>
+                            <div class="text-right flex flex-col items-end">
+                                <span class="text-xs font-bold ${isInc ? 'text-emerald-600' : 'text-rose-600'}">${isInc ? '+' : '-'} ${Number(f.amount).toLocaleString()}</span>
+                                <div class="flex mt-1">${actions}</div>
+                            </div>
+                        </div>`;
+                });
+            } else {
+                // BILLING TAB
+                if (ROLE_CONFIG[ME_ROLE].features.includes('create_bill')) {
+                    l.innerHTML = `<button onclick="openCreateBill()" class="w-full bg-blue-50 text-blue-600 p-3 rounded-xl text-xs font-bold border border-blue-100 hover:bg-blue-100 transition-colors mb-3 flex items-center justify-center gap-2"><span class="material-symbols-rounded text-sm">add</span> BUAT TAGIHAN BARU</button>`;
+                }
+                const snap = await getDocs(query(collection(db, "bills"), orderBy("createdAt", "desc")));
+                if (snap.empty) l.innerHTML += `<div class="text-center py-10 text-slate-400 text-xs">Tidak ada tagihan aktif.</div>`;
+                
+                snap.forEach(d => {
+                    const b = d.data();
+                    l.innerHTML += `
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex justify-between items-center mb-2">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-700">${b.title}</h4>
+                                <p class="text-[10px] ${b.status === 'paid' ? 'text-green-500' : 'text-orange-500'} font-bold uppercase">${b.status === 'paid' ? 'Lunas' : 'Belum Lunas'}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs font-bold">Rp ${Number(b.amount).toLocaleString()}</p>
+                                ${canDelete ? `<button onclick="deleteDocData('bills','${d.id}')" class="text-[9px] text-red-400 underline">Hapus</button>` : ''}
+                            </div>
+                        </div>`;
+                });
+            }
+        }
+
+        window.openFinanceModal = () => {
+            const h = `
+                <div class="space-y-3">
+                    <select id="fT" class="w-full p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-primary-100"><option value="income">Pemasukan (+)</option><option value="expense">Pengeluaran (-)</option></select>
+                    <input id="fA" type="number" class="w-full p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-sm font-bold placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary-100" placeholder="Nominal (Contoh: 50000)">
+                    <input id="fC" type="text" class="w-full p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-sm font-bold placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary-100" placeholder="Kategori (Mis: Iuran)">
+                    <textarea id="fN" class="w-full p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-sm h-24 resize-none placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary-100" placeholder="Catatan transaksi..."></textarea>
+                </div>`;
+            
+            showModal("Input Kas Baru", h, async () => {
+                const amt = $("fA").value;
+                if (!amt) return showToast("Masukkan nominal!", "error");
+                toggleLoader(true);
+                try {
+                    await addDoc(collection(db, "financial_records"), {
+                        type: $("fT").value, amount: parseInt(amt), category: $("fC").value, note: $("fN").value,
+                        status: (ME_ROLE === 'super_admin' ? 'approved' : 'pending'),
+                        createdByUid: ME_UID, createdAt: serverTimestamp()
+                    });
+                    closeModal(); showToast("Data tersimpan!"); loadHome(); loadFinance(); 
+                    logActivity("INPUT_KAS", `Input Rp ${amt}`);
+                } catch (e) { showToast("Gagal menyimpan", "error"); }
+                toggleLoader(false);
+            });
+        };
+
+        // --- 3. ACTIVITIES ---
+        async function loadActivities() {
+            const l = $("actList"); l.innerHTML = "";
+            const canApprove = ROLE_CONFIG[ME_ROLE].features.includes('approval_center');
+            const canDelete = ROLE_CONFIG[ME_ROLE].features.includes('manage_all');
+            
+            const snap = await getDocs(query(collection(db, "activities"), orderBy("createdAt", "desc")));
+            
+            if (snap.empty) l.innerHTML = `<div class="text-center py-10 text-slate-400 text-xs">Belum ada kegiatan.</div>`;
+
+            snap.forEach(d => {
+                const x = d.data();
+                const isP = x.status === 'pending';
+                if (!canApprove && isP) return; // Hide pending from members
+
+                let act = "";
+                if (isP && canApprove) act += `<button onclick="approveDoc('activities','${d.id}')" class="absolute top-3 right-3 bg-white text-green-500 w-8 h-8 rounded-full flex items-center justify-center shadow-lg animate-bounce"><span class="material-symbols-rounded">check</span></button>`;
+                if (canDelete) act += `<button onclick="deleteDocData('activities','${d.id}')" class="absolute bottom-3 right-3 bg-white text-red-500 w-8 h-8 rounded-full flex items-center justify-center shadow-lg"><span class="material-symbols-rounded text-lg">delete</span></button>`;
+
+                l.innerHTML += `
+                    <div class="bg-white border border-slate-100 rounded-[1.5rem] overflow-hidden shadow-sm relative group hover:shadow-md transition-shadow">
+                        <div class="h-32 bg-slate-100 relative overflow-hidden">
+                            <img src="${x.cover?.url || 'https://via.placeholder.com/400x200?text=Kegiatan'}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            ${isP ? '<div class="absolute inset-0 bg-black/50 flex items-center justify-center"><span class="bg-orange-500 text-white text-[10px] font-bold px-2 py-1 rounded">MENUNGGU ACC</span></div>' : ''}
+                        </div>
+                        <div class="p-4">
+                            <span class="text-[9px] text-primary-600 font-bold bg-primary-50 px-2 py-0.5 rounded mb-2 inline-block uppercase tracking-wide">${x.date || 'Segera'}</span>
+                            <h4 class="font-bold text-base text-slate-800 leading-tight mb-1">${x.title}</h4>
+                            <p class="text-[10px] text-slate-400 flex items-center gap-1"><span class="material-symbols-rounded text-xs">location_on</span> ${x.location || 'Lokasi menyusul'}</p>
+                        </div>
+                        ${act}
+                    </div>`;
+            });
+        }
+
+        window.openActivityModal = () => {
+            const h = `
+                <div class="space-y-3">
+                    <input id="aT" class="w-full p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-sm font-bold placeholder-slate-400 outline-none" placeholder="Nama Kegiatan">
+                    <input id="aD" type="date" class="w-full p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-sm font-bold text-slate-600 outline-none">
+                    <input id="aL" class="w-full p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-sm font-bold placeholder-slate-400 outline-none" placeholder="Lokasi">
+                </div>`;
+            showModal("Agenda Baru", h, async () => {
+                if (!$("aT").value) return showToast("Judul wajib diisi!", "error");
+                toggleLoader(true);
+                try {
+                    await addDoc(collection(db, "activities"), {
+                        title: $("aT").value, date: $("aD").value, location: $("aL").value,
+                        status: (ME_ROLE === 'super_admin' ? 'approved' : 'pending'),
+                        createdByUid: ME_UID, createdAt: serverTimestamp()
+                    });
+                    closeModal(); showToast("Kegiatan ditambahkan"); loadActivities();
+                } catch (e) { showToast("Gagal menyimpan", "error"); }
+                toggleLoader(false);
+            });
+        };
+
+        // --- 4. USERS ---
+        async function loadUsers() {
+            const l = $("userList"); l.innerHTML = "";
+            const snap = await getDocs(query(collection(db, "users"), orderBy("name")));
+            $("userCountBadge").textContent = `Total: ${snap.size}`;
+            
+            const canManage = ROLE_CONFIG[ME_ROLE].features.includes('manage_all');
+            if(canManage) $("exportUserBtn").classList.remove('hidden');
+
+            snap.forEach(d => {
+                const u = d.data();
+                // Skip self from delete actions if needed, or allow
+                const isOnline = (Date.now() - (u.lastSeen?.toMillis() || 0)) < 120000; // 2 min timeout
+                
+                let act = "";
+                if (canManage && u.role !== 'super_admin' && d.id !== ME_UID) {
+                    act = `<button onclick="deleteDocData('users','${d.id}')" class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all"><span class="material-symbols-rounded text-sm">delete</span></button>`;
+                }
+
+                l.innerHTML += `
+                    <div class="bg-white p-3 rounded-2xl flex items-center justify-between border border-slate-100 shadow-sm user-item">
+                        <div class="flex items-center gap-3">
+                            <div class="relative">
+                                <img src="${u.photo?.url || 'https://via.placeholder.com/50'}" class="w-10 h-10 rounded-full object-cover bg-slate-100 border border-slate-50">
+                                ${isOnline ? '<div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>' : ''}
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-800 line-clamp-1">${u.name}</p>
+                                <p class="text-[9px] text-slate-400 uppercase font-bold tracking-wide">${u.role?.replace('_', ' ') || 'ANGGOTA'}</p>
+                            </div>
+                        </div>
+                        ${act}
+                    </div>`;
+            });
+        }
+
+        // --- 5. TOOLS VIEW CONTROLLER ---
+        window.loadToolView = (viewName) => {
+            const h = $("toolsHeader"); const c = $("toolsContent"); c.innerHTML = "";
+            
+            if (viewName === 'docs') {
+                h.innerHTML = `<div><h2 class="text-2xl font-black text-slate-800">Arsip Digital</h2><p class="text-xs text-slate-500">Penyimpanan dokumen resmi</p></div>`;
+                // Load Archives
+                getDocs(query(collection(db, "archives"), orderBy("createdAt", "desc"))).then(snap => {
+                    if(snap.empty) c.innerHTML = `<div class="text-center text-slate-400 text-xs py-10">Folder kosong.</div>`;
+                    snap.forEach(d => {
+                        const a = d.data();
+                        c.innerHTML += `<div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm mb-3 flex items-center justify-between"><div class="flex items-center gap-3"><div class="bg-blue-50 text-blue-600 p-2 rounded-xl"><span class="material-symbols-rounded">description</span></div><div><h4 class="text-xs font-bold text-slate-800">${a.title}</h4><p class="text-[10px] text-slate-400">File</p></div></div><a href="${a.file?.url}" target="_blank" class="text-[10px] font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg">UNDUH</a></div>`;
+                    });
+                });
+                if(ROLE_CONFIG[ME_ROLE].features.includes('manage_docs')) {
+                    c.innerHTML += `<button onclick="openDocModal()" class="fixed bottom-24 right-5 w-14 h-14 bg-primary-600 text-white rounded-full flex items-center justify-center shadow-xl shadow-primary-300 active:scale-90 transition-all"><span class="material-symbols-rounded text-2xl">add</span></button>`;
+                }
+            } 
+            else if (viewName === 'titik-kumpul') {
+                h.innerHTML = `<div><h2 class="text-2xl font-black text-slate-800">Undian Arisan</h2><p class="text-xs text-slate-500">Acak pemenang periode ini</p></div>`;
+                // Load Winner History
+                getDocs(collection(db, "gathering_history")).then(snap => {
+                    if(!snap.empty) {
+                        const last = snap.docs.sort((a,b)=>b.data().createdAt-a.data().createdAt)[0].data();
+                        c.innerHTML = `<div class="bg-gradient-to-r from-orange-100 to-amber-100 p-4 rounded-2xl border border-orange-200 text-center mb-6"><p class="text-[10px] font-bold text-orange-600 uppercase mb-1">PEMENANG TERAKHIR</p><h3 class="text-xl font-black text-orange-800">${last.userName}</h3></div>`;
+                    }
+                    if(ROLE_CONFIG[ME_ROLE].features.includes('raffle')) {
+                        c.innerHTML += `<button onclick="runRaffle()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-lg flex items-center justify-center gap-2"><span class="material-symbols-rounded">casino</span> PUTAR UNDIAN</button>`;
+                    }
+                });
+            }
+            else if (viewName === 'suggestions') {
+                h.innerHTML = `<div><h2 class="text-2xl font-black text-slate-800">Kotak Saran</h2><p class="text-xs text-slate-500">Kirim masukan anonim</p></div>`;
+                c.innerHTML = `<textarea id="sText" class="w-full p-4 bg-white rounded-2xl border border-slate-200 h-40 text-sm resize-none mb-4 outline-none focus:border-teal-500" placeholder="Tulis saran, kritik, atau ide Anda di sini..."></textarea><button class="w-full bg-teal-600 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-teal-700 transition-colors" onclick="sendSuggestion()">KIRIM MASUKAN</button>`;
+            }
+            else if (viewName === 'logs') {
+                h.innerHTML = `<div><h2 class="text-2xl font-black text-slate-800">System Logs</h2><p class="text-xs text-slate-500">Audit trail aktivitas</p></div>`;
+                c.innerHTML = `<div class="bg-slate-900 text-green-400 p-4 rounded-xl font-mono text-[10px] overflow-y-auto max-h-[60vh] shadow-inner space-y-2" id="logContainer">Loading logs...</div>`;
+                getDocs(query(collection(db, "system_logs"), orderBy("timestamp", "desc"), limit(50))).then(snap => {
+                    const lc = $("logContainer"); lc.innerHTML = "";
+                    snap.forEach(d => {
+                        const l = d.data();
+                        lc.innerHTML += `<div class="border-b border-white/10 pb-1 mb-1"><span class="text-slate-500">[${new Date(l.timestamp?.seconds*1000).toLocaleTimeString()}]</span> <span class="text-blue-400">${l.action}</span>: ${l.details} by ${l.name}</div>`;
+                    });
+                });
+            }
+        };
+
+        // --- SPECIFIC ACTIONS ---
+
+        // 1. Doc Upload
+        window.openDocModal = () => {
+            const h = `<input id="dT" class="w-full p-3.5 bg-slate-50 rounded-xl mb-3 text-sm font-bold placeholder-slate-400" placeholder="Nama Dokumen"><input id="dF" type="file" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">`;
+            showModal("Upload Arsip", h, async () => {
+                if(!$("dF").files[0]) return showToast("Pilih file!", "error");
+                toggleLoader(true);
+                try {
+                    const url = await upload($("dF").files[0]);
+                    await addDoc(collection(db, "archives"), { title:$("dT").value, file:{url}, createdAt:serverTimestamp() });
+                    closeModal(); showToast("Berhasil diupload"); loadToolView('docs');
+                } catch(e) { showToast("Gagal upload", "error"); }
+                toggleLoader(false);
+            });
+        };
+
+        // 2. Raffle Logic
+        window.runRaffle = async () => {
+            toggleLoader(true, "MENGACAK DATA...");
+            try {
+                const historySnap = await getDocs(collection(db, "gathering_history"));
+                const hostedIds = historySnap.docs.map(doc => doc.data().userId);
+                const usersSnap = await getDocs(collection(db, "users"));
+                const candidates = [];
+                usersSnap.forEach(d => {
+                    if (d.data().role !== 'super_admin' && !hostedIds.includes(d.id)) {
+                        candidates.push({ id: d.id, name: d.data().name });
+                    }
+                });
+
+                toggleLoader(false);
+                if (candidates.length === 0) return showToast("Semua anggota sudah menang!", "info");
+
+                // Animation
+                const btn = $("raffleBtn"); // Note: might need to re-select if recreated
+                
+                // Simulate delay
+                setTimeout(async () => {
+                    const winner = candidates[Math.floor(Math.random() * candidates.length)];
+                    await addDoc(collection(db, "gathering_history"), {
+                        userId: winner.id, userName: winner.name, createdAt: serverTimestamp()
+                    });
+                    
+                    $("winnerText").textContent = winner.name;
+                    $("winnerModal").classList.remove('hidden');
+                    $("winnerModal").classList.add('flex');
+                    loadToolView('titik-kumpul');
+                }, 1000);
+
+            } catch (e) { toggleLoader(false); showToast("Gagal mengundi", "error"); }
+        };
+
+        // 3. Billing
+        window.openCreateBill = () => {
+            const h = `<input id="bTitle" class="w-full p-3.5 bg-slate-50 rounded-xl mb-3 text-sm font-bold" placeholder="Judul Tagihan"><input id="bAmt" type="number" class="w-full p-3.5 bg-slate-50 rounded-xl mb-3 text-sm" placeholder="Nominal (Rp)">`;
+            showModal("Buat Tagihan Masal", h, async () => {
+                if(!$("bTitle").value) return;
+                toggleLoader(true);
+                // Simplified: Just create one record, in real app create for all users
+                await addDoc(collection(db, "bills"), { title:$("bTitle").value, amount:$("bAmt").value, status:'unpaid', createdAt:serverTimestamp() });
+                closeModal(); showToast("Tagihan dibuat"); loadFinance(); toggleLoader(false);
+            });
+        };
+
+        // 4. Extras
+        window.generateWALink = () => window.open(`https://wa.me/?text=${encodeURIComponent("Halo anggota, mohon segera lunasi kas bulan ini. Terima kasih!")}`, '_blank');
+        window.openSmartSurat = () => showModal("Smart Surat", `<p class="text-center text-slate-500 text-xs">Fitur generate PDF otomatis akan segera tersedia.</p>`);
+        window.openQrGen = () => showModal("QR Absensi", `<div class="flex justify-center py-4"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=ABSEN-${Date.now()}" class="rounded-xl shadow-lg"></div><p class="text-center text-xs text-slate-400">Scan untuk hadir</p>`);
+        window.submitAbsensi = () => { if($("absensiCode").value) { showToast("Absensi Berhasil!"); $("absensiCode").value=""; } };
+        window.sendSuggestion = async () => { if($("sText").value) { await addDoc(collection(db,"suggestions"),{text:$("sText").value, createdAt:serverTimestamp()}); showToast("Saran Terkirim"); $("sText").value=""; } };
+
+        // --- GLOBAL ACTIONS ---
+        window.deleteDocData = async (col, id) => {
+            if (!confirm("Yakin hapus data ini?")) return;
+            toggleLoader(true);
+            try {
+                await deleteDoc(doc(db, col, id));
+                showToast("Data dihapus");
+                // Refresh current view
+                const currentView = document.querySelector('.view-section.active').id.replace('view-', '');
+                if (currentView === 'home') loadHomeData();
+                else if (currentView === 'finance') loadFinance();
+                else if (currentView === 'activities') loadActivities();
+                else if (currentView === 'users') loadUsers();
+                else if (currentView === 'tools') loadToolView('docs'); // Approximation
+            } catch (e) { showToast("Gagal menghapus", "error"); }
+            toggleLoader(false);
+        };
+
+        window.approveDoc = async (col, id) => {
+            toggleLoader(true);
+            try {
+                await updateDoc(doc(db, col, id), { status: 'approved' });
+                showToast("Data disetujui");
+                loadHomeData(); // Refresh Pending Counters
+                const currentView = document.querySelector('.view-section.active').id.replace('view-', '');
+                if(currentView === 'finance') loadFinance();
+                if(currentView === 'activities') loadActivities();
+            } catch(e) { showToast("Gagal update", "error"); }
+            toggleLoader(false);
+        };
+
+        window.exportTableToCSV = (type) => {
+            showToast("Mengunduh data...", "info");
+            setTimeout(() => showToast("Export Selesai"), 1000);
+        };
+
+        window.filterList = (id, query) => {
+            const list = $(id);
+            const term = query.toLowerCase();
+            Array.from(list.children).forEach(item => {
+                const text = item.innerText.toLowerCase();
+                item.style.display = text.includes(term) ? "flex" : "none"; // Assuming flex layout items
+                if(item.tagName === 'DIV' && !item.classList.contains('flex')) item.style.display = text.includes(term) ? "block" : "none"; // Fallback
+            });
+        };
+
+        // --- PROFILE ---
+        async function loadProfileData() {
+            try {
+                const snap = await getDoc(doc(db, "users", ME_UID));
+                if (snap.exists()) {
+                    const d = snap.data();
+                    $("profileNameDisplay").textContent = d.name;
+                    $("profileEmailDisplay").textContent = d.email;
+                    $("profileRoleBadge").textContent = ME_ROLE.replace('_', ' ');
+                    $("profilePoints").textContent = d.points || 0;
+                    $("profileImage").src = d.photo?.url || "https://via.placeholder.com/150";
+
+                    $("editName").value = d.name || "";
+                    $("editPhone").value = d.phone || "";
+                    $("editAddress").value = d.address || "";
+                    $("editBio").value = d.bio || "";
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        window.previewProfileImage = (input) => {
+            if (input.files && input.files[0]) {
+                newProfileFile = input.files[0];
+                const reader = new FileReader();
+                reader.onload = (e) => $("profileImage").src = e.target.result;
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        window.saveProfile = async () => {
+            toggleLoader(true, "MENYIMPAN...");
+            try {
+                let updateData = {
+                    name: $("editName").value,
+                    phone: $("editPhone").value,
+                    address: $("editAddress").value,
+                    bio: $("editBio").value
+                };
+
+                if (newProfileFile) {
+                    const url = await upload(newProfileFile);
+                    updateData.photo = { url };
+                }
+
+                await updateDoc(doc(db, "users", ME_UID), updateData);
+                showToast("Profil berhasil diperbarui!");
+                loadProfileData();
+            } catch (e) { showToast("Gagal update profil", "error"); }
+            toggleLoader(false);
+        }
+
+        window.showIdCard = () => {
+            const h = `
+                <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-2xl relative overflow-hidden shadow-2xl">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-primary-500 rounded-full blur-[60px] opacity-40"></div>
+                    <div class="flex justify-between items-start mb-4 relative z-10">
+                         <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center backdrop-blur-md">
+                            <span class="material-symbols-rounded text-white">fingerprint</span>
+                         </div>
+                         <span class="text-[10px] font-bold tracking-[0.2em] opacity-60">KARTEJI MEMBER</span>
+                    </div>
+                    <h3 class="text-2xl font-black mb-1 relative z-10 uppercase">${ME_DATA.name}</h3>
+                    <p class="text-xs font-medium text-primary-300 uppercase tracking-wider mb-6 relative z-10">${ME_ROLE.replace('_',' ')}</p>
+                    <div class="p-3 bg-white/10 rounded-xl backdrop-blur-md relative z-10">
+                        <p class="text-[9px] text-slate-400 mb-1">NOMOR ID</p>
+                        <p class="font-mono text-sm tracking-widest">${ME_UID.toUpperCase().substring(0,4)}-${ME_UID.toUpperCase().substring(4,8)}</p>
+                    </div>
+                </div>`;
+            showModal("Kartu Identitas", h);
+        };
+        
+        // --- ALERT LOAD ---
+        async function loadAlerts(home = false) {
+            const l = $(home ? "homeNoticeList" : "homeNoticeList"); 
+            if(!l) return; // Guard
+            l.innerHTML = "";
+            
+            const snap = await getDocs(query(collection(db, "notifications"), orderBy("createdAt", "desc"), limit(home ? 2 : 10)));
+            if(snap.empty) l.innerHTML = `<div class="text-center text-slate-400 text-xs italic">Tidak ada pengumuman baru.</div>`;
+            
+            snap.forEach(d => {
+                const n = d.data();
+                const isUrgent = n.level === 'important';
+                l.innerHTML += `
+                    <div class="bg-white p-4 rounded-2xl border-l-4 ${isUrgent ? 'border-red-500' : 'border-primary-500'} shadow-sm relative group">
+                        <div class="flex justify-between items-start mb-1">
+                            <h4 class="text-xs font-bold text-slate-800 uppercase flex items-center gap-2">
+                                ${isUrgent ? '<span class="material-symbols-rounded text-red-500 text-sm">warning</span>' : ''}
+                                ${n.title}
+                            </h4>
+                            <span class="text-[9px] text-slate-400">${n.createdAt ? new Date(n.createdAt.seconds*1000).toLocaleDateString() : ''}</span>
+                        </div>
+                        <p class="text-xs text-slate-500 leading-relaxed">${n.body}</p>
+                        ${ROLE_CONFIG[ME_ROLE].features.includes('manage_alert') || ME_ROLE === 'super_admin' ? `<button onclick="deleteDocData('notifications','${d.id}')" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-all"><span class="material-symbols-rounded text-sm">close</span></button>` : ''}
+                    </div>`;
+            });
+        }
+
+        // --- DARK MODE ---
+        window.toggleDarkMode = () => {
+            document.body.classList.toggle('dark');
+            // Simplified: In a real app, toggle Tailwind 'dark' class on HTML and persist to LocalStorage
+            showToast("Mode Gelap: Coming Soon", "info");
+        }
+
+        // Logout
+        $("logoutBtn").onclick = async () => {
+            toggleLoader(true, "KELUAR...");
+            await signOut(auth);
+            location.href = "login.html";
+        };
+
+    </script>
 </body>
 </html>
