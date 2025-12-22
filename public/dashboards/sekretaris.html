@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Sekretaris | KARTEJI</title>
+  <title>Sekretaris | Administration</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
@@ -16,15 +16,22 @@
           fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
           colors: {
             brand: { primary: '#0F172A', light: '#334155' },
-            accent: { DEFAULT: '#F97316', light: '#FFEDD5' }
+            sky: { DEFAULT: '#0EA5E9', light: '#E0F2FE', dark: '#0369A1' } // Sky theme for Admin
           },
-          animation: { 'blob': 'blob 10s infinite' },
+          animation: { 
+            'blob': 'blob 10s infinite',
+            'slide-in-top': 'slideInTop 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both',
+          },
           keyframes: {
             blob: {
               '0%': { transform: 'translate(0px, 0px) scale(1)' },
               '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
               '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
               '100%': { transform: 'translate(0px, 0px) scale(1)' },
+            },
+            slideInTop: {
+                '0%': { transform: 'translateY(-100px)', opacity: '0' },
+                '100%': { transform: 'translateY(0)', opacity: '1' }
             }
           }
         }
@@ -36,37 +43,41 @@
     body { background-color: #F8FAFC; color: #1E293B; -webkit-tap-highlight-color: transparent; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .glass-nav {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.90);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
       border-top: 1px solid rgba(15, 23, 42, 0.05);
-      box-shadow: 0 -10px 40px rgba(0,0,0,0.05);
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.03);
     }
     .view-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
     .view-section.active { display: block; opacity: 1; transform: translateY(0); }
-    .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #F97316; }
+    .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #0EA5E9; }
     .nav-btn.active p { color: #0F172A; font-weight: 700; }
   </style>
 </head>
 
-<body class="min-h-screen relative overflow-x-hidden pb-32 selection:bg-orange-200 selection:text-orange-900">
+<body class="min-h-screen relative overflow-x-hidden pb-32 selection:bg-sky-200 selection:text-sky-900">
 
   <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
-    <div class="absolute top-[20%] right-[-10%] w-96 h-96 bg-orange-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
+    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-sky-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
+    <div class="absolute top-[20%] right-[-10%] w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
   </div>
+
+  <div id="toastContainer" class="fixed top-4 left-0 right-0 z-[100] flex flex-col items-center gap-2 pointer-events-none px-4"></div>
 
   <div id="globalLoader" class="fixed inset-0 bg-white/80 z-[9999] flex items-center justify-center flex-col gap-4 backdrop-blur-md hidden">
-    <div class="w-12 h-12 border-4 border-slate-200 border-t-accent rounded-full animate-spin"></div>
-    <p class="text-xs font-bold text-slate-400 animate-pulse">MEMUAT...</p>
+    <div class="w-12 h-12 border-4 border-slate-200 border-t-sky rounded-full animate-spin"></div>
+    <p class="text-xs font-bold text-slate-400 animate-pulse">MEMPROSES DATA...</p>
   </div>
 
-  <div id="gate" class="fixed inset-0 bg-slate-900 z-[9998] hidden items-center justify-center p-6 text-center">
-    <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full">
-        <span class="material-symbols-rounded text-red-500 text-6xl mb-4">lock</span>
+  <div id="gate" class="fixed inset-0 bg-slate-900 z-[9998] hidden items-center justify-center p-6 text-center backdrop-blur-sm">
+    <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full animate-[slideInTop_0.5s]">
+        <div class="bg-red-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="material-symbols-rounded text-red-500 text-4xl">lock</span>
+        </div>
         <h2 class="text-2xl font-extrabold text-brand-primary mb-2">Akses Ditolak</h2>
-        <p class="text-slate-500 text-sm mb-6">Halaman ini khusus untuk Sekretaris.</p>
-        <a href="../login.html" class="block w-full bg-brand-primary text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors">Kembali Login</a>
+        <p class="text-slate-500 text-sm mb-6">Halaman ini khusus Sekretaris.</p>
+        <a href="../login.html" class="block w-full bg-brand-primary text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors">Kembali</a>
     </div>
   </div>
 
@@ -87,16 +98,16 @@
       <div class="flex justify-between items-center">
           <div class="flex items-center gap-3">
               <button onclick="switchView('profile')" class="relative group active:scale-95 transition-transform">
-                <img id="headerPhoto" class="w-11 h-11 rounded-full border-2 border-white shadow-md object-cover" src="https://via.placeholder.com/100">
-                <div class="absolute bottom-0 right-0 w-3 h-3 bg-accent border-2 border-white rounded-full"></div>
+                <img id="headerPhoto" class="w-12 h-12 rounded-full border-2 border-white shadow-md object-cover" src="https://via.placeholder.com/100">
+                <div class="absolute bottom-0 right-0 w-4 h-4 bg-sky-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] text-white font-bold">A</div>
               </button>
               <div>
-                  <p class="text-[10px] font-bold text-accent uppercase tracking-widest bg-accent-light px-2 py-0.5 rounded-full w-fit mb-0.5">Sekretaris</p>
+                  <p class="text-[10px] font-bold text-sky-700 uppercase tracking-widest bg-sky-100 px-2 py-0.5 rounded-full w-fit mb-0.5">Sekretaris</p>
                   <h1 id="headerName" class="text-xl font-extrabold text-brand-primary leading-none">Memuat...</h1>
               </div>
           </div>
-          <button id="logoutBtn" class="w-10 h-10 rounded-full bg-white border border-slate-100 shadow-sm flex items-center justify-center text-red-500 hover:bg-red-50 hover:border-red-100 transition-all active:scale-95">
-            <span class="material-symbols-rounded text-xl">logout</span>
+          <button onclick="location.reload()" class="w-10 h-10 rounded-full bg-white border border-slate-100 shadow-sm flex items-center justify-center active:scale-95 text-slate-400">
+            <span class="material-symbols-rounded">refresh</span>
           </button>
       </div>
   </header>
@@ -105,17 +116,24 @@
 
       <section id="view-home" class="view-section active">
           <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 group transition-all">
-              <div class="absolute top-0 right-0 p-4 opacity-5"><span class="material-symbols-rounded text-9xl">folder_open</span></div>
+              <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500 transform group-hover:scale-110"><span class="material-symbols-rounded text-9xl">folder_shared</span></div>
               <div class="relative z-10">
                 <p class="text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Total Arsip Digital</p>
                 <h2 id="totalDocs" class="text-4xl font-black tracking-tight mb-8">0</h2>
+                
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5">
-                        <p class="text-[9px] font-bold uppercase text-slate-300 mb-1">Surat Keluar</p>
+                    <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5 cursor-pointer active:scale-95 transition-transform" onclick="switchView('surat')">
+                        <div class="flex items-center gap-1.5 mb-1">
+                            <div class="bg-sky-400/20 p-1 rounded-full"><span class="material-symbols-rounded text-[10px] text-sky-300">mail</span></div>
+                            <span class="text-[9px] font-bold uppercase text-slate-300">Surat</span>
+                        </div>
                         <p id="countLetters" class="text-lg font-bold text-white leading-tight">0</p>
                     </div>
-                    <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5">
-                        <p class="text-[9px] font-bold uppercase text-slate-300 mb-1">Notulen</p>
+                    <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5 cursor-pointer active:scale-95 transition-transform" onclick="switchView('notulen')">
+                        <div class="flex items-center gap-1.5 mb-1">
+                            <div class="bg-orange-400/20 p-1 rounded-full"><span class="material-symbols-rounded text-[10px] text-orange-300">edit_note</span></div>
+                            <span class="text-[9px] font-bold uppercase text-slate-300">Notulen</span>
+                        </div>
                         <p id="countMinutes" class="text-lg font-bold text-white leading-tight">0</p>
                     </div>
                 </div>
@@ -124,21 +142,21 @@
 
           <div class="grid grid-cols-2 gap-3 mt-6">
               <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-36 relative group overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer active:scale-95" onclick="switchView('surat')">
-                   <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent opacity-50"></div>
+                   <div class="absolute inset-0 bg-gradient-to-br from-sky-50 to-transparent opacity-50"></div>
                    <div class="relative z-10">
-                       <span class="material-symbols-rounded text-blue-500 mb-2 text-2xl">mail</span>
-                       <p class="text-[10px] text-slate-400 uppercase font-bold">Surat</p>
+                       <span class="material-symbols-rounded text-sky-500 mb-2 text-2xl">mark_email_unread</span>
+                       <p class="text-[10px] text-slate-400 uppercase font-bold">Surat Menyurat</p>
                    </div>
-                   <h3 class="relative z-10 text-xs font-bold text-brand-primary mt-1">Kelola Surat</h3>
+                   <h3 class="relative z-10 text-xs font-bold text-brand-primary mt-1 line-clamp-2">Arsip Surat Masuk & Keluar</h3>
               </div>
 
               <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-36 relative group overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer active:scale-95" onclick="switchView('notulen')">
                    <div class="absolute inset-0 bg-gradient-to-br from-orange-50 to-transparent opacity-50"></div>
                    <div class="relative z-10">
-                       <span class="material-symbols-rounded text-accent mb-2 text-2xl">edit_note</span>
-                       <p class="text-[10px] text-slate-400 uppercase font-bold">Rapat</p>
+                       <span class="material-symbols-rounded text-accent mb-2 text-2xl">history_edu</span>
+                       <p class="text-[10px] text-slate-400 uppercase font-bold">Notulensi</p>
                    </div>
-                   <h3 class="relative z-10 text-xs font-bold text-brand-primary mt-1">Catat Notulen</h3>
+                   <h3 class="relative z-10 text-xs font-bold text-brand-primary mt-1 line-clamp-2">Catat Hasil Rapat</h3>
               </div>
           </div>
       </section>
@@ -162,7 +180,7 @@
                 <h2 class="text-2xl font-bold text-brand-primary">Surat</h2>
                 <p class="text-xs text-slate-400">Arsip persuratan</p>
             </div>
-            <button onclick="openSuratForm()" class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+            <button onclick="openSuratForm()" class="w-10 h-10 bg-sky-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform">
                 <span class="material-symbols-rounded">add</span>
             </button>
           </div>
@@ -172,11 +190,11 @@
       <section id="view-arsip" class="view-section">
           <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
             <div>
-                <h2 class="text-2xl font-bold text-brand-primary">Arsip</h2>
-                <p class="text-xs text-slate-400">File digital</p>
+                <h2 class="text-2xl font-bold text-brand-primary">Dokumen</h2>
+                <p class="text-xs text-slate-400">File digital (SK, AD/ART)</p>
             </div>
             <button onclick="openArsipForm()" class="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform">
-                <span class="material-symbols-rounded">upload</span>
+                <span class="material-symbols-rounded">upload_file</span>
             </button>
           </div>
           <div id="listArsip" class="grid grid-cols-2 gap-3 pb-20"></div>
@@ -189,33 +207,30 @@
                 <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <span class="material-symbols-rounded text-white">photo_camera</span>
                 </div>
-                <div class="absolute bottom-1 right-1 bg-accent p-1.5 rounded-full border-2 border-white shadow-sm">
-                    <span class="material-symbols-rounded text-white text-sm block">edit</span>
-                </div>
             </div>
             <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
             
             <h2 id="profileNameDisplay" class="text-xl font-bold text-brand-primary mt-4 mb-0.5">Nama Sekretaris</h2>
-            <div id="profileRoleBadge" class="px-3 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-extrabold uppercase tracking-wide mb-1">SEKRETARIS</div>
+            <div id="profileRoleBadge" class="px-3 py-0.5 bg-sky-500 text-white rounded-full text-[10px] font-extrabold uppercase tracking-wide mb-1 shadow-lg shadow-sky-500/30">SEKRETARIS</div>
             <p id="profileEmailDisplay" class="text-sm text-slate-400">email@user.com</p>
+
+            <button onclick="showIdCard()" class="mt-4 w-full max-w-xs bg-slate-800 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-xl">
+                <span class="material-symbols-rounded">badge</span> Kartu Sekretaris
+            </button>
 
             <div class="w-full mt-8 space-y-4 px-1">
                 <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm space-y-4">
                     <div>
                         <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">badge</span> Nama Lengkap</label>
-                        <input id="editName" type="text" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-accent focus:bg-white transition-all">
+                        <input id="editName" type="text" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-sky-500">
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">call</span> No. WhatsApp / HP</label>
-                        <input id="editPhone" type="tel" placeholder="08..." class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-accent focus:bg-white transition-all">
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">call</span> No. WhatsApp</label>
+                        <input id="editPhone" type="tel" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-sky-500">
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">home_pin</span> Alamat Domisili</label>
-                        <textarea id="editAddress" rows="2" placeholder="Masukkan alamat lengkap..." class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-accent focus:bg-white transition-all resize-none"></textarea>
-                    </div>
-                     <div>
-                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">sticky_note_2</span> Bio / Catatan</label>
-                        <textarea id="editBio" rows="2" placeholder="Tulis sesuatu tentang anda..." class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-accent focus:bg-white transition-all resize-none"></textarea>
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">home_pin</span> Alamat</label>
+                        <textarea id="editAddress" rows="2" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-sky-500 resize-none"></textarea>
                     </div>
                 </div>
                 
@@ -253,7 +268,7 @@
           </button>
 
           <button onclick="switchView('arsip')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="arsip">
-              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">folder</span>
+              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">folder_open</span>
               <p class="text-[10px] font-medium text-slate-400 transition-colors">Arsip</p>
           </button>
       </div>
@@ -275,50 +290,46 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-
-    // ============================================================
-    // KONFIGURASI CLOUDINARY
-    // ============================================================
     const CLOUD_NAME = "dbxktcwug";
     const PRESET_DOCS = "Karteji"; 
 
-    // --- HELPER GLOBAL ---
     window.$ = (id) => document.getElementById(id);
     let UID = null;
     let newProfileFile = null;
 
-    // --- UI UTILS ---
+    // --- UX UTILITIES ---
+    window.showToast = (msg, type = 'success') => {
+        const container = $('toastContainer');
+        const el = document.createElement('div');
+        const color = type === 'error' ? 'bg-red-500' : 'bg-slate-800';
+        el.className = `${color} text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 animate-slide-in-top pointer-events-auto min-w-[200px] backdrop-blur-sm bg-opacity-90`;
+        el.innerHTML = `<span class="material-symbols-rounded text-lg">${type==='error'?'error':'check_circle'}</span><span class="text-xs font-bold">${msg}</span>`;
+        container.appendChild(el);
+        setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 3000);
+    };
+
     window.toggleLoader = (show) => {
         const l = $("globalLoader");
-        if(show) { l.classList.remove('hidden'); l.classList.add('flex'); }
-        else { l.classList.add('hidden'); l.classList.remove('flex'); }
+        if(show) { l.classList.remove('hidden'); l.classList.add('flex'); } else { l.classList.add('hidden'); l.classList.remove('flex'); }
     };
 
     window.closeModal = () => $("crudModal").classList.add('hidden');
     window.showModal = (title, bodyHtml, onSave) => {
         $("modalTitle").textContent = title;
         $("modalBody").innerHTML = bodyHtml;
-        $("crudModal").classList.remove('hidden');
-        $("crudModal").classList.add('flex');
-        
+        $("crudModal").classList.remove('hidden'); $("crudModal").classList.add('flex');
         const btn = $("modalSubmitBtn");
         const newBtn = btn.cloneNode(true);
         btn.parentNode.replaceChild(newBtn, btn);
         newBtn.onclick = onSave;
+        if (!onSave) newBtn.style.display = 'none'; else newBtn.style.display = 'block';
     };
 
     window.switchView = (viewId) => {
-        document.querySelectorAll('.view-section').forEach(el => {
-            el.classList.remove('active');
-            setTimeout(() => { if(!el.classList.contains('active')) el.style.display = 'none'; }, 300);
-        });
-        const target = $(`view-${viewId}`);
-        target.style.display = 'block';
-        setTimeout(() => target.classList.add('active'), 10);
-
+        document.querySelectorAll('.view-section').forEach(el => { el.classList.remove('active'); setTimeout(() => { if(!el.classList.contains('active')) el.style.display = 'none'; }, 200); });
+        const target = $(`view-${viewId}`); target.style.display = 'block'; setTimeout(() => target.classList.add('active'), 10);
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-        const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`);
-        if(activeBtn) activeBtn.classList.add('active');
+        const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`); if(activeBtn) activeBtn.classList.add('active');
         
         if(viewId === 'home') loadHomeStats();
         if(viewId === 'notulen') loadNotulen();
@@ -327,37 +338,21 @@
         if(viewId === 'profile') loadProfileData();
     };
 
-    // --- UPLOAD LOGIC ---
     async function upload(file) {
         if(!file) return null;
-        const fd = new FormData();
-        fd.append("file", file);
-        fd.append("upload_preset", PRESET_DOCS);
-
-        try {
-            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, { method: "POST", body: fd });
-            const data = await res.json();
-            if(data.error) throw new Error(data.error.message);
-            return { url: data.secure_url };
-        } catch (e) {
-            console.error(e);
-            alert("Gagal Upload: " + e.message);
-            throw e;
-        }
+        const fd = new FormData(); fd.append("file", file); fd.append("upload_preset", PRESET_DOCS);
+        try { const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, { method: "POST", body: fd }); const d = await res.json(); return { url: d.secure_url }; } 
+        catch (e) { showToast("Gagal Upload", "error"); throw e; }
     }
 
-    // --- AUTH & INIT ---
+    // --- AUTH ---
     onAuthStateChanged(auth, async user => {
         if(!user) return location.href = "login.html";
-        
         toggleLoader(true);
         try {
             const snap = await getDoc(doc(db,"users",user.uid));
             if(!snap.exists() || (snap.data().role !== "sekretaris" && snap.data().role !== "super_admin")){
-                toggleLoader(false);
-                $("gate").classList.remove("hidden");
-                $("gate").classList.add("flex");
-                return;
+                toggleLoader(false); $("gate").classList.remove("hidden"); $("gate").classList.add("flex"); return;
             }
             UID = user.uid;
             await Promise.all([loadHomeStats(), loadNotulen(), loadSurat(), loadArsip(), loadProfileData()]);
@@ -371,62 +366,10 @@
             const notul = await getDocs(collection(db, "minutes"));
             const surat = await getDocs(collection(db, "letters"));
             const arsip = await getDocs(collection(db, "archives"));
-
             $("countMinutes").textContent = notul.size;
             $("countLetters").textContent = surat.size;
             $("totalDocs").textContent = notul.size + surat.size + arsip.size;
         } catch (e) { console.error(e); }
-    }
-
-    // --- PROFILE ---
-    async function loadProfileData() {
-        try {
-            const snap = await getDoc(doc(db, "users", UID));
-            if(snap.exists()){
-                const d = snap.data();
-                $("headerName").textContent = d.name || "Sekretaris";
-                $("headerPhoto").src = d.photo?.url || "https://via.placeholder.com/150";
-                
-                $("profileImage").src = d.photo?.url || "https://via.placeholder.com/150";
-                $("profileNameDisplay").textContent = d.name;
-                $("profileEmailDisplay").textContent = d.email;
-                
-                $("editName").value = d.name || "";
-                $("editPhone").value = d.phone || "";
-                $("editAddress").value = d.address || "";
-                $("editBio").value = d.bio || "";
-            }
-        } catch(e) { console.error(e); }
-    }
-
-    window.previewProfileImage = (input) => {
-        if (input.files && input.files[0]) {
-            newProfileFile = input.files[0];
-            const reader = new FileReader();
-            reader.onload = (e) => $("profileImage").src = e.target.result;
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    window.saveProfile = async () => {
-        toggleLoader(true);
-        try {
-            let updateData = { 
-                name: $("editName").value,
-                phone: $("editPhone").value,
-                address: $("editAddress").value,
-                bio: $("editBio").value
-            };
-            
-            if(newProfileFile) {
-                const uploaded = await upload(newProfileFile);
-                updateData.photo = uploaded;
-            }
-            await updateDoc(doc(db, "users", UID), updateData);
-            alert("Profil berhasil diperbarui!");
-            await loadProfileData();
-        } catch(e) { console.error(e); alert("Gagal update profil"); }
-        finally { toggleLoader(false); }
     }
 
     // --- NOTULEN ---
@@ -436,13 +379,11 @@
         snap.forEach(d => {
             const x = d.data();
             list.innerHTML += `
-                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm relative group">
+                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm relative group">
                     <p class="text-[10px] font-bold text-accent mb-1 uppercase tracking-wider">${x.date || '-'}</p>
                     <h4 class="text-sm font-bold text-brand-primary">${x.title}</h4>
                     <p class="text-xs text-slate-400 mt-1 line-clamp-2">${x.body}</p>
-                    <button onclick="deleteDocData('minutes','${d.id}')" class="absolute top-2 right-2 w-8 h-8 bg-red-50 text-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity active:scale-95 shadow-sm border border-red-100">
-                        <span class="material-symbols-rounded text-lg">delete</span>
-                    </button>
+                    <button onclick="deleteDocData('minutes','${d.id}')" class="absolute top-2 right-2 text-slate-300 hover:text-red-500 active:scale-95"><span class="material-symbols-rounded">delete</span></button>
                 </div>
             `;
         });
@@ -455,15 +396,12 @@
             <textarea id="nBody" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 h-24 text-sm" placeholder="Isi pembahasan..."></textarea>
         `;
         showModal("CATAT NOTULEN", html, async () => {
-            if(!$("nTitle").value) return alert("Judul wajib diisi");
+            if(!$("nTitle").value) return showToast("Judul wajib diisi", "error");
             toggleLoader(true);
             try {
-                await addDoc(collection(db, "minutes"), {
-                    title: $("nTitle").value, date: $("nDate").value, body: $("nBody").value, createdAt: serverTimestamp()
-                });
-                closeModal(); loadNotulen(); loadHomeStats();
-            } catch(e) { alert("Gagal simpan."); }
-            finally { toggleLoader(false); }
+                await addDoc(collection(db, "minutes"), { title: $("nTitle").value, date: $("nDate").value, body: $("nBody").value, createdAt: serverTimestamp() });
+                closeModal(); loadNotulen(); loadHomeStats(); showToast("Notulen disimpan");
+            } catch(e) { showToast("Gagal simpan", "error"); } finally { toggleLoader(false); }
         });
     }
 
@@ -474,15 +412,13 @@
         snap.forEach(d => {
             const x = d.data();
             list.innerHTML += `
-                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm relative group">
+                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm relative group">
                     <div class="flex justify-between mb-1">
                         <span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-bold">${x.type || 'Surat'}</span>
                         <span class="text-[10px] text-slate-400">${x.number}</span>
                     </div>
                     <h4 class="text-sm font-bold text-brand-primary">${x.subject}</h4>
-                    <button onclick="deleteDocData('letters','${d.id}')" class="absolute bottom-2 right-2 w-8 h-8 bg-red-50 text-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity active:scale-95 shadow-sm border border-red-100">
-                        <span class="material-symbols-rounded text-lg">delete</span>
-                    </button>
+                    <button onclick="deleteDocData('letters','${d.id}')" class="absolute bottom-2 right-2 text-slate-300 hover:text-red-500 active:scale-95"><span class="material-symbols-rounded">delete</span></button>
                 </div>
             `;
         });
@@ -493,19 +429,16 @@
             <input id="lSub" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 mb-3 text-sm font-bold" placeholder="Perihal Surat">
             <div class="grid grid-cols-2 gap-2 mb-3">
                 <input id="lNo" class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs" placeholder="No. Surat">
-                <input id="lType" class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs" placeholder="Jenis (Undangan/dll)">
+                <input id="lType" class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs" placeholder="Jenis">
             </div>
         `;
         showModal("ARSIP SURAT", html, async () => {
-            if(!$("lSub").value) return alert("Perihal wajib diisi");
+            if(!$("lSub").value) return showToast("Perihal wajib diisi", "error");
             toggleLoader(true);
             try {
-                await addDoc(collection(db, "letters"), {
-                    subject: $("lSub").value, number: $("lNo").value, type: $("lType").value, createdAt: serverTimestamp()
-                });
-                closeModal(); loadSurat(); loadHomeStats();
-            } catch(e) { alert("Gagal simpan."); }
-            finally { toggleLoader(false); }
+                await addDoc(collection(db, "letters"), { subject: $("lSub").value, number: $("lNo").value, type: $("lType").value, createdAt: serverTimestamp() });
+                closeModal(); loadSurat(); loadHomeStats(); showToast("Surat diarsipkan");
+            } catch(e) { showToast("Gagal simpan", "error"); } finally { toggleLoader(false); }
         });
     }
 
@@ -516,13 +449,13 @@
         snap.forEach(d => {
             const x = d.data();
             list.innerHTML += `
-                <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm relative group text-center">
-                    <div class="bg-green-50 w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 text-green-600">
+                <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm relative group text-center flex flex-col items-center">
+                    <div class="bg-green-50 w-10 h-10 rounded-full flex items-center justify-center mb-2 text-green-600">
                         <span class="material-symbols-rounded">description</span>
                     </div>
-                    <h4 class="text-xs font-bold text-brand-primary truncate">${x.title}</h4>
-                    <a href="${x.file?.url}" target="_blank" class="text-[10px] text-accent underline mt-1 block font-bold">Download</a>
-                    <button onclick="deleteDocData('archives','${d.id}')" class="absolute top-1 right-1 text-red-500 opacity-0 group-hover:opacity-100 active:scale-90"><span class="material-symbols-rounded text-sm">close</span></button>
+                    <h4 class="text-xs font-bold text-brand-primary w-full truncate">${x.title}</h4>
+                    <a href="${x.file?.url}" target="_blank" class="text-[10px] text-sky-500 font-bold mt-1 hover:underline">Download</a>
+                    <button onclick="deleteDocData('archives','${d.id}')" class="absolute top-1 right-1 text-slate-300 hover:text-red-500 active:scale-95"><span class="material-symbols-rounded text-sm">close</span></button>
                 </div>
             `;
         });
@@ -531,21 +464,19 @@
     window.openArsipForm = () => {
         const html = `
             <input id="aTitle" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 mb-3 text-sm font-bold" placeholder="Nama Dokumen">
-            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 border-dashed">
-                <input id="aFile" type="file" class="text-xs text-slate-500 w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-slate-700">
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 border-dashed cursor-pointer hover:bg-slate-100" onclick="$('aFile').click()">
+                <p class="text-[10px] text-slate-400 text-center font-bold">KLIK UNTUK UPLOAD FILE</p>
+                <input id="aFile" type="file" class="hidden">
             </div>
         `;
         showModal("UPLOAD FILE", html, async () => {
-            if(!$("aFile").files[0]) return alert("Pilih file!");
+            if(!$("aFile").files[0]) return showToast("Pilih file!", "error");
             toggleLoader(true);
             try {
                 const file = await upload($("aFile").files[0]);
-                await addDoc(collection(db, "archives"), {
-                    title: $("aTitle").value, file, createdAt: serverTimestamp()
-                });
-                closeModal(); loadArsip(); loadHomeStats();
-            } catch(e) { alert("Gagal upload."); }
-            finally { toggleLoader(false); }
+                await addDoc(collection(db, "archives"), { title: $("aTitle").value, file, createdAt: serverTimestamp() });
+                closeModal(); loadArsip(); loadHomeStats(); showToast("File diupload");
+            } catch(e) { showToast("Gagal upload", "error"); } finally { toggleLoader(false); }
         });
     }
 
@@ -554,18 +485,63 @@
         toggleLoader(true);
         try {
             await deleteDoc(doc(db, col, id));
+            showToast("Item dihapus");
             if(col === 'minutes') loadNotulen();
             if(col === 'letters') loadSurat();
             if(col === 'archives') loadArsip();
             loadHomeStats();
-        } catch(e) { alert("Gagal hapus."); }
-        finally { toggleLoader(false); }
+        } catch(e) { showToast("Gagal hapus", "error"); } finally { toggleLoader(false); }
     }
 
-    $("logoutBtn").onclick = async () => {
-        await signOut(auth);
-        location.href = "../login.html";
-    };
+    // --- PROFILE ---
+    async function loadProfileData() {
+        const snap = await getDoc(doc(db, "users", UID));
+        if(snap.exists()){
+            const d = snap.data();
+            $("headerName").textContent = d.name || "Sekretaris";
+            $("headerPhoto").src = d.photo?.url || "https://via.placeholder.com/150";
+            $("profileImage").src = d.photo?.url || "https://via.placeholder.com/150";
+            $("profileNameDisplay").textContent = d.name;
+            $("profileEmailDisplay").textContent = d.email;
+            $("editName").value = d.name||""; $("editPhone").value = d.phone||""; $("editAddress").value = d.address||"";
+        }
+    }
+
+    window.previewProfileImage = (input) => { if (input.files[0]) { newProfileFile = input.files[0]; $("profileImage").src = URL.createObjectURL(newProfileFile); } }
+
+    window.saveProfile = async () => {
+        toggleLoader(true);
+        try {
+            let data = { name:$("editName").value, phone:$("editPhone").value, address:$("editAddress").value };
+            if(newProfileFile) { data.photo = await upload(newProfileFile); }
+            await updateDoc(doc(db, "users", UID), data);
+            showToast("Profil Disimpan"); await loadProfileData();
+        } catch(e) { showToast("Gagal update", "error"); } finally { toggleLoader(false); }
+    }
+
+    window.showIdCard = async () => {
+        const snap = await getDoc(doc(db, "users", UID));
+        const u = snap.data();
+        const html = `
+            <div class="bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-white p-5 rounded-2xl relative overflow-hidden shadow-2xl border-t border-slate-600">
+                <div class="absolute -right-10 -top-10 w-40 h-40 bg-sky-500/20 rounded-full blur-3xl"></div>
+                <div class="flex justify-between items-center mb-6 relative z-10">
+                    <div class="flex items-center gap-2"><div class="w-8 h-8 bg-white/10 rounded flex items-center justify-center"><span class="material-symbols-rounded text-sky-500">folder_shared</span></div><span class="font-bold tracking-widest text-xs">KARTEJI ADMIN</span></div>
+                </div>
+                <div class="flex gap-4 items-center">
+                     <img src="${u.photo?.url||'https://via.placeholder.com/100'}" class="w-20 h-20 rounded-xl object-cover border-2 border-sky-500 shadow-lg bg-slate-800">
+                     <div>
+                        <h2 class="text-xl font-bold leading-none mb-1 text-sky-400">${u.name}</h2>
+                        <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">SEKRETARIS</p>
+                        <p class="text-[9px] mt-2 text-slate-500">ID: ${UID.substring(0,8).toUpperCase()}</p>
+                     </div>
+                </div>
+            </div>
+        `;
+        showModal("KARTU IDENTITAS DIGITAL", html, null);
+    }
+
+    $("logoutBtn").onclick = async () => { await signOut(auth); location.href = "../login.html"; };
   </script>
 </body>
 </html>
