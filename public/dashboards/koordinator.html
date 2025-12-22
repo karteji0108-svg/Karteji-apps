@@ -23,6 +23,7 @@
             'blob': 'blob 10s infinite',
             'bounce-slow': 'bounce 3s infinite',
             'elastic-pop': 'elasticPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+            'spin-fast': 'spin 0.2s linear infinite',
           },
           keyframes: {
             blob: {
@@ -56,7 +57,16 @@
     .view-section.active { display: block; opacity: 1; transform: translateY(0); }
     .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #8B5CF6; }
     .nav-btn.active p { color: #0F172A; font-weight: 700; }
-    .slot-machine-text { font-variant-numeric: tabular-nums; }
+    
+    /* 3D Card Effect for Raffle */
+    .character-card {
+        transition: transform 0.1s;
+        box-shadow: 0 10px 30px -5px rgba(139, 92, 246, 0.3);
+    }
+    .character-card.spinning {
+        transform: scale(1.05);
+        border-color: #F472B6;
+    }
   </style>
 </head>
 
@@ -89,29 +99,43 @@
     <div class="w-full max-w-sm text-center relative">
         <button onclick="closeRaffle()" class="absolute -top-12 right-0 text-white/50 hover:text-white"><span class="material-symbols-rounded text-3xl">close</span></button>
         <p class="text-purple-300 font-bold tracking-[0.2em] text-xs mb-6 uppercase">Mesin Pengundian Arisan</p>
-        <div class="bg-white rounded-[2rem] p-2 shadow-2xl shadow-purple-500/20 mb-8 border-4 border-purple-500 relative overflow-hidden">
-            <div class="absolute inset-0 bg-purple-50 opacity-50" style="background-image: radial-gradient(#8B5CF6 1px, transparent 1px); background-size: 10px 10px;"></div>
-            <div class="relative py-10 px-4">
-                <div id="raffleDisplay" class="text-4xl font-black text-slate-800 slot-machine-text min-h-[60px] flex items-center justify-center break-words leading-tight">SIAP!</div>
+        
+        <div class="bg-white rounded-[2.5rem] p-6 shadow-2xl shadow-purple-500/20 mb-8 border-4 border-purple-500 relative overflow-hidden flex flex-col items-center justify-center h-64">
+            <div class="absolute inset-0 bg-purple-50 opacity-50" style="background-image: radial-gradient(#8B5CF6 1px, transparent 1px); background-size: 15px 15px;"></div>
+            
+            <div class="relative z-10">
+                <div id="raffleImageContainer" class="w-32 h-32 rounded-full border-4 border-purple-200 bg-slate-200 overflow-hidden shadow-lg mx-auto mb-4 character-card">
+                    <div class="w-full h-full flex items-center justify-center bg-purple-100 text-purple-400">
+                        <span class="material-symbols-rounded text-5xl">person_search</span>
+                    </div>
+                </div>
+                <h2 id="raffleName" class="text-2xl font-black text-brand-primary tracking-tight truncate max-w-[250px]">SIAP?</h2>
             </div>
         </div>
+
         <button id="btnSpin" onclick="startSpin()" class="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white py-5 rounded-2xl font-black text-xl shadow-lg shadow-purple-500/40 active:scale-95 transition-transform flex items-center justify-center gap-2">
             <span class="material-symbols-rounded">casino</span> PUTAR RODA
         </button>
+        
         <p id="raffleStatus" class="mt-4 text-slate-400 text-xs">Kandidat Tersedia: <span id="eligibleCountDisplay" class="font-bold text-white">0</span> orang</p>
     </div>
   </div>
 
   <div id="winnerOverlay" class="fixed inset-0 z-[90] hidden items-center justify-center p-6 bg-black/80 backdrop-blur-md">
-      <div class="bg-white w-full max-w-xs rounded-[2rem] p-8 text-center relative animate-elastic-pop">
-          <div class="w-24 h-24 bg-yellow-400 text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl border-4 border-white -mt-16">
-              <span class="material-symbols-rounded text-5xl">emoji_events</span>
+      <div class="bg-white w-full max-w-xs rounded-[2rem] p-8 text-center relative animate-elastic-pop pt-16">
+          <div class="absolute -top-12 left-1/2 -translate-x-1/2">
+              <div id="winnerAvatarResult" class="w-28 h-28 rounded-full border-4 border-white shadow-2xl bg-slate-200 overflow-hidden">
+                  </div>
+              <div class="absolute -bottom-2 -right-2 w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center border-2 border-white shadow-md text-yellow-800">
+                  <span class="material-symbols-rounded">emoji_events</span>
+              </div>
           </div>
-          <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">SELAMAT KEPADA</p>
-          <h2 id="winnerNameResult" class="text-2xl font-black text-brand-primary mt-2 mb-1">Nama Pemenang</h2>
-          <p class="text-xs text-purple-600 font-bold mb-6">Pemenang Arisan Periode Ini</p>
-          <button onclick="confirmWinner()" class="w-full bg-brand-primary text-white py-3 rounded-xl font-bold mb-2">Simpan Hasil</button>
-          <button onclick="closeWinner()" class="w-full text-slate-400 py-2 text-xs font-bold">Batal / Ulangi</button>
+          
+          <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-2">PEMENANG PERIODE INI</p>
+          <h2 id="winnerNameResult" class="text-2xl font-black text-brand-primary mt-1 mb-6 leading-tight">Nama Pemenang</h2>
+          
+          <button onclick="confirmWinner()" class="w-full bg-brand-primary text-white py-3 rounded-xl font-bold mb-2 shadow-lg shadow-slate-300">Simpan Hasil</button>
+          <button onclick="closeWinner()" class="w-full text-slate-400 py-2 text-xs font-bold hover:text-red-500">Batal / Ulangi</button>
       </div>
   </div>
 
@@ -177,7 +201,7 @@
           </div>
 
           <div class="mt-6">
-              <h3 class="text-sm font-bold text-brand-primary uppercase tracking-wide mb-3 px-1">Pemenang Arisan</h3>
+              <h3 class="text-sm font-bold text-brand-primary uppercase tracking-wide mb-3 px-1">Riwayat Pemenang</h3>
               <div id="winnerHistory" class="space-y-3 pb-20"></div>
           </div>
       </section>
@@ -225,7 +249,7 @@
             <p id="profileEmailDisplay" class="text-sm text-slate-400">email@user.com</p>
 
             <button onclick="showIdCard()" class="mt-4 w-full max-w-xs bg-slate-800 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-xl">
-                <span class="material-symbols-rounded">badge</span> Kartu Koordinator
+                <span class="material-symbols-rounded">badge</span> Kartu Digital
             </button>
 
             <div class="w-full mt-8 space-y-4 px-1">
@@ -254,13 +278,13 @@
   <nav class="fixed bottom-0 w-full glass-nav pb-6 pt-2 px-4 z-50 rounded-t-[2rem]">
       <div class="flex justify-between items-center max-w-sm mx-auto">
           <button onclick="switchView('home')" class="nav-btn active flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="home">
-              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">home</span>
-              <p class="text-[9px] font-medium text-slate-400 transition-colors">Home</p>
+              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">casino</span>
+              <p class="text-[9px] font-medium text-slate-400 transition-colors">Arisan</p>
           </button>
           
-          <button onclick="switchView('kegiatan')" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="kegiatan">
-              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">event</span>
-              <p class="text-[9px] font-medium text-slate-400 transition-colors">Acara</p>
+          <button onclick="switchView('inventory')" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="inventory">
+              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">inventory_2</span>
+              <p class="text-[9px] font-medium text-slate-400 transition-colors">Barang</p>
           </button>
 
           <div class="relative -top-6">
@@ -269,9 +293,9 @@
             </button>
           </div>
 
-          <button onclick="switchView('info')" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="info">
-              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">campaign</span>
-              <p class="text-[9px] font-medium text-slate-400 transition-colors">Info</p>
+          <button onclick="switchView('kegiatan')" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="kegiatan">
+              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">event_note</span>
+              <p class="text-[9px] font-medium text-slate-400 transition-colors">Acara</p>
           </button>
 
           <button onclick="switchView('kas')" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="kas">
@@ -306,7 +330,6 @@
     let candidates = [];
     let tempWinner = null;
 
-    // --- UX UTILITIES ---
     window.showToast = (msg, type = 'success') => {
         const container = $('toastContainer');
         const el = document.createElement('div');
@@ -353,6 +376,7 @@
         const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`); if(activeBtn) activeBtn.classList.add('active');
         
         if(viewId === 'home') loadArisanHistory();
+        if(viewId === 'inventory') loadInventory();
         if(viewId === 'kegiatan') loadEvents();
         if(viewId === 'info') loadInfo();
         if(viewId === 'kas') loadFinance();
@@ -381,7 +405,7 @@
         toggleLoader(false);
     });
 
-    // --- ARISAN LOGIC ---
+    // --- ARISAN 3D LOGIC ---
     async function loadArisanHistory() {
         const list = $("winnerHistory"); list.innerHTML = "";
         try {
@@ -409,42 +433,96 @@
             usersSnap.forEach(d => {
                 const u = d.data();
                 const userRole = u.role ? u.role : 'anggota';
-                if(eligibleRoles.includes(userRole) && !wonIds.includes(d.id)) { candidates.push({ id: d.id, name: u.name }); }
+                if(eligibleRoles.includes(userRole) && !wonIds.includes(d.id)) { 
+                    // Add photo url to candidates
+                    candidates.push({ 
+                        id: d.id, 
+                        name: u.name,
+                        photo: u.photo ? u.photo.url : null 
+                    }); 
+                }
             });
 
             if(candidates.length === 0) { alert("Semua sudah menang!"); toggleLoader(false); return; }
 
             $("eligibleCountDisplay").textContent = candidates.length;
             $("raffleModal").classList.remove("hidden"); $("raffleModal").classList.add("flex");
+            // Set initial state
+            updateRaffleCard({ name: "SIAP?", photo: null });
+            
             $("btnSpin").disabled = false; $("btnSpin").classList.remove("opacity-50");
         } catch(e) { showToast("Error", "error"); } finally { toggleLoader(false); }
+    }
+
+    // Helper: Update 3D Card Display
+    function updateRaffleCard(person) {
+        const container = $("raffleImageContainer");
+        const nameEl = $("raffleName");
+        
+        nameEl.textContent = person.name;
+        
+        if (person.photo) {
+            container.innerHTML = `<img src="${person.photo}" class="w-full h-full object-cover">`;
+        } else {
+            // Avatar Generator (Initials)
+            const initials = person.name.substring(0, 2).toUpperCase();
+            const bgColors = ['bg-blue-100', 'bg-green-100', 'bg-yellow-100', 'bg-pink-100', 'bg-purple-100'];
+            const randBg = bgColors[Math.floor(Math.random() * bgColors.length)];
+            const textColor = randBg.replace('100', '600');
+            
+            container.innerHTML = `
+                <div class="w-full h-full flex items-center justify-center ${randBg} ${textColor} font-black text-4xl">
+                    ${initials}
+                </div>
+            `;
+        }
     }
 
     window.closeRaffle = () => $("raffleModal").classList.add("hidden");
 
     window.startSpin = () => {
         if(candidates.length === 0) return;
-        const display = $("raffleDisplay"); const btn = $("btnSpin");
+        
+        const card = $("raffleImageContainer");
+        const btn = $("btnSpin");
+        
         btn.disabled = true; btn.classList.add("opacity-50"); btn.innerHTML = "MENGACAK...";
+        card.classList.add("spinning"); // Add zoom effect
+
         let duration = 3000; let startTime = null;
 
         function animate(timestamp) {
             if (!startTime) startTime = timestamp;
             const progress = timestamp - startTime;
+            
+            // Randomly pick candidate during spin
             const rIdx = Math.floor(Math.random() * candidates.length);
-            display.textContent = candidates[rIdx].name;
+            updateRaffleCard(candidates[rIdx]);
 
             if (progress < duration) requestAnimationFrame(animate);
             else {
+                // Final Winner
                 const winnerIdx = Math.floor(Math.random() * candidates.length);
                 tempWinner = candidates[winnerIdx];
-                display.textContent = tempWinner.name;
+                updateRaffleCard(tempWinner);
+                card.classList.remove("spinning");
+                
                 setTimeout(() => {
+                    // Update Winner Overlay Content
                     $("winnerNameResult").textContent = tempWinner.name;
+                    const winnerAvatar = $("winnerAvatarResult");
+                    
+                    if(tempWinner.photo) {
+                        winnerAvatar.innerHTML = `<img src="${tempWinner.photo}" class="w-full h-full object-cover">`;
+                    } else {
+                        const initials = tempWinner.name.substring(0, 2).toUpperCase();
+                        winnerAvatar.innerHTML = `<div class="w-full h-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-3xl">${initials}</div>`;
+                    }
+
                     $("raffleModal").classList.add("hidden");
                     $("winnerOverlay").classList.remove("hidden"); $("winnerOverlay").classList.add("flex");
-                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-                }, 500);
+                    confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#8B5CF6', '#F472B6', '#FFD700'] });
+                }, 800);
             }
         }
         requestAnimationFrame(animate);
@@ -539,24 +617,10 @@
         });
     }
 
-    // --- POLLING ---
-    window.openPollModal = () => {
-        const html = `
-            <input id="pollQ" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 mb-3 font-bold text-sm" placeholder="Pertanyaan">
-            <div class="space-y-2 mb-3"><input class="poll-opt w-full p-2 rounded-lg bg-slate-50 border border-slate-200 text-xs" placeholder="Opsi 1"><input class="poll-opt w-full p-2 rounded-lg bg-slate-50 border border-slate-200 text-xs" placeholder="Opsi 2"></div>
-        `;
-        showModal("BUAT VOTING", html, async () => {
-            const q = $("pollQ").value; const opts = Array.from(document.querySelectorAll(".poll-opt")).map(i => i.value).filter(v => v);
-            if(!q || opts.length < 2) return showToast("Minimal 2 opsi", "error");
-            toggleLoader(true);
-            try { await addDoc(collection(db, "polls"), { question: q, options: opts.map(o => ({ text: o, votes: 0 })), active: true, createdAt: serverTimestamp() }); closeModal(); showToast("Voting dibuat!"); } catch(e) { showToast("Gagal", "error"); } finally { toggleLoader(false); }
-        });
-    }
-
     window.deleteDocData = async (col, id) => {
         if(!confirm("Hapus?")) return;
         toggleLoader(true);
-        try { await deleteDoc(doc(db, col, id)); if(col==='activities') loadEvents(); if(col==='notifications') loadInfo(); } catch(e){ showToast("Gagal","error"); } finally { toggleLoader(false); }
+        try { await deleteDoc(doc(db, col, id)); if(col==='inventory') loadInventory(); if(col==='activities') loadEvents(); if(col==='notifications') loadInfo(); } catch(e){ showToast("Gagal","error"); } finally { toggleLoader(false); }
     }
 
     // --- PROFILE ---
