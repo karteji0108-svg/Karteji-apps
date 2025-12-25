@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#F8FAFC" />
   <title>Executive Dashboard | Ketua</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -55,6 +56,15 @@
     .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #D97706; }
     .nav-btn.active p { color: #0F172A; font-weight: 700; }
 
+    /* Skeleton */
+    .skeleton {
+      background: linear-gradient(90deg, rgba(148,163,184,.12), rgba(148,163,184,.25), rgba(148,163,184,.12));
+      background-size: 200% 100%;
+      animation: sk 1.2s ease-in-out infinite;
+      border-radius: 999px;
+    }
+    @keyframes sk { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
     /* Dark mode */
     html.dark body { background-color: #0B1220; color: #E5E7EB; }
     html.dark .glass-nav { background: rgba(15, 23, 42, 0.82); border-top: 1px solid rgba(255,255,255,0.06); }
@@ -65,6 +75,9 @@
     html.dark .border-slate-100, html.dark .border-slate-200 { border-color: rgba(255,255,255,0.08) !important; }
     html.dark .bg-slate-50, html.dark .bg-slate-100 { background-color: rgba(255,255,255,0.06) !important; }
     html.dark .shadow-sm, html.dark .shadow-xl, html.dark .shadow-2xl { box-shadow: 0 10px 30px rgba(0,0,0,0.25) !important; }
+
+    /* Theme color */
+    html.dark meta[name="theme-color"] { content: #0B1220; }
 
     /* Print Styling */
     @media print {
@@ -124,7 +137,7 @@
     <div class="flex justify-between items-center gap-3">
       <div class="flex items-center gap-3">
         <button onclick="switchView('profile')" class="relative group active:scale-95 transition-transform">
-          <img id="headerPhoto" class="w-12 h-12 rounded-full border-2 border-white shadow-md object-cover" src="https://via.placeholder.com/100">
+          <img id="headerPhoto" class="w-12 h-12 rounded-full border-2 border-white shadow-md object-cover" src="https://via.placeholder.com/100" alt="foto">
           <div class="absolute bottom-0 right-0 w-4 h-4 bg-gold border-2 border-white rounded-full flex items-center justify-center text-[8px] text-white font-bold">★</div>
         </button>
         <div>
@@ -134,7 +147,6 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <!-- Dark mode (NEW) -->
         <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-white border border-slate-100 shadow-sm flex items-center justify-center active:scale-95 text-slate-500 no-print" title="Mode Gelap/Terang">
           <span id="themeIcon" class="material-symbols-rounded">dark_mode</span>
         </button>
@@ -150,6 +162,126 @@
 
     <!-- HOME -->
     <section id="view-home" class="view-section active">
+
+      <!-- ✅ WIDGET: CUACA + JADWAL SHOLAT/IMSAK -->
+      <div class="grid grid-cols-1 gap-3 mb-4">
+        <!-- Weather -->
+        <div class="bg-white rounded-[1.5rem] p-5 shadow-sm border border-slate-100 relative overflow-hidden">
+          <div class="absolute -right-10 -top-10 w-32 h-32 rounded-full blur-3xl opacity-25 bg-sky-400"></div>
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-500 flex items-center gap-1">
+                <span class="material-symbols-rounded text-sm text-sky-500">cloud</span>
+                Cuaca Sekarang
+              </p>
+              <h3 id="weatherPlace" class="text-sm font-extrabold text-brand-primary mt-1 truncate">Memuat lokasi...</h3>
+            </div>
+            <button onclick="loadWeather(true)" class="w-9 h-9 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center active:scale-95 no-print" title="Refresh Cuaca">
+              <span class="material-symbols-rounded text-xl">refresh</span>
+            </button>
+          </div>
+
+          <div class="mt-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center">
+                <span id="weatherIcon" class="material-symbols-rounded text-3xl">cloud</span>
+              </div>
+              <div>
+                <div class="flex items-end gap-2">
+                  <p id="weatherTemp" class="text-3xl font-black leading-none text-brand-primary">--°</p>
+                  <p id="weatherCond" class="text-[11px] font-extrabold uppercase text-slate-500">...</p>
+                </div>
+                <p id="weatherMeta" class="text-[10px] font-semibold mt-1 text-slate-500">—</p>
+              </div>
+            </div>
+
+            <div class="text-right">
+              <p class="text-[9px] font-extrabold uppercase text-slate-500">Update</p>
+              <p id="weatherUpdated" class="text-[10px] font-extrabold text-brand-primary">--:--</p>
+            </div>
+          </div>
+
+          <div id="weatherHint" class="mt-4 text-[10px] font-semibold rounded-xl px-3 py-2 bg-slate-50 border border-slate-100 text-slate-500">
+            Mengambil cuaca berdasarkan lokasi perangkat.
+          </div>
+
+          <div id="weatherSkeleton" class="mt-4 space-y-2">
+            <div class="skeleton h-3 w-24"></div>
+            <div class="skeleton h-3 w-44"></div>
+          </div>
+        </div>
+
+        <!-- Prayer -->
+        <div class="bg-white rounded-[1.5rem] p-5 shadow-sm border border-slate-100 relative overflow-hidden">
+          <div class="absolute -left-10 -bottom-10 w-32 h-32 rounded-full blur-3xl opacity-25 bg-emerald-400"></div>
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-500 flex items-center gap-1">
+                <span class="material-symbols-rounded text-sm text-emerald-600">mosque</span>
+                Jadwal Sholat & Imsak
+              </p>
+              <h3 id="prayerPlace" class="text-sm font-extrabold text-brand-primary mt-1 truncate">Memuat lokasi...</h3>
+            </div>
+            <button onclick="loadPrayer(true)" class="w-9 h-9 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center active:scale-95 no-print" title="Refresh Jadwal">
+              <span class="material-symbols-rounded text-xl">refresh</span>
+            </button>
+          </div>
+
+          <div class="mt-4 flex items-center justify-between gap-3">
+            <div class="min-w-0">
+              <p class="text-[9px] font-extrabold uppercase text-slate-500">Berikutnya</p>
+              <div class="flex items-end gap-2">
+                <p id="nextPrayerName" class="text-xl font-black leading-none text-brand-primary truncate">—</p>
+                <p id="nextPrayerTime" class="text-[12px] font-extrabold text-slate-500">--:--</p>
+              </div>
+              <p id="prayerDate" class="text-[10px] font-semibold mt-1 text-slate-500">—</p>
+            </div>
+
+            <div class="text-right">
+              <p class="text-[9px] font-extrabold uppercase text-slate-500">Update</p>
+              <p id="prayerUpdated" class="text-[10px] font-extrabold text-brand-primary">--:--</p>
+            </div>
+          </div>
+
+          <div class="mt-4 grid grid-cols-3 gap-2">
+            <div class="rounded-2xl p-3 bg-slate-50 border border-slate-100">
+              <p class="text-[9px] font-extrabold uppercase text-slate-500">Imsak</p>
+              <p id="tImsak" class="text-sm font-black text-brand-primary">--:--</p>
+            </div>
+            <div class="rounded-2xl p-3 bg-slate-50 border border-slate-100">
+              <p class="text-[9px] font-extrabold uppercase text-slate-500">Subuh</p>
+              <p id="tFajr" class="text-sm font-black text-brand-primary">--:--</p>
+            </div>
+            <div class="rounded-2xl p-3 bg-slate-50 border border-slate-100">
+              <p class="text-[9px] font-extrabold uppercase text-slate-500">Dzuhur</p>
+              <p id="tDhuhr" class="text-sm font-black text-brand-primary">--:--</p>
+            </div>
+            <div class="rounded-2xl p-3 bg-slate-50 border border-slate-100">
+              <p class="text-[9px] font-extrabold uppercase text-slate-500">Ashar</p>
+              <p id="tAsr" class="text-sm font-black text-brand-primary">--:--</p>
+            </div>
+            <div class="rounded-2xl p-3 bg-slate-50 border border-slate-100">
+              <p class="text-[9px] font-extrabold uppercase text-slate-500">Maghrib</p>
+              <p id="tMaghrib" class="text-sm font-black text-brand-primary">--:--</p>
+            </div>
+            <div class="rounded-2xl p-3 bg-slate-50 border border-slate-100">
+              <p class="text-[9px] font-extrabold uppercase text-slate-500">Isya</p>
+              <p id="tIsha" class="text-sm font-black text-brand-primary">--:--</p>
+            </div>
+          </div>
+
+          <div id="prayerHint" class="mt-4 text-[10px] font-semibold rounded-xl px-3 py-2 bg-slate-50 border border-slate-100 text-slate-500">
+            Mengambil jadwal berdasarkan lokasi perangkat.
+          </div>
+
+          <div id="prayerSkeleton" class="mt-4 space-y-2">
+            <div class="skeleton h-3 w-28"></div>
+            <div class="skeleton h-3 w-48"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD KAS -->
       <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 group transition-all">
         <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500 transform group-hover:scale-110">
           <span class="material-symbols-rounded text-9xl">shield</span>
@@ -170,7 +302,7 @@
         </div>
       </div>
 
-      <!-- KPI Cards (NEW) -->
+      <!-- KPI Cards -->
       <div class="grid grid-cols-2 gap-3 mt-5">
         <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
           <div class="flex items-center gap-2 text-slate-500">
@@ -234,7 +366,7 @@
         </div>
       </div>
 
-      <!-- Quick Audit Preview (NEW) -->
+      <!-- Quick Audit Preview -->
       <div class="bg-white rounded-[1.5rem] p-5 shadow-sm border border-slate-100 mt-6">
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center gap-2">
@@ -278,7 +410,7 @@
     <section id="view-profile" class="view-section">
       <div class="flex flex-col items-center pt-4 pb-20">
         <div class="relative group cursor-pointer active:scale-95 transition-transform" onclick="$('profileUpload').click()">
-          <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl shadow-slate-200">
+          <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl shadow-slate-200" alt="profil">
           <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
             <span class="material-symbols-rounded text-white">photo_camera</span>
           </div>
@@ -387,7 +519,7 @@
       </div>
     </section>
 
-    <!-- AUDIT LOG (NEW) -->
+    <!-- AUDIT LOG -->
     <section id="view-audit" class="view-section">
       <div class="flex justify-between items-center mb-4 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
         <div>
@@ -476,12 +608,14 @@
     let newProfileFile = null;
     let financeChart = null;
 
-    // THEME (NEW)
+    // THEME
     function applyTheme() {
       const t = localStorage.getItem("karteji_theme") || "light";
       document.documentElement.classList.toggle("dark", t === "dark");
       const icon = $("themeIcon");
       if(icon) icon.textContent = (t === "dark") ? "light_mode" : "dark_mode";
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if(meta) meta.setAttribute("content", t === "dark" ? "#0B1220" : "#F8FAFC");
     }
     window.toggleTheme = () => {
       const isDark = document.documentElement.classList.contains("dark");
@@ -497,7 +631,7 @@
       const el = document.createElement('div');
       const color = type === 'error' ? 'bg-red-500' : 'bg-slate-800';
       el.className = `${color} text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 animate-slide-in-top pointer-events-auto min-w-[220px] backdrop-blur-sm bg-opacity-90`;
-      el.innerHTML = `<span class="material-symbols-rounded text-lg">${type==='error'?'error':'check_circle'}</span><span class="text-xs font-bold">${msg}</span>`;
+      el.innerHTML = `<span class="material-symbols-rounded text-lg">${type==='error'?'error':'check_circle'}</span><span class="text-xs font-bold">${escapeHtml(msg)}</span>`;
       container.appendChild(el);
       setTimeout(() => {
         el.style.opacity = '0';
@@ -548,6 +682,7 @@
       });
 
       const target = $(`view-${viewId}`);
+      if(!target) return;
       target.style.display = 'block';
       setTimeout(() => target.classList.add('active'), 10);
 
@@ -565,9 +700,10 @@
 
     window.filterList = (listId, q) => {
       const list = $(listId);
+      if(!list) return;
       const term = (q || "").toLowerCase();
       for(const item of list.children){
-        const text = item.innerText.toLowerCase();
+        const text = (item.innerText || "").toLowerCase();
         item.style.display = text.includes(term) ? "" : "none";
       }
     };
@@ -585,7 +721,233 @@
       return { url: d.secure_url };
     }
 
-    // AUDIT LOG (NEW)
+    // ✅ GEO + REVERSE
+    async function getCoords(){
+      return new Promise((resolve, reject)=>{
+        if(!navigator.geolocation) return reject(new Error("Geolocation tidak didukung."));
+        navigator.geolocation.getCurrentPosition(
+          pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+          err => reject(err),
+          { enableHighAccuracy: false, timeout: 8000, maximumAge: 600000 }
+        );
+      });
+    }
+    async function reverseGeocode(lat, lon){
+      try{
+        const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`;
+        const res = await fetch(url, { headers: { "Accept":"application/json" } });
+        const j = await res.json();
+        const a = j.address || {};
+        return (a.city || a.town || a.village || a.suburb || a.county || "Lokasi Anda") + (a.state ? `, ${a.state}` : "");
+      }catch(_){ return "Lokasi Anda"; }
+    }
+
+    // ✅ WEATHER (Open-Meteo, tanpa API key)
+    const WEATHER_CACHE_KEY = "kte_exec_weather_cache_v1";
+    const WEATHER_TTL = 10 * 60 * 1000;
+
+    function setWeatherLoading(on){
+      const sk = $("weatherSkeleton");
+      if(sk) sk.style.display = on ? "block" : "none";
+    }
+    function weatherIcon(code, isDay=true){
+      const m = {
+        clear: isDay ? "sunny" : "nights_stay",
+        cloudy: "cloud",
+        fog: "foggy",
+        drizzle: "grain",
+        rain: "rainy",
+        snow: "ac_unit",
+        storm: "thunderstorm"
+      };
+      if (code === 0) return { icon: m.clear, label: "Cerah" };
+      if ([1,2].includes(code)) return { icon: m.cloudy, label: code===1 ? "Cerah Berawan" : "Berawan" };
+      if (code === 3) return { icon: m.cloudy, label: "Mendung" };
+      if ([45,48].includes(code)) return { icon: m.fog, label: "Berkabut" };
+      if ([51,53,55,56,57].includes(code)) return { icon: m.drizzle, label: "Gerimis" };
+      if ([61,63,65,66,67,80,81,82].includes(code)) return { icon: m.rain, label: "Hujan" };
+      if ([71,73,75,77,85,86].includes(code)) return { icon: m.snow, label: "Salju" };
+      if ([95,96,99].includes(code)) return { icon: m.storm, label: "Badai Petir" };
+      return { icon: m.cloudy, label: "Cuaca" };
+    }
+
+    async function fetchWeather(lat, lon){
+      const tz = "Asia/Jakarta";
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=${encodeURIComponent(tz)}`;
+      const res = await fetch(url);
+      if(!res.ok) throw new Error("Weather API error");
+      return await res.json();
+    }
+
+    window.loadWeather = async (force=false) => {
+      try{
+        setWeatherLoading(true);
+
+        const cached = localStorage.getItem(WEATHER_CACHE_KEY);
+        if(!force && cached){
+          const c = JSON.parse(cached);
+          if(c?.ts && (Date.now()-c.ts) < WEATHER_TTL && c?.payload){
+            applyWeatherUI(c.payload);
+            setWeatherLoading(false);
+            return;
+          }
+        }
+
+        const { lat, lon } = await getCoords();
+        const [place, data] = await Promise.all([ reverseGeocode(lat, lon), fetchWeather(lat, lon) ]);
+        const payload = { place, data };
+
+        localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ ts: Date.now(), payload }));
+        applyWeatherUI(payload);
+      }catch(e){
+        $("weatherPlace").textContent = "Cuaca";
+        $("weatherTemp").textContent = "--°";
+        $("weatherCond").textContent = "—";
+        $("weatherMeta").textContent = "—";
+        $("weatherUpdated").textContent = "--:--";
+        $("weatherIcon").textContent = "cloud_off";
+        $("weatherHint").textContent = (e && e.code === 1)
+          ? "Izin lokasi ditolak. Aktifkan Location untuk menampilkan cuaca."
+          : "Cuaca tidak bisa dimuat. Coba refresh.";
+      }finally{
+        setWeatherLoading(false);
+      }
+    };
+
+    function applyWeatherUI(payload){
+      const place = payload.place || "Lokasi Anda";
+      const cw = payload.data?.current_weather;
+      if(!cw) throw new Error("Empty weather");
+      const temp = Math.round(cw.temperature);
+      const wind = Math.round(cw.windspeed);
+      const code = cw.weathercode;
+      const isDay = !!cw.is_day;
+      const w = weatherIcon(code, isDay);
+
+      $("weatherPlace").textContent = place;
+      $("weatherTemp").textContent = `${temp}°`;
+      $("weatherCond").textContent = w.label.toUpperCase();
+      $("weatherMeta").textContent = `Angin ${wind} km/jam • ${isDay ? "Siang" : "Malam"}`;
+      $("weatherIcon").textContent = w.icon;
+
+      const now = new Date();
+      $("weatherUpdated").textContent = now.toLocaleTimeString("id-ID", { hour:"2-digit", minute:"2-digit" });
+      $("weatherHint").textContent = "Data dari Open-Meteo (tanpa API key).";
+    }
+
+    // ✅ PRAYER (Aladhan, tanpa API key) + Imsak
+    const PRAYER_CACHE_KEY = "kte_exec_prayer_cache_v1";
+
+    function setPrayerLoading(on){
+      const sk = $("prayerSkeleton");
+      if(sk) sk.style.display = on ? "block" : "none";
+    }
+    function onlyHHMM(t){
+      if(!t) return "--:--";
+      return String(t).replace(/\s*\(.*\)\s*/g,"").trim().slice(0,5);
+    }
+    function dateKeyJakarta(d=new Date()){
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const dd = String(d.getDate()).padStart(2,'0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+    function parseTimeToday(hhmm){
+      const [h,m] = (hhmm||"00:00").split(":").map(x=>parseInt(x,10));
+      const d = new Date();
+      d.setHours(h||0, m||0, 0, 0);
+      return d.getTime();
+    }
+    function computeNextPrayer(timings){
+      const now = Date.now();
+      const order = [
+        { key: "Imsak", label: "Imsak" },
+        { key: "Fajr", label: "Subuh" },
+        { key: "Dhuhr", label: "Dzuhur" },
+        { key: "Asr", label: "Ashar" },
+        { key: "Maghrib", label: "Maghrib" },
+        { key: "Isha", label: "Isya" },
+      ];
+      for(const it of order){
+        const hhmm = onlyHHMM(timings[it.key]);
+        const ts = parseTimeToday(hhmm);
+        if(ts > now) return { name: it.label, time: hhmm };
+      }
+      return { name: "Imsak (Besok)", time: onlyHHMM(timings["Imsak"] || timings["Fajr"]) };
+    }
+
+    async function fetchPrayer(lat, lon){
+      const tz = "Asia/Jakarta";
+      // method bisa kamu ganti jika mau (mis: 20 / 2 / 11). Default: 20.
+      const method = 20;
+      const url = `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=${method}&timezonestring=${encodeURIComponent(tz)}`;
+      const res = await fetch(url);
+      if(!res.ok) throw new Error("Prayer API error");
+      return await res.json();
+    }
+
+    window.loadPrayer = async (force=false) => {
+      try{
+        setPrayerLoading(true);
+        const todayKey = dateKeyJakarta();
+
+        const cached = localStorage.getItem(PRAYER_CACHE_KEY);
+        if(!force && cached){
+          const c = JSON.parse(cached);
+          if(c?.key === todayKey && c?.payload){
+            applyPrayerUI(c.payload);
+            setPrayerLoading(false);
+            return;
+          }
+        }
+
+        const { lat, lon } = await getCoords();
+        const [place, raw] = await Promise.all([ reverseGeocode(lat, lon), fetchPrayer(lat, lon) ]);
+        const payload = { place, raw };
+
+        localStorage.setItem(PRAYER_CACHE_KEY, JSON.stringify({ key: todayKey, ts: Date.now(), payload }));
+        applyPrayerUI(payload);
+      }catch(e){
+        $("prayerPlace").textContent = "Jadwal Sholat";
+        $("nextPrayerName").textContent = "—";
+        $("nextPrayerTime").textContent = "--:--";
+        $("prayerDate").textContent = "—";
+        $("prayerUpdated").textContent = "--:--";
+        ["tImsak","tFajr","tDhuhr","tAsr","tMaghrib","tIsha"].forEach(id => { const el=$(id); if(el) el.textContent="--:--"; });
+        $("prayerHint").textContent = (e && e.code === 1)
+          ? "Izin lokasi ditolak. Aktifkan Location untuk menampilkan jadwal sholat."
+          : "Jadwal sholat tidak bisa dimuat. Coba refresh.";
+      }finally{
+        setPrayerLoading(false);
+      }
+    };
+
+    function applyPrayerUI(payload){
+      const place = payload.place || "Lokasi Anda";
+      const raw = payload.raw;
+      const timings = raw?.data?.timings;
+      const readable = raw?.data?.date?.readable || "-";
+      if(!timings) throw new Error("Empty prayer timings");
+
+      $("prayerPlace").textContent = place;
+      $("prayerDate").textContent = `Tanggal: ${readable}`;
+      $("tImsak").textContent = onlyHHMM(timings.Imsak || timings.Fajr);
+      $("tFajr").textContent = onlyHHMM(timings.Fajr);
+      $("tDhuhr").textContent = onlyHHMM(timings.Dhuhr);
+      $("tAsr").textContent = onlyHHMM(timings.Asr);
+      $("tMaghrib").textContent = onlyHHMM(timings.Maghrib);
+      $("tIsha").textContent = onlyHHMM(timings.Isha);
+
+      const next = computeNextPrayer(timings);
+      $("nextPrayerName").textContent = next.name;
+      $("nextPrayerTime").textContent = next.time;
+
+      const now = new Date();
+      $("prayerUpdated").textContent = now.toLocaleTimeString("id-ID", { hour:"2-digit", minute:"2-digit" });
+      $("prayerHint").textContent = "Data jadwal dari Aladhan (tanpa API key).";
+    }
+
+    // AUDIT LOG
     async function writeAudit(action, targetType = "-", targetId = "-", meta = {}) {
       try {
         await addDoc(collection(db, "audit_logs"), {
@@ -598,7 +960,6 @@
           createdAt: serverTimestamp()
         });
       } catch(e) {
-        // audit gagal tidak memblok fitur utama
         console.warn("Audit log gagal:", e?.message);
       }
     }
@@ -615,7 +976,16 @@
           return;
         }
         UID = user.uid;
-        await Promise.all([loadHomeData(), loadProfileData(), loadAuditPreview()]);
+
+        // ✅ load widget cepat (pakai cache)
+        loadWeather(false);
+        loadPrayer(false);
+
+        await Promise.all([
+          loadHomeData(),
+          loadProfileData(),
+          loadAuditPreview()
+        ]);
       } catch(e) {
         console.error(e);
         showToast("Gagal memuat (cek koneksi/rules)", "error");
@@ -623,7 +993,7 @@
       toggleLoader(false);
     });
 
-    // HOME DATA + KPI (NEW)
+    // HOME DATA + KPI
     async function loadHomeData() {
       try {
         const finSnap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc")));
@@ -655,12 +1025,10 @@
         animateValue($("cardBalance"), 0, bal, 1200);
         renderChart(inc, exp);
 
-        // Pending badge
         const badge = $("homePendingBadge");
         if(pendingCount > 0) badge.classList.remove('hidden');
         else badge.classList.add('hidden');
 
-        // KPI
         $("kpiUsers").textContent = usersSnap.size || 0;
         $("kpiPending").textContent = pendingCount;
         $("kpiUpcoming").textContent = upcomingText;
@@ -673,7 +1041,8 @@
     }
 
     function renderChart(income, expense) {
-      const ctx = $("financeChart").getContext('2d');
+      const ctx = $("financeChart")?.getContext('2d');
+      if(!ctx) return;
       if(financeChart) financeChart.destroy();
       financeChart = new Chart(ctx, {
         type: 'bar',
@@ -704,7 +1073,9 @@
       const html = `
         <input id="bcTitle" class="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 font-bold mb-3 outline-none" placeholder="Judul Instruksi">
         <textarea id="bcBody" rows="4" class="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none resize-none" placeholder="Isi pesan kepada anggota..."></textarea>
-        <div class="mt-2 bg-orange-50 p-2 rounded text-xs text-orange-600 font-bold flex gap-2"><span class="material-symbols-rounded text-sm">info</span> Pesan akan muncul di dashboard semua anggota.</div>
+        <div class="mt-2 bg-orange-50 p-2 rounded text-xs text-orange-600 font-bold flex gap-2">
+          <span class="material-symbols-rounded text-sm">info</span> Pesan akan muncul di dashboard semua anggota.
+        </div>
       `;
       showModal("BROADCAST KETUA", html, async () => {
         const t = $("bcTitle").value.trim();
@@ -796,7 +1167,7 @@
           <div class="flex gap-4 items-center">
             <img src="${u.photo?.url||'https://via.placeholder.com/100'}" class="w-20 h-20 rounded-xl object-cover border-2 border-gold shadow-lg bg-slate-800">
             <div>
-              <h2 class="text-xl font-bold leading-none mb-1 text-gold">${u.name || 'Ketua Umum'}</h2>
+              <h2 class="text-xl font-bold leading-none mb-1 text-gold">${escapeHtml(u.name || 'Ketua Umum')}</h2>
               <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">KETUA UMUM</p>
               <p class="text-[9px] mt-2 text-slate-500">ID: ${UID.substring(0,8).toUpperCase()}</p>
             </div>
@@ -808,7 +1179,8 @@
 
     // USERS & ROLES
     async function loadUsers(){
-      const list = $("userList"); list.innerHTML = "";
+      const list = $("userList"); if(!list) return;
+      list.innerHTML = "";
       const snap = await getDocs(query(collection(db,"users"), orderBy("name")));
       $("userCountBadge").textContent = snap.size;
 
@@ -825,16 +1197,16 @@
 
         list.innerHTML += `
           <div class="bg-white p-4 rounded-2xl flex items-center gap-3 border border-slate-100 shadow-sm">
-            <img src="${u.photo?.url||'https://via.placeholder.com/40'}" class="w-12 h-12 rounded-full object-cover bg-slate-200">
+            <img src="${u.photo?.url||'https://via.placeholder.com/40'}" class="w-12 h-12 rounded-full object-cover bg-slate-200" alt="user">
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-bold text-brand-primary truncate">${u.name || 'User'}</p>
-              <p class="text-[10px] text-slate-400 truncate">${u.email || '-'}</p>
+              <p class="text-sm font-bold text-brand-primary truncate">${escapeHtml(u.name || 'User')}</p>
+              <p class="text-[10px] text-slate-400 truncate">${escapeHtml(u.email || '-')}</p>
               <div class="mt-2 flex items-center gap-2">
                 <span class="material-symbols-rounded text-xs text-gold">badge</span>
                 ${roleSel}
               </div>
             </div>
-            <button onclick="kickUser('${d.id}','${u.name||'User'}')" class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all active:scale-95 no-print" title="Hapus akun user">
+            <button onclick="kickUser('${d.id}','${escapeHtml(u.name||'User')}')" class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all active:scale-95 no-print" title="Hapus akun user">
               <span class="material-symbols-rounded">delete</span>
             </button>
           </div>
@@ -889,13 +1261,12 @@
 
     // APPROVALS
     async function loadApprovals(pendingOnly = true){
-      const aList = $("actList"); aList.innerHTML = "";
-      const fList = $("finPendingList"); fList.innerHTML = "";
+      const aList = $("actList"); if(aList) aList.innerHTML = "";
+      const fList = $("finPendingList"); if(fList) fList.innerHTML = "";
 
       const acts = await getDocs(query(collection(db,"activities"), orderBy("date","asc")));
       const fin = await getDocs(query(collection(db,"financial_records"), orderBy("createdAt","desc")));
 
-      // Activities
       let shownAct = 0;
       acts.forEach(d => {
         const x = d.data();
@@ -914,9 +1285,9 @@
               <span class="text-xl font-bold">${day}</span>
             </div>
             <div class="flex-1 min-w-0">
-              <h4 class="text-sm font-bold text-brand-primary line-clamp-1">${x.title || 'Kegiatan'}</h4>
+              <h4 class="text-sm font-bold text-brand-primary line-clamp-1">${escapeHtml(x.title || 'Kegiatan')}</h4>
               <p class="text-[10px] text-slate-400 flex items-center gap-1 line-clamp-1">
-                <span class="material-symbols-rounded text-[12px]">location_on</span> ${x.location || '-'}
+                <span class="material-symbols-rounded text-[12px]">location_on</span> ${escapeHtml(x.location || '-')}
               </p>
               <p class="text-[10px] text-slate-400 mt-0.5">${isPending ? '<span class="bg-orange-100 text-orange-600 px-2 py-0.5 rounded font-extrabold">PENDING</span>' : '<span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded font-extrabold">APPROVED</span>'}</p>
             </div>
@@ -937,7 +1308,6 @@
 
       if(shownAct === 0) aList.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Tidak ada kegiatan ${pendingOnly ? 'pending' : ''}.</p>`;
 
-      // Finance Pending
       let hasPendingFin = false;
       fin.forEach(d => {
         const f = d.data();
@@ -948,7 +1318,7 @@
         fList.innerHTML += `
           <div class="bg-white p-3 rounded-xl border border-orange-300 bg-orange-50 shadow-sm flex items-center justify-between">
             <div class="min-w-0">
-              <h4 class="text-sm font-bold text-brand-primary line-clamp-1">${f.note || '-'}</h4>
+              <h4 class="text-sm font-bold text-brand-primary line-clamp-1">${escapeHtml(f.note || '-')}</h4>
               <p class="text-[10px] text-slate-400">${date}</p>
             </div>
             <div class="flex items-center gap-3 no-print">
@@ -1027,7 +1397,8 @@
     // FINANCE LIST
     let financeCache = [];
     async function loadFinance(){
-      const list = $("finList"); list.innerHTML = "";
+      const list = $("finList"); if(!list) return;
+      list.innerHTML = "";
       financeCache = [];
       const snap = await getDocs(query(collection(db,"financial_records"), orderBy("createdAt","desc"), limit(80)));
 
@@ -1036,16 +1407,13 @@
         return;
       }
 
-      snap.forEach(d => {
-        const f = d.data();
-        financeCache.push({ id: d.id, ...f });
-      });
-
+      snap.forEach(d => financeCache.push({ id: d.id, ...d.data() }));
       renderFinanceList(financeCache);
     }
 
     function renderFinanceList(arr){
-      const list = $("finList"); list.innerHTML = "";
+      const list = $("finList"); if(!list) return;
+      list.innerHTML = "";
       arr.forEach(f => {
         const isIn = f.type==='income';
         const isPending = f.status === 'pending';
@@ -1054,7 +1422,7 @@
           <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex justify-between items-start ${isPending?'opacity-70':''}">
             <div class="min-w-0">
               <p class="text-sm font-bold text-brand-primary line-clamp-1 flex items-center gap-2">
-                ${f.note || '-'}
+                ${escapeHtml(f.note || '-')}
                 ${isPending ? '<span class="text-[9px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded font-extrabold">PENDING</span>' : ''}
               </p>
               <p class="text-[10px] text-slate-400 mt-1">${date}</p>
@@ -1100,7 +1468,7 @@
       }
     };
 
-    // AUDIT PREVIEW (NEW)
+    // AUDIT PREVIEW
     async function loadAuditPreview(){
       const box = $("auditPreview");
       if(!box) return;
@@ -1122,8 +1490,8 @@
                 <span class="material-symbols-rounded text-sm">history</span>
               </div>
               <div class="min-w-0">
-                <p class="text-xs font-extrabold text-brand-primary truncate">${(a.action||'aksi').toUpperCase()} • ${a.targetType || '-'}</p>
-                <p class="text-[10px] text-slate-400 truncate">${dt} • ${a.targetId || '-'}</p>
+                <p class="text-xs font-extrabold text-brand-primary truncate">${escapeHtml((a.action||'aksi').toUpperCase())} • ${escapeHtml(a.targetType || '-')}</p>
+                <p class="text-[10px] text-slate-400 truncate">${escapeHtml(dt)} • ${escapeHtml(a.targetId || '-')}</p>
               </div>
             </div>
           `;
@@ -1134,9 +1502,10 @@
       }
     }
 
-    // AUDIT FULL (NEW)
+    // AUDIT FULL
     window.loadAudit = async (showToastOnDone=false) => {
-      const list = $("auditList"); list.innerHTML = "";
+      const list = $("auditList"); if(!list) return;
+      list.innerHTML = "";
       try {
         const lim = Number($("auditLimit")?.value || 30);
         const snap = await getDocs(query(collection(db,"audit_logs"), orderBy("createdAt","desc"), limit(lim)));
@@ -1152,12 +1521,12 @@
             <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
               <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0">
-                  <p class="text-sm font-black text-brand-primary">${(a.action||'-').toUpperCase()}</p>
-                  <p class="text-[10px] text-slate-400 mt-1">${dt}</p>
+                  <p class="text-sm font-black text-brand-primary">${escapeHtml((a.action||'-').toUpperCase())}</p>
+                  <p class="text-[10px] text-slate-400 mt-1">${escapeHtml(dt)}</p>
                 </div>
                 <div class="text-right">
-                  <p class="text-[10px] font-extrabold bg-slate-100 text-slate-600 px-2 py-1 rounded">${a.targetType||'-'}</p>
-                  <p class="text-[10px] text-slate-400 mt-1 truncate max-w-[140px]">${a.targetId||'-'}</p>
+                  <p class="text-[10px] font-extrabold bg-slate-100 text-slate-600 px-2 py-1 rounded">${escapeHtml(a.targetType||'-')}</p>
+                  <p class="text-[10px] text-slate-400 mt-1 truncate max-w-[140px]">${escapeHtml(a.targetId||'-')}</p>
                 </div>
               </div>
               ${a.meta ? `<pre class="mt-3 text-[10px] bg-slate-50 border border-slate-100 rounded-xl p-3 overflow-auto no-scrollbar">${escapeHtml(JSON.stringify(a.meta, null, 2))}</pre>` : ``}
@@ -1172,11 +1541,7 @@
       }
     };
 
-    function escapeHtml(str){
-      return (str||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
-    }
-
-    // BACKUP JSON (NEW)
+    // BACKUP JSON
     window.openBackupModal = () => {
       const html = `
         <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-600">
@@ -1232,6 +1597,13 @@
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
+    }
+
+    function escapeHtml(str){
+      return (str||"").toString()
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;");
     }
 
     // LOGOUT
