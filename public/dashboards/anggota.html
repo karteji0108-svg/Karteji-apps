@@ -806,22 +806,42 @@
     }
 
     async function loadFinance() {
-      const snap = await getDocs(query(collection(db, "financial_records"), where("status","==","approved"), orderBy("createdAt","desc")));
-      let bal = 0, inc = 0, exp = 0;
-      window.allFinanceData = [];
-      
-      snap.forEach(d => {
-        const f = d.data();
-        window.allFinanceData.push(f);
-        const amt = Number(f.amount) || 0;
-        if(f.type === "income") { inc += amt; bal += amt; } 
-        else { exp += amt; bal -= amt; }
-      });
-      
-      animateValue($("cardBalance"), 0, bal, 1500);
-      $("cardIncome").textContent = `Rp ${fmtIDR(inc)}`;
-      $("cardExpense").textContent = `Rp ${fmtIDR(exp)}`;
-      filterFinance('all');
+      try {
+          // HAPUS orderBy sementara agar tidak error "Missing Index" di console
+          const q = query(collection(db, "financial_records"), where("status", "==", "approved"));
+          const snap = await getDocs(q);
+          
+          let bal = 0, inc = 0, exp = 0;
+          window.allFinanceData = [];
+          
+          snap.forEach(d => {
+            const f = d.data();
+            // Tambahkan ID dokumen untuk referensi
+            f.id = d.id; 
+            window.allFinanceData.push(f);
+            
+            const amt = Number(f.amount) || 0;
+            if(f.type === "income") { inc += amt; bal += amt; } 
+            else { exp += amt; bal -= amt; }
+          });
+          
+          // Manual Sort (Terbaru di atas)
+          window.allFinanceData.sort((a,b) => {
+              const tA = a.createdAt?.seconds || 0;
+              const tB = b.createdAt?.seconds || 0;
+              return tB - tA;
+          });
+          
+          animateValue($("cardBalance"), 0, bal, 1500);
+          $("cardIncome").textContent = `Rp ${fmtIDR(inc)}`;
+          $("cardExpense").textContent = `Rp ${fmtIDR(exp)}`;
+          
+          filterFinance('all');
+      } catch(e) {
+          console.error("Gagal load keuangan:", e);
+          // Fallback jika error permission/index
+          $("cardBalance").textContent = "Rp 0";
+      }
     }
 
     // --- MEMBERS (UPDATED FOR LIVE STATUS) ---
