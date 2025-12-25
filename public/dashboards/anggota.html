@@ -71,7 +71,6 @@
     body { background: linear-gradient(180deg, var(--bg0), var(--bg1)); color: var(--fg0); -webkit-tap-highlight-color: transparent; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
 
-    /* Glass Components */
     .glass-nav{
       background: var(--nav);
       backdrop-filter: blur(16px) saturate(130%);
@@ -97,7 +96,6 @@
     .focus-ring:focus{ outline:none; }
     .focus-ring:focus-visible{ box-shadow: 0 0 0 4px var(--ring); }
 
-    /* Online Indicator Pulse */
     .online-ring { animation: ringPulse 2s infinite; }
     @keyframes ringPulse {
       0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
@@ -105,7 +103,6 @@
       100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
     }
 
-    /* --- Weather: tiny helpers --- */
     .skeleton {
       background: linear-gradient(90deg, rgba(148,163,184,.14), rgba(148,163,184,.26), rgba(148,163,184,.14));
       background-size: 200% 100%;
@@ -116,7 +113,6 @@
   </style>
 
   <script>
-    // Theme Bootstrap
     (function(){
       const saved = localStorage.getItem('kte_theme');
       const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -162,7 +158,7 @@
     <div class="glass-card rounded-[1.75rem] px-5 py-4 flex justify-between items-center">
       <div class="flex items-center gap-3">
         <button onclick="switchView('profile')" class="relative tap focus-ring rounded-full">
-          <img id="headerPhoto" class="w-11 h-11 rounded-full border-2 border-white shadow-md object-cover shrink-0" src="https://via.placeholder.com/100">
+          <img id="headerPhoto" class="w-11 h-11 rounded-full border-2 border-white shadow-md object-cover shrink-0" src="https://via.placeholder.com/100" alt="Foto">
           <div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
         </button>
         <div>
@@ -188,8 +184,8 @@
 
     <section id="view-home" class="view-section active">
 
-      <!-- ✅ WEATHER WIDGET (BARU) -->
-      <div id="weatherCard" class="glass-card rounded-[2rem] p-5 mb-6 overflow-hidden relative">
+      <!-- ✅ WEATHER WIDGET -->
+      <div id="weatherCard" class="glass-card rounded-[2rem] p-5 mb-4 overflow-hidden relative">
         <div class="absolute -right-10 -top-10 w-32 h-32 rounded-full blur-3xl opacity-20" style="background: rgba(59,130,246,.8)"></div>
         <div class="flex items-start justify-between gap-3">
           <div class="min-w-0">
@@ -237,11 +233,83 @@
         </div>
       </div>
 
+      <!-- ✅ JADWAL SHOLAT + IMSAK (TETAP ADA) -->
+      <div id="prayerCard" class="glass-card rounded-[2rem] p-5 mb-6 overflow-hidden relative">
+        <div class="absolute -left-10 -bottom-10 w-40 h-40 rounded-full blur-3xl opacity-15" style="background: rgba(34,197,94,.75)"></div>
+
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0">
+            <p class="text-[10px] font-extrabold uppercase tracking-widest flex items-center gap-1" style="color:var(--fg1)">
+              <span class="material-symbols-rounded text-sm" style="color:#22c55e">mosque</span>
+              Jadwal Sholat & Imsak
+            </p>
+            <h3 id="prayerPlace" class="text-sm font-extrabold mt-1 truncate" style="color:var(--fg0)">Memuat lokasi...</h3>
+          </div>
+          <button onclick="loadPrayer(true)" class="tap w-9 h-9 rounded-full flex items-center justify-center"
+                  style="background: rgba(148,163,184,.12); color: rgba(148,163,184,.95)" aria-label="Refresh Jadwal Sholat">
+            <span class="material-symbols-rounded text-xl">refresh</span>
+          </button>
+        </div>
+
+        <div class="mt-4 flex items-center justify-between gap-3">
+          <div class="min-w-0">
+            <p class="text-[9px] font-extrabold uppercase" style="color:var(--fg1)">Berikutnya</p>
+            <div class="flex items-end gap-2">
+              <p id="nextPrayerName" class="text-xl font-black leading-none truncate" style="color:var(--fg0)">—</p>
+              <p id="nextPrayerTime" class="text-[12px] font-extrabold" style="color:var(--fg1)">--:--</p>
+            </div>
+            <p id="prayerDate" class="text-[10px] font-semibold mt-1" style="color:var(--fg1)">—</p>
+          </div>
+
+          <div class="text-right">
+            <p class="text-[9px] font-extrabold uppercase" style="color:var(--fg1)">Update</p>
+            <p id="prayerUpdated" class="text-[10px] font-extrabold" style="color:var(--fg0)">--:--</p>
+          </div>
+        </div>
+
+        <div class="mt-4 grid grid-cols-3 gap-2">
+          <div class="rounded-2xl p-3" style="background: rgba(148,163,184,.10); border:1px solid rgba(148,163,184,.14)">
+            <p class="text-[9px] font-extrabold uppercase" style="color:var(--fg1)">Imsak</p>
+            <p id="tImsak" class="text-sm font-black" style="color:var(--fg0)">--:--</p>
+          </div>
+          <div class="rounded-2xl p-3" style="background: rgba(148,163,184,.10); border:1px solid rgba(148,163,184,.14)">
+            <p class="text-[9px] font-extrabold uppercase" style="color:var(--fg1)">Subuh</p>
+            <p id="tFajr" class="text-sm font-black" style="color:var(--fg0)">--:--</p>
+          </div>
+          <div class="rounded-2xl p-3" style="background: rgba(148,163,184,.10); border:1px solid rgba(148,163,184,.14)">
+            <p class="text-[9px] font-extrabold uppercase" style="color:var(--fg1)">Dzuhur</p>
+            <p id="tDhuhr" class="text-sm font-black" style="color:var(--fg0)">--:--</p>
+          </div>
+          <div class="rounded-2xl p-3" style="background: rgba(148,163,184,.10); border:1px solid rgba(148,163,184,.14)">
+            <p class="text-[9px] font-extrabold uppercase" style="color:var(--fg1)">Ashar</p>
+            <p id="tAsr" class="text-sm font-black" style="color:var(--fg0)">--:--</p>
+          </div>
+          <div class="rounded-2xl p-3" style="background: rgba(148,163,184,.10); border:1px solid rgba(148,163,184,.14)">
+            <p class="text-[9px] font-extrabold uppercase" style="color:var(--fg1)">Maghrib</p>
+            <p id="tMaghrib" class="text-sm font-black" style="color:var(--fg0)">--:--</p>
+          </div>
+          <div class="rounded-2xl p-3" style="background: rgba(148,163,184,.10); border:1px solid rgba(148,163,184,.14)">
+            <p class="text-[9px] font-extrabold uppercase" style="color:var(--fg1)">Isya</p>
+            <p id="tIsha" class="text-sm font-black" style="color:var(--fg0)">--:--</p>
+          </div>
+        </div>
+
+        <div id="prayerHint" class="mt-4 text-[10px] font-semibold rounded-xl px-3 py-2"
+             style="background: rgba(148,163,184,.10); color:var(--fg1)">
+          Mengambil jadwal berdasarkan lokasi perangkat.
+        </div>
+
+        <div id="prayerSkeleton" class="mt-4 space-y-2">
+          <div class="skeleton h-3 w-28"></div>
+          <div class="skeleton h-3 w-48"></div>
+        </div>
+      </div>
+
       <div id="arisanWidget" class="w-full p-[1px] rounded-[2rem] mb-6 relative overflow-hidden group"
            style="background: linear-gradient(45deg, #a855f7, #ec4899);">
         <div class="glass-card rounded-[1.9rem] p-5 flex items-center gap-4 relative z-10 h-full border-none">
           <div class="relative">
-            <img id="arisanPhoto" src="https://via.placeholder.com/100" class="w-14 h-14 rounded-full border-2 border-white shadow-md object-cover shrink-0">
+            <img id="arisanPhoto" src="https://via.placeholder.com/100" class="w-14 h-14 rounded-full border-2 border-white shadow-md object-cover shrink-0" alt="Arisan">
             <div id="arisanBadge" class="hidden absolute -top-2 -right-2 bg-yellow-400 text-yellow-900 text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-sm animate-bounce">WINNER</div>
           </div>
           <div class="flex-1 min-w-0">
@@ -381,7 +449,7 @@
     <section id="view-profile" class="view-section">
       <div class="flex flex-col items-center pt-4">
         <div class="relative group cursor-pointer tap" onclick="$('profileUpload').click()">
-          <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl shadow-slate-200">
+          <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl shadow-slate-200" alt="Profil">
           <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
             <span class="material-symbols-rounded text-white">photo_camera</span>
           </div>
@@ -490,10 +558,11 @@
     let ME_UID = null;
     let ME_DATA = null;
     let newProfileFile = null;
+
     const fmtIDR = (n) => Number(n || 0).toLocaleString("id-ID");
     function clean(text) { if (!text) return ""; return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
-    // Theme Management
+    // Theme
     const btnTheme = document.getElementById("btn-theme");
     const themeIcon = document.getElementById("themeIcon");
     function getTheme(){ return document.documentElement.getAttribute('data-theme') || 'light'; }
@@ -508,7 +577,7 @@
     setTheme(getTheme());
     btnTheme?.addEventListener("click", toggleTheme);
 
-    // UX Helpers
+    // UX
     window.showToast = (msg, type = 'success') => {
       const container = $('toastContainer');
       const el = document.createElement('div');
@@ -527,19 +596,27 @@
 
     window.toggleLoader = (show) => {
       const l = $("globalLoader");
+      if (!l) return;
       if (show) { l.classList.remove('hidden'); l.classList.add('flex'); }
       else { l.classList.add('hidden'); l.classList.remove('flex'); }
     };
 
-    window.closeModal = () => $("crudModal").classList.add('hidden');
+    window.closeModal = () => {
+      const m = $("crudModal");
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    };
+
     window.showModal = (title, bodyHtml, onSave) => {
       $("modalTitle").textContent = title;
       $("modalBody").innerHTML = bodyHtml;
-      $("crudModal").classList.remove('hidden'); $("crudModal").classList.add('flex');
+      const m = $("crudModal");
+      m.classList.remove('hidden'); m.classList.add('flex');
+
       const btn = $("modalSubmitBtn");
       const newBtn = btn.cloneNode(true);
       btn.parentNode.replaceChild(newBtn, btn);
-      newBtn.onclick = onSave;
+      newBtn.onclick = onSave || null;
       newBtn.style.display = onSave ? 'block' : 'none';
     };
 
@@ -548,10 +625,12 @@
         el.classList.remove('active');
         setTimeout(() => { if (!el.classList.contains('active')) el.style.display = 'none'; }, 200);
       });
+
       setTimeout(() => {
         const target = $(`view-${viewId}`);
         if(target) { target.style.display = 'block'; setTimeout(() => target.classList.add('active'), 20); }
       }, 200);
+
       document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
       const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`);
       if (activeBtn) activeBtn.classList.add('active');
@@ -577,14 +656,38 @@
     }
 
     // -----------------------------
-    // ✅ WEATHER (BARU) — Open-Meteo (tanpa API key)
+    // Shared Geo + Reverse
+    // -----------------------------
+    async function getCoords(){
+      return new Promise((resolve, reject)=>{
+        if(!navigator.geolocation) return reject(new Error("Geolocation tidak didukung."));
+        navigator.geolocation.getCurrentPosition(
+          pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+          err => reject(err),
+          { enableHighAccuracy: false, timeout: 8000, maximumAge: 600000 }
+        );
+      });
+    }
+
+    async function reverseGeocode(lat, lon){
+      try{
+        const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`;
+        const res = await fetch(url, { headers: { "Accept":"application/json" } });
+        const j = await res.json();
+        const a = j.address || {};
+        return (a.city || a.town || a.village || a.suburb || a.county || "Lokasi Anda") + (a.state ? `, ${a.state}` : "");
+      }catch(_){
+        return "Lokasi Anda";
+      }
+    }
+
+    // -----------------------------
+    // ✅ WEATHER — Open-Meteo (tanpa API key)
     // -----------------------------
     const WEATHER_CACHE_KEY = "kte_weather_cache_v1";
     const WEATHER_CACHE_TTL = 10 * 60 * 1000; // 10 menit
 
     function weatherIcon(code, isDay=true){
-      // mapping sederhana, pakai Material Symbols
-      // ref: WMO weather codes (Open-Meteo)
       const m = {
         clear: isDay ? "sunny" : "nights_stay",
         cloudy: "cloud",
@@ -621,34 +724,9 @@
       setWeatherLoading(false);
     }
 
-    async function getCoords(){
-      return new Promise((resolve, reject)=>{
-        if(!navigator.geolocation) return reject(new Error("Geolocation tidak didukung."));
-        navigator.geolocation.getCurrentPosition(
-          pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
-          err => reject(err),
-          { enableHighAccuracy: false, timeout: 8000, maximumAge: 600000 }
-        );
-      });
-    }
-
-    async function reverseGeocode(lat, lon){
-      // pakai Nominatim (tanpa key). Jika diblokir/limit, fallback ke "Lokasi Anda"
-      try{
-        const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`;
-        const res = await fetch(url, { headers: { "Accept":"application/json" } });
-        const j = await res.json();
-        const a = j.address || {};
-        return (a.city || a.town || a.village || a.suburb || a.county || "Lokasi Anda") + (a.state ? `, ${a.state}` : "");
-      }catch(_){
-        return "Lokasi Anda";
-      }
-    }
-
     async function fetchWeather(lat, lon){
-      // Open-Meteo current weather
       const tz = "Asia/Jakarta";
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relativehumidity_2m&timezone=${encodeURIComponent(tz)}`;
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=${encodeURIComponent(tz)}`;
       const res = await fetch(url);
       if(!res.ok) throw new Error("Weather API error");
       return await res.json();
@@ -658,7 +736,6 @@
       try{
         setWeatherLoading(true);
 
-        // cache
         const cached = localStorage.getItem(WEATHER_CACHE_KEY);
         if(!force && cached){
           const c = JSON.parse(cached);
@@ -680,7 +757,6 @@
         applyWeatherUI(payload);
         setWeatherLoading(false);
       }catch(e){
-        // Permission denied / timeout => fallback: minta izin / tampilkan pesan
         const msg = (e && e.code === 1)
           ? "Izin lokasi ditolak. Aktifkan Location untuk menampilkan cuaca."
           : "Cuaca tidak bisa dimuat. Coba refresh.";
@@ -714,7 +790,136 @@
     }
 
     // -----------------------------
-    // ID Card Feature
+    // ✅ JADWAL SHOLAT + IMSAK — Aladhan (tanpa API key)
+    // -----------------------------
+    const PRAYER_CACHE_KEY = "kte_prayer_cache_v1";
+
+    function setPrayerLoading(loading){
+      const sk = $("prayerSkeleton");
+      if(sk) sk.style.display = loading ? "block" : "none";
+    }
+
+    function setPrayerError(msg){
+      $("prayerPlace").textContent = "Jadwal Sholat";
+      $("nextPrayerName").textContent = "—";
+      $("nextPrayerTime").textContent = "--:--";
+      $("prayerDate").textContent = "—";
+      $("prayerUpdated").textContent = "--:--";
+      ["tImsak","tFajr","tDhuhr","tAsr","tMaghrib","tIsha"].forEach(id => { const el=$(id); if(el) el.textContent="--:--"; });
+      $("prayerHint").textContent = msg || "Gagal memuat jadwal sholat.";
+      setPrayerLoading(false);
+    }
+
+    function onlyHHMM(t){
+      if(!t) return "--:--";
+      return String(t).replace(/\s*\(.*\)\s*/g,"").trim().slice(0,5);
+    }
+
+    function dateKeyJakarta(d=new Date()){
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const dd = String(d.getDate()).padStart(2,'0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function parseTimeToday(hhmm){
+      const [h,m] = (hhmm||"00:00").split(":").map(x=>parseInt(x,10));
+      const d = new Date();
+      d.setHours(h||0, m||0, 0, 0);
+      return d.getTime();
+    }
+
+    function computeNextPrayer(timings){
+      const now = Date.now();
+      const order = [
+        { key: "Imsak", label: "Imsak" },
+        { key: "Fajr", label: "Subuh" },
+        { key: "Dhuhr", label: "Dzuhur" },
+        { key: "Asr", label: "Ashar" },
+        { key: "Maghrib", label: "Maghrib" },
+        { key: "Isha", label: "Isya" },
+      ];
+      for(const it of order){
+        const hhmm = onlyHHMM(timings[it.key]);
+        const ts = parseTimeToday(hhmm);
+        if(ts > now) return { name: it.label, time: hhmm };
+      }
+      // fallback: sudah lewat semua => tampilkan Imsak besok (estimasi: ambil Imsak hari ini sebagai "besok" fallback)
+      return { name: "Imsak (Besok)", time: onlyHHMM(timings["Imsak"] || timings["Fajr"]) };
+    }
+
+    async function fetchPrayer(lat, lon){
+      const tz = "Asia/Jakarta";
+      const url = `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=20&timezonestring=${encodeURIComponent(tz)}`;
+      const res = await fetch(url);
+      if(!res.ok) throw new Error("Prayer API error");
+      return await res.json();
+    }
+
+    window.loadPrayer = async (force=false) => {
+      try{
+        setPrayerLoading(true);
+        const todayKey = dateKeyJakarta();
+
+        const cached = localStorage.getItem(PRAYER_CACHE_KEY);
+        if(!force && cached){
+          const c = JSON.parse(cached);
+          if(c?.key === todayKey && c?.data){
+            applyPrayerUI(c.data);
+            setPrayerLoading(false);
+            return;
+          }
+        }
+
+        const { lat, lon } = await getCoords();
+        const [place, raw] = await Promise.all([
+          reverseGeocode(lat, lon),
+          fetchPrayer(lat, lon)
+        ]);
+
+        const data = { place, raw };
+        localStorage.setItem(PRAYER_CACHE_KEY, JSON.stringify({ key: todayKey, ts: Date.now(), data }));
+        applyPrayerUI(data);
+        setPrayerLoading(false);
+      }catch(e){
+        const msg = (e && e.code === 1)
+          ? "Izin lokasi ditolak. Aktifkan Location untuk menampilkan jadwal sholat."
+          : "Jadwal sholat tidak bisa dimuat. Coba refresh.";
+        setPrayerError(msg);
+      }
+    };
+
+    function applyPrayerUI(payload){
+      const place = payload.place || "Lokasi Anda";
+      const raw = payload.raw;
+      const timings = raw?.data?.timings;
+      const readable = raw?.data?.date?.readable || "-";
+
+      if(!timings){
+        setPrayerError("Data jadwal kosong.");
+        return;
+      }
+
+      $("prayerPlace").textContent = place;
+      $("prayerDate").textContent = `Tanggal: ${readable}`;
+      $("tImsak").textContent = onlyHHMM(timings.Imsak || timings.Fajr);
+      $("tFajr").textContent = onlyHHMM(timings.Fajr);
+      $("tDhuhr").textContent = onlyHHMM(timings.Dhuhr);
+      $("tAsr").textContent = onlyHHMM(timings.Asr);
+      $("tMaghrib").textContent = onlyHHMM(timings.Maghrib);
+      $("tIsha").textContent = onlyHHMM(timings.Isha);
+
+      const next = computeNextPrayer(timings);
+      $("nextPrayerName").textContent = next.name;
+      $("nextPrayerTime").textContent = next.time;
+
+      const now = new Date();
+      $("prayerUpdated").textContent = now.toLocaleTimeString("id-ID", { hour:"2-digit", minute:"2-digit" });
+      $("prayerHint").textContent = "Data jadwal dari Aladhan (tanpa API key).";
+    }
+
+    // -----------------------------
+    // ID Card
     // -----------------------------
     window.showIdCard = async () => {
       toggleLoader(true);
@@ -729,9 +934,9 @@
               <div id="qrcode" class="bg-white p-1 rounded"></div>
             </div>
             <div class="flex gap-4 items-center mt-3">
-              <img src="${u.photo?.url || 'https://via.placeholder.com/150'}" class="w-16 h-16 rounded-xl object-cover bg-slate-700 border border-slate-500">
-              <div>
-                <h3 class="text-lg font-extrabold leading-none">${clean(u.name)}</h3>
+              <img src="${u.photo?.url || 'https://via.placeholder.com/150'}" class="w-16 h-16 rounded-xl object-cover bg-slate-700 border border-slate-500" alt="Foto">
+              <div class="min-w-0">
+                <h3 class="text-lg font-extrabold leading-none truncate">${clean(u.name)}</h3>
                 <p class="text-[10px] text-slate-300 mt-1 uppercase">${u.role || 'ANGGOTA'}</p>
                 <p class="text-[9px] text-slate-400 mt-0.5 tracking-wider">${String(ME_UID).substring(0,8).toUpperCase()}</p>
               </div>
@@ -748,14 +953,16 @@
         `;
         showModal("Kartu Anggota Digital", html, null);
         setTimeout(() => {
-          if(document.getElementById("qrcode")){
-             new QRCode(document.getElementById("qrcode"), { text: ME_UID, width: 40, height: 40 });
+          const q = document.getElementById("qrcode");
+          if(q){
+            q.innerHTML = "";
+            new QRCode(q, { text: ME_UID, width: 40, height: 40 });
           }
         }, 100);
       } finally { toggleLoader(false); }
     }
 
-    // Logic
+    // Upload Cloudinary
     async function upload(file) {
       if (!file) return null;
       if (!file.type.startsWith('image/')) { showToast("File harus gambar!", "error"); return null; }
@@ -766,6 +973,7 @@
       return { url: data.secure_url };
     }
 
+    // Auth bootstrap
     onAuthStateChanged(auth, async (user) => {
       if (!user) return window.location.href = "login.html";
       ME_UID = user.uid;
@@ -777,30 +985,31 @@
       $("headerName").textContent = clean(ME_DATA.name);
       $("headerPhoto").src = pUrl;
 
-      // Online presence
+      // Presence
       const updatePresence = () => updateDoc(doc(db, "users", ME_UID), { lastSeen: serverTimestamp() }).catch(()=>{});
       updatePresence(); setInterval(updatePresence, 60000);
 
-      // ✅ load weather pertama kali
+      // ✅ load widgets pertama kali (pakai cache)
       loadWeather(false);
+      loadPrayer(false);
 
       await refreshAll();
       await loadProfileData();
     });
 
     window.refreshAll = async () => {
-      // ✅ refreshAll juga refresh cuaca (pakai cache, tidak force)
+      // widget refresh (tanpa force)
       loadWeather(false);
+      loadPrayer(false);
       await Promise.all([loadActivities(), loadNotifications(), loadFinance(), loadMembers(), loadArisanWinner()]);
     };
 
-    // FIX: Modified logic to handle default state
+    // Arisan
     async function loadArisanWinner() {
       try {
         const qy = query(collection(db, "arisan_history"), orderBy("createdAt", "desc"), limit(1));
         const snap = await getDocs(qy);
 
-        const w = $("arisanWidget");
         const badge = $("arisanBadge");
 
         if (!snap.empty) {
@@ -816,13 +1025,12 @@
           $("arisanPhoto").src = "https://via.placeholder.com/100?text=?";
           badge.classList.add('hidden');
         }
-        w.classList.remove("hidden");
-
       } catch (e) {
-        $("arisanWidget").classList.remove("hidden");
+        // biarkan widget tetap tampil
       }
     }
 
+    // Voting
     window.loadPolls = async () => {
       const list = $("votingList");
       list.innerHTML = `<div class="flex justify-center"><div class="w-8 h-8 border-4 border-slate-200 border-t-purple-500 rounded-full animate-spin"></div></div>`;
@@ -864,6 +1072,7 @@
                 </button>`;
             }
           });
+
           list.innerHTML += `
             <div class="glass-card p-5 rounded-[1.5rem] relative overflow-hidden">
               ${hasVoted ? '<div class="absolute top-0 right-0 bg-green-500/20 text-green-600 text-[9px] font-extrabold px-3 py-1 rounded-bl-xl">SUDAH MEMILIH</div>' : ''}
@@ -872,7 +1081,7 @@
               <div class="space-y-1">${optionsHtml}</div>
             </div>`;
         });
-      } catch (e) { list.innerHTML = "Error"; }
+      } catch (e) { list.innerHTML = `<div class="glass-card p-6 text-center"><p class="text-xs font-bold" style="color:var(--fg1)">Gagal memuat voting.</p></div>`; }
     };
 
     window.submitVote = async (pollId, idx) => {
@@ -883,13 +1092,17 @@
         const snap = await getDoc(ref);
         const d = snap.data();
         if (d.voters?.includes(ME_UID)) throw new Error("Sudah memilih!");
-        const opts = [...d.options];
+        const opts = [...(d.options || [])];
+        if(!opts[idx]) throw new Error("Opsi tidak valid.");
         opts[idx].count = (opts[idx].count || 0) + 1;
         await updateDoc(ref, { options: opts, voters: arrayUnion(ME_UID) });
-        showToast("Voting berhasil!"); loadPolls();
-      } catch (e) { showToast(e.message, "error"); } finally { toggleLoader(false); }
+        showToast("Voting berhasil!");
+        loadPolls();
+      } catch (e) { showToast(e.message || "Gagal voting", "error"); }
+      finally { toggleLoader(false); }
     };
 
+    // Profile
     async function loadProfileData() {
       try {
         const snap = await getDoc(doc(db, "users", ME_UID));
@@ -897,11 +1110,14 @@
           const d = snap.data();
           $("headerName").textContent = clean(d.name);
           $("headerPhoto").src = d.photo?.url || "https://via.placeholder.com/150";
+
           $("profileImage").src = d.photo?.url || "https://via.placeholder.com/150";
           $("profileNameDisplay").textContent = clean(d.name);
-          $("profileEmailDisplay").textContent = clean(d.email);
-          $("editName").value = clean(d.name); $("editPhone").value = clean(d.phone);
-          $("editAddress").value = clean(d.address);
+          $("profileEmailDisplay").textContent = clean(d.email || "");
+
+          $("editName").value = d.name || "";
+          $("editPhone").value = d.phone || "";
+          $("editAddress").value = d.address || "";
         }
       } catch (e) {}
     }
@@ -919,26 +1135,36 @@
       const btn = ev?.target; if(btn){ btn.innerText="MENYIMPAN..."; btn.disabled=true; }
       toggleLoader(true);
       try {
-        const up = { name: $("editName").value, phone: $("editPhone").value, address: $("editAddress").value };
+        const up = {
+          name: $("editName").value || "",
+          phone: $("editPhone").value || "",
+          address: $("editAddress").value || ""
+        };
         if (newProfileFile) { const res = await upload(newProfileFile); up.photo = res; }
         await updateDoc(doc(db, "users", ME_UID), up);
-        showToast("Profil disimpan!"); await loadProfileData();
+        showToast("Profil disimpan!");
+        await loadProfileData();
       } catch (e) { showToast("Gagal simpan", "error"); }
       finally { toggleLoader(false); if(btn){ btn.innerText="SIMPAN PROFIL"; btn.disabled=false; } }
     };
 
+    // Activities
     async function loadActivities() {
-      const list = $("actList"); list.innerHTML = "";
+      const list = $("actList"); if(list) list.innerHTML = "";
       try {
         const snap = await getDocs(collection(db, "activities"));
         const rows = []; snap.forEach(d => rows.push({id:d.id, ...d.data()}));
         rows.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-        if(!rows.length) { list.innerHTML = `<p class="text-center text-xs" style="color:var(--fg1)">Belum ada agenda.</p>`; return; }
+
+        if(!rows.length) {
+          if(list) list.innerHTML = `<p class="text-center text-xs" style="color:var(--fg1)">Belum ada agenda.</p>`;
+          return;
+        }
 
         rows.forEach(x => {
-            list.innerHTML += `
+          list.innerHTML += `
             <div class="glass-card rounded-[1.5rem] overflow-hidden flex h-24 relative">
-              ${x.cover?.url ? `<img src="${x.cover.url}" class="w-24 h-full object-cover shrink-0">` : ''}
+              ${x.cover?.url ? `<img src="${x.cover.url}" class="w-24 h-full object-cover shrink-0" alt="Cover">` : ''}
               <div class="p-3 flex flex-col justify-center min-w-0">
                 <span class="text-[9px] font-extrabold uppercase text-blue-500 mb-0.5">${clean(x.date)}</span>
                 <h4 class="font-extrabold text-sm line-clamp-2 leading-tight" style="color:var(--fg0)">${clean(x.title)}</h4>
@@ -948,14 +1174,20 @@
               </div>
             </div>`;
         });
-      } catch(e){}
+      } catch(e) {
+        if(list) list.innerHTML = `<p class="text-center text-xs" style="color:var(--fg1)">Gagal memuat kegiatan.</p>`;
+      }
     }
 
+    // Notifications
     async function loadNotifications() {
-      const list = $("homeNoticeList"); list.innerHTML = "";
+      const list = $("homeNoticeList"); if(list) list.innerHTML = "";
       try {
         const snap = await getDocs(query(collection(db, "notifications"), orderBy("createdAt","desc"), limit(3)));
-        if(snap.empty){ list.innerHTML = `<p class="text-xs italic" style="color:var(--fg1)">Belum ada pengumuman.</p>`; return; }
+        if(snap.empty){
+          if(list) list.innerHTML = `<p class="text-xs italic" style="color:var(--fg1)">Belum ada pengumuman.</p>`;
+          return;
+        }
         snap.forEach(d => {
           const x = d.data();
           list.innerHTML += `
@@ -964,29 +1196,35 @@
               <p class="text-[10px] line-clamp-2" style="color:var(--fg1)">${clean(x.body)}</p>
             </div>`;
         });
-      } catch(e){}
+      } catch(e) {
+        if(list) list.innerHTML = `<p class="text-xs italic" style="color:var(--fg1)">Gagal memuat pengumuman.</p>`;
+      }
     }
 
+    // Finance
     window.allFinanceData = [];
     window.filterFinance = (type) => {
-      const list = $("finList"); list.innerHTML = "";
+      const list = $("finList"); if(list) list.innerHTML = "";
       const filtered = type === 'all' ? window.allFinanceData : window.allFinanceData.filter(f => f.type === type);
-      if(!filtered.length) { list.innerHTML = `<p class="text-center text-xs mt-4" style="color:var(--fg1)">Tidak ada data.</p>`; return; }
+      if(!filtered.length) {
+        if(list) list.innerHTML = `<p class="text-center text-xs mt-4" style="color:var(--fg1)">Tidak ada data.</p>`;
+        return;
+      }
 
       filtered.forEach(f => {
         const isInc = f.type === 'income';
         list.innerHTML += `
           <div class="glass-card p-3 rounded-2xl flex justify-between items-center animate-[slideInTop_.2s]">
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 min-w-0">
               <div class="w-9 h-9 rounded-full ${isInc?'bg-green-500/10 text-green-600':'bg-red-500/10 text-red-500'} flex items-center justify-center">
                 <span class="material-symbols-rounded text-lg">${isInc?'arrow_downward':'arrow_upward'}</span>
               </div>
-              <div>
+              <div class="min-w-0">
                 <p class="text-xs font-extrabold line-clamp-1" style="color:var(--fg0)">${clean(f.note)}</p>
-                <p class="text-[9px]" style="color:var(--fg1)">${f.createdAt?.seconds ? new Date(f.createdAt.seconds*1000).toLocaleDateString() : '-'}</p>
+                <p class="text-[9px]" style="color:var(--fg1)">${f.createdAt?.seconds ? new Date(f.createdAt.seconds*1000).toLocaleDateString("id-ID") : '-'}</p>
               </div>
             </div>
-            <span class="font-extrabold text-xs ${isInc?'text-green-600':'text-red-500'}">${isInc?'+':'-'} ${fmtIDR(f.amount)}</span>
+            <span class="font-extrabold text-xs ${isInc?'text-green-600':'text-red-500'} whitespace-nowrap">${isInc?'+':'-'} ${fmtIDR(f.amount)}</span>
           </div>`;
       });
     };
@@ -1005,33 +1243,44 @@
         $("cardIncome").textContent = `Rp ${fmtIDR(inc)}`;
         $("cardExpense").textContent = `Rp ${fmtIDR(exp)}`;
         filterFinance('all');
-      } catch(e){}
+      } catch(e) {}
     }
 
+    // Members
     async function loadMembers() {
-      const list = $("memberList"); list.innerHTML = "";
+      const list = $("memberList"); if(list) list.innerHTML = "";
       try {
         const snap = await getDocs(collection(db, "users"));
         const rows = []; snap.forEach(d => rows.push({id:d.id, ...d.data()}));
         let onlineCount = 0; const now = Date.now();
+
         rows.forEach(u => {
           const last = u.lastSeen?.seconds ? u.lastSeen.seconds*1000 : 0;
           const isOnline = (now - last) <= 120000;
           if(isOnline) onlineCount++;
+
           list.innerHTML += `
             <div class="glass-card p-3 rounded-2xl flex flex-col items-center gap-2 relative group tap">
               <div class="relative">
-                <img src="${u.photo?.url||'https://via.placeholder.com/100'}" class="h-12 w-12 rounded-full object-cover shrink-0 border-2 ${isOnline?'border-green-400 online-ring':'border-slate-200 grayscale opacity-70'}">
+                <img src="${u.photo?.url||'https://via.placeholder.com/100'}" class="h-12 w-12 rounded-full object-cover shrink-0 border-2 ${isOnline?'border-green-400 online-ring':'border-slate-200 grayscale opacity-70'}" alt="User">
                 ${isOnline ? '<span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>' : ''}
               </div>
               <p class="text-[9px] font-extrabold text-center truncate w-full" style="color:var(--fg0)">${clean(u.name)}</p>
               <span class="text-[8px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 dark:bg-slate-800 uppercase">${u.role||'Anggota'}</span>
             </div>`;
         });
-        if(onlineCount > 0) { $("onlineBadgeContainer").classList.remove('hidden'); $("onlineCountText").innerText=`${onlineCount} Online`; }
-      } catch(e){}
+
+        const badge = $("onlineBadgeContainer");
+        if(onlineCount > 0) {
+          badge.classList.remove('hidden');
+          $("onlineCountText").innerText=`${onlineCount} Online`;
+        } else {
+          badge.classList.add('hidden');
+        }
+      } catch(e) {}
     }
 
+    // Logout
     $("logoutBtn").onclick = () => signOut(auth).then(()=>location.href="login.html");
   </script>
 </body>
