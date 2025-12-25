@@ -70,7 +70,7 @@
 
     body { background: linear-gradient(180deg, var(--bg0), var(--bg1)); color: var(--fg0); -webkit-tap-highlight-color: transparent; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
-    
+
     /* Glass Components */
     .glass-nav{
       background: var(--nav);
@@ -91,7 +91,7 @@
     .view-section.active { display: block; opacity: 1; transform: translateY(0); }
     .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #F97316; }
     .nav-btn.active p { color: var(--fg0); font-weight: 800; }
-    
+
     .tap{ transition: transform .1s ease; will-change: transform; }
     .tap:active{ transform: scale(.95); }
     .focus-ring:focus{ outline:none; }
@@ -104,6 +104,15 @@
       70% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
       100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
     }
+
+    /* --- Weather: tiny helpers --- */
+    .skeleton {
+      background: linear-gradient(90deg, rgba(148,163,184,.14), rgba(148,163,184,.26), rgba(148,163,184,.14));
+      background-size: 200% 100%;
+      animation: sk 1.2s ease-in-out infinite;
+      border-radius: 999px;
+    }
+    @keyframes sk { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
   </style>
 
   <script>
@@ -128,7 +137,7 @@
 
   <div id="toastContainer" class="fixed top-4 left-0 right-0 z-[100] flex flex-col items-center gap-2 pointer-events-none px-4"></div>
 
-  <div id="globalLoader" class="fixed inset-0 z-[9999] hidden items-center justify-center flex-col gap-4 backdrop-blur-md" style="background: rgba(var(--bg0), 0.6)">
+  <div id="globalLoader" class="fixed inset-0 z-[9999] hidden items-center justify-center flex-col gap-4 backdrop-blur-md" style="background: rgba(248,250,252, 0.6)">
     <div class="w-12 h-12 border-4 border-slate-200 border-t-accent rounded-full animate-spin"></div>
     <p class="text-xs font-extrabold animate-pulse" style="color:var(--fg1)">MEMUAT...</p>
   </div>
@@ -153,11 +162,11 @@
     <div class="glass-card rounded-[1.75rem] px-5 py-4 flex justify-between items-center">
       <div class="flex items-center gap-3">
         <button onclick="switchView('profile')" class="relative tap focus-ring rounded-full">
-          <img id="headerPhoto" class="w-11 h-11 rounded-full border-2 border-white shadow-md object-cover" src="https://via.placeholder.com/100">
+          <img id="headerPhoto" class="w-11 h-11 rounded-full border-2 border-white shadow-md object-cover shrink-0" src="https://via.placeholder.com/100">
           <div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
         </button>
         <div>
-          <p class="text-[10px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-full w-fit mb-1" 
+          <p class="text-[10px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-full w-fit mb-1"
              style="background: rgba(249,115,22,.14); color: #F97316">ANGGOTA</p>
           <h1 id="headerName" class="text-lg font-extrabold leading-none truncate max-w-[140px]">Memuat...</h1>
         </div>
@@ -179,17 +188,66 @@
 
     <section id="view-home" class="view-section active">
 
-      <div id="arisanWidget" class="hidden w-full p-[1px] rounded-[2rem] mb-6 relative overflow-hidden group" 
+      <!-- ✅ WEATHER WIDGET (BARU) -->
+      <div id="weatherCard" class="glass-card rounded-[2rem] p-5 mb-6 overflow-hidden relative">
+        <div class="absolute -right-10 -top-10 w-32 h-32 rounded-full blur-3xl opacity-20" style="background: rgba(59,130,246,.8)"></div>
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0">
+            <p class="text-[10px] font-extrabold uppercase tracking-widest flex items-center gap-1" style="color:var(--fg1)">
+              <span class="material-symbols-rounded text-sm" style="color:#0ea5e9">cloud</span>
+              Cuaca Sekarang
+            </p>
+            <h3 id="weatherPlace" class="text-sm font-extrabold mt-1 truncate" style="color:var(--fg0)">Memuat lokasi...</h3>
+          </div>
+          <button onclick="loadWeather(true)" class="tap w-9 h-9 rounded-full flex items-center justify-center"
+                  style="background: rgba(148,163,184,.12); color: rgba(148,163,184,.95)" aria-label="Refresh Cuaca">
+            <span class="material-symbols-rounded text-xl">refresh</span>
+          </button>
+        </div>
+
+        <div class="mt-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl flex items-center justify-center"
+                 style="background: rgba(14,165,233,.12); color: rgba(14,165,233,.95)">
+              <span id="weatherIcon" class="material-symbols-rounded text-3xl">cloud</span>
+            </div>
+            <div>
+              <div class="flex items-end gap-2">
+                <p id="weatherTemp" class="text-3xl font-black leading-none" style="color:var(--fg0)">--°</p>
+                <p id="weatherCond" class="text-[11px] font-extrabold uppercase" style="color:var(--fg1)">...</p>
+              </div>
+              <p id="weatherMeta" class="text-[10px] font-semibold mt-1" style="color:var(--fg1)">—</p>
+            </div>
+          </div>
+
+          <div class="text-right">
+            <p class="text-[9px] font-extrabold uppercase" style="color:var(--fg1)">Terakhir update</p>
+            <p id="weatherUpdated" class="text-[10px] font-extrabold" style="color:var(--fg0)">--:--</p>
+          </div>
+        </div>
+
+        <div id="weatherHint" class="mt-4 text-[10px] font-semibold rounded-xl px-3 py-2"
+             style="background: rgba(148,163,184,.10); color:var(--fg1)">
+          Mengambil data cuaca berdasarkan lokasi perangkat.
+        </div>
+
+        <div id="weatherSkeleton" class="mt-4 space-y-2">
+          <div class="skeleton h-3 w-24"></div>
+          <div class="skeleton h-3 w-44"></div>
+        </div>
+      </div>
+
+      <div id="arisanWidget" class="w-full p-[1px] rounded-[2rem] mb-6 relative overflow-hidden group"
            style="background: linear-gradient(45deg, #a855f7, #ec4899);">
         <div class="glass-card rounded-[1.9rem] p-5 flex items-center gap-4 relative z-10 h-full border-none">
           <div class="relative">
-            <img id="arisanPhoto" src="https://via.placeholder.com/100" class="w-14 h-14 rounded-full border-2 border-white shadow-md object-cover">
-            <div class="absolute -top-2 -right-2 bg-yellow-400 text-yellow-900 text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-sm animate-bounce">WINNER</div>
+            <img id="arisanPhoto" src="https://via.placeholder.com/100" class="w-14 h-14 rounded-full border-2 border-white shadow-md object-cover shrink-0">
+            <div id="arisanBadge" class="hidden absolute -top-2 -right-2 bg-yellow-400 text-yellow-900 text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-sm animate-bounce">WINNER</div>
           </div>
           <div class="flex-1 min-w-0">
-            <p class="text-[10px] font-bold text-purple-500 uppercase tracking-widest mb-0.5">Pemenang Arisan</p>
-            <h3 id="arisanName" class="text-lg font-extrabold leading-none truncate" style="color:var(--fg0)">...</h3>
-            <p id="arisanDate" class="text-[10px] mt-1" style="color:var(--fg1)">Periode Bulan Ini</p>
+            <p class="text-[10px] font-bold text-purple-500 uppercase tracking-widest mb-0.5">Arisan Bulanan</p>
+            <h3 id="arisanName" class="text-lg font-extrabold leading-none truncate" style="color:var(--fg0)">Belum ada pemenang</h3>
+            <p id="arisanDate" class="text-[10px] mt-1" style="color:var(--fg1)">Menunggu pengundian...</p>
           </div>
           <span class="material-symbols-rounded text-4xl text-purple-500/20">celebration</span>
         </div>
@@ -345,28 +403,28 @@
           <div class="glass-card p-5 rounded-3xl space-y-4">
             <div>
               <label class="text-[10px] font-extrabold ml-1 uppercase flex items-center gap-1" style="color:var(--fg1)"><span class="material-symbols-rounded text-sm">badge</span> Nama Lengkap</label>
-              <input id="editName" type="text" class="focus-ring w-full p-3 rounded-xl text-sm font-bold mt-1 outline-none" 
+              <input id="editName" type="text" class="focus-ring w-full p-3 rounded-xl text-sm font-bold mt-1 outline-none"
                      style="background: rgba(148,163,184,.10); border: 1px solid rgba(148,163,184,.18); color: var(--fg0)">
             </div>
             <div>
               <label class="text-[10px] font-extrabold ml-1 uppercase flex items-center gap-1" style="color:var(--fg1)"><span class="material-symbols-rounded text-sm">call</span> No. WhatsApp</label>
-              <input id="editPhone" type="tel" placeholder="08..." class="focus-ring w-full p-3 rounded-xl text-sm font-bold mt-1 outline-none" 
+              <input id="editPhone" type="tel" placeholder="08..." class="focus-ring w-full p-3 rounded-xl text-sm font-bold mt-1 outline-none"
                      style="background: rgba(148,163,184,.10); border: 1px solid rgba(148,163,184,.18); color: var(--fg0)">
             </div>
             <div>
               <label class="text-[10px] font-extrabold ml-1 uppercase flex items-center gap-1" style="color:var(--fg1)"><span class="material-symbols-rounded text-sm">home_pin</span> Alamat</label>
-              <textarea id="editAddress" rows="2" class="focus-ring w-full p-3 rounded-xl text-sm font-medium mt-1 outline-none resize-none" 
+              <textarea id="editAddress" rows="2" class="focus-ring w-full p-3 rounded-xl text-sm font-medium mt-1 outline-none resize-none"
                         style="background: rgba(148,163,184,.10); border: 1px solid rgba(148,163,184,.18); color: var(--fg0)"></textarea>
             </div>
           </div>
 
-          <button onclick="saveProfile(event)" class="tap focus-ring w-full py-4 rounded-2xl font-extrabold text-white shadow-lg overflow-hidden relative group" 
+          <button onclick="saveProfile(event)" class="tap focus-ring w-full py-4 rounded-2xl font-extrabold text-white shadow-lg overflow-hidden relative group"
                   style="background: linear-gradient(135deg, #0F172A, #111c33);">
             SIMPAN PROFIL
             <span class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"><span class="absolute -left-1/2 top-0 h-full w-1/2 bg-white/15 skew-x-[-18deg] animate-sheen"></span></span>
           </button>
-          
-          <button id="logoutBtn" class="tap focus-ring w-full py-4 rounded-2xl font-extrabold flex items-center justify-center gap-2" 
+
+          <button id="logoutBtn" class="tap focus-ring w-full py-4 rounded-2xl font-extrabold flex items-center justify-center gap-2"
                   style="background: rgba(239,68,68,.12); color: rgb(239,68,68)">
             <span class="material-symbols-rounded">logout</span> KELUAR
           </button>
@@ -389,7 +447,7 @@
       </button>
 
       <div class="relative -top-6">
-        <button onclick="switchView('profile')" class="nav-btn w-14 h-14 rounded-full flex items-center justify-center shadow-xl shadow-slate-900/20 hover:scale-105 active:scale-95 transition-all ring-4 ring-white dark:ring-slate-800" 
+        <button onclick="switchView('profile')" class="nav-btn w-14 h-14 rounded-full flex items-center justify-center shadow-xl shadow-slate-900/20 hover:scale-105 active:scale-95 transition-all ring-4 ring-white dark:ring-slate-800"
                 style="background: linear-gradient(135deg, #0F172A, #111c33); color: white;" data-target="profile">
           <span class="material-symbols-rounded text-3xl">person</span>
         </button>
@@ -425,7 +483,6 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Cloudinary Config
     const CLOUD_NAME = "dbxktcwug";
     const PRESET = "Karteji";
 
@@ -498,7 +555,7 @@
       document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
       const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`);
       if (activeBtn) activeBtn.classList.add('active');
-      
+
       if (viewId === 'home') refreshAll();
       if (viewId === 'profile') loadProfileData();
       if (viewId === 'voting') loadPolls();
@@ -519,7 +576,146 @@
       window.requestAnimationFrame(step);
     }
 
+    // -----------------------------
+    // ✅ WEATHER (BARU) — Open-Meteo (tanpa API key)
+    // -----------------------------
+    const WEATHER_CACHE_KEY = "kte_weather_cache_v1";
+    const WEATHER_CACHE_TTL = 10 * 60 * 1000; // 10 menit
+
+    function weatherIcon(code, isDay=true){
+      // mapping sederhana, pakai Material Symbols
+      // ref: WMO weather codes (Open-Meteo)
+      const m = {
+        clear: isDay ? "sunny" : "nights_stay",
+        cloudy: "cloud",
+        fog: "foggy",
+        drizzle: "grain",
+        rain: "rainy",
+        snow: "ac_unit",
+        storm: "thunderstorm"
+      };
+      if (code === 0) return { icon: m.clear, label: "Cerah" };
+      if ([1,2].includes(code)) return { icon: m.cloudy, label: code===1 ? "Cerah Berawan" : "Berawan" };
+      if (code === 3) return { icon: m.cloudy, label: "Mendung" };
+      if ([45,48].includes(code)) return { icon: m.fog, label: "Berkabut" };
+      if ([51,53,55,56,57].includes(code)) return { icon: m.drizzle, label: "Gerimis" };
+      if ([61,63,65,66,67,80,81,82].includes(code)) return { icon: m.rain, label: "Hujan" };
+      if ([71,73,75,77,85,86].includes(code)) return { icon: m.snow, label: "Salju" };
+      if ([95,96,99].includes(code)) return { icon: m.storm, label: "Badai Petir" };
+      return { icon: m.cloudy, label: "Cuaca" };
+    }
+
+    function setWeatherLoading(loading){
+      const sk = $("weatherSkeleton");
+      if(sk) sk.style.display = loading ? "block" : "none";
+    }
+
+    function setWeatherError(msg){
+      $("weatherPlace").textContent = "Cuaca";
+      $("weatherTemp").textContent = "--°";
+      $("weatherCond").textContent = "—";
+      $("weatherMeta").textContent = "—";
+      $("weatherUpdated").textContent = "--:--";
+      $("weatherIcon").textContent = "cloud_off";
+      $("weatherHint").textContent = msg || "Gagal memuat cuaca.";
+      setWeatherLoading(false);
+    }
+
+    async function getCoords(){
+      return new Promise((resolve, reject)=>{
+        if(!navigator.geolocation) return reject(new Error("Geolocation tidak didukung."));
+        navigator.geolocation.getCurrentPosition(
+          pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+          err => reject(err),
+          { enableHighAccuracy: false, timeout: 8000, maximumAge: 600000 }
+        );
+      });
+    }
+
+    async function reverseGeocode(lat, lon){
+      // pakai Nominatim (tanpa key). Jika diblokir/limit, fallback ke "Lokasi Anda"
+      try{
+        const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`;
+        const res = await fetch(url, { headers: { "Accept":"application/json" } });
+        const j = await res.json();
+        const a = j.address || {};
+        return (a.city || a.town || a.village || a.suburb || a.county || "Lokasi Anda") + (a.state ? `, ${a.state}` : "");
+      }catch(_){
+        return "Lokasi Anda";
+      }
+    }
+
+    async function fetchWeather(lat, lon){
+      // Open-Meteo current weather
+      const tz = "Asia/Jakarta";
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relativehumidity_2m&timezone=${encodeURIComponent(tz)}`;
+      const res = await fetch(url);
+      if(!res.ok) throw new Error("Weather API error");
+      return await res.json();
+    }
+
+    window.loadWeather = async (force=false) => {
+      try{
+        setWeatherLoading(true);
+
+        // cache
+        const cached = localStorage.getItem(WEATHER_CACHE_KEY);
+        if(!force && cached){
+          const c = JSON.parse(cached);
+          if(c?.ts && (Date.now()-c.ts) < WEATHER_CACHE_TTL && c?.data){
+            applyWeatherUI(c.data);
+            setWeatherLoading(false);
+            return;
+          }
+        }
+
+        const { lat, lon } = await getCoords();
+        const [place, data] = await Promise.all([
+          reverseGeocode(lat, lon),
+          fetchWeather(lat, lon)
+        ]);
+
+        const payload = { place, data };
+        localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: payload }));
+        applyWeatherUI(payload);
+        setWeatherLoading(false);
+      }catch(e){
+        // Permission denied / timeout => fallback: minta izin / tampilkan pesan
+        const msg = (e && e.code === 1)
+          ? "Izin lokasi ditolak. Aktifkan Location untuk menampilkan cuaca."
+          : "Cuaca tidak bisa dimuat. Coba refresh.";
+        setWeatherError(msg);
+      }
+    };
+
+    function applyWeatherUI(payload){
+      const place = payload.place || "Lokasi Anda";
+      const cw = payload.data?.current_weather;
+      if(!cw){
+        setWeatherError("Data cuaca kosong.");
+        return;
+      }
+
+      const temp = Math.round(cw.temperature);
+      const wind = Math.round(cw.windspeed);
+      const code = cw.weathercode;
+      const isDay = !!cw.is_day;
+      const w = weatherIcon(code, isDay);
+
+      $("weatherPlace").textContent = place;
+      $("weatherTemp").textContent = `${temp}°`;
+      $("weatherCond").textContent = w.label.toUpperCase();
+      $("weatherMeta").textContent = `Angin ${wind} km/jam • ${isDay ? "Siang" : "Malam"}`;
+      $("weatherIcon").textContent = w.icon;
+
+      const now = new Date();
+      $("weatherUpdated").textContent = now.toLocaleTimeString("id-ID", { hour:"2-digit", minute:"2-digit" });
+      $("weatherHint").textContent = "Data dari Open-Meteo (tanpa API key).";
+    }
+
+    // -----------------------------
     // ID Card Feature
+    // -----------------------------
     window.showIdCard = async () => {
       toggleLoader(true);
       try {
@@ -576,7 +772,7 @@
       const snap = await getDoc(doc(db, "users", ME_UID));
       if (!snap.exists()) { showToast("User error", "error"); return; }
       ME_DATA = snap.data();
-      
+
       const pUrl = ME_DATA.photo?.url || "https://via.placeholder.com/150";
       $("headerName").textContent = clean(ME_DATA.name);
       $("headerPhoto").src = pUrl;
@@ -585,25 +781,46 @@
       const updatePresence = () => updateDoc(doc(db, "users", ME_UID), { lastSeen: serverTimestamp() }).catch(()=>{});
       updatePresence(); setInterval(updatePresence, 60000);
 
+      // ✅ load weather pertama kali
+      loadWeather(false);
+
       await refreshAll();
       await loadProfileData();
     });
 
     window.refreshAll = async () => {
+      // ✅ refreshAll juga refresh cuaca (pakai cache, tidak force)
+      loadWeather(false);
       await Promise.all([loadActivities(), loadNotifications(), loadFinance(), loadMembers(), loadArisanWinner()]);
     };
 
+    // FIX: Modified logic to handle default state
     async function loadArisanWinner() {
       try {
         const qy = query(collection(db, "arisan_history"), orderBy("createdAt", "desc"), limit(1));
         const snap = await getDocs(qy);
+
+        const w = $("arisanWidget");
+        const badge = $("arisanBadge");
+
         if (!snap.empty) {
           const data = snap.docs[0].data();
-          $("arisanWidget").classList.remove("hidden");
           $("arisanName").textContent = clean(data.name);
           $("arisanPhoto").src = data.photo || "https://via.placeholder.com/100";
-        } else $("arisanWidget").classList.add("hidden");
-      } catch (e) {}
+          const dt = data.createdAt?.seconds ? new Date(data.createdAt.seconds * 1000) : new Date();
+          $("arisanDate").textContent = "Pemenang Periode " + dt.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+          badge.classList.remove('hidden');
+        } else {
+          $("arisanName").textContent = "Belum ada pemenang";
+          $("arisanDate").textContent = "Menunggu pengundian...";
+          $("arisanPhoto").src = "https://via.placeholder.com/100?text=?";
+          badge.classList.add('hidden');
+        }
+        w.classList.remove("hidden");
+
+      } catch (e) {
+        $("arisanWidget").classList.remove("hidden");
+      }
     }
 
     window.loadPolls = async () => {
@@ -684,7 +901,7 @@
           $("profileNameDisplay").textContent = clean(d.name);
           $("profileEmailDisplay").textContent = clean(d.email);
           $("editName").value = clean(d.name); $("editPhone").value = clean(d.phone);
-          $("editAddress").value = clean(d.address); 
+          $("editAddress").value = clean(d.address);
         }
       } catch (e) {}
     }
@@ -717,11 +934,11 @@
         const rows = []; snap.forEach(d => rows.push({id:d.id, ...d.data()}));
         rows.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
         if(!rows.length) { list.innerHTML = `<p class="text-center text-xs" style="color:var(--fg1)">Belum ada agenda.</p>`; return; }
-        
+
         rows.forEach(x => {
             list.innerHTML += `
             <div class="glass-card rounded-[1.5rem] overflow-hidden flex h-24 relative">
-              ${x.cover?.url ? `<img src="${x.cover.url}" class="w-24 h-full object-cover">` : ''}
+              ${x.cover?.url ? `<img src="${x.cover.url}" class="w-24 h-full object-cover shrink-0">` : ''}
               <div class="p-3 flex flex-col justify-center min-w-0">
                 <span class="text-[9px] font-extrabold uppercase text-blue-500 mb-0.5">${clean(x.date)}</span>
                 <h4 class="font-extrabold text-sm line-clamp-2 leading-tight" style="color:var(--fg0)">${clean(x.title)}</h4>
@@ -755,7 +972,7 @@
       const list = $("finList"); list.innerHTML = "";
       const filtered = type === 'all' ? window.allFinanceData : window.allFinanceData.filter(f => f.type === type);
       if(!filtered.length) { list.innerHTML = `<p class="text-center text-xs mt-4" style="color:var(--fg1)">Tidak ada data.</p>`; return; }
-      
+
       filtered.forEach(f => {
         const isInc = f.type === 'income';
         list.innerHTML += `
@@ -804,7 +1021,7 @@
           list.innerHTML += `
             <div class="glass-card p-3 rounded-2xl flex flex-col items-center gap-2 relative group tap">
               <div class="relative">
-                <img src="${u.photo?.url||'https://via.placeholder.com/100'}" class="h-12 w-12 rounded-full object-cover border-2 ${isOnline?'border-green-400 online-ring':'border-slate-200 grayscale opacity-70'}">
+                <img src="${u.photo?.url||'https://via.placeholder.com/100'}" class="h-12 w-12 rounded-full object-cover shrink-0 border-2 ${isOnline?'border-green-400 online-ring':'border-slate-200 grayscale opacity-70'}">
                 ${isOnline ? '<span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>' : ''}
               </div>
               <p class="text-[9px] font-extrabold text-center truncate w-full" style="color:var(--fg0)">${clean(u.name)}</p>
