@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id" class="light">
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Dashboard Ultimate | KARTEJI</title>
+  <title>Dashboard Super App | KARTEJI</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
@@ -13,22 +13,30 @@
 
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
           colors: {
-            brand: { primary: '#0F172A', secondary: '#1E293B' },
-            accent: { DEFAULT: '#F97316', hover: '#EA580C' },
-            dark: { bg: '#0F172A', card: '#1E293B', text: '#F8FAFC' }
+            brand: { primary: '#0F172A', secondary: '#1E293B', light: '#334155' },
+            accent: { DEFAULT: '#F97316', hover: '#EA580C', light: '#FFEDD5' },
+            surface: { 50: '#F8FAFC', 100: '#F1F5F9', 200: '#E2E8F0' }
           },
           animation: { 
+            'blob': 'blob 10s infinite', 
             'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-            'marquee': 'marquee 15s linear infinite'
+            'pulse-soft': 'pulse 3s infinite' 
           },
           keyframes: {
-            slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
-            marquee: { '0%': { transform: 'translateX(100%)' }, '100%': { transform: 'translateX(-100%)' } }
+            blob: {
+              '0%': { transform: 'translate(0px, 0px) scale(1)' },
+              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+              '100%': { transform: 'translate(0px, 0px) scale(1)' },
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' }
+            }
           }
         }
       }
@@ -36,97 +44,100 @@
   </script>
 
   <style>
-    /* Base Styles */
-    body { -webkit-tap-highlight-color: transparent; transition: background-color 0.3s, color 0.3s; }
+    body { background-color: #F8FAFC; color: #1E293B; -webkit-tap-highlight-color: transparent; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     
-    /* Dark Mode Transitions */
-    .light body { background-color: #F8FAFC; color: #1E293B; }
-    .dark body { background-color: #0F172A; color: #F8FAFC; }
-    
-    /* Glass Components */
+    /* Modern Glass Nav */
     .glass-nav {
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      border-top: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 -4px 30px rgba(0,0,0,0.1);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255,255,255,0.5);
+      box-shadow: 0 -4px 30px rgba(0,0,0,0.03);
     }
-    .light .glass-nav { background: rgba(255, 255, 255, 0.85); border-top-color: rgba(255,255,255,0.5); }
-    .dark .glass-nav { background: rgba(15, 23, 42, 0.85); border-top-color: rgba(255,255,255,0.05); }
-
-    /* Cards */
-    .card { transition: all 0.3s ease; }
-    .light .card { background: white; border: 1px solid #F1F5F9; }
-    .dark .card { background: #1E293B; border: 1px solid #334155; }
     
-    /* View Transition */
     .view-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s ease; }
     .view-section.active { display: block; opacity: 1; transform: translateY(0); }
-
-    /* Utilities */
+    
+    /* Nav Animations */
+    .nav-btn.active .icon-container { background-color: #EFF6FF; color: #0F172A; transform: translateY(-4px); }
     .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #F97316; }
-    .chat-bubble { max-width: 80%; padding: 10px 14px; border-radius: 18px; font-size: 13px; line-height: 1.5; margin-bottom: 6px; }
-    .chat-me { background: linear-gradient(135deg, #F97316, #EA580C); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-    .chat-other { align-self: flex-start; border-bottom-left-radius: 4px; }
-    .light .chat-other { background: white; border: 1px solid #E2E8F0; color: #334155; }
-    .dark .chat-other { background: #334155; border: 1px solid #475569; color: white; }
+    .nav-btn.active p { color: #0F172A; font-weight: 700; }
+    
+    /* Chat Bubble */
+    .chat-bubble { max-width: 80%; padding: 10px 14px; border-radius: 18px; font-size: 13px; line-height: 1.5; position: relative; margin-bottom: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+    .chat-me { background: linear-gradient(135deg, #F97316, #EA580C); color: white; border-bottom-right-radius: 4px; align-self: flex-end; margin-left: auto; }
+    .chat-other { background-color: white; color: #334155; border-bottom-left-radius: 4px; align-self: flex-start; border: 1px solid #E2E8F0; }
 
-    /* Animations */
-    .animate-spin-slow { animation: spin 3s linear infinite; }
+    /* Custom Gradients */
+    .gradient-card { background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.4)); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.6); }
+    .card-hover { transition: all 0.2s ease; }
+    .card-hover:active { transform: scale(0.98); }
+    
+    /* SOS Animation */
+    @keyframes siren { 0%, 100% { background-color: #EF4444; transform: scale(1); } 50% { background-color: #DC2626; transform: scale(1.05); box-shadow: 0 0 30px rgba(239, 68, 68, 0.6); } }
+    .sos-btn-active { animation: siren 0.8s infinite; }
   </style>
 </head>
 
-<body class="min-h-screen relative overflow-x-hidden pb-28 font-sans">
+<body class="min-h-screen relative overflow-x-hidden pb-28 selection:bg-orange-100 selection:text-orange-900 font-sans">
 
-  <div class="bg-brand-primary text-white text-[10px] py-1 overflow-hidden sticky top-0 z-50">
-      <div class="whitespace-nowrap animate-marquee font-bold tracking-wider">
-          📢 PENGUMUMAN: Rapat bulanan diadakan tanggal 25 • Iuran kas harap dilunasi sebelum tgl 10 • Jaga kebersihan lingkungan bersama! • Info lebih lanjut hubungi Sekretaris.
-      </div>
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-blue-100/50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
+    <div class="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-orange-100/50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
   </div>
 
-  <div id="globalLoader" class="fixed inset-0 bg-white/90 dark:bg-slate-900/90 z-[9999] flex items-center justify-center flex-col gap-4 backdrop-blur-md hidden">
-    <div class="w-16 h-16 border-4 border-slate-200 border-t-accent rounded-full animate-spin"></div>
-    <p class="text-xs font-bold animate-pulse">MEMUAT SYSTEM...</p>
+  <div id="globalLoader" class="fixed inset-0 bg-white/90 z-[9999] flex items-center justify-center flex-col gap-4 backdrop-blur-md hidden">
+    <div class="relative">
+        <div class="w-16 h-16 border-4 border-slate-100 rounded-full"></div>
+        <div class="w-16 h-16 border-4 border-t-accent rounded-full animate-spin absolute top-0 left-0"></div>
+    </div>
+    <p class="text-xs font-bold text-slate-500 tracking-widest animate-pulse">MEMUAT SYSTEM...</p>
   </div>
   
   <div id="sosOverlay" class="fixed inset-0 bg-red-600/95 z-[9998] hidden flex-col items-center justify-center text-white text-center p-8 z-[10000] backdrop-blur-xl">
-      <span class="material-symbols-rounded text-8xl animate-pulse mb-4">campaign</span>
-      <h1 class="text-4xl font-black mb-2">DARURAT!</h1>
-      <p class="text-lg" id="sosMessage">Seseorang membutuhkan bantuan.</p>
-      <button onclick="stopSOS()" class="mt-10 bg-white text-red-600 px-10 py-4 rounded-full font-bold shadow-2xl">SAYA MENGERTI</button>
+      <div class="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center mb-6 animate-pulse">
+        <span class="material-symbols-rounded text-8xl">campaign</span>
+      </div>
+      <h1 class="text-4xl font-black mb-2 tracking-tight">DARURAT!</h1>
+      <p class="text-lg font-medium opacity-90 max-w-xs mx-auto" id="sosMessage">Seseorang membutuhkan bantuan segera.</p>
+      <button onclick="stopSOS()" class="mt-10 bg-white text-red-600 px-10 py-4 rounded-full font-bold shadow-2xl hover:scale-105 transition-transform">SAYA MENGERTI</button>
   </div>
 
-  <div id="crudModal" class="fixed inset-0 z-[60] hidden items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm transition-all p-4">
-    <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-[2rem] p-6 relative shadow-2xl animate-slide-up">
+  <div id="crudModal" class="fixed inset-0 z-[60] hidden items-end sm:items-center justify-center bg-slate-900/40 backdrop-blur-sm transition-all p-4">
+    <div class="bg-white w-full max-w-md rounded-[2rem] p-6 relative shadow-2xl animate-slide-up">
       <div class="flex justify-between items-center mb-6">
-          <h2 id="modalTitle" class="text-lg font-bold text-brand-primary dark:text-white uppercase">Judul</h2>
-          <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center"><span class="material-symbols-rounded text-xl">close</span></button>
+          <h2 id="modalTitle" class="text-lg font-bold text-brand-primary uppercase tracking-tight">Judul</h2>
+          <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center hover:bg-slate-100 transition-colors text-slate-500">
+            <span class="material-symbols-rounded text-xl">close</span>
+          </button>
       </div>
       <div id="modalBody" class="space-y-4 max-h-[60vh] overflow-y-auto no-scrollbar"></div>
-      <button id="modalSubmitBtn" class="mt-6 w-full rounded-2xl bg-brand-primary text-white py-4 text-sm font-bold shadow-lg">SIMPAN</button>
+      <button id="modalSubmitBtn" class="mt-6 w-full rounded-2xl bg-brand-primary text-white py-4 text-sm font-bold shadow-lg shadow-slate-200 hover:bg-slate-800 active:scale-95 transition-all">SIMPAN</button>
     </div>
   </div>
 
-  <header class="sticky top-6 z-30 px-6 pt-4 pb-2">
+  <header class="sticky top-0 z-30 px-6 pt-6 pb-2 bg-gradient-to-b from-[#F8FAFC] via-[#F8FAFC]/90 to-transparent backdrop-blur-sm">
       <div class="flex justify-between items-center">
           <div class="flex items-center gap-3">
-              <button onclick="switchView('profile')" class="relative active:scale-95 transition-transform">
-                <img id="headerPhoto" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 shadow-sm object-cover" src="https://via.placeholder.com/100">
-                <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
+              <button onclick="switchView('profile')" class="relative group active:scale-95 transition-transform">
+                <img id="headerPhoto" class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover" src="https://via.placeholder.com/100">
+                <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full animate-pulse"></div>
               </button>
               <div>
                   <div class="flex items-center gap-1.5">
-                    <p id="headerRole" class="text-[9px] font-bold text-accent uppercase tracking-widest bg-orange-50 dark:bg-slate-700 px-2 py-0.5 rounded-full w-fit">...</p>
-                    <div id="xpBadge" class="text-[9px] font-black text-white bg-gradient-to-r from-blue-500 to-indigo-600 px-2 py-0.5 rounded-full">LVL 1</div>
+                    <p id="headerRole" class="text-[9px] font-bold text-accent uppercase tracking-widest bg-orange-50 px-2 py-0.5 rounded-full w-fit">...</p>
+                    <div id="xpBadge" class="text-[9px] font-black text-white bg-gradient-to-r from-blue-500 to-indigo-600 px-2 py-0.5 rounded-full shadow-sm">LVL 1</div>
                   </div>
-                  <h1 id="headerName" class="text-lg font-extrabold leading-tight truncate max-w-[150px]">...</h1>
+                  <h1 id="headerName" class="text-lg font-extrabold text-brand-primary leading-tight truncate max-w-[150px]">Memuat...</h1>
               </div>
           </div>
           <div class="flex gap-2">
-            <button onclick="toggleTheme()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 dark:text-yellow-400 flex items-center justify-center transition-colors">
-                <span class="material-symbols-rounded text-lg" id="themeIcon">dark_mode</span>
-            </button>
-            <button onclick="triggerKentongan()" class="w-9 h-9 rounded-full bg-red-50 text-red-500 border border-red-100 flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors shadow-sm">
+            <button onclick="triggerKentongan()" class="w-9 h-9 rounded-full bg-red-50 text-red-500 border border-red-100 flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors shadow-sm active:scale-90">
                 <span class="material-symbols-rounded text-lg">campaign</span>
+            </button>
+            <button id="logoutBtn" class="w-9 h-9 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors active:scale-90">
+                <span class="material-symbols-rounded text-lg">logout</span>
             </button>
           </div>
       </div>
@@ -135,138 +146,148 @@
   <main class="px-5 mt-4 relative z-10 pb-10" id="mainContainer">
       
       <section id="view-home" class="view-section active">
-          
-          <div class="bg-gradient-to-r from-blue-500 to-cyan-400 rounded-3xl p-5 text-white shadow-lg mb-4 flex justify-between items-center relative overflow-hidden">
-              <div class="absolute -right-5 -bottom-5 opacity-20"><span class="material-symbols-rounded text-8xl">cloud</span></div>
-              <div>
-                  <p class="text-xs font-medium opacity-90" id="currentDate">Senin, 1 Jan</p>
-                  <h2 class="text-3xl font-black mt-1" id="clockDisplay">00:00</h2>
-                  <p class="text-sm font-bold mt-1 flex items-center gap-1"><span class="material-symbols-rounded text-sm">location_on</span> Jakarta, 29°C</p>
-              </div>
-              <div class="text-right z-10">
-                  <span class="material-symbols-rounded text-4xl mb-1">partly_cloudy_day</span>
-                  <p class="text-[10px] font-bold uppercase tracking-widest">Cerah Berawan</p>
-              </div>
-          </div>
-
           <div id="homeContentArea"></div>
           
-          <div class="grid grid-cols-2 gap-3 mt-4">
-               <div class="card p-4 rounded-2xl shadow-sm">
-                   <div class="flex items-center gap-2 mb-2 text-brand-primary dark:text-white">
-                       <span class="material-symbols-rounded text-purple-500">local_police</span>
-                       <h3 class="font-bold text-xs">Piket Hari Ini</h3>
-                   </div>
-                   <p id="rondaDisplay" class="text-sm font-bold text-slate-500 dark:text-slate-400">Memuat...</p>
-               </div>
-               
-               <div class="card p-4 rounded-2xl shadow-sm">
-                   <div class="flex items-center gap-2 mb-2 text-brand-primary dark:text-white">
-                       <span class="material-symbols-rounded text-pink-500">cake</span>
-                       <h3 class="font-bold text-xs">Ultah Bulan Ini</h3>
-                   </div>
-                   <div id="bdayList" class="flex -space-x-2 overflow-hidden">
-                       <div class="w-6 h-6 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-[8px]">0</div>
-                   </div>
-                   <p class="text-[9px] text-slate-400 mt-1" id="bdayCount">Tidak ada</p>
-               </div>
-          </div>
-
           <div class="mt-6">
-              <h3 class="font-bold text-brand-primary dark:text-white mb-3 px-1">Menu Cepat</h3>
+              <div class="flex justify-between items-center mb-4 px-1">
+                  <h3 class="font-bold text-brand-primary">Pintas Cepat</h3>
+                  <button onclick="switchView('playground')" class="text-xs font-bold text-accent">Lihat Semua</button>
+              </div>
               <div class="grid grid-cols-4 gap-3">
-                  <button onclick="switchView('playground')" class="card p-3 rounded-2xl flex flex-col items-center gap-2 active:scale-95 group">
+                  <button onclick="switchView('playground')" class="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center gap-2 active:scale-95 transition-transform group">
                       <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white transition-colors"><span class="material-symbols-rounded">poll</span></div>
-                      <span class="text-[10px] font-bold text-slate-500">Voting</span>
+                      <span class="text-[10px] font-bold text-slate-600">Voting</span>
                   </button>
-                  <button onclick="switchView('finance')" class="card p-3 rounded-2xl flex flex-col items-center gap-2 active:scale-95 group">
+                  <button onclick="switchView('finance')" class="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center gap-2 active:scale-95 transition-transform group">
                       <div class="w-10 h-10 rounded-full bg-green-50 text-green-500 flex items-center justify-center group-hover:bg-green-500 group-hover:text-white transition-colors"><span class="material-symbols-rounded">payments</span></div>
-                      <span class="text-[10px] font-bold text-slate-500">Bayar</span>
+                      <span class="text-[10px] font-bold text-slate-600">Bayar</span>
                   </button>
-                  <button onclick="switchView('events')" class="card p-3 rounded-2xl flex flex-col items-center gap-2 active:scale-95 group">
+                  <button onclick="switchView('events')" class="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center gap-2 active:scale-95 transition-transform group">
                       <div class="w-10 h-10 rounded-full bg-purple-50 text-purple-500 flex items-center justify-center group-hover:bg-purple-500 group-hover:text-white transition-colors"><span class="material-symbols-rounded">event</span></div>
-                      <span class="text-[10px] font-bold text-slate-500">Acara</span>
+                      <span class="text-[10px] font-bold text-slate-600">Acara</span>
                   </button>
-                  <button onclick="openReportModal()" class="card p-3 rounded-2xl flex flex-col items-center gap-2 active:scale-95 group">
-                      <div class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center group-hover:bg-red-500 group-hover:text-white transition-colors"><span class="material-symbols-rounded">report_problem</span></div>
-                      <span class="text-[10px] font-bold text-slate-500">Lapor</span>
+                  <button onclick="switchView('playground')" class="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center gap-2 active:scale-95 transition-transform group">
+                      <div class="w-10 h-10 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center group-hover:bg-orange-500 group-hover:text-white transition-colors"><span class="material-symbols-rounded">storefront</span></div>
+                      <span class="text-[10px] font-bold text-slate-600">Pasar</span>
                   </button>
               </div>
           </div>
-      </section>
-
-      <section id="view-finance" class="view-section">
-          <div class="flex justify-between items-center mb-6">
-            <div><h2 class="text-xl font-extrabold text-brand-primary dark:text-white">Keuangan</h2><p class="text-xs text-slate-400">Laporan Kas</p></div>
-            <div class="flex gap-2">
-                <button onclick="toggleCalc()" class="w-8 h-8 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center"><span class="material-symbols-rounded text-lg">calculate</span></button>
-                <button onclick="window.print()" class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center"><span class="material-symbols-rounded text-lg">print</span></button>
-                <div id="financeControls"></div>
-            </div>
-          </div>
-
-          <div class="card p-4 rounded-3xl mb-4 relative">
-              <h3 class="font-bold text-sm mb-2 text-center dark:text-white">Arus Kas Bulan Ini</h3>
-              <div class="h-48 relative"><canvas id="financeChart"></canvas></div>
-          </div>
-          
-          <div id="simpleCalc" class="hidden card p-4 rounded-2xl mb-4 bg-slate-800 text-white">
-              <input id="calcRes" readonly class="w-full bg-transparent text-right text-2xl font-mono mb-2 border-b border-slate-600" value="0">
-              <div class="grid grid-cols-4 gap-2 text-center text-sm font-bold">
-                  <div onclick="$('calcRes').value=''" class="bg-red-500 p-2 rounded">C</div>
-                  <div onclick="$('calcRes').value+='/'" class="bg-slate-600 p-2 rounded">/</div>
-                  <div onclick="$('calcRes').value+='*'" class="bg-slate-600 p-2 rounded">x</div>
-                  <div onclick="$('calcRes').value=eval($('calcRes').value)" class="bg-green-500 p-2 rounded">=</div>
-                  <div onclick="$('calcRes').value+='1'" class="bg-slate-700 p-2 rounded">1</div>
-                  <div onclick="$('calcRes').value+='2'" class="bg-slate-700 p-2 rounded">2</div>
-                  <div onclick="$('calcRes').value+='3'" class="bg-slate-700 p-2 rounded">3</div>
-                  <div onclick="$('calcRes').value+='+'" class="bg-slate-600 p-2 rounded">+</div>
-                  <div onclick="$('calcRes').value+='0'" class="bg-slate-700 p-2 rounded col-span-2">0</div>
-                  <div onclick="$('calcRes').value+='-'" class="bg-slate-600 p-2 rounded">-</div>
-              </div>
-          </div>
-
-          <div class="card p-3 rounded-xl mb-4 flex items-center justify-between bg-yellow-50 border-yellow-200">
-              <div class="flex items-center gap-3">
-                  <span class="material-symbols-rounded text-yellow-600 text-2xl">emoji_events</span>
-                  <div><p class="text-xs font-bold text-yellow-800">Top Sultan (Donatur)</p><p id="topSultanName" class="text-[10px] text-yellow-600">Memuat...</p></div>
-              </div>
-          </div>
-
-          <div id="finList" class="space-y-3 pb-20"></div>
       </section>
 
       <section id="view-playground" class="view-section">
-          <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-[2rem] p-6 text-white shadow-lg relative overflow-hidden mb-6">
-              <h2 class="text-2xl font-black mb-1">Zona Seru</h2>
-              <p class="text-indigo-100 text-xs">Misi harian, voting, dan pasar warga.</p>
-          </div>
-          
-          <div class="card rounded-[2rem] p-5 shadow-sm mb-4">
-              <h3 class="font-bold dark:text-white flex items-center gap-2 mb-4"><span class="material-symbols-rounded text-yellow-500">task_alt</span> Misi Harian</h3>
-              <div onclick="claimMission('login')" class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700 rounded-xl mb-2 cursor-pointer active:scale-95">
-                  <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center"><span class="material-symbols-rounded text-sm">login</span></div><div><p class="text-xs font-bold dark:text-white">Login Harian</p></div></div>
-                  <span class="text-[10px] font-bold text-slate-400 bg-white dark:bg-slate-800 px-2 py-1 rounded">+10 XP</span>
+          <div class="flex flex-col gap-6 pb-24">
+              
+              <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-[2rem] p-6 text-white shadow-lg relative overflow-hidden">
+                  <div class="absolute -right-4 -bottom-4 opacity-20"><span class="material-symbols-rounded text-9xl">rocket_launch</span></div>
+                  <h2 class="text-2xl font-black mb-1">Zona Seru</h2>
+                  <p class="text-indigo-100 text-xs max-w-[200px]">Tempat seru-seruan warga, jualan, hingga misi harian berhadiah XP!</p>
               </div>
-          </div>
 
-          <div class="card rounded-[2rem] p-5 shadow-sm">
-             <div class="flex justify-between items-center mb-4">
-                 <h3 class="font-bold dark:text-white flex items-center gap-2"><span class="material-symbols-rounded text-blue-500">how_to_vote</span> Voting</h3>
-                 <button onclick="createPoll()" class="text-[10px] font-bold bg-blue-50 text-blue-600 px-2 py-1 rounded-lg">+ Buat</button>
-             </div>
-             <div id="pollList" class="space-y-4"></div>
+              <div class="bg-white border border-slate-100 rounded-[2rem] p-5 shadow-sm">
+                  <div class="flex justify-between items-center mb-4">
+                      <h3 class="font-bold text-brand-primary flex items-center gap-2"><span class="material-symbols-rounded text-blue-500">how_to_vote</span> Suara Warga</h3>
+                      <button onclick="createPoll()" class="text-[10px] font-bold bg-blue-50 text-blue-600 px-2 py-1 rounded-lg">+ Buat</button>
+                  </div>
+                  <div id="pollList" class="space-y-4">
+                      <div class="text-center text-xs text-slate-400 py-2">Belum ada voting aktif.</div>
+                  </div>
+              </div>
+
+              <div class="bg-white border border-slate-100 rounded-[2rem] p-5 shadow-sm">
+                   <h3 class="font-bold text-brand-primary flex items-center gap-2 mb-4"><span class="material-symbols-rounded text-yellow-500">task_alt</span> Misi Harian <span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full ml-auto">Reset 24j</span></h3>
+                   <div class="space-y-2">
+                       <div onclick="claimMission('login')" class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100 active:scale-95 transition-transform cursor-pointer">
+                           <div class="flex items-center gap-3">
+                               <div class="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center"><span class="material-symbols-rounded text-sm">login</span></div>
+                               <div><p class="text-xs font-bold">Login Harian</p><p class="text-[10px] text-slate-400">Absen masuk aplikasi</p></div>
+                           </div>
+                           <span class="text-[10px] font-bold text-slate-400 bg-white px-2 py-1 rounded border shadow-sm">+10 XP</span>
+                       </div>
+                       <div onclick="claimMission('chat')" class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100 active:scale-95 transition-transform cursor-pointer">
+                           <div class="flex items-center gap-3">
+                               <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center"><span class="material-symbols-rounded text-sm">chat</span></div>
+                               <div><p class="text-xs font-bold">Nimbrung Chat</p><p class="text-[10px] text-slate-400">Kirim 1 pesan di grup</p></div>
+                           </div>
+                           <span class="text-[10px] font-bold text-slate-400 bg-white px-2 py-1 rounded border shadow-sm">+5 XP</span>
+                       </div>
+                   </div>
+              </div>
+
+              <div>
+                   <div class="flex justify-between items-center mb-3 px-1">
+                       <h3 class="font-bold text-brand-primary flex items-center gap-2"><span class="material-symbols-rounded text-orange-500">storefront</span> Pasar Kaget</h3>
+                       <button onclick="openMarketModal()" class="text-xs font-bold text-orange-500">Jualan</button>
+                   </div>
+                   <div id="marketList" class="flex overflow-x-auto gap-3 pb-4 no-scrollbar">
+                       <div class="min-w-[140px] bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-2">
+                           <div class="h-20 bg-slate-100 rounded-xl flex items-center justify-center text-slate-300"><span class="material-symbols-rounded">image</span></div>
+                           <div><p class="font-bold text-xs truncate">Contoh Barang</p><p class="text-[10px] text-green-600 font-bold">Rp 15.000</p></div>
+                       </div>
+                   </div>
+              </div>
+
+              <div class="bg-gradient-to-br from-slate-800 to-black rounded-[2rem] p-5 text-white shadow-lg flex items-center gap-4 relative overflow-hidden">
+                  <div class="absolute right-0 top-0 h-full w-1/2 bg-gradient-to-l from-purple-500/20 to-transparent"></div>
+                  <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center animate-spin-slow"><span class="material-symbols-rounded">music_note</span></div>
+                  <div class="flex-1 z-10">
+                      <p class="text-[10px] font-bold text-green-400 tracking-widest uppercase mb-1">LIVE RADIO</p>
+                      <h3 class="font-bold text-sm">Warga FM - Santai Sore</h3>
+                      <div class="w-full bg-white/20 h-1 rounded-full mt-2"><div class="bg-green-400 w-2/3 h-full rounded-full"></div></div>
+                  </div>
+                  <button class="w-10 h-10 rounded-full bg-green-500 text-black flex items-center justify-center shadow-lg active:scale-90 z-10"><span class="material-symbols-rounded">play_arrow</span></button>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                  <div class="bg-white p-4 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center">
+                      <h4 class="font-bold text-xs mb-2 text-slate-500">Vibe Check</h4>
+                      <div class="flex gap-2 mb-2">
+                          <button onclick="submitMood('happy')" class="text-2xl hover:scale-110 transition">🔥</button>
+                          <button onclick="submitMood('sad')" class="text-2xl hover:scale-110 transition">🌧️</button>
+                      </div>
+                      <p id="orgVibeScore" class="text-[10px] font-bold text-brand-primary">Netral</p>
+                  </div>
+                  <div class="bg-white p-4 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center cursor-pointer active:scale-95" onclick="alert('Galeri akan segera hadir!')">
+                      <div class="grid grid-cols-2 gap-1 mb-2">
+                          <div class="w-6 h-6 bg-slate-100 rounded-md"></div>
+                          <div class="w-6 h-6 bg-slate-100 rounded-md"></div>
+                          <div class="w-6 h-6 bg-slate-100 rounded-md"></div>
+                          <div class="w-6 h-6 bg-slate-100 rounded-md text-[8px] flex items-center justify-center text-slate-400">+9</div>
+                      </div>
+                      <p class="text-[10px] font-bold text-brand-primary">Galeri Warga</p>
+                  </div>
+              </div>
+
+              <div class="bg-white border border-slate-100 rounded-[2rem] p-5 shadow-sm">
+                  <div class="flex justify-between items-center mb-4">
+                      <h3 class="font-bold text-brand-primary flex items-center gap-2"><span class="material-symbols-rounded text-yellow-500">military_tech</span> Top Suhu</h3>
+                  </div>
+                  <div id="xpLeaderboard" class="space-y-3"></div>
+              </div>
           </div>
       </section>
 
       <section id="view-users" class="view-section">
-          <h2 class="text-xl font-extrabold text-brand-primary dark:text-white mb-4">Anggota</h2>
+          <div class="flex justify-between items-end mb-4 px-1">
+              <div><h2 class="text-xl font-extrabold text-brand-primary">Anggota</h2><p class="text-xs text-slate-400">Manajemen Tim</p></div>
+          </div>
+          <div class="flex gap-4 mb-4 text-[10px] font-bold text-slate-500 px-1 bg-white w-fit p-2 rounded-xl border border-slate-100">
+              <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Online</div>
+              <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-slate-300"></span> Offline</div>
+          </div>
           <div id="userList" class="space-y-3 pb-20"></div>
       </section>
 
+      <section id="view-finance" class="view-section">
+          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC]/95 backdrop-blur-md py-2 z-10">
+            <div><h2 class="text-xl font-extrabold text-brand-primary">Keuangan</h2><p class="text-xs text-slate-400">Laporan Kas</p></div>
+            <div class="flex gap-2" id="financeControls"></div>
+          </div>
+          <div id="finList" class="space-y-3 pb-20"></div>
+      </section>
+
       <section id="view-events" class="view-section">
-           <div class="flex justify-between items-center mb-6">
-            <div><h2 class="text-xl font-extrabold text-brand-primary dark:text-white">Agenda</h2></div>
+          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC]/95 backdrop-blur-md py-2 z-10">
+            <div><h2 class="text-xl font-extrabold text-brand-primary">Kegiatan</h2><p class="text-xs text-slate-400">Agenda Warga</p></div>
             <div id="eventControls"></div>
           </div>
           <div id="actList" class="grid grid-cols-1 gap-4 pb-20"></div>
@@ -274,19 +295,26 @@
 
       <section id="view-profile" class="view-section">
         <div class="flex flex-col items-center pt-8 pb-20">
-            <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white dark:border-slate-700 shadow-xl mb-4">
-            <h2 id="profileNameDisplay" class="text-xl font-black text-brand-primary dark:text-white mb-1">User</h2>
-            <div class="flex gap-2 mb-6">
-                <div id="profileRoleBadge" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-[10px] font-extrabold uppercase">ROLE</div>
-                <div id="profileXpDisplay" class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-[10px] font-extrabold uppercase">0 XP</div>
+            <div class="relative group cursor-pointer active:scale-95 transition-transform" onclick="$('profileUpload').click()">
+                <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl">
+                <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><span class="material-symbols-rounded text-white">photo_camera</span></div>
             </div>
+            <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
             
-            <button onclick="showIdCard()" class="bg-slate-800 text-white px-6 py-3 rounded-2xl text-xs font-bold flex gap-2 shadow-lg w-full justify-center max-w-xs mb-6"><span class="material-symbols-rounded text-sm">badge</span> ID CARD DIGITAL</button>
-            
-            <div class="w-full max-w-xs space-y-3">
-                 <input id="editName" class="w-full p-4 card rounded-2xl text-sm font-bold dark:text-white dark:bg-slate-700" placeholder="Nama">
-                 <input id="editPhone" class="w-full p-4 card rounded-2xl text-sm font-bold dark:text-white dark:bg-slate-700" placeholder="No HP">
-                 <button onclick="saveProfile()" class="w-full bg-brand-primary text-white py-4 rounded-2xl font-bold shadow-lg">SIMPAN</button>
+            <h2 id="profileNameDisplay" class="text-xl font-black text-brand-primary mt-4 mb-1">User</h2>
+            <div class="flex gap-2">
+                <div id="profileRoleBadge" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-[10px] font-extrabold uppercase tracking-wide">ROLE</div>
+                <div id="profileXpDisplay" class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-[10px] font-extrabold uppercase tracking-wide">0 XP</div>
+            </div>
+
+            <button onclick="showIdCard()" class="mt-6 bg-slate-800 text-white px-6 py-3 rounded-2xl text-xs font-bold flex gap-2 hover:bg-slate-900 shadow-lg active:scale-95 transition-all"><span class="material-symbols-rounded text-sm">badge</span> ID CARD DIGITAL</button>
+
+            <div class="w-full mt-8 space-y-4 px-1 bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
+                 <h3 class="font-bold text-sm text-slate-500 mb-2">Edit Profil</h3>
+                 <input id="editName" type="text" class="w-full p-4 bg-slate-50 rounded-2xl text-sm font-bold border border-slate-100 focus:outline-none focus:ring-2 focus:ring-accent" placeholder="Nama Lengkap">
+                 <input id="editPhone" type="tel" class="w-full p-4 bg-slate-50 rounded-2xl text-sm font-bold border border-slate-100 focus:outline-none focus:ring-2 focus:ring-accent" placeholder="No HP">
+                 <textarea id="editAddress" rows="2" class="w-full p-4 bg-slate-50 rounded-2xl text-sm border border-slate-100 focus:outline-none focus:ring-2 focus:ring-accent" placeholder="Alamat"></textarea>
+                 <button onclick="saveProfile()" class="w-full bg-brand-primary text-white py-4 rounded-2xl font-bold shadow-lg active:scale-95 transition-all">SIMPAN PERUBAHAN</button>
             </div>
         </div>
       </section>
@@ -294,19 +322,20 @@
   </main>
 
   <div id="chatWidget" class="fixed z-[90] bottom-24 right-5 flex flex-col items-end gap-3">
-      <div id="chatWindow" class="bg-white dark:bg-slate-800 w-80 h-[400px] rounded-[2rem] shadow-2xl border border-slate-100 dark:border-slate-700 hidden flex-col overflow-hidden animate-slide-up origin-bottom-right">
+      <div id="chatWindow" class="bg-white w-80 h-[450px] rounded-[2rem] shadow-2xl border border-slate-100 hidden flex-col overflow-hidden animate-slide-up origin-bottom-right">
           <div class="bg-brand-primary text-white p-4 flex justify-between items-center">
-              <h3 class="font-bold text-sm">Grup Warga</h3>
+              <div><h3 class="font-bold text-sm">Obrolan Warga</h3><p class="text-[10px] text-slate-300 opacity-80">Grup Global</p></div>
               <button onclick="toggleChat()" class="text-white hover:bg-white/10 rounded-full p-1"><span class="material-symbols-rounded">expand_more</span></button>
           </div>
-          <div id="chatMessages" class="flex-1 overflow-y-auto p-4 bg-slate-50 dark:bg-slate-900 flex flex-col gap-2"></div>
-          <form onsubmit="sendMessage(event)" class="p-3 border-t dark:border-slate-700 bg-white dark:bg-slate-800 flex gap-2">
-              <input id="chatInput" class="flex-1 bg-slate-100 dark:bg-slate-700 dark:text-white rounded-full px-4 py-2 text-sm outline-none" autocomplete="off" placeholder="Pesan...">
-              <button type="submit" class="w-9 h-9 bg-accent text-white rounded-full flex items-center justify-center"><span class="material-symbols-rounded text-sm">send</span></button>
+          <div id="chatMessages" class="flex-1 overflow-y-auto p-4 bg-slate-50 flex flex-col gap-2"></div>
+          <form onsubmit="sendMessage(event)" class="p-3 border-t border-slate-100 bg-white flex gap-2 items-center">
+              <input id="chatInput" type="text" placeholder="Ketik pesan..." class="flex-1 bg-slate-100 rounded-full px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-accent/50 transition-all" autocomplete="off">
+              <button type="submit" class="w-10 h-10 bg-accent text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 hover:bg-orange-600 transition-colors"><span class="material-symbols-rounded text-lg">send</span></button>
           </form>
       </div>
-      <button onclick="toggleChat()" class="w-14 h-14 bg-brand-primary text-white rounded-2xl flex items-center justify-center shadow-2xl border-4 border-white/20 relative">
-          <span class="material-symbols-rounded text-2xl">forum</span>
+
+      <button onclick="toggleChat()" class="w-14 h-14 bg-brand-primary text-white rounded-2xl flex items-center justify-center shadow-2xl hover:scale-105 active:scale-95 transition-all border-4 border-white/50 relative group">
+          <span class="material-symbols-rounded text-2xl group-hover:rotate-12 transition-transform">forum</span>
           <span id="unreadChatBadge" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white hidden animate-bounce"></span>
       </button>
   </div>
@@ -318,22 +347,43 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, onSnapshot, query, orderBy, limit, where, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, onSnapshot, query, orderBy, limit, where, serverTimestamp, increment, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    const firebaseConfig = { apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs", authDomain: "katar-9cac3.firebaseapp.com", projectId: "katar-9cac3", storageBucket: "katar-9cac3.firebasestorage.app", messagingSenderId: "1017734829960", appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d" };
-    const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+    const firebaseConfig = {
+      apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
+      authDomain: "katar-9cac3.firebaseapp.com",
+      projectId: "katar-9cac3",
+      storageBucket: "katar-9cac3.firebasestorage.app",
+      messagingSenderId: "1017734829960",
+      appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const CLOUD_NAME = "dbxktcwug";
+    const UPLOAD_PRESET = "Karteji";
     const audioBeep = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3'); 
 
     window.$ = (id) => document.getElementById(id);
-    let UID = null, CURRENT_ROLE = null, CURRENT_USER_DATA = null, financeChart = null;
+    let UID = null, CURRENT_ROLE = null, CURRENT_USER_DATA = null;
 
-    // --- UTILS & DARK MODE ---
-    window.toggleLoader = (show) => { const l=$("globalLoader"); show?(l.classList.remove('hidden'),l.classList.add('flex')):(l.classList.add('hidden'),l.classList.remove('flex')); };
-    window.toggleTheme = () => { document.documentElement.classList.toggle('dark'); $("themeIcon").innerText = document.documentElement.classList.contains('dark') ? 'light_mode' : 'dark_mode'; };
+    // --- UTILITIES ---
+    window.toggleLoader = (show) => { const l = $("globalLoader"); show ? (l.classList.remove('hidden'), l.classList.add('flex')) : (l.classList.add('hidden'), l.classList.remove('flex')); };
     window.closeModal = () => $("crudModal").classList.add('hidden');
-    window.showModal = (title, bodyHtml, onSave) => { $("modalTitle").textContent=title; $("modalBody").innerHTML=bodyHtml; $("crudModal").classList.remove('hidden'); $("crudModal").classList.add('flex'); const btn=$("modalSubmitBtn"); const newBtn=btn.cloneNode(true); btn.parentNode.replaceChild(newBtn, btn); onSave?(newBtn.onclick=onSave,newBtn.style.display='block'):(newBtn.style.display='none'); };
+    window.showModal = (title, bodyHtml, onSave) => {
+        $("modalTitle").textContent = title; $("modalBody").innerHTML = bodyHtml;
+        $("crudModal").classList.remove('hidden'); $("crudModal").classList.add('flex');
+        const btn = $("modalSubmitBtn"); const newBtn = btn.cloneNode(true); btn.parentNode.replaceChild(newBtn, btn);
+        onSave ? (newBtn.onclick = onSave, newBtn.style.display = 'block') : (newBtn.style.display = 'none');
+    };
+    async function upload(file) {
+        if(!file) return null;
+        const fd = new FormData(); fd.append("file", file); fd.append("upload_preset", UPLOAD_PRESET);
+        try { const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{ method:"POST", body:fd }); return (await res.json()).secure_url; } catch(e) { throw e; }
+    }
 
-    // --- AUTH ---
+    // --- AUTH & INIT ---
     onAuthStateChanged(auth, async user => {
         if(!user) return location.href = "login.html";
         toggleLoader(true);
@@ -342,132 +392,227 @@
             if(!snap.exists()) { alert("User error"); return signOut(auth); }
             UID = user.uid; CURRENT_USER_DATA = snap.data(); CURRENT_ROLE = CURRENT_USER_DATA.role || "anggota";
             
-            $("headerName").textContent = CURRENT_USER_DATA.name;
+            // Render Header
+            $("headerName").textContent = CURRENT_USER_DATA.name || "User";
             $("headerRole").textContent = CURRENT_ROLE.replace('_',' ');
             $("headerPhoto").src = CURRENT_USER_DATA.photo?.url || "https://via.placeholder.com/150";
             
-            initFeatures(); buildNav(); switchView('home'); loadProfile();
+            addXP(10); // Login Reward
+            startPresence(); initChat(); initSOS();
+            buildNav(); switchView('home'); loadProfile();
         } catch(e) { console.error(e); } finally { toggleLoader(false); }
     });
 
-    function initFeatures() {
-        startClock(); loadRonda(); startPresence(); initChat(); initSOS();
+    // --- CORE SYSTEMS ---
+    function startPresence() { updateDoc(doc(db, "users", UID), { lastSeen: serverTimestamp() }); setInterval(() => updateDoc(doc(db, "users", UID), { lastSeen: serverTimestamp() }), 60000); }
+    async function addXP(amt) {
+        try { await updateDoc(doc(db, "users", UID), { xp: increment(amt) });
+        const newXp = (CURRENT_USER_DATA.xp || 0) + amt; $("xpBadge").textContent = `LVL ${Math.floor(newXp/100)+1}`; $("profileXpDisplay").textContent = `${newXp} XP`; } catch(e){}
     }
-
-    // --- FEATURE 2: WEATHER & CLOCK ---
-    function startClock() {
-        setInterval(() => {
-            const now = new Date();
-            $("clockDisplay").innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            $("currentDate").innerText = now.toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'short'});
-        }, 1000);
-    }
-
-    // --- FEATURE 4: JADWAL RONDA OTOMATIS ---
-    function loadRonda() {
-        const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-        const today = days[new Date().getDay()];
-        const teams = { "Senin": "Blok A", "Selasa": "Blok B", "Rabu": "Blok C", "Kamis": "Blok D", "Jumat": "Blok E", "Sabtu": "Blok F", "Minggu": "Libur / Bebas" };
-        $("rondaDisplay").innerText = `${today}: Tim ${teams[today] || 'Umum'}`;
-    }
-
-    // --- FEATURE 5: BIRTHDAY REMINDER ---
-    async function checkBirthdays() {
-        // Mock logic: Fetch users and check if current month matches birth month
-        // In real app, store birthDate in user doc
-        const snap = await getDocs(collection(db, "users"));
-        let count = 0;
-        snap.forEach(d => {
-            // Simulated check randomly for demo purposes or check actual field
-            if(Math.random() > 0.8) count++; 
+    
+    // --- FEATURES: ZONA SERU ---
+    
+    // 1. POLLING
+    window.createPoll = () => {
+        const html = `<input id="pQ" class="w-full p-3 border rounded-xl mb-2 bg-slate-50" placeholder="Pertanyaan (mis: Makan apa?)"><input id="pOp1" class="w-full p-3 border rounded-xl mb-2" placeholder="Opsi 1"><input id="pOp2" class="w-full p-3 border rounded-xl" placeholder="Opsi 2">`;
+        showModal("Buat Voting", html, async () => {
+             await addDoc(collection(db, "polls"), { question:$("pQ").value, options:{$("pOp1").value:0, $("pOp2").value:0}, createdBy:CURRENT_USER_DATA.name, createdAt:serverTimestamp() });
+             closeModal(); loadPolls(); addXP(15);
         });
-        if(count > 0) {
-            $("bdayCount").innerText = `${count} Warga Ulang Tahun`;
-            $("bdayList").innerHTML = `<div class="w-6 h-6 rounded-full bg-pink-500 text-white flex items-center justify-center text-[9px] font-bold">${count}</div>`;
+    }
+    function loadPolls() {
+        onSnapshot(query(collection(db, "polls"), orderBy("createdAt", "desc"), limit(5)), snap => {
+            const list = $("pollList"); list.innerHTML = "";
+            if(snap.empty) list.innerHTML = `<div class="text-center text-xs text-slate-400">Belum ada voting.</div>`;
+            snap.forEach(d => {
+                const p = d.data();
+                const total = Object.values(p.options).reduce((a,b)=>a+b,0);
+                let optsHtml = "";
+                for(let [opt, val] of Object.entries(p.options)) {
+                    const pct = total ? Math.round((val/total)*100) : 0;
+                    optsHtml += `<div onclick="votePoll('${d.id}','${opt}')" class="mb-1 relative h-8 bg-slate-100 rounded-lg overflow-hidden cursor-pointer active:opacity-80"><div class="absolute h-full bg-blue-100 transition-all" style="width:${pct}%"></div><span class="absolute inset-0 flex items-center justify-between px-3 text-xs font-bold text-slate-700"><span>${opt}</span><span>${pct}%</span></span></div>`;
+                }
+                list.innerHTML += `<div class="bg-slate-50 p-4 rounded-xl border border-slate-100"><h4 class="font-bold text-sm mb-3">${p.question}</h4>${optsHtml}<p class="text-[9px] text-right mt-1 text-slate-400">by ${p.createdBy}</p></div>`;
+            });
+        });
+    }
+    window.votePoll = async (id, opt) => {
+        // Simplified voting (no double vote check for demo)
+        if(confirm(`Vote ${opt}?`)) {
+            // Note: In real app use specific field path update or transaction
+            // Here we just re-fetch to simplify (not atomic, but works for demo)
+            const ref = doc(db,"polls",id);
+            const s = await getDoc(ref);
+            if(s.exists()) {
+                const ops = s.data().options; ops[opt]++;
+                await updateDoc(ref, {options: ops}); addXP(2);
+            }
         }
     }
 
-    // --- FEATURE 6: CHART.JS & FEATURE 7: SULTAN ---
+    // 2. MISSION
+    window.claimMission = (type) => {
+        // Simple client side limit demo
+        const key = `mission_${type}_${new Date().toDateString()}`;
+        if(localStorage.getItem(key)) return alert("Misi ini sudah diklaim hari ini!");
+        localStorage.setItem(key, "1"); addXP(type==='login'?10:5); alert("Claim Sukses! XP Bertambah.");
+    }
+
+    // 3. MARKETPLACE
+    window.openMarketModal = () => {
+         const html = `<input id="mItem" class="w-full p-3 border rounded-xl mb-2" placeholder="Nama Barang"><input id="mPrice" type="number" class="w-full p-3 border rounded-xl mb-2" placeholder="Harga"><input type="file" id="mImg" class="text-xs">`;
+         showModal("Jual Barang", html, async () => {
+             const file = $("mImg").files[0]; let img = null;
+             if(file) img = await upload(file);
+             await addDoc(collection(db, "marketplace"), { item:$("mItem").value, price:$("mPrice").value, seller:CURRENT_USER_DATA.name, img, createdAt:serverTimestamp() });
+             closeModal(); addXP(10);
+         });
+    }
+    function loadMarket() {
+        onSnapshot(query(collection(db, "marketplace"), orderBy("createdAt", "desc"), limit(10)), snap => {
+            const list = $("marketList"); list.innerHTML = "";
+            snap.forEach(d => {
+                const m = d.data();
+                list.innerHTML += `
+                    <div class="min-w-[140px] bg-white p-2 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-2">
+                        <div class="h-24 bg-slate-100 rounded-xl overflow-hidden"><img src="${m.img?.url || 'https://via.placeholder.com/150'}" class="w-full h-full object-cover"></div>
+                        <div class="px-1"><p class="font-bold text-xs truncate">${m.item}</p><p class="text-[10px] text-orange-600 font-bold">Rp ${Number(m.price).toLocaleString()}</p><p class="text-[8px] text-slate-400 truncate">Penjual: ${m.seller}</p></div>
+                    </div>`;
+            });
+        });
+    }
+
+    // 4. LEADERBOARD
+    async function loadLeaderboard() {
+        const snap = await getDocs(query(collection(db, "users"), orderBy("xp", "desc"), limit(5)));
+        const list = $("xpLeaderboard"); list.innerHTML = "";
+        let r = 1;
+        snap.forEach(d => {
+            const u = d.data();
+            list.innerHTML += `<div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl"><div class="flex items-center gap-3"><span class="font-black text-slate-300 w-4">${r++}</span><img src="${u.photo?.url||'https://via.placeholder.com/30'}" class="w-8 h-8 rounded-full object-cover"><p class="text-xs font-bold">${u.name}</p></div><span class="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded-lg">${u.xp||0} XP</span></div>`;
+        });
+    }
+
+    // SOS & VIBE
+    window.triggerKentongan = async () => { if(confirm("BUNYIKAN KENTONGAN?")) { await addDoc(collection(db,"notifications"), {title:"BAHAYA", body:`${CURRENT_USER_DATA.name} membunyikan kentongan!`, level:"sos", senderUid:UID, createdAt:serverTimestamp()}); alert("Terkirim!"); } }
+    function initSOS() { onSnapshot(query(collection(db,"notifications"), where("level","==","sos"), orderBy("createdAt","desc"), limit(1)), s => { s.docChanges().forEach(c => { if(c.type==="added"){ const d=c.doc.data(); if(Date.now()-d.createdAt.toMillis()<10000 && d.senderUid!==UID){ $("sosOverlay").classList.remove("hidden"); $("sosOverlay").classList.add("flex"); $("sosMessage").textContent=d.body; audioBeep.loop=true; audioBeep.play().catch(()=>{}); } } }) }); }
+    window.stopSOS = () => { $("sosOverlay").classList.add("hidden"); $("sosOverlay").classList.remove("flex"); audioBeep.pause(); }
+    window.submitMood = (m) => { $("orgVibeScore").textContent = m==='happy' ? "Positif! 🔥" : "Mellow 🌧️"; addXP(5); }
+
+    // --- NAVIGATION & VIEWS ---
+    function buildNav() {
+        const nav = $("bottomNavContainer"); nav.innerHTML = '';
+        const menus = [
+            { id: 'home', icon: 'dashboard', label: 'Home' },
+            { id: 'playground', icon: 'rocket_launch', label: 'Seru' },
+            { id: 'users', icon: 'group', label: 'Warga' },
+            { id: 'finance', icon: 'wallet', label: 'Kas' },
+            { id: 'profile', icon: 'person', label: 'Saya' }
+        ];
+        menus.forEach(m => {
+            const btn = document.createElement('button');
+            btn.className = `nav-btn flex flex-col items-center gap-1 p-1 w-14 transition-all group`;
+            btn.dataset.target = m.id;
+            btn.onclick = () => switchView(m.id);
+            btn.innerHTML = `<div class="icon-container w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:bg-slate-50"><span class="material-symbols-rounded text-2xl text-slate-300 transition-colors">${m.icon}</span></div>`;
+            nav.appendChild(btn);
+        });
+    }
+
+    window.switchView = (id) => {
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+        const t = $(`view-${id}`); if(t) { t.style.display='block'; setTimeout(()=>t.classList.add('active'),10); }
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`.nav-btn[data-target="${id}"]`)?.classList.add('active');
+
+        if(id==='home') renderHome();
+        if(id==='users') loadUsers();
+        if(id==='finance') loadFinance();
+        if(id==='events') loadEvents();
+        if(id==='playground') { loadPolls(); loadMarket(); loadLeaderboard(); }
+    }
+
+    // --- GENERIC LOADERS (USERS, FINANCE, ETC) ---
+    async function renderHome() {
+        const c = $("homeContentArea");
+        const xp = CURRENT_USER_DATA.xp || 0;
+        c.innerHTML = `
+        <div class="gradient-card p-6 rounded-[2rem] shadow-sm relative overflow-hidden">
+            <h2 class="text-2xl font-black text-brand-primary mb-1">Halo, ${CURRENT_USER_DATA.name.split(' ')[0]}!</h2>
+            <p class="text-sm text-slate-500 font-medium">Semangat berkontribusi hari ini ✨</p>
+            <div class="mt-4 flex gap-3">
+                <div class="bg-white/60 p-2 px-4 rounded-xl border border-white"><p class="text-[10px] font-bold text-slate-400 uppercase">Peran</p><p class="font-bold text-brand-primary text-sm">${CURRENT_ROLE.replace('_',' ').toUpperCase()}</p></div>
+                <div class="bg-white/60 p-2 px-4 rounded-xl border border-white"><p class="text-[10px] font-bold text-slate-400 uppercase">Level</p><p class="font-bold text-purple-600 text-sm">${Math.floor(xp/100)+1} (${xp} XP)</p></div>
+            </div>
+        </div>`;
+    }
+    
+    async function loadUsers() {
+        const l = $("userList"); l.innerHTML = '<div class="text-center mt-10"><div class="w-8 h-8 border-4 border-slate-200 border-t-accent rounded-full animate-spin mx-auto"></div></div>';
+        const snap = await getDocs(query(collection(db,"users"), orderBy("name")));
+        l.innerHTML = '';
+        snap.forEach(d => {
+            const u = d.data();
+            const online = (Date.now() - (u.lastSeen?.toMillis?.()||0)) < 120000;
+            l.innerHTML += `
+            <div class="bg-white p-3 rounded-2xl border border-slate-100 flex items-center gap-3 relative shadow-sm">
+                <div class="relative"><img src="${u.photo?.url||'https://via.placeholder.com/50'}" class="w-11 h-11 rounded-full object-cover ${!online && 'grayscale opacity-70'}">${online?'<span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>':''}</div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex justify-between items-center"><p class="text-sm font-bold text-brand-primary truncate">${u.name}</p><span class="text-[9px] font-bold bg-purple-50 text-purple-600 px-2 py-0.5 rounded">${u.xp||0} XP</span></div>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">${u.role}</p>
+                </div>
+            </div>`;
+        });
+    }
+
     async function loadFinance() {
         const l = $("finList"); l.innerHTML = 'Loading...';
         const snap = await getDocs(query(collection(db,"financial_records"), orderBy("createdAt","desc")));
         l.innerHTML = '';
-        let inc = 0, exp = 0;
-        const donors = {}; // For Sultan
-
-        snap.forEach(d => {
-            const f = d.data();
-            const amt = Number(f.amount);
-            if(f.type === 'income') { inc += amt; if(f.note) donors[f.note] = (donors[f.note]||0) + amt; }
-            else exp += amt;
-            
-            l.innerHTML += `<div class="card p-3 rounded-xl flex justify-between items-center"><div class="flex gap-3"><div class="w-8 h-8 rounded-full ${f.type==='income'?'bg-green-100 text-green-600':'bg-red-100 text-red-500'} flex items-center justify-center"><span class="material-symbols-rounded text-sm">${f.type==='income'?'arrow_downward':'arrow_upward'}</span></div><div><p class="text-sm font-bold dark:text-white">${f.note}</p><p class="text-[10px] text-slate-400">${f.status}</p></div></div><p class="font-bold ${f.type==='income'?'text-green-600':'text-red-500'}">${f.type==='income'?'+':'-'} ${amt.toLocaleString()}</p></div>`;
-        });
-
-        // Update Chart
-        const ctx = $("financeChart").getContext('2d');
-        if(financeChart) financeChart.destroy();
-        financeChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Masuk', 'Keluar'], datasets: [{ data: [inc, exp], backgroundColor: ['#22c55e', '#ef4444'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
-
-        // Update Sultan
-        let topSultan = "-", maxDonation = 0;
-        for(const [name, val] of Object.entries(donors)) { if(val > maxDonation) { maxDonation = val; topSultan = name; } }
-        $("topSultanName").innerText = topSultan !== "-" ? `${topSultan} (Rp ${maxDonation.toLocaleString()})` : "Belum ada data";
-
-        // Controls
         const canEdit = ['bendahara','super_admin'].includes(CURRENT_ROLE);
-        if(canEdit) $("financeControls").innerHTML = `<button onclick="openFinanceModal()" class="w-8 h-8 bg-brand-primary text-white rounded-full flex items-center justify-center shadow">+</button>`;
+        if(canEdit) $("financeControls").innerHTML = `<button onclick="openFinanceModal()" class="bg-brand-primary text-white w-8 h-8 rounded-full flex items-center justify-center shadow hover:scale-110 transition">+</button>`;
+        snap.forEach(d => {
+            const f = d.data(); const inc = f.type === 'income';
+            l.innerHTML += `
+            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex justify-between items-center group hover:border-slate-300 transition-colors">
+                <div class="flex items-center gap-3">
+                     <div class="w-10 h-10 rounded-2xl ${inc?'bg-green-50 text-green-600':'bg-red-50 text-red-500'} flex items-center justify-center"><span class="material-symbols-rounded">${inc?'arrow_downward':'arrow_upward'}</span></div>
+                     <div><p class="text-sm font-bold text-brand-primary line-clamp-1">${f.note}</p><p class="text-[10px] text-slate-400 font-medium">${f.status==='pending'?'⏳ Menunggu':'✅ Verified'}</p></div>
+                </div>
+                <p class="text-sm font-bold ${inc?'text-green-600':'text-red-500'}">${inc?'+':'-'} ${Number(f.amount).toLocaleString()}</p>
+            </div>`;
+        });
     }
-    
-    // FEATURE 8: KALKULATOR
-    window.toggleCalc = () => $("simpleCalc").classList.toggle("hidden");
-
-    // FEATURE 9: LAPOR KERUSAKAN
-    window.openReportModal = () => {
-        const html = `<select id="rType" class="w-full p-3 border rounded-xl mb-2"><option>Lampu Jalan Mati</option><option>Jalan Rusak</option><option>Sampah Numpuk</option><option>Keamanan</option></select><textarea id="rDesc" class="w-full p-3 border rounded-xl" placeholder="Detail Lokasi..."></textarea>`;
-        showModal("Lapor Masalah", html, async () => { await addDoc(collection(db,"reports"), {type:$("rType").value, desc:$("rDesc").value, reporter:CURRENT_USER_DATA.name, createdAt:serverTimestamp()}); closeModal(); alert("Laporan diterima!"); });
+    window.openFinanceModal = () => {
+        const html = `<select id="fType" class="w-full p-3 border rounded-xl mb-2"><option value="income">Pemasukan (+)</option><option value="expense">Pengeluaran (-)</option></select><input id="fAmt" type="number" class="w-full p-3 border rounded-xl mb-2" placeholder="Nominal"><input id="fNote" class="w-full p-3 border rounded-xl" placeholder="Keterangan">`;
+        showModal("Catat Kas", html, async () => { await addDoc(collection(db,"financial_records"),{type:$("fType").value, amount:$("fAmt").value, note:$("fNote").value, status:'pending', createdAt:serverTimestamp()}); closeModal(); loadFinance(); addXP(5); });
     }
 
-    // --- STANDARD LOGIC ---
-    function startPresence() { updateDoc(doc(db, "users", UID), { lastSeen: serverTimestamp() }); setInterval(() => updateDoc(doc(db, "users", UID), { lastSeen: serverTimestamp() }), 60000); }
-    window.createPoll = () => showModal("Buat Voting", `<input id="pq" class="w-full p-3 border rounded-xl mb-2" placeholder="Tanya apa?"><input id="po1" class="w-full p-3 border rounded-xl mb-2" placeholder="Opsi A"><input id="po2" class="w-full p-3 border rounded-xl" placeholder="Opsi B">`, async()=>{ await addDoc(collection(db,"polls"),{q:$("pq").value, ops:{$("po1").value:0, $("po2").value:0}, by:CURRENT_USER_DATA.name, createdAt:serverTimestamp()}); closeModal(); loadPolls(); });
-    function loadPolls() { onSnapshot(query(collection(db,"polls"), orderBy("createdAt","desc"), limit(3)), s => { $("pollList").innerHTML = ""; s.forEach(d => { const p=d.data(); let h=`<div class="card p-4 rounded-xl mb-2"><h4 class="font-bold text-sm mb-2 dark:text-white">${p.q}</h4>`; for(let[k,v]of Object.entries(p.ops)) h+=`<div onclick="vote('${d.id}','${k}')" class="bg-slate-100 dark:bg-slate-700 p-2 rounded mb-1 text-xs flex justify-between cursor-pointer"><span>${k}</span><b>${v}</b></div>`; $("pollList").innerHTML+=h+"</div>"; }) }); }
-    window.vote = async(id,op) => { const r=doc(db,"polls",id); const s=await getDoc(r); if(s.exists()){ const o=s.data().ops; o[op]++; await updateDoc(r,{ops:o}); } }
-    window.claimMission = (k) => { if(localStorage.getItem('m_'+k)) return alert("Sudah diklaim!"); localStorage.setItem('m_'+k,1); updateDoc(doc(db,"users",UID),{xp:increment(10)}); alert("XP +10!"); }
-
-    window.triggerKentongan = async () => { if(confirm("BUNYIKAN SIRINE BAHAYA?")) await addDoc(collection(db,"notifications"), {body:`${CURRENT_USER_DATA.name} BUTUH BANTUAN!`, level:"sos", senderUid:UID, createdAt:serverTimestamp()}); }
-    function initSOS() { onSnapshot(query(collection(db,"notifications"), where("level","==","sos"), orderBy("createdAt","desc"), limit(1)), s => { s.docChanges().forEach(c => { if(c.type==="added" && Date.now()-c.doc.data().createdAt.toMillis()<10000 && c.doc.data().senderUid!==UID) { $("sosOverlay").classList.remove("hidden"); $("sosOverlay").classList.add("flex"); $("sosMessage").textContent=c.doc.data().body; audioBeep.play(); } }) }); }
-    window.stopSOS = () => { $("sosOverlay").classList.add("hidden"); $("sosOverlay").classList.remove("flex"); audioBeep.pause(); }
-
-    function initChat() { onSnapshot(query(collection(db,"public_chats"), orderBy("createdAt","desc"), limit(30)), s => { const l=$("chatMessages"); l.innerHTML=''; const m=[]; s.forEach(d=>m.push(d.data())); m.reverse().forEach(x=>{ l.innerHTML+=`<div class="chat-bubble ${x.uid===UID?'chat-me':'chat-other'}">${x.text}</div>`; }); l.scrollTop=l.scrollHeight; }); }
-    window.toggleChat = () => { $("chatWindow").classList.toggle("hidden"); $("chatWindow").classList.toggle("flex"); }
-    window.sendMessage = async(e) => { e.preventDefault(); if($("chatInput").value.trim()){ await addDoc(collection(db,"public_chats"),{text:$("chatInput").value, uid:UID, createdAt:serverTimestamp()}); $("chatInput").value=''; } }
-
-    async function loadUsers() {
-        const l=$("userList"); l.innerHTML='Loading...'; const s=await getDocs(query(collection(db,"users"), orderBy("name"))); l.innerHTML='';
-        s.forEach(d=>{ const u=d.data(); l.innerHTML+=`<div class="card p-3 rounded-xl flex items-center gap-3"><img src="${u.photo?.url||'https://via.placeholder.com/50'}" class="w-10 h-10 rounded-full object-cover"><div><p class="font-bold text-sm dark:text-white">${u.name}</p><p class="text-[10px] text-slate-500 uppercase">${u.role||'Anggota'}</p></div></div>`; });
-    }
-    
+    // EVENTS
     async function loadEvents() {
-        const l=$("actList"); l.innerHTML=''; const s=await getDocs(query(collection(db,"activities"), orderBy("createdAt","desc")));
-        s.forEach(d=>{ const x=d.data(); l.innerHTML+=`<div class="card p-4 rounded-xl flex gap-3"><div class="bg-blue-50 text-blue-600 p-3 rounded-lg text-center min-w-[60px]"><b class="block text-lg">${new Date(x.date).getDate()}</b><small>${new Date(x.date).toLocaleString('default',{month:'short'})}</small></div><div><h4 class="font-bold dark:text-white">${x.title}</h4><p class="text-xs text-slate-400">${x.location}</p></div></div>`; });
-        if(['koordinator','super_admin'].includes(CURRENT_ROLE)) $("eventControls").innerHTML=`<button onclick="openEventModal()" class="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center shadow">+</button>`;
+        const l = $("actList"); l.innerHTML = ''; const snap = await getDocs(query(collection(db,"activities"), orderBy("createdAt","desc")));
+        snap.forEach(d => { const x = d.data(); l.innerHTML += `<div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex gap-4 shadow-sm"><div class="bg-blue-50 p-3 rounded-2xl h-fit text-blue-600 font-bold text-xs text-center min-w-[60px]"><span class="block text-lg">${new Date(x.date).getDate()||'??'}</span><span class="uppercase text-[9px]">${new Date(x.date).toLocaleString('default', { month: 'short' })||'TBA'}</span></div><div><h4 class="font-bold text-brand-primary text-sm">${x.title}</h4><p class="text-xs text-slate-400 mt-1 flex items-center gap-1"><span class="material-symbols-rounded text-[12px]">location_on</span> ${x.location||'-'}</p></div></div>`; });
+        if(['koordinator','super_admin'].includes(CURRENT_ROLE)) $("eventControls").innerHTML = `<button onclick="openEventModal()" class="w-8 h-8 bg-purple-600 text-white rounded-full shadow flex items-center justify-center hover:scale-110">+</button>`;
     }
-    window.openEventModal = () => showModal("Agenda", `<input id="et" class="w-full p-3 border rounded-xl mb-2" placeholder="Judul"><input type="date" id="ed" class="w-full p-3 border rounded-xl mb-2"><input id="el" class="w-full p-3 border rounded-xl" placeholder="Lokasi">`, async()=>{ await addDoc(collection(db,"activities"),{title:$("et").value, date:$("ed").value, location:$("el").value, createdAt:serverTimestamp()}); closeModal(); loadEvents(); });
-    window.openFinanceModal = () => showModal("Kas", `<select id="ft" class="w-full p-3 border rounded-xl mb-2"><option value="income">Masuk</option><option value="expense">Keluar</option></select><input id="fa" type="number" class="w-full p-3 border rounded-xl mb-2" placeholder="Jumlah"><input id="fn" class="w-full p-3 border rounded-xl" placeholder="Ket">`, async()=>{ await addDoc(collection(db,"financial_records"),{type:$("ft").value, amount:$("fa").value, note:$("fn").value, status:'pending', createdAt:serverTimestamp()}); closeModal(); loadFinance(); });
+    window.openEventModal = () => { showModal("Agenda Baru", `<input id="eTitle" class="w-full p-3 border rounded-xl mb-2" placeholder="Judul"><input type="date" id="eDate" class="w-full p-3 border rounded-xl mb-2"><input id="eLoc" class="w-full p-3 border rounded-xl" placeholder="Lokasi">`, async()=>{ await addDoc(collection(db,"activities"),{title:$("eTitle").value, date:$("eDate").value, location:$("eLoc").value, createdAt:serverTimestamp()}); closeModal(); loadEvents(); addXP(15); }); }
 
-    function buildNav() {
-        const m=[{id:'home',i:'dashboard',l:'Home'},{id:'playground',i:'rocket_launch',l:'Seru'},{id:'users',i:'group',l:'Warga'},{id:'finance',i:'account_balance_wallet',l:'Kas'},{id:'profile',i:'person',l:'Saya'}];
-        $("bottomNavContainer").innerHTML = m.map(x=>`<button onclick="switchView('${x.id}')" class="nav-btn flex flex-col items-center gap-1 w-14" data-target="${x.id}"><span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">${x.i}</span></button>`).join('');
+    // CHAT
+    function initChat() {
+        onSnapshot(query(collection(db,"public_chats"), orderBy("createdAt","desc"), limit(30)), s => {
+            const l = $("chatMessages"); const m = []; s.forEach(d=>m.push(d.data())); m.reverse();
+            l.innerHTML = ''; m.forEach(x => { const me = x.uid===UID; l.innerHTML += `<div class="chat-bubble ${me?'chat-me':'chat-other'}">${!me?`<p class="text-[9px] font-bold text-orange-500 mb-0.5">${x.senderName}</p>`:''}${x.text}</div>`; });
+            l.scrollTop = l.scrollHeight;
+            if($("chatWindow").classList.contains("hidden")) $("unreadChatBadge").classList.remove("hidden");
+        });
     }
-    window.switchView = (id) => {
-        document.querySelectorAll('.view-section').forEach(e=>e.classList.remove('active')); $(`view-${id}`).classList.add('active');
-        document.querySelectorAll('.nav-btn span').forEach(s=>s.style.color=''); document.querySelector(`[data-target="${id}"] span`).style.color='#F97316';
-        if(id==='finance') loadFinance(); if(id==='users') loadUsers(); if(id==='events') loadEvents(); if(id==='playground') loadPolls(); if(id==='home') { checkBirthdays(); }
-    }
-    async function loadProfile() { $("editName").value=CURRENT_USER_DATA.name; $("editPhone").value=CURRENT_USER_DATA.phone; }
-    window.saveProfile = async () => { toggleLoader(true); await updateDoc(doc(db,"users",UID),{name:$("editName").value, phone:$("editPhone").value}); toggleLoader(false); alert("Disimpan"); }
-    window.showIdCard = () => showModal("ID Card", `<div class="bg-slate-800 text-white p-6 rounded-2xl text-center"><h2 class="text-2xl font-bold">${CURRENT_USER_DATA.name}</h2><p>${CURRENT_ROLE}</p></div>`, null);
+    window.toggleChat = () => { const w=$("chatWindow"); w.classList.contains("hidden")?(w.classList.remove("hidden"),w.classList.add("flex"),$("unreadChatBadge").classList.add("hidden")):(w.classList.add("hidden"),w.classList.remove("flex")); }
+    window.sendMessage = async (e) => { e.preventDefault(); const t=$("chatInput").value.trim(); if(!t)return; $("chatInput").value=''; await addDoc(collection(db,"public_chats"),{text:t, uid:UID, senderName:CURRENT_USER_DATA.name, createdAt:serverTimestamp()}); addXP(2); }
+
+    // PROFILE
+    async function loadProfile() { $("editName").value = CURRENT_USER_DATA.name||""; $("editPhone").value = CURRENT_USER_DATA.phone||""; $("editAddress").value = CURRENT_USER_DATA.address||""; }
+    window.saveProfile = async () => { toggleLoader(true); await updateDoc(doc(db,"users",UID), {name:$("editName").value, phone:$("editPhone").value, address:$("editAddress").value}); toggleLoader(false); alert("Saved!"); }
+    window.showIdCard = () => showModal("ID Card", `<div class="bg-slate-800 text-white p-6 rounded-3xl text-center"><img src="${CURRENT_USER_DATA.photo?.url}" class="w-20 h-20 rounded-full mx-auto mb-4 border-4 border-slate-700"><h2 class="text-xl font-bold">${CURRENT_USER_DATA.name}</h2><p class="text-sm opacity-70 tracking-widest uppercase mb-4">${CURRENT_ROLE}</p><div class="bg-white/10 p-2 rounded-xl text-xs font-mono">${UID}</div></div>`, null);
+
     $("logoutBtn").onclick = () => signOut(auth);
   </script>
 </body>
