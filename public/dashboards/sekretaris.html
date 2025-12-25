@@ -16,7 +16,7 @@
           fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
           colors: {
             brand: { primary: '#0F172A', light: '#334155' },
-            sky: { DEFAULT: '#0EA5E9', light: '#E0F2FE', dark: '#0369A1' } // Sky theme for Admin
+            sky: { DEFAULT: '#0EA5E9', light: '#E0F2FE', dark: '#0369A1' } 
           },
           animation: { 
             'blob': 'blob 10s infinite',
@@ -53,6 +53,14 @@
     .view-section.active { display: block; opacity: 1; transform: translateY(0); }
     .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #0EA5E9; }
     .nav-btn.active p { color: #0F172A; font-weight: 700; }
+    
+    /* Animation for online indicator */
+    @keyframes pulse-green {
+      0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+      70% { box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+    }
+    .online-pulse { animation: pulse-green 2s infinite; }
   </style>
 </head>
 
@@ -99,7 +107,7 @@
           <div class="flex items-center gap-3">
               <button onclick="switchView('profile')" class="relative group active:scale-95 transition-transform">
                 <img id="headerPhoto" class="w-12 h-12 rounded-full border-2 border-white shadow-md object-cover" src="https://via.placeholder.com/100">
-                <div class="absolute bottom-0 right-0 w-4 h-4 bg-sky-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] text-white font-bold">A</div>
+                <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] text-white font-bold online-pulse"></div>
               </button>
               <div>
                   <p class="text-[10px] font-bold text-sky-700 uppercase tracking-widest bg-sky-100 px-2 py-0.5 rounded-full w-fit mb-0.5">Sekretaris</p>
@@ -116,6 +124,21 @@
 
       <section id="view-home" class="view-section active">
           
+          <div class="mb-5">
+            <div class="flex items-center justify-between mb-2 px-1">
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Anggota Online
+                </h3>
+                <span id="onlineCount" class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold">0 Aktif</span>
+            </div>
+            <div id="onlineUsersList" class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+                <div class="animate-pulse flex gap-2">
+                    <div class="w-10 h-10 rounded-full bg-slate-200"></div>
+                    <div class="w-10 h-10 rounded-full bg-slate-200"></div>
+                </div>
+            </div>
+          </div>
+
           <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 group transition-all">
               <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500 transform group-hover:scale-110"><span class="material-symbols-rounded text-9xl">folder_shared</span></div>
               <div class="relative z-10">
@@ -288,7 +311,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
@@ -368,7 +391,7 @@
         catch (e) { showToast("Gagal Upload", "error"); throw e; }
     }
 
-    // --- AUTH ---
+    // --- AUTH & ONLINE PRESENCE ---
     onAuthStateChanged(auth, async user => {
         if(!user) return location.href = "login.html";
         toggleLoader(true);
@@ -378,10 +401,27 @@
                 toggleLoader(false); $("gate").classList.remove("hidden"); $("gate").classList.add("flex"); return;
             }
             UID = user.uid;
-            await Promise.all([loadHomeStats(), loadNotulen(), loadSurat(), loadArsip(), loadProfileData()]);
+            
+            // Set Online
+            updateOnlineStatus(true);
+            
+            // Handle closing window
+            window.addEventListener('beforeunload', () => updateOnlineStatus(false));
+
+            await Promise.all([loadHomeStats(), loadOnlineUsers(), loadNotulen(), loadSurat(), loadArsip(), loadProfileData()]);
         } catch(e) { console.error(e); }
         toggleLoader(false);
     });
+
+    async function updateOnlineStatus(isOnline) {
+        if(!UID) return;
+        try {
+            await updateDoc(doc(db, "users", UID), {
+                isOnline: isOnline,
+                lastSeen: serverTimestamp()
+            });
+        } catch(e) { console.log("Status update error", e); }
+    }
 
     // --- HOME STATS & FINANCE CHECK ---
     async function loadHomeStats() {
@@ -406,7 +446,41 @@
             });
             animateValue($("homeBalance"), 0, bal, 1500);
 
+            // Reload online users periodically
+            loadOnlineUsers();
+
         } catch (e) { console.error(e); }
+    }
+
+    // --- LOAD ONLINE USERS ---
+    async function loadOnlineUsers() {
+        const list = $("onlineUsersList");
+        list.innerHTML = "";
+        try {
+            // Query users who are marked as online
+            const q = query(collection(db, "users"), where("isOnline", "==", true));
+            const snap = await getDocs(q);
+            
+            $("onlineCount").textContent = `${snap.size} Aktif`;
+            
+            if(snap.empty) {
+                list.innerHTML = `<span class="text-xs text-slate-400 italic">Hanya Anda yang online.</span>`;
+                return;
+            }
+
+            snap.forEach(d => {
+                const u = d.data();
+                list.innerHTML += `
+                    <div class="flex flex-col items-center min-w-[60px] cursor-pointer" onclick="showToast('${u.name} sedang online')">
+                        <div class="relative">
+                            <img src="${u.photo?.url || 'https://via.placeholder.com/50'}" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm">
+                            <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full animate-pulse"></div>
+                        </div>
+                        <p class="text-[9px] font-bold text-slate-600 mt-1 truncate w-full text-center">${u.name.split(' ')[0]}</p>
+                    </div>
+                `;
+            });
+        } catch(e) { console.error("Error loading online users", e); }
     }
 
     // --- NOTULEN ---
@@ -578,7 +652,11 @@
         showModal("KARTU IDENTITAS DIGITAL", html, null);
     }
 
-    $("logoutBtn").onclick = async () => { await signOut(auth); location.href = "../login.html"; };
+    $("logoutBtn").onclick = async () => { 
+        await updateOnlineStatus(false); // Set offline before logging out
+        await signOut(auth); 
+        location.href = "../login.html"; 
+    };
   </script>
 </body>
 </html>
