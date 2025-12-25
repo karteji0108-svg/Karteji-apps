@@ -17,7 +17,7 @@
           fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
           colors: {
             brand: { primary: '#0F172A', light: '#334155' },
-            teal: { DEFAULT: '#0D9488', light: '#CCFBF1', dark: '#115E59' } // Tema Teal untuk Ops
+            teal: { DEFAULT: '#0D9488', light: '#CCFBF1', dark: '#115E59' }
           },
           animation: { 
             'blob': 'blob 10s infinite',
@@ -55,7 +55,6 @@
     .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #0D9488; }
     .nav-btn.active p { color: #0F172A; font-weight: 700; }
     
-    /* Print Styling */
     @media print {
         body * { visibility: hidden; }
         #printArea, #printArea * { visibility: visible; }
@@ -76,7 +75,7 @@
 
   <div id="globalLoader" class="fixed inset-0 bg-white/80 z-[9999] flex items-center justify-center flex-col gap-4 backdrop-blur-md hidden">
     <div class="w-12 h-12 border-4 border-slate-200 border-t-teal rounded-full animate-spin"></div>
-    <p class="text-xs font-bold text-slate-400 animate-pulse">VERIFIKASI DATA...</p>
+    <p class="text-xs font-bold text-slate-400 animate-pulse">MEMPROSES DATA...</p>
   </div>
 
   <div id="gate" class="fixed inset-0 bg-slate-900 z-[9998] hidden items-center justify-center p-6 text-center backdrop-blur-sm">
@@ -508,7 +507,7 @@
         try { await updateDoc(doc(db,"users",uid), {role:val}); showToast("Jabatan Diubah"); } catch(e){ showToast("Gagal","error"); } finally { toggleLoader(false); }
     }
 
-    // --- APPROVALS (Combined Logic) ---
+    // --- APPROVALS (Updated Logic) ---
     async function loadApprovals(){
         const aList = $("actList"); aList.innerHTML = "";
         const fList = $("finList"); fList.innerHTML = "";
@@ -551,15 +550,35 @@
         });
     }
 
+    // --- FUNGSI APPROVE YANG SUDAH DIPERBAIKI ---
     window.approveDoc = async (col, id) => {
-        if(!confirm("Setujui (ACC) data ini?")) return;
+        if(!confirm("Yakin ingin menyetujui (ACC) data ini?")) return;
         toggleLoader(true);
         try {
-            await updateDoc(doc(db, col, id), { status: "approved" });
+            console.log(`Mencoba ACC: ${col}/${id} oleh ${UID}`);
+            
+            // Update dengan serverTimestamp dan ID Approver
+            await updateDoc(doc(db, col, id), { 
+                status: "approved",
+                approvedBy: UID,
+                approvedAt: serverTimestamp()
+            });
+
             showToast("Berhasil di-ACC!");
-            await loadHomeData(); await loadApprovals();
-        } catch(e) { showToast("Gagal ACC", "error"); }
-        finally { toggleLoader(false); }
+            
+            // Reload data secara paralel agar lebih cepat
+            await Promise.all([loadHomeData(), loadApprovals()]);
+            
+        } catch(e) { 
+            console.error("ERROR SAAT ACC:", e);
+            if(e.code === 'permission-denied') {
+                showToast("Izin ditolak! Cek Rules Database.", "error");
+            } else {
+                showToast("Gagal ACC: " + e.message, "error");
+            }
+        } finally { 
+            toggleLoader(false); 
+        }
     }
 
     $("logoutBtn").onclick = async () => { await signOut(auth); location.href = "login.html"; };
