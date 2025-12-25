@@ -18,10 +18,9 @@
             brand: { primary: '#0F172A', light: '#334155' },
             accent: { DEFAULT: '#F97316', light: '#FFEDD5' }
           },
-          animation: { 
+          animation: {
             'blob': 'blob 10s infinite',
             'slide-in-top': 'slideInTop 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both',
-            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
           },
           keyframes: {
             blob: {
@@ -31,8 +30,8 @@
               '100%': { transform: 'translate(0px, 0px) scale(1)' },
             },
             slideInTop: {
-                '0%': { transform: 'translateY(-100px)', opacity: '0' },
-                '100%': { transform: 'translateY(0)', opacity: '1' }
+              '0%': { transform: 'translateY(-100px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' }
             }
           }
         }
@@ -55,16 +54,16 @@
     .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #F97316; }
     .nav-btn.active p { color: #0F172A; font-weight: 700; }
     .progress-bar { transition: width 1s ease-in-out; }
-    
+
     /* Online Indicator Pulse */
     .online-ring {
-        box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
-        animation: ringPulse 2s infinite;
+      box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+      animation: ringPulse 2s infinite;
     }
     @keyframes ringPulse {
-        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
-        70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
-        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
     }
   </style>
 </head>
@@ -86,21 +85,21 @@
 
   <div id="gate" class="fixed inset-0 bg-slate-900 z-[9998] hidden items-center justify-center p-6 text-center">
     <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-2 bg-red-500"></div>
-        <span class="material-symbols-rounded text-red-500 text-6xl mb-4">lock_person</span>
-        <h2 class="text-2xl font-extrabold text-brand-primary mb-2">Akses Dibatasi</h2>
-        <p class="text-slate-500 text-sm mb-6">Sesi anda telah berakhir atau belum login.</p>
-        <a href="login.html" class="block w-full bg-brand-primary text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors shadow-lg shadow-slate-300">Login Sekarang</a>
+      <div class="absolute top-0 left-0 w-full h-2 bg-red-500"></div>
+      <span class="material-symbols-rounded text-red-500 text-6xl mb-4">lock_person</span>
+      <h2 class="text-2xl font-extrabold text-brand-primary mb-2">Akses Dibatasi</h2>
+      <p class="text-slate-500 text-sm mb-6">Sesi anda telah berakhir atau belum login.</p>
+      <a href="login.html" class="block w-full bg-brand-primary text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors shadow-lg shadow-slate-300">Login Sekarang</a>
     </div>
   </div>
 
   <div id="crudModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-all">
     <div class="bg-white w-full max-w-md rounded-[2rem] p-6 relative shadow-2xl animate-[slideUp_0.3s_ease-out]">
       <div class="flex justify-between items-center mb-6">
-          <h2 id="modalTitle" class="text-xl font-extrabold text-brand-primary uppercase tracking-tight">Judul</h2>
-          <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors text-slate-500">
-            <span class="material-symbols-rounded text-xl">close</span>
-          </button>
+        <h2 id="modalTitle" class="text-xl font-extrabold text-brand-primary uppercase tracking-tight">Judul</h2>
+        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors text-slate-500">
+          <span class="material-symbols-rounded text-xl">close</span>
+        </button>
       </div>
       <div id="modalBody" class="space-y-4 max-h-[60vh] overflow-y-auto no-scrollbar"></div>
       <button id="modalSubmitBtn" class="mt-6 w-full rounded-xl bg-brand-primary text-white py-4 text-sm font-bold shadow-lg shadow-slate-300 hover:bg-slate-800 active:scale-95 transition-all">SIMPAN</button>
@@ -108,260 +107,269 @@
   </div>
 
   <header class="sticky top-0 z-30 px-6 pt-8 pb-4 bg-gradient-to-b from-[#F8FAFC] via-[#F8FAFC] to-transparent">
-      <div class="flex justify-between items-center">
-          <div class="flex items-center gap-3">
-              <button onclick="switchView('profile')" class="relative group active:scale-95 transition-transform">
-                <img id="headerPhoto" class="w-11 h-11 rounded-full border-2 border-white shadow-md object-cover" src="https://via.placeholder.com/100">
-                <div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full animate-pulse"></div>
-              </button>
-              <div>
-                  <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Hai, Anggota</p>
-                  <h1 id="headerName" class="text-xl font-extrabold text-brand-primary leading-none truncate max-w-[150px]">Memuat...</h1>
-              </div>
-          </div>
-          <div class="flex gap-2">
-             <button onclick="refreshAll()" class="w-10 h-10 rounded-full bg-white border border-slate-100 shadow-sm flex items-center justify-center text-slate-400 hover:text-brand-primary active:scale-95">
-                <span class="material-symbols-rounded">refresh</span>
-             </button>
-          </div>
+    <div class="flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <button onclick="switchView('profile')" class="relative group active:scale-95 transition-transform">
+          <img id="headerPhoto" class="w-11 h-11 rounded-full border-2 border-white shadow-md object-cover" src="https://via.placeholder.com/100">
+          <div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full animate-pulse"></div>
+        </button>
+        <div>
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Hai, Anggota</p>
+          <h1 id="headerName" class="text-xl font-extrabold text-brand-primary leading-none truncate max-w-[150px]">Memuat...</h1>
+        </div>
       </div>
+      <div class="flex gap-2">
+        <button onclick="refreshAll()" class="w-10 h-10 rounded-full bg-white border border-slate-100 shadow-sm flex items-center justify-center text-slate-400 hover:text-brand-primary active:scale-95">
+          <span class="material-symbols-rounded">refresh</span>
+        </button>
+      </div>
+    </div>
   </header>
 
   <main class="px-5 mt-2 relative z-10">
 
-      <section id="view-home" class="view-section active">
-          
-          <div id="arisanWidget" class="hidden w-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-[2rem] p-1 mb-6 shadow-xl shadow-purple-200 relative overflow-hidden group">
-             <div class="bg-white/10 backdrop-blur-sm rounded-[1.8rem] p-5 flex items-center gap-4 relative z-10">
-                <div class="relative">
-                    <img id="arisanPhoto" src="https://via.placeholder.com/100" class="w-14 h-14 rounded-full border-2 border-white shadow-md object-cover">
-                    <div class="absolute -top-2 -right-2 bg-yellow-400 text-yellow-900 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm animate-bounce">WINNER</div>
-                </div>
-                <div class="flex-1">
-                    <p class="text-[10px] font-bold text-purple-100 uppercase tracking-widest mb-0.5">Pemenang Arisan</p>
-                    <h3 id="arisanName" class="text-xl font-extrabold text-white leading-none">...</h3>
-                    <p id="arisanDate" class="text-[10px] text-purple-100 mt-1">Periode Bulan Ini</p>
-                </div>
-                <span class="material-symbols-rounded text-4xl text-white/20">celebration</span>
-             </div>
+    <!-- HOME -->
+    <section id="view-home" class="view-section active">
+
+      <div id="arisanWidget" class="hidden w-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-[2rem] p-1 mb-6 shadow-xl shadow-purple-200 relative overflow-hidden group">
+        <div class="bg-white/10 backdrop-blur-sm rounded-[1.8rem] p-5 flex items-center gap-4 relative z-10">
+          <div class="relative">
+            <img id="arisanPhoto" src="https://via.placeholder.com/100" class="w-14 h-14 rounded-full border-2 border-white shadow-md object-cover">
+            <div class="absolute -top-2 -right-2 bg-yellow-400 text-yellow-900 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm animate-bounce">WINNER</div>
           </div>
-
-          <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 group transition-all mb-6">
-              <div class="absolute top-0 right-0 p-4 opacity-5"><span class="material-symbols-rounded text-9xl">account_balance_wallet</span></div>
-              <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-accent blur-3xl opacity-20"></div>
-              
-              <div class="relative z-10">
-                <div class="flex justify-between items-start mb-1">
-                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-300">Saldo Kas Organisasi</p>
-                    <span class="text-[9px] bg-white/20 px-2 py-0.5 rounded text-white font-bold">Transparan</span>
-                </div>
-                <h2 id="cardBalance" class="text-4xl font-black tracking-tight mb-6">Rp 0</h2>
-
-                <div class="flex gap-2">
-                   <div class="bg-white/10 backdrop-blur-md px-3 py-2.5 rounded-xl flex-1 border border-white/5">
-                       <div class="flex items-center gap-1 mb-1">
-                           <span class="material-symbols-rounded text-[10px] text-green-300 bg-green-500/20 p-0.5 rounded-full">arrow_downward</span>
-                           <span class="text-[9px] uppercase font-bold text-slate-300">Masuk</span>
-                       </div>
-                       <p id="cardIncome" class="text-xs font-bold text-white">Rp 0</p>
-                   </div>
-                   <div class="bg-white/10 backdrop-blur-md px-3 py-2.5 rounded-xl flex-1 border border-white/5">
-                       <div class="flex items-center gap-1 mb-1">
-                           <span class="material-symbols-rounded text-[10px] text-red-300 bg-red-500/20 p-0.5 rounded-full">arrow_upward</span>
-                           <span class="text-[9px] uppercase font-bold text-slate-300">Keluar</span>
-                       </div>
-                       <p id="cardExpense" class="text-xs font-bold text-white">Rp 0</p>
-                   </div>
-                </div>
-              </div>
+          <div class="flex-1">
+            <p class="text-[10px] font-bold text-purple-100 uppercase tracking-widest mb-0.5">Pemenang Arisan</p>
+            <h3 id="arisanName" class="text-xl font-extrabold text-white leading-none">...</h3>
+            <p id="arisanDate" class="text-[10px] text-purple-100 mt-1">Periode Bulan Ini</p>
           </div>
-
-          <div class="grid grid-cols-2 gap-3 mb-6">
-              <div onclick="switchView('kegiatan')" class="bg-white border border-slate-100 p-4 rounded-[1.5rem] flex flex-col items-center justify-center gap-2 shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer h-28 relative overflow-hidden">
-                  <div class="absolute -right-4 -top-4 w-16 h-16 bg-blue-50 rounded-full opacity-50"></div>
-                  <span class="material-symbols-rounded text-3xl text-blue-500">calendar_month</span>
-                  <span class="text-xs font-bold text-brand-primary">Lihat Jadwal</span>
-              </div>
-              
-              <div onclick="switchView('voting')" class="bg-white border border-slate-100 p-4 rounded-[1.5rem] flex flex-col items-center justify-center gap-2 shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer h-28 relative overflow-hidden">
-                  <div class="absolute -right-4 -top-4 w-16 h-16 bg-purple-50 rounded-full opacity-50"></div>
-                  <span class="material-symbols-rounded text-3xl text-purple-500">how_to_vote</span>
-                  <span class="text-xs font-bold text-brand-primary">Ikut Voting</span>
-              </div>
-
-              <div onclick="showIdCard()" class="bg-white border border-slate-100 p-4 rounded-[1.5rem] flex flex-col items-center justify-center gap-2 shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer h-28 relative overflow-hidden">
-                  <div class="absolute -right-4 -top-4 w-16 h-16 bg-orange-50 rounded-full opacity-50"></div>
-                  <span class="material-symbols-rounded text-3xl text-accent">badge</span>
-                  <span class="text-xs font-bold text-brand-primary">Kartu Anggota</span>
-              </div>
-
-               <div onclick="switchView('keuangan')" class="bg-white border border-slate-100 p-4 rounded-[1.5rem] flex flex-col items-center justify-center gap-2 shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer h-28 relative overflow-hidden">
-                  <div class="absolute -right-4 -top-4 w-16 h-16 bg-green-50 rounded-full opacity-50"></div>
-                  <span class="material-symbols-rounded text-3xl text-green-600">receipt_long</span>
-                  <span class="text-xs font-bold text-brand-primary">Cek Iuran</span>
-              </div>
-          </div>
-
-          <div class="mb-20">
-            <h3 class="text-sm font-bold text-brand-primary uppercase tracking-wide mb-3 px-1 flex items-center gap-2">
-                <span class="material-symbols-rounded text-accent">campaign</span>
-                Pengumuman
-            </h3>
-            <div id="homeNoticeList" class="space-y-3">
-                <p class="text-xs text-slate-400 italic px-2">Belum ada pengumuman.</p>
-            </div>
-          </div>
-      </section>
-
-      <section id="view-voting" class="view-section">
-        <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
-            <div>
-                <h2 class="text-2xl font-bold text-brand-primary">E-Voting</h2>
-                <p class="text-xs text-slate-400">Suara anda menentukan masa depan</p>
-            </div>
+          <span class="material-symbols-rounded text-4xl text-white/20">celebration</span>
         </div>
-        <div id="votingList" class="space-y-6 pb-20">
-            <div class="animate-pulse space-y-4">
-                <div class="h-40 bg-slate-200 rounded-2xl w-full"></div>
+      </div>
+
+      <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 group transition-all mb-6">
+        <div class="absolute top-0 right-0 p-4 opacity-5"><span class="material-symbols-rounded text-9xl">account_balance_wallet</span></div>
+        <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-accent blur-3xl opacity-20"></div>
+
+        <div class="relative z-10">
+          <div class="flex justify-between items-start mb-1">
+            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-300">Saldo Kas Organisasi</p>
+            <span class="text-[9px] bg-white/20 px-2 py-0.5 rounded text-white font-bold">Transparan</span>
+          </div>
+          <h2 id="cardBalance" class="text-4xl font-black tracking-tight mb-6">Rp 0</h2>
+
+          <div class="flex gap-2">
+            <div class="bg-white/10 backdrop-blur-md px-3 py-2.5 rounded-xl flex-1 border border-white/5">
+              <div class="flex items-center gap-1 mb-1">
+                <span class="material-symbols-rounded text-[10px] text-green-300 bg-green-500/20 p-0.5 rounded-full">arrow_downward</span>
+                <span class="text-[9px] uppercase font-bold text-slate-300">Masuk</span>
+              </div>
+              <p id="cardIncome" class="text-xs font-bold text-white">Rp 0</p>
             </div>
+            <div class="bg-white/10 backdrop-blur-md px-3 py-2.5 rounded-xl flex-1 border border-white/5">
+              <div class="flex items-center gap-1 mb-1">
+                <span class="material-symbols-rounded text-[10px] text-red-300 bg-red-500/20 p-0.5 rounded-full">arrow_upward</span>
+                <span class="text-[9px] uppercase font-bold text-slate-300">Keluar</span>
+              </div>
+              <p id="cardExpense" class="text-xs font-bold text-white">Rp 0</p>
+            </div>
+          </div>
         </div>
-      </section>
+      </div>
 
-      <section id="view-kegiatan" class="view-section">
-          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
-            <div>
-                <h2 class="text-2xl font-bold text-brand-primary">Kegiatan</h2>
-                <p class="text-xs text-slate-400">Agenda & Jadwal Organisasi</p>
-            </div>
-          </div>
-          <div id="actList" class="space-y-4 pb-20"></div>
-      </section>
-
-      <section id="view-keuangan" class="view-section">
-          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
-            <div>
-                <h2 class="text-2xl font-bold text-brand-primary">Laporan Kas</h2>
-                <p class="text-xs text-slate-400">Riwayat Iuran & Transaksi</p>
-            </div>
-            <div class="bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
-                <p class="text-[10px] font-bold text-blue-600 flex items-center gap-1">
-                    <span class="material-symbols-rounded text-sm">visibility</span> READ ONLY
-                </p>
-            </div>
-          </div>
-          
-          <div class="flex gap-2 mb-4 overflow-x-auto no-scrollbar pb-2">
-              <button onclick="filterFinance('all')" class="bg-brand-primary text-white px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap shadow-md">Semua</button>
-              <button onclick="filterFinance('income')" class="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">Pemasukan</button>
-              <button onclick="filterFinance('expense')" class="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">Pengeluaran</button>
-          </div>
-
-          <div id="finList" class="space-y-3 pb-20"></div>
-      </section>
-
-      <section id="view-anggota" class="view-section">
-          <div class="flex justify-between items-center mb-4 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
-            <div>
-                <h2 class="text-2xl font-bold text-brand-primary">Anggota</h2>
-                <p class="text-xs text-slate-400">Daftar teman organisasi</p>
-            </div>
-            <div id="onlineBadgeContainer" class="hidden text-[10px] bg-white border border-green-100 text-green-700 px-3 py-1.5 rounded-full font-bold flex items-center gap-1.5 shadow-sm">
-                <span class="relative flex h-2 w-2">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                </span>
-                <span id="onlineCountText">0 Online</span>
-            </div>
-          </div>
-          
-          <div id="memberList" class="grid grid-cols-3 sm:grid-cols-4 gap-4 pb-20"></div>
-      </section>
-
-      <section id="view-profile" class="view-section">
-        <div class="flex flex-col items-center pt-4 pb-20">
-            <div class="relative group cursor-pointer active:scale-95 transition-transform" onclick="$('profileUpload').click()">
-                <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl shadow-slate-200">
-                <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span class="material-symbols-rounded text-white">photo_camera</span>
-                </div>
-                <div class="absolute bottom-1 right-1 bg-accent p-1.5 rounded-full border-2 border-white shadow-sm">
-                    <span class="material-symbols-rounded text-white text-sm block">edit</span>
-                </div>
-            </div>
-            <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
-            
-            <h2 id="profileNameDisplay" class="text-xl font-bold text-brand-primary mt-4 mb-0.5">Nama Anggota</h2>
-            <div id="profileRoleBadge" class="px-3 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-extrabold uppercase tracking-wide mb-1">ANGGOTA</div>
-            <p id="profileEmailDisplay" class="text-sm text-slate-400">email@user.com</p>
-
-            <button onclick="showIdCard()" class="mt-3 text-[10px] font-bold bg-slate-800 text-white px-3 py-1.5 rounded-lg flex items-center gap-1 active:scale-95 shadow-lg">
-                <span class="material-symbols-rounded text-xs">badge</span> KARTU DIGITAL
-            </button>
-
-            <div class="w-full mt-8 space-y-4 px-1">
-                <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm space-y-4">
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">badge</span> Nama Lengkap</label>
-                        <input id="editName" type="text" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-accent focus:bg-white transition-all">
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">call</span> No. WhatsApp / HP</label>
-                        <input id="editPhone" type="tel" placeholder="08..." class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-accent focus:bg-white transition-all">
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">home_pin</span> Alamat Domisili</label>
-                        <textarea id="editAddress" rows="2" placeholder="Masukkan alamat lengkap..." class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-accent focus:bg-white transition-all resize-none"></textarea>
-                    </div>
-                     <div>
-                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">sticky_note_2</span> Bio / Catatan</label>
-                        <textarea id="editBio" rows="2" placeholder="Tulis sesuatu tentang anda..." class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-accent focus:bg-white transition-all resize-none"></textarea>
-                    </div>
-                </div>
-                
-                <button onclick="saveProfile()" class="w-full bg-brand-primary text-white py-4 rounded-2xl font-bold shadow-lg shadow-slate-300 hover:bg-slate-800 transition-all active:scale-95">SIMPAN PROFIL</button>
-                <button id="logoutBtn" class="w-full bg-red-50 text-red-500 py-4 rounded-2xl font-bold hover:bg-red-100 transition-all active:scale-95 flex items-center justify-center gap-2">
-                    <span class="material-symbols-rounded">logout</span> KELUAR
-                </button>
-            </div>
+      <div class="grid grid-cols-2 gap-3 mb-6">
+        <div onclick="switchView('kegiatan')" class="bg-white border border-slate-100 p-4 rounded-[1.5rem] flex flex-col items-center justify-center gap-2 shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer h-28 relative overflow-hidden">
+          <div class="absolute -right-4 -top-4 w-16 h-16 bg-blue-50 rounded-full opacity-50"></div>
+          <span class="material-symbols-rounded text-3xl text-blue-500">calendar_month</span>
+          <span class="text-xs font-bold text-brand-primary">Lihat Jadwal</span>
         </div>
-      </section>
+
+        <div onclick="switchView('voting')" class="bg-white border border-slate-100 p-4 rounded-[1.5rem] flex flex-col items-center justify-center gap-2 shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer h-28 relative overflow-hidden">
+          <div class="absolute -right-4 -top-4 w-16 h-16 bg-purple-50 rounded-full opacity-50"></div>
+          <span class="material-symbols-rounded text-3xl text-purple-500">how_to_vote</span>
+          <span class="text-xs font-bold text-brand-primary">Ikut Voting</span>
+        </div>
+
+        <div onclick="showIdCard()" class="bg-white border border-slate-100 p-4 rounded-[1.5rem] flex flex-col items-center justify-center gap-2 shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer h-28 relative overflow-hidden">
+          <div class="absolute -right-4 -top-4 w-16 h-16 bg-orange-50 rounded-full opacity-50"></div>
+          <span class="material-symbols-rounded text-3xl text-accent">badge</span>
+          <span class="text-xs font-bold text-brand-primary">Kartu Anggota</span>
+        </div>
+
+        <div onclick="switchView('keuangan')" class="bg-white border border-slate-100 p-4 rounded-[1.5rem] flex flex-col items-center justify-center gap-2 shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer h-28 relative overflow-hidden">
+          <div class="absolute -right-4 -top-4 w-16 h-16 bg-green-50 rounded-full opacity-50"></div>
+          <span class="material-symbols-rounded text-3xl text-green-600">receipt_long</span>
+          <span class="text-xs font-bold text-brand-primary">Cek Iuran</span>
+        </div>
+      </div>
+
+      <div class="mb-20">
+        <h3 class="text-sm font-bold text-brand-primary uppercase tracking-wide mb-3 px-1 flex items-center gap-2">
+          <span class="material-symbols-rounded text-accent">campaign</span>
+          Pengumuman
+        </h3>
+        <div id="homeNoticeList" class="space-y-3">
+          <p class="text-xs text-slate-400 italic px-2">Belum ada pengumuman.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- VOTING -->
+    <section id="view-voting" class="view-section">
+      <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
+        <div>
+          <h2 class="text-2xl font-bold text-brand-primary">E-Voting</h2>
+          <p class="text-xs text-slate-400">Suara anda menentukan masa depan</p>
+        </div>
+      </div>
+      <div id="votingList" class="space-y-6 pb-20">
+        <div class="animate-pulse space-y-4">
+          <div class="h-40 bg-slate-200 rounded-2xl w-full"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KEGIATAN -->
+    <section id="view-kegiatan" class="view-section">
+      <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
+        <div>
+          <h2 class="text-2xl font-bold text-brand-primary">Kegiatan</h2>
+          <p class="text-xs text-slate-400">Agenda & Jadwal Organisasi</p>
+        </div>
+      </div>
+      <div id="actList" class="space-y-4 pb-20"></div>
+    </section>
+
+    <!-- KEUANGAN -->
+    <section id="view-keuangan" class="view-section">
+      <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
+        <div>
+          <h2 class="text-2xl font-bold text-brand-primary">Laporan Kas</h2>
+          <p class="text-xs text-slate-400">Riwayat Iuran & Transaksi</p>
+        </div>
+        <div class="bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
+          <p class="text-[10px] font-bold text-blue-600 flex items-center gap-1">
+            <span class="material-symbols-rounded text-sm">visibility</span> READ ONLY
+          </p>
+        </div>
+      </div>
+
+      <div class="flex gap-2 mb-4 overflow-x-auto no-scrollbar pb-2">
+        <button onclick="filterFinance('all')" class="bg-brand-primary text-white px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap shadow-md">Semua</button>
+        <button onclick="filterFinance('income')" class="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">Pemasukan</button>
+        <button onclick="filterFinance('expense')" class="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">Pengeluaran</button>
+      </div>
+
+      <div id="finList" class="space-y-3 pb-20"></div>
+    </section>
+
+    <!-- ANGGOTA -->
+    <section id="view-anggota" class="view-section">
+      <div class="flex justify-between items-center mb-4 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
+        <div>
+          <h2 class="text-2xl font-bold text-brand-primary">Anggota</h2>
+          <p class="text-xs text-slate-400">Daftar teman organisasi</p>
+        </div>
+        <div id="onlineBadgeContainer" class="hidden text-[10px] bg-white border border-green-100 text-green-700 px-3 py-1.5 rounded-full font-bold flex items-center gap-1.5 shadow-sm">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+          </span>
+          <span id="onlineCountText">0 Online</span>
+        </div>
+      </div>
+
+      <div id="memberList" class="grid grid-cols-3 sm:grid-cols-4 gap-4 pb-20"></div>
+    </section>
+
+    <!-- PROFILE -->
+    <section id="view-profile" class="view-section">
+      <div class="flex flex-col items-center pt-4 pb-20">
+        <div class="relative group cursor-pointer active:scale-95 transition-transform" onclick="$('profileUpload').click()">
+          <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl shadow-slate-200">
+          <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <span class="material-symbols-rounded text-white">photo_camera</span>
+          </div>
+          <div class="absolute bottom-1 right-1 bg-accent p-1.5 rounded-full border-2 border-white shadow-sm">
+            <span class="material-symbols-rounded text-white text-sm block">edit</span>
+          </div>
+        </div>
+        <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
+
+        <h2 id="profileNameDisplay" class="text-xl font-bold text-brand-primary mt-4 mb-0.5">Nama Anggota</h2>
+        <div id="profileRoleBadge" class="px-3 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-extrabold uppercase tracking-wide mb-1">ANGGOTA</div>
+        <p id="profileEmailDisplay" class="text-sm text-slate-400">email@user.com</p>
+
+        <button onclick="showIdCard()" class="mt-3 text-[10px] font-bold bg-slate-800 text-white px-3 py-1.5 rounded-lg flex items-center gap-1 active:scale-95 shadow-lg">
+          <span class="material-symbols-rounded text-xs">badge</span> KARTU DIGITAL
+        </button>
+
+        <div class="w-full mt-8 space-y-4 px-1">
+          <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm space-y-4">
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">badge</span> Nama Lengkap</label>
+              <input id="editName" type="text" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-accent focus:bg-white transition-all">
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">call</span> No. WhatsApp / HP</label>
+              <input id="editPhone" type="tel" placeholder="08..." class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-accent focus:bg-white transition-all">
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">home_pin</span> Alamat Domisili</label>
+              <textarea id="editAddress" rows="2" placeholder="Masukkan alamat lengkap..." class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-accent focus:bg-white transition-all resize-none"></textarea>
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">sticky_note_2</span> Bio / Catatan</label>
+              <textarea id="editBio" rows="2" placeholder="Tulis sesuatu tentang anda..." class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-accent focus:bg-white transition-all resize-none"></textarea>
+            </div>
+          </div>
+
+          <button onclick="saveProfile(event)" class="w-full bg-brand-primary text-white py-4 rounded-2xl font-bold shadow-lg shadow-slate-300 hover:bg-slate-800 transition-all active:scale-95">SIMPAN PROFIL</button>
+          <button id="logoutBtn" class="w-full bg-red-50 text-red-500 py-4 rounded-2xl font-bold hover:bg-red-100 transition-all active:scale-95 flex items-center justify-center gap-2">
+            <span class="material-symbols-rounded">logout</span> KELUAR
+          </button>
+        </div>
+      </div>
+    </section>
 
   </main>
 
   <nav class="fixed bottom-0 w-full glass-nav pb-6 pt-2 px-4 z-50 rounded-t-[2rem]">
-      <div class="flex justify-between items-center max-w-sm mx-auto">
-          <button onclick="switchView('home')" class="nav-btn active flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="home">
-              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">grid_view</span>
-              <p class="text-[10px] font-medium text-slate-400 transition-colors">Home</p>
-          </button>
-          
-          <button onclick="switchView('kegiatan')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="kegiatan">
-              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">event_note</span>
-              <p class="text-[10px] font-medium text-slate-400 transition-colors">Acara</p>
-          </button>
+    <div class="flex justify-between items-center max-w-sm mx-auto">
+      <button onclick="switchView('home')" class="nav-btn active flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="home">
+        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">grid_view</span>
+        <p class="text-[10px] font-medium text-slate-400 transition-colors">Home</p>
+      </button>
 
-          <div class="relative -top-6">
-            <button onclick="switchView('profile')" class="nav-btn w-14 h-14 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-xl shadow-slate-400 hover:scale-105 active:scale-95 transition-all ring-4 ring-white" data-target="profile">
-                <span class="material-symbols-rounded text-3xl">person</span>
-            </button>
-          </div>
+      <button onclick="switchView('kegiatan')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="kegiatan">
+        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">event_note</span>
+        <p class="text-[10px] font-medium text-slate-400 transition-colors">Acara</p>
+      </button>
 
-          <button onclick="switchView('keuangan')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="keuangan">
-              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">account_balance_wallet</span>
-              <p class="text-[10px] font-medium text-slate-400 transition-colors">Kas</p>
-          </button>
-
-          <button onclick="switchView('anggota')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="anggota">
-              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">groups</span>
-              <p class="text-[10px] font-medium text-slate-400 transition-colors">Grup</p>
-          </button>
+      <div class="relative -top-6">
+        <button onclick="switchView('profile')" class="nav-btn w-14 h-14 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-xl shadow-slate-400 hover:scale-105 active:scale-95 transition-all ring-4 ring-white" data-target="profile">
+          <span class="material-symbols-rounded text-3xl">person</span>
+        </button>
       </div>
+
+      <button onclick="switchView('keuangan')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="keuangan">
+        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">account_balance_wallet</span>
+        <p class="text-[10px] font-medium text-slate-400 transition-colors">Kas</p>
+      </button>
+
+      <button onclick="switchView('anggota')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="anggota">
+        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">groups</span>
+        <p class="text-[10px] font-medium text-slate-400 transition-colors">Grup</p>
+      </button>
+    </div>
   </nav>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc, collection, getDocs, query, where, orderBy, limit, serverTimestamp, arrayUnion, increment } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import {
+      getFirestore, doc, getDoc, updateDoc, collection, getDocs,
+      query, where, orderBy, limit, serverTimestamp, arrayUnion
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
@@ -371,516 +379,565 @@
       messagingSenderId: "1017734829960",
       appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d"
     };
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const CLOUD_NAME = "dbxktcwug";
-    const PRESET = "Karteji"; 
-
     window.$ = (id) => document.getElementById(id);
-    let ME_UID = null;
-    let ME_DATA = null; 
-    let newProfileFile = null;
-    const fmtIDR = (n) => Number(n||0).toLocaleString("id-ID");
 
-    // --- UX UTILS ---
+    let ME_UID = null;
+    let ME_DATA = null;
+    let newProfileFile = null;
+
+    const fmtIDR = (n) => Number(n || 0).toLocaleString("id-ID");
+
+    // ---------------- UX ----------------
     window.showToast = (msg, type = 'success') => {
-        const container = $('toastContainer');
-        const el = document.createElement('div');
-        const color = type === 'error' ? 'bg-red-500' : 'bg-slate-800';
-        const icon = type === 'error' ? 'error' : 'check_circle';
-        
-        el.className = `${color} text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 animate-slide-in-top pointer-events-auto min-w-[200px] backdrop-blur-sm bg-opacity-90`;
-        el.innerHTML = `
-            <span class="material-symbols-rounded text-lg">${icon}</span>
-            <span class="text-xs font-bold">${msg}</span>
-        `;
-        container.appendChild(el);
-        setTimeout(() => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(-20px)';
-            el.style.transition = 'all 0.3s';
-            setTimeout(() => el.remove(), 300);
-        }, 3000);
+      const container = $('toastContainer');
+      const el = document.createElement('div');
+      const color = type === 'error' ? 'bg-red-500' : 'bg-slate-800';
+      const icon = type === 'error' ? 'error' : 'check_circle';
+      el.className = `${color} text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 animate-slide-in-top pointer-events-auto min-w-[200px] backdrop-blur-sm bg-opacity-90`;
+      el.innerHTML = `<span class="material-symbols-rounded text-lg">${icon}</span><span class="text-xs font-bold">${msg}</span>`;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(-20px)';
+        el.style.transition = 'all 0.3s';
+        setTimeout(() => el.remove(), 300);
+      }, 2500);
     };
 
     function animateValue(obj, start, end, duration) {
-        if(!obj) return;
-        let startTimestamp = null;
-        const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            obj.innerHTML = "Rp " + Math.floor(progress * (end - start) + start).toLocaleString('id-ID');
-            if (progress < 1) { window.requestAnimationFrame(step); }
-        };
-        window.requestAnimationFrame(step);
+      if (!obj) return;
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        obj.innerHTML = "Rp " + Math.floor(progress * (end - start) + start).toLocaleString('id-ID');
+        if (progress < 1) window.requestAnimationFrame(step);
+      };
+      window.requestAnimationFrame(step);
     }
 
     window.toggleLoader = (show) => {
-        const l = $("globalLoader");
-        if(show) { l.classList.remove('hidden'); l.classList.add('flex'); }
-        else { l.classList.add('hidden'); l.classList.remove('flex'); }
+      const l = $("globalLoader");
+      if (show) { l.classList.remove('hidden'); l.classList.add('flex'); }
+      else { l.classList.add('hidden'); l.classList.remove('flex'); }
     };
 
     window.closeModal = () => $("crudModal").classList.add('hidden');
     window.showModal = (title, bodyHtml, onSave) => {
-        $("modalTitle").textContent = title;
-        $("modalBody").innerHTML = bodyHtml;
-        $("crudModal").classList.remove('hidden');
-        $("crudModal").classList.add('flex');
-        const btn = $("modalSubmitBtn");
-        const newBtn = btn.cloneNode(true);
-        btn.parentNode.replaceChild(newBtn, btn);
-        newBtn.onclick = onSave;
-        if (!onSave) newBtn.style.display = 'none'; 
-        else newBtn.style.display = 'block';
+      $("modalTitle").textContent = title;
+      $("modalBody").innerHTML = bodyHtml;
+      $("crudModal").classList.remove('hidden');
+      $("crudModal").classList.add('flex');
+
+      const btn = $("modalSubmitBtn");
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+      newBtn.onclick = onSave;
+      newBtn.style.display = onSave ? 'block' : 'none';
     };
 
     window.switchView = (viewId) => {
-        document.querySelectorAll('.view-section').forEach(el => {
-            el.classList.remove('active');
-            setTimeout(() => { if(!el.classList.contains('active')) el.style.display = 'none'; }, 200);
-        });
-        
-        setTimeout(() => {
-            const target = $(`view-${viewId}`);
-            target.style.display = 'block';
-            setTimeout(() => target.classList.add('active'), 20);
-        }, 200);
+      document.querySelectorAll('.view-section').forEach(el => {
+        el.classList.remove('active');
+        setTimeout(() => { if (!el.classList.contains('active')) el.style.display = 'none'; }, 200);
+      });
 
-        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-        const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`);
-        if(activeBtn) activeBtn.classList.add('active');
-        
-        if(viewId === 'home') refreshAll();
-        if(viewId === 'profile') loadProfileData();
-        if(viewId === 'voting') loadPolls();
+      setTimeout(() => {
+        const target = $(`view-${viewId}`);
+        target.style.display = 'block';
+        setTimeout(() => target.classList.add('active'), 20);
+      }, 200);
+
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      if (viewId === 'home') refreshAll();
+      if (viewId === 'profile') loadProfileData();
+      if (viewId === 'voting') loadPolls();
+      if (viewId === 'kegiatan') loadActivities();
+      if (viewId === 'keuangan') loadFinance();
+      if (viewId === 'anggota') loadMembers();
     };
 
-    // --- ID CARD FEATURE ---
+    // ---------------- ID CARD ----------------
     window.showIdCard = async () => {
-        toggleLoader(true);
-        try {
-            const u = ME_DATA || (await getDoc(doc(db, "users", ME_UID))).data();
-            const html = `
-                <div class="bg-gradient-to-br from-slate-800 to-black text-white p-4 rounded-xl relative overflow-hidden shadow-xl border border-slate-600 transition-all hover:scale-105 duration-300">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
-                    <div class="flex justify-between items-start">
-                        <img src="https://via.placeholder.com/40" class="w-8 h-8 rounded mb-2"> 
-                        <span class="text-[10px] font-bold tracking-widest bg-white/20 px-2 py-0.5 rounded">KARTEJI</span>
-                    </div>
-                    <div class="flex gap-4 items-center mt-2">
-                         <img src="${u.photo?.url || 'https://via.placeholder.com/150'}" class="w-16 h-16 rounded-lg object-cover bg-slate-700 border border-slate-500">
-                         <div>
-                            <h3 class="text-lg font-bold leading-none">${u.name || 'Nama Anggota'}</h3>
-                            <p class="text-[10px] text-slate-400 mt-1 uppercase">${u.role || 'Anggota'}</p>
-                            <p class="text-[9px] text-slate-500 mt-0.5 font-mono">${ME_UID.substring(0,8).toUpperCase()}</p>
-                         </div>
-                    </div>
-                    <div class="mt-4 pt-2 border-t border-white/10 flex justify-between items-end">
-                         <div>
-                            <p class="text-[8px] text-slate-400">Bergabung Sejak</p>
-                            <p class="text-[10px] font-bold">2025</p>
-                         </div>
-                         <div class="text-right">
-                             <div class="w-24 h-6 bg-white/20 rounded-sm mb-1 flex items-center justify-center overflow-hidden">
-                                <div class="w-full h-1 bg-white/30"></div>
-                             </div> 
-                         </div>
-                    </div>
-                </div>
-                <p class="text-center text-xs text-slate-400 mt-4">Tunjukkan kartu ini saat kegiatan.</p>
-            `;
-            showModal("Kartu Anggota Digital", html, null);
-        } catch(e) { console.error(e); }
-        finally { toggleLoader(false); }
-    }
+      toggleLoader(true);
+      try {
+        const u = ME_DATA || (await getDoc(doc(db, "users", ME_UID))).data();
+        const html = `
+          <div class="bg-gradient-to-br from-slate-800 to-black text-white p-4 rounded-xl relative overflow-hidden shadow-xl border border-slate-600">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+            <div class="flex justify-between items-start">
+              <div class="w-8 h-8 rounded bg-white/10 flex items-center justify-center">
+                <span class="material-symbols-rounded">groups</span>
+              </div>
+              <span class="text-[10px] font-bold tracking-widest bg-white/20 px-2 py-0.5 rounded">KARTEJI</span>
+            </div>
+            <div class="flex gap-4 items-center mt-4">
+              <img src="${u.photo?.url || 'https://via.placeholder.com/150'}" class="w-16 h-16 rounded-lg object-cover bg-slate-700 border border-slate-500">
+              <div>
+                <h3 class="text-lg font-bold leading-none">${u.name || 'Nama Anggota'}</h3>
+                <p class="text-[10px] text-slate-400 mt-1 uppercase">${u.role || 'anggota'}</p>
+                <p class="text-[9px] text-slate-500 mt-0.5 font-mono">ID: ${ME_UID.substring(0,8).toUpperCase()}</p>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/10 flex justify-between items-end">
+              <p class="text-[9px] text-slate-400">Kartu ini valid selama akun aktif.</p>
+              <span class="text-[9px] text-slate-500">${new Date().toLocaleDateString('id-ID')}</span>
+            </div>
+          </div>
+          <p class="text-center text-xs text-slate-400 mt-4">Tunjukkan kartu ini saat kegiatan.</p>
+        `;
+        showModal("Kartu Anggota Digital", html, null);
+      } finally {
+        toggleLoader(false);
+      }
+    };
 
+    // ---------------- CLOUDINARY UPLOAD (OPSIONAL) ----------------
+    const CLOUD_NAME = "dbxktcwug";
+    const PRESET = "Karteji";
     async function upload(file) {
-        if(!file) return null;
-        if(!file.type.startsWith('image/')){ showToast("File harus gambar!", "error"); return null; }
-
-        const fd = new FormData();
-        fd.append("file", file);
-        fd.append("upload_preset", PRESET);
-
-        try {
-            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{ method:"POST", body:fd });
-            const data = await res.json();
-            if(data.error) throw new Error(data.error.message);
-            return { url:data.secure_url };
-        } catch(e) {
-            console.error(e);
-            showToast("Gagal Upload Gambar", "error");
-            throw e;
-        }
+      if (!file) return null;
+      if (!file.type.startsWith('image/')) { showToast("File harus gambar!", "error"); return null; }
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("upload_preset", PRESET);
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: "POST", body: fd });
+      const data = await res.json();
+      if (data?.error) throw new Error(data.error.message);
+      return { url: data.secure_url };
     }
 
-    // --- HEARTBEAT & AUTH ---
+    // ---------------- AUTH & PRESENCE ----------------
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
-          $("gate").classList.remove("hidden");
-          $("gate").classList.add("flex");
-          toggleLoader(false);
-          return;
+        $("gate").classList.remove("hidden");
+        $("gate").classList.add("flex");
+        toggleLoader(false);
+        return;
       }
-      
+
+      toggleLoader(true);
       ME_UID = user.uid;
+
       const snap = await getDoc(doc(db, "users", user.uid));
-      if (!snap.exists()) { showToast("User tidak ditemukan", "error"); return; }
+      if (!snap.exists()) { showToast("User tidak ditemukan", "error"); toggleLoader(false); return; }
 
       ME_DATA = snap.data();
-      toggleLoader(false);
-      
+
       const pUrl = ME_DATA.photo?.url || "https://via.placeholder.com/150";
       $("headerName").textContent = ME_DATA.name || "Anggota";
       $("headerPhoto").src = pUrl;
-      
-      refreshAll();
-      loadProfileData();
-      
-      // Heartbeat: Update 'lastSeen' immediately then every 60s
-      const updatePresence = () => updateDoc(doc(db, "users", ME_UID), { lastSeen: serverTimestamp() });
+
+      // heartbeat lastSeen
+      const updatePresence = () => updateDoc(doc(db, "users", ME_UID), { lastSeen: serverTimestamp() }).catch(()=>{});
       updatePresence();
       setInterval(updatePresence, 60000);
+
+      await refreshAll();
+      await loadProfileData();
+
+      toggleLoader(false);
     });
 
     window.refreshAll = async () => {
-        showToast("Sinkronisasi data...");
-        await Promise.all([
-            loadActivities(), 
-            loadNotifications(), 
-            loadFinance(), 
-            loadMembers(),
-            loadArisanWinner()
-        ]);
-    }
+      showToast("Sinkronisasi data...");
+      await Promise.all([
+        loadActivities(),
+        loadNotifications(),
+        loadFinance(),
+        loadMembers(),
+        loadArisanWinner()
+      ]);
+    };
 
+    // ---------------- ARISAN (PAKAI arisan_history) ----------------
     async function loadArisanWinner() {
-        try {
-            const q = query(collection(db, "arisan"), orderBy("date", "desc"), limit(1));
-            const snap = await getDocs(q);
-            if(!snap.empty) {
-                const data = snap.docs[0].data();
-                $("arisanWidget").classList.remove("hidden");
-                $("arisanName").textContent = data.winnerName || "Belum Ada";
-                $("arisanPhoto").src = data.winnerPhoto || "https://via.placeholder.com/100";
-                
-                const date = data.date ? new Date(data.date.seconds * 1000) : new Date();
-                $("arisanDate").textContent = "Pemenang Periode " + date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
-            } else {
-                $("arisanWidget").classList.add("hidden");
-            }
-        } catch(e) {
-            $("arisanWidget").classList.add("hidden");
+      try {
+        const qy = query(collection(db, "arisan_history"), orderBy("createdAt", "desc"), limit(1));
+        const snap = await getDocs(qy);
+
+        if (!snap.empty) {
+          const data = snap.docs[0].data();
+          $("arisanWidget").classList.remove("hidden");
+          $("arisanName").textContent = data.name || "Belum Ada";
+          $("arisanPhoto").src = data.photo || "https://via.placeholder.com/100";
+          const dt = data.createdAt?.seconds ? new Date(data.createdAt.seconds * 1000) : new Date();
+          $("arisanDate").textContent = "Pemenang Periode " + dt.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+        } else {
+          $("arisanWidget").classList.add("hidden");
         }
+      } catch (e) {
+        $("arisanWidget").classList.add("hidden");
+      }
     }
 
-    // --- VOTING ---
+    // ---------------- VOTING ----------------
     window.loadPolls = async () => {
-        const list = $("votingList");
-        list.innerHTML = `<div class="flex justify-center py-10"><div class="w-8 h-8 border-4 border-slate-200 border-t-purple-500 rounded-full animate-spin"></div></div>`;
-        
-        try {
-            const q = query(collection(db, "polls"), where("status", "==", "active"), orderBy("createdAt", "desc"));
-            const snap = await getDocs(q);
-            list.innerHTML = "";
+      const list = $("votingList");
+      list.innerHTML = `<div class="flex justify-center py-10"><div class="w-8 h-8 border-4 border-slate-200 border-t-purple-500 rounded-full animate-spin"></div></div>`;
 
-            if (snap.empty) {
-                list.innerHTML = `
-                    <div class="text-center py-10 bg-white rounded-3xl border border-slate-100">
-                        <span class="material-symbols-rounded text-4xl text-slate-300 mb-2">how_to_vote</span>
-                        <p class="text-slate-500 font-bold text-sm">Tidak ada voting aktif.</p>
-                        <p class="text-xs text-slate-400 mt-1">Kembali lagi nanti ya!</p>
-                    </div>`;
-                return;
-            }
+      try {
+        // voting aktif
+        const qy = query(collection(db, "polls"), where("status", "==", "active"));
+        const snap = await getDocs(qy);
 
-            snap.forEach(docSnap => {
-                const poll = docSnap.data();
-                const pid = docSnap.id;
-                const hasVoted = poll.voters && poll.voters.includes(ME_UID);
-                const totalVotes = poll.options.reduce((acc, curr) => acc + (curr.count || 0), 0);
+        // manual sort (createdAt desc)
+        const polls = [];
+        snap.forEach(d => polls.push({ id: d.id, ...d.data() }));
+        polls.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
 
-                let optionsHtml = '';
-                poll.options.forEach((opt, idx) => {
-                    if (hasVoted) {
-                        const percent = totalVotes === 0 ? 0 : Math.round(((opt.count || 0) / totalVotes) * 100);
-                        optionsHtml += `
-                            <div class="mb-3">
-                                <div class="flex justify-between text-xs font-bold mb-1 text-slate-600">
-                                    <span>${opt.text}</span>
-                                    <span>${percent}% (${opt.count || 0})</span>
-                                </div>
-                                <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
-                                    <div class="bg-purple-500 h-3 rounded-full progress-bar" style="width: ${percent}%"></div>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        optionsHtml += `
-                            <button onclick="submitVote('${pid}', ${idx})" class="w-full text-left p-3 rounded-xl border border-slate-200 mb-2 hover:border-purple-500 hover:bg-purple-50 transition-all flex items-center justify-between group">
-                                <span class="font-bold text-sm text-slate-700 group-hover:text-purple-700">${opt.text}</span>
-                                <span class="material-symbols-rounded text-slate-300 group-hover:text-purple-500">radio_button_unchecked</span>
-                            </button>
-                        `;
-                    }
-                });
-
-                list.innerHTML += `
-                    <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden">
-                         ${hasVoted ? '<div class="absolute top-0 right-0 bg-green-100 text-green-700 text-[9px] font-bold px-3 py-1 rounded-bl-xl">SUDAH MEMILIH</div>' : ''}
-                        <h3 class="font-bold text-lg text-brand-primary mb-2">${poll.title}</h3>
-                        <p class="text-xs text-slate-400 mb-4">${poll.description || 'Silakan pilih salah satu opsi di bawah.'}</p>
-                        <div class="space-y-1">
-                            ${optionsHtml}
-                        </div>
-                    </div>
-                `;
-            });
-        } catch (e) {
-            list.innerHTML = `<p class="text-center text-red-500 text-xs">Gagal memuat voting.</p>`;
+        list.innerHTML = "";
+        if (!polls.length) {
+          list.innerHTML = `
+            <div class="text-center py-10 bg-white rounded-3xl border border-slate-100">
+              <span class="material-symbols-rounded text-4xl text-slate-300 mb-2">how_to_vote</span>
+              <p class="text-slate-500 font-bold text-sm">Tidak ada voting aktif.</p>
+              <p class="text-xs text-slate-400 mt-1">Kembali lagi nanti ya!</p>
+            </div>`;
+          return;
         }
+
+        polls.forEach(poll => {
+          const pid = poll.id;
+          const hasVoted = poll.voters && poll.voters.includes(ME_UID);
+          const totalVotes = (poll.options || []).reduce((acc, curr) => acc + (curr.count || 0), 0);
+
+          let optionsHtml = '';
+          (poll.options || []).forEach((opt, idx) => {
+            if (hasVoted) {
+              const percent = totalVotes === 0 ? 0 : Math.round(((opt.count || 0) / totalVotes) * 100);
+              optionsHtml += `
+                <div class="mb-3">
+                  <div class="flex justify-between text-xs font-bold mb-1 text-slate-600">
+                    <span>${opt.text}</span>
+                    <span>${percent}% (${opt.count || 0})</span>
+                  </div>
+                  <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                    <div class="bg-purple-500 h-3 rounded-full progress-bar" style="width:${percent}%"></div>
+                  </div>
+                </div>
+              `;
+            } else {
+              optionsHtml += `
+                <button onclick="submitVote('${pid}', ${idx})" class="w-full text-left p-3 rounded-xl border border-slate-200 mb-2 hover:border-purple-500 hover:bg-purple-50 transition-all flex items-center justify-between group">
+                  <span class="font-bold text-sm text-slate-700 group-hover:text-purple-700">${opt.text}</span>
+                  <span class="material-symbols-rounded text-slate-300 group-hover:text-purple-500">radio_button_unchecked</span>
+                </button>
+              `;
+            }
+          });
+
+          list.innerHTML += `
+            <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden">
+              ${hasVoted ? '<div class="absolute top-0 right-0 bg-green-100 text-green-700 text-[9px] font-bold px-3 py-1 rounded-bl-xl">SUDAH MEMILIH</div>' : ''}
+              <h3 class="font-bold text-lg text-brand-primary mb-2">${poll.title || 'Voting'}</h3>
+              <p class="text-xs text-slate-400 mb-4">${poll.description || 'Silakan pilih salah satu opsi di bawah.'}</p>
+              <div class="space-y-1">${optionsHtml}</div>
+            </div>
+          `;
+        });
+      } catch (e) {
+        list.innerHTML = `<p class="text-center text-red-500 text-xs">Gagal memuat voting.</p>`;
+      }
     };
 
     window.submitVote = async (pollId, optionIdx) => {
-        if(!confirm("Yakin dengan pilihan anda?")) return;
-        toggleLoader(true);
-        try {
-            const pollRef = doc(db, "polls", pollId);
-            const pSnap = await getDoc(pollRef);
-            if(!pSnap.exists()) throw new Error("Poll hilang");
-            
-            const pData = pSnap.data();
-            if(pData.voters && pData.voters.includes(ME_UID)) throw new Error("Sudah memilih!");
+      if (!confirm("Yakin dengan pilihan anda?")) return;
+      toggleLoader(true);
+      try {
+        const pollRef = doc(db, "polls", pollId);
+        const pSnap = await getDoc(pollRef);
+        if (!pSnap.exists()) throw new Error("Poll hilang");
 
-            const newOptions = [...pData.options];
-            newOptions[optionIdx].count = (newOptions[optionIdx].count || 0) + 1;
+        const pData = pSnap.data();
+        if (pData.voters && pData.voters.includes(ME_UID)) throw new Error("Sudah memilih!");
 
-            await updateDoc(pollRef, {
-                options: newOptions,
-                voters: arrayUnion(ME_UID)
-            });
+        const newOptions = [...(pData.options || [])];
+        if (!newOptions[optionIdx]) throw new Error("Opsi tidak valid");
+        newOptions[optionIdx].count = (newOptions[optionIdx].count || 0) + 1;
 
-            showToast("Suara berhasil direkam!");
-            loadPolls(); 
-        } catch(e) {
-            showToast(e.message || "Gagal voting", "error");
-        } finally {
-            toggleLoader(false);
-        }
-    }
+        await updateDoc(pollRef, { options: newOptions, voters: arrayUnion(ME_UID) });
+        showToast("Suara berhasil direkam!");
+        loadPolls();
+      } catch (e) {
+        showToast(e.message || "Gagal voting", "error");
+      } finally {
+        toggleLoader(false);
+      }
+    };
 
+    // ---------------- PROFILE ----------------
     async function loadProfileData() {
-        try {
-            const snap = await getDoc(doc(db, "users", ME_UID));
-            if(snap.exists()){
-                const d = snap.data();
-                $("headerName").textContent = d.name || "Anggota";
-                $("headerPhoto").src = d.photo?.url || "https://via.placeholder.com/150";
-                
-                $("profileImage").src = d.photo?.url || "https://via.placeholder.com/150";
-                $("profileNameDisplay").textContent = d.name;
-                $("profileEmailDisplay").textContent = d.email;
-                
-                $("editName").value = d.name || "";
-                $("editPhone").value = d.phone || "";
-                $("editAddress").value = d.address || "";
-                $("editBio").value = d.bio || "";
-            }
-        } catch(e) { console.error(e); }
+      try {
+        const snap = await getDoc(doc(db, "users", ME_UID));
+        if (snap.exists()) {
+          const d = snap.data();
+          $("headerName").textContent = d.name || "Anggota";
+          $("headerPhoto").src = d.photo?.url || "https://via.placeholder.com/150";
+
+          $("profileImage").src = d.photo?.url || "https://via.placeholder.com/150";
+          $("profileNameDisplay").textContent = d.name || "-";
+          $("profileEmailDisplay").textContent = d.email || "-";
+
+          $("editName").value = d.name || "";
+          $("editPhone").value = d.phone || "";
+          $("editAddress").value = d.address || "";
+          $("editBio").value = d.bio || "";
+        }
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     window.previewProfileImage = (input) => {
-        if (input.files && input.files[0]) {
-            newProfileFile = input.files[0];
-            const reader = new FileReader();
-            reader.onload = (e) => $("profileImage").src = e.target.result;
-            reader.readAsDataURL(input.files[0]);
+      if (input.files && input.files[0]) {
+        newProfileFile = input.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => $("profileImage").src = e.target.result;
+        reader.readAsDataURL(input.files[0]);
+      }
+    };
+
+    window.saveProfile = async (ev) => {
+      const btn = ev?.target;
+      if (btn) { btn.innerText = "MENYIMPAN..."; btn.disabled = true; }
+
+      toggleLoader(true);
+      try {
+        const updateData = {
+          name: $("editName").value,
+          phone: $("editPhone").value,
+          address: $("editAddress").value,
+          bio: $("editBio").value
+        };
+
+        if (newProfileFile) {
+          const uploaded = await upload(newProfileFile);
+          updateData.photo = uploaded;
         }
-    }
 
-    window.saveProfile = async () => {
-        const btn = event.target;
-        btn.innerText = "MENYIMPAN...";
-        btn.disabled = true;
+        await updateDoc(doc(db, "users", ME_UID), updateData);
+        showToast("Profil berhasil diperbarui!");
+        await loadProfileData();
+      } catch (e) {
+        console.error(e);
+        showToast("Gagal update profil", "error");
+      } finally {
+        toggleLoader(false);
+        if (btn) { btn.innerText = "SIMPAN PROFIL"; btn.disabled = false; }
+      }
+    };
 
-        toggleLoader(true);
-        try {
-            let updateData = { 
-                name: $("editName").value,
-                phone: $("editPhone").value,
-                address: $("editAddress").value,
-                bio: $("editBio").value
-            };
-            
-            if(newProfileFile) {
-                const uploaded = await upload(newProfileFile);
-                updateData.photo = uploaded;
-            }
-            await updateDoc(doc(db, "users", ME_UID), updateData);
-            showToast("Profil berhasil diperbarui!");
-            await loadProfileData();
-        } catch(e) { console.error(e); showToast("Gagal update profil", "error"); }
-        finally { 
-            toggleLoader(false); 
-            btn.innerText = "SIMPAN PROFIL";
-            btn.disabled = false;
-        }
-    }
-
+    // ---------------- KEGIATAN (TAMPILKAN SEMUA INPUT PENGURUS) ----------------
     async function loadActivities() {
       const list = $("actList");
-      const snap = await getDocs(query(collection(db, "activities"), where("status","==","approved"), orderBy("createdAt","desc")));
-      list.innerHTML = "";
-      if(snap.empty) { list.innerHTML = `<p class="text-center text-xs text-slate-400 py-10">Belum ada kegiatan.</p>`; return; }
-      
-      snap.forEach(d => {
-        const x = d.data();
-        list.innerHTML += `
-          <div class="bg-white border border-slate-100 rounded-[1.5rem] overflow-hidden shadow-sm hover:shadow-md transition-all group">
+      list.innerHTML = `<div class="flex justify-center py-8"><div class="w-8 h-8 border-4 border-slate-200 border-t-blue-500 rounded-full animate-spin"></div></div>`;
+      try {
+        // ✅ tampilkan semua (tanpa filter status)
+        const snap = await getDocs(collection(db, "activities"));
+        const rows = [];
+        snap.forEach(d => rows.push({ id: d.id, ...d.data() }));
+
+        // sort terbaru
+        rows.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+
+        list.innerHTML = "";
+        if (!rows.length) {
+          list.innerHTML = `<p class="text-center text-xs text-slate-400 py-10">Belum ada kegiatan.</p>`;
+          return;
+        }
+
+        rows.forEach(x => {
+          list.innerHTML += `
+            <div class="bg-white border border-slate-100 rounded-[1.5rem] overflow-hidden shadow-sm hover:shadow-md transition-all group">
               ${x.cover?.url ? `<div class="h-36 w-full overflow-hidden"><img src="${x.cover.url}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div>` : ''}
               <div class="p-5">
-                  <span class="text-[10px] text-blue-600 font-bold uppercase tracking-wider bg-blue-50 px-2 py-1 rounded-md mb-2 inline-block">${x.date || 'Segera'}</span>
-                  <h4 class="font-bold text-lg text-brand-primary leading-tight">${x.title}</h4>
-                  <p class="text-[11px] text-slate-400 mt-2 flex items-center gap-1 font-medium"><span class="material-symbols-rounded text-sm">location_on</span> ${x.location || '-'}</p>
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-[10px] text-blue-600 font-bold uppercase tracking-wider bg-blue-50 px-2 py-1 rounded-md inline-block">
+                    ${x.date || 'Tanpa Tanggal'}
+                  </span>
+                  ${x.status ? `<span class="text-[9px] font-bold px-2 py-1 rounded bg-slate-100 text-slate-600 uppercase">${x.status}</span>` : ''}
+                </div>
+                <h4 class="font-bold text-lg text-brand-primary leading-tight mt-2">${x.title || 'Kegiatan'}</h4>
+                <p class="text-[11px] text-slate-400 mt-2 flex items-center gap-1 font-medium">
+                  <span class="material-symbols-rounded text-sm">location_on</span> ${x.location || '-'}
+                </p>
               </div>
+            </div>
+          `;
+        });
+      } catch (e) {
+        console.error(e);
+        list.innerHTML = `<p class="text-center text-xs text-red-500 py-10">Gagal memuat kegiatan.</p>`;
+      }
+    }
+
+    // ---------------- PENGUMUMAN (TAMPILKAN INPUT PENGURUS) ----------------
+    async function loadNotifications() {
+      const list = $("homeNoticeList");
+      try {
+        // tetap limit 3 di home
+        const snap = await getDocs(query(collection(db, "notifications"), orderBy("createdAt","desc"), limit(3)));
+        list.innerHTML = "";
+
+        if (snap.empty) {
+          list.innerHTML = `<p class="text-xs text-slate-400 italic">Tidak ada info baru.</p>`;
+          return;
+        }
+
+        snap.forEach(d => {
+          const x = d.data();
+          list.innerHTML += `
+            <div class="bg-white border border-slate-100 p-4 rounded-2xl border-l-4 ${x.level==='important'?'border-red-500':'border-accent'} shadow-sm">
+              <h4 class="font-bold text-xs uppercase text-brand-primary mb-1">${x.title || 'Pengumuman'}</h4>
+              <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">${x.body || ''}</p>
+            </div>
+          `;
+        });
+      } catch (e) {
+        console.error(e);
+        list.innerHTML = `<p class="text-xs text-red-500">Gagal memuat pengumuman.</p>`;
+      }
+    }
+
+    // ---------------- KEUANGAN (TAMPILKAN SEMUA INPUT PENGURUS) ----------------
+    window.allFinanceData = [];
+    window.filterFinance = (type) => {
+      const list = $("finList");
+      list.innerHTML = "";
+
+      document.querySelectorAll('[onclick^="filterFinance"]').forEach(b => {
+        const isActive = b.getAttribute('onclick').includes(type);
+        if (isActive) {
+          b.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
+          b.classList.add('bg-brand-primary', 'text-white');
+        } else {
+          b.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
+          b.classList.remove('bg-brand-primary', 'text-white');
+        }
+      });
+
+      const filtered = type === 'all'
+        ? window.allFinanceData
+        : window.allFinanceData.filter(f => f.type === type);
+
+      if (!filtered.length) {
+        list.innerHTML = `<p class="text-center text-xs text-slate-400 py-4">Tidak ada data.</p>`;
+        return;
+      }
+
+      filtered.forEach(f => {
+        const isInc = f.type === 'income';
+        const dt = f.createdAt?.seconds ? new Date(f.createdAt.seconds * 1000) : null;
+        list.innerHTML += `
+          <div class="bg-white border border-slate-100 p-4 rounded-2xl flex justify-between items-center shadow-sm animate-slide-in-top">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full ${isInc ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'} flex items-center justify-center">
+                <span class="material-symbols-rounded text-xl">${isInc ? 'arrow_downward' : 'arrow_upward'}</span>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-brand-primary uppercase line-clamp-1">${f.note || 'Transaksi'}</p>
+                <p class="text-[10px] text-slate-400">${dt ? dt.toLocaleDateString('id-ID') : '-'}</p>
+                ${f.status ? `<p class="text-[9px] text-slate-500 font-bold uppercase">status: ${f.status}</p>` : ''}
+              </div>
+            </div>
+            <span class="font-bold text-xs ${isInc?'text-green-600':'text-red-500'}">${isInc?'+':'-'} Rp ${fmtIDR(f.amount)}</span>
           </div>
         `;
       });
-    }
-
-    async function loadNotifications() {
-      const list = $("homeNoticeList");
-      const snap = await getDocs(query(collection(db, "notifications"), orderBy("createdAt","desc"), limit(3)));
-      list.innerHTML = "";
-      if(snap.empty) { list.innerHTML = `<p class="text-xs text-slate-400 italic">Tidak ada info baru.</p>`; return; }
-
-      snap.forEach(d => {
-        const x = d.data();
-        list.innerHTML += `
-            <div class="bg-white border border-slate-100 p-4 rounded-2xl border-l-4 ${x.level==='important'?'border-red-500':'border-accent'} shadow-sm">
-                <h4 class="font-bold text-xs uppercase text-brand-primary mb-1">${x.title}</h4>
-                <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">${x.body || ''}</p>
-            </div>
-        `;
-      });
-    }
-
-    window.allFinanceData = []; 
-    window.filterFinance = (type) => {
-        const list = $("finList");
-        list.innerHTML = "";
-        
-        document.querySelectorAll('[onclick^="filterFinance"]').forEach(b => {
-            if(b.getAttribute('onclick').includes(type)) {
-                b.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
-                b.classList.add('bg-brand-primary', 'text-white');
-            } else {
-                b.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
-                b.classList.remove('bg-brand-primary', 'text-white');
-            }
-        });
-
-        const filtered = type === 'all' ? window.allFinanceData : window.allFinanceData.filter(f => f.type === type);
-        if(filtered.length === 0) { list.innerHTML = `<p class="text-center text-xs text-slate-400 py-4">Tidak ada data.</p>`; return; }
-
-        filtered.forEach(f => {
-             const isInc = f.type === 'income';
-             list.innerHTML += `
-                <div class="bg-white border border-slate-100 p-4 rounded-2xl flex justify-between items-center shadow-sm animate-slide-in-top">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full ${isInc ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'} flex items-center justify-center">
-                            <span class="material-symbols-rounded text-xl">${isInc ? 'arrow_downward' : 'arrow_upward'}</span>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-brand-primary uppercase line-clamp-1">${f.note || 'Transaksi'}</p>
-                            <p class="text-[10px] text-slate-400">${new Date(f.createdAt?.seconds*1000).toLocaleDateString()}</p>
-                        </div>
-                    </div>
-                    <span class="font-bold text-xs ${isInc?'text-green-600':'text-red-500'}">${isInc?'+':'-'} Rp ${fmtIDR(f.amount)}</span>
-                </div>
-            `;
-        });
-    }
+    };
 
     async function loadFinance() {
       try {
-          // HAPUS orderBy sementara agar tidak error "Missing Index" di console
-          const q = query(collection(db, "financial_records"), where("status", "==", "approved"));
-          const snap = await getDocs(q);
-          
-          let bal = 0, inc = 0, exp = 0;
-          window.allFinanceData = [];
-          
-          snap.forEach(d => {
-            const f = d.data();
-            // Tambahkan ID dokumen untuk referensi
-            f.id = d.id; 
-            window.allFinanceData.push(f);
-            
-            const amt = Number(f.amount) || 0;
-            if(f.type === "income") { inc += amt; bal += amt; } 
-            else { exp += amt; bal -= amt; }
-          });
-          
-          // Manual Sort (Terbaru di atas)
-          window.allFinanceData.sort((a,b) => {
-              const tA = a.createdAt?.seconds || 0;
-              const tB = b.createdAt?.seconds || 0;
-              return tB - tA;
-          });
-          
-          animateValue($("cardBalance"), 0, bal, 1500);
-          $("cardIncome").textContent = `Rp ${fmtIDR(inc)}`;
-          $("cardExpense").textContent = `Rp ${fmtIDR(exp)}`;
-          
-          filterFinance('all');
-      } catch(e) {
-          console.error("Gagal load keuangan:", e);
-          // Fallback jika error permission/index
-          $("cardBalance").textContent = "Rp 0";
+        // ✅ tampilkan semua (tanpa filter status)
+        const snap = await getDocs(collection(db, "financial_records"));
+
+        let bal = 0, inc = 0, exp = 0;
+        window.allFinanceData = [];
+
+        snap.forEach(d => {
+          const f = d.data();
+          window.allFinanceData.push({ id: d.id, ...f });
+
+          const amt = Number(f.amount) || 0;
+
+          // kalkulasi saldo: jika type invalid, abaikan
+          if (f.type === "income") { inc += amt; bal += amt; }
+          else if (f.type === "expense") { exp += amt; bal -= amt; }
+        });
+
+        // sort terbaru
+        window.allFinanceData.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+
+        animateValue($("cardBalance"), 0, bal, 1200);
+        $("cardIncome").textContent = `Rp ${fmtIDR(inc)}`;
+        $("cardExpense").textContent = `Rp ${fmtIDR(exp)}`;
+
+        filterFinance('all');
+      } catch (e) {
+        console.error("Gagal load keuangan:", e);
+        $("cardBalance").textContent = "Rp 0";
+        $("cardIncome").textContent = "Rp 0";
+        $("cardExpense").textContent = "Rp 0";
+        $("finList").innerHTML = `<p class="text-center text-xs text-red-500 py-8">Gagal memuat keuangan.</p>`;
       }
     }
 
-    // --- MEMBERS (UPDATED FOR LIVE STATUS) ---
+    // ---------------- MEMBERS (ONLINE BY lastSeen) ----------------
     async function loadMembers() {
       const list = $("memberList");
-      const snap = await getDocs(query(collection(db, "users"), orderBy("name","asc")));
-      list.innerHTML = "";
-      const now = Date.now();
-      let onlineCount = 0;
-      
-      snap.forEach(d => {
-        const u = d.data();
-        const last = u.lastSeen?.toDate ? u.lastSeen.toDate().getTime() : 0;
-        // 2 minutes Threshold for "Online"
-        const isOnline = last && (now - last) <= (120000); 
-        
-        if(isOnline) onlineCount++;
+      list.innerHTML = `<div class="col-span-3 sm:col-span-4 flex justify-center py-10"><div class="w-8 h-8 border-4 border-slate-200 border-t-green-500 rounded-full animate-spin"></div></div>`;
+      try {
+        const snap = await getDocs(collection(db, "users"));
+        const rows = [];
+        snap.forEach(d => rows.push({ id: d.id, ...d.data() }));
+        rows.sort((a,b) => String(a.name||'').localeCompare(String(b.name||''), 'id'));
 
-        list.innerHTML += `
+        list.innerHTML = "";
+        const now = Date.now();
+        let onlineCount = 0;
+
+        rows.forEach(u => {
+          const last = u.lastSeen?.toDate ? u.lastSeen.toDate().getTime() : (u.lastSeen?.seconds ? u.lastSeen.seconds*1000 : 0);
+          const isOnline = last && (now - last) <= 120000; // 2 menit
+
+          if (isOnline) onlineCount++;
+
+          list.innerHTML += `
             <div class="bg-white border border-slate-100 p-3 rounded-2xl flex flex-col items-center gap-2 relative group shadow-sm transition-transform hover:scale-105">
-                <div class="relative">
-                    <img src="${u.photo?.url || 'https://via.placeholder.com/100'}" class="h-14 w-14 rounded-full object-cover border-2 ${isOnline ? 'border-white online-ring' : 'border-slate-100 grayscale opacity-60'}">
-                    ${isOnline ? '<span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></span>' : ''}
-                </div>
-                <p class="text-[10px] font-bold text-brand-primary uppercase truncate w-full text-center">${u.name || 'User'}</p>
+              <div class="relative">
+                <img src="${u.photo?.url || 'https://via.placeholder.com/100'}"
+                     class="h-14 w-14 rounded-full object-cover border-2 ${isOnline ? 'border-white online-ring' : 'border-slate-100 grayscale opacity-60'}">
+                ${isOnline ? '<span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></span>' : ''}
+              </div>
+              <p class="text-[10px] font-bold text-brand-primary uppercase truncate w-full text-center">${u.name || 'User'}</p>
+              <p class="text-[9px] text-slate-400 font-bold uppercase">${u.role || 'anggota'}</p>
             </div>
-        `;
-      });
+          `;
+        });
 
-      // Update Header Badge
-      const badge = $("onlineBadgeContainer");
-      if(onlineCount > 0) {
-        badge.classList.remove('hidden');
-        $("onlineCountText").innerText = `${onlineCount} Online`;
-      } else {
-        badge.classList.add('hidden');
+        const badge = $("onlineBadgeContainer");
+        if (onlineCount > 0) {
+          badge.classList.remove('hidden');
+          $("onlineCountText").innerText = `${onlineCount} Online`;
+        } else {
+          badge.classList.add('hidden');
+        }
+      } catch (e) {
+        console.error(e);
+        list.innerHTML = `<p class="col-span-3 sm:col-span-4 text-center text-xs text-red-500 py-10">Gagal memuat anggota.</p>`;
       }
     }
 
+    // ---------------- LOGOUT ----------------
     $("logoutBtn").onclick = () => signOut(auth).then(() => location.href = "login.html");
   </script>
 </body>
