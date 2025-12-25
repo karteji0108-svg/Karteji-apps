@@ -133,8 +133,9 @@
                     <button onclick="switchView('finance')" class="flex-1 bg-white/10 backdrop-blur-md py-2.5 rounded-xl text-xs font-bold hover:bg-white/20 transition-colors flex items-center justify-center gap-1">
                         <span class="material-symbols-rounded text-sm">visibility</span> Cek Detail
                     </button>
-                    <button onclick="openBroadcastModal()" class="flex-1 bg-gold text-white py-2.5 rounded-xl text-xs font-bold shadow-lg shadow-gold/20 hover:bg-gold-dark transition-colors flex items-center justify-center gap-1 active:scale-95">
-                        <span class="material-symbols-rounded text-sm">campaign</span> Instruksi
+                    <button onclick="switchView('approvals')" class="flex-1 bg-gold text-white py-2.5 rounded-xl text-xs font-bold shadow-lg shadow-gold/20 hover:bg-gold-dark transition-colors flex items-center justify-center gap-1 active:scale-95 relative">
+                        <span class="material-symbols-rounded text-sm">fact_check</span> ACC Data
+                        <div id="homePendingBadge" class="hidden absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border border-white"></div>
                     </button>
                 </div>
               </div>
@@ -160,12 +161,12 @@
                   <h3 class="text-xs font-bold text-brand-primary">Kelola Anggota</h3>
                   <p class="text-[10px] text-slate-400">Atur jabatan tim</p>
               </div>
-              <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 active:scale-95 transition-transform" onclick="switchView('activities')">
-                  <div class="w-10 h-10 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mb-2">
-                      <span class="material-symbols-rounded">event_note</span>
+              <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 active:scale-95 transition-transform" onclick="openBroadcastModal()">
+                  <div class="w-10 h-10 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center mb-2">
+                      <span class="material-symbols-rounded">campaign</span>
                   </div>
-                  <h3 class="text-xs font-bold text-brand-primary">Agenda</h3>
-                  <p class="text-[10px] text-slate-400">Jadwal kegiatan</p>
+                  <h3 class="text-xs font-bold text-brand-primary">Instruksi</h3>
+                  <p class="text-[10px] text-slate-400">Kirim broadcast</p>
               </div>
           </div>
       </section>
@@ -229,17 +230,28 @@
         </div>
       </section>
 
-      <section id="view-activities" class="view-section">
+      <section id="view-approvals" class="view-section">
           <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
             <div>
-                <h2 class="text-2xl font-bold text-brand-primary">Agenda</h2>
-                <p class="text-xs text-slate-400">Jadwal Organisasi</p>
+                <h2 class="text-2xl font-bold text-brand-primary">Pusat ACC</h2>
+                <p class="text-xs text-slate-400">Verifikasi Data</p>
             </div>
-            <button onclick="openAddActivityModal()" class="w-10 h-10 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+            <button onclick="openAddActivityModal()" class="w-10 h-10 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform" title="Tambah Agenda">
                 <span class="material-symbols-rounded">add</span>
             </button>
           </div>
-          <div id="actList" class="grid grid-cols-1 gap-4 pb-20"></div>
+          
+          <div class="space-y-6 pb-20">
+              <div>
+                  <h3 class="text-sm font-bold text-slate-500 mb-3 px-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">event</span> Kegiatan (Pending)</h3>
+                  <div id="actList" class="grid grid-cols-1 gap-3"></div>
+              </div>
+
+              <div>
+                 <h3 class="text-sm font-bold text-slate-500 mb-3 px-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">payments</span> Keuangan (Pending)</h3>
+                 <div id="finPendingList" class="space-y-3"></div>
+              </div>
+          </div>
       </section>
 
       <section id="view-finance" class="view-section">
@@ -280,9 +292,9 @@
             </button>
           </div>
 
-          <button onclick="switchView('activities')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="activities">
-              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">calendar_month</span>
-              <p class="text-[10px] font-medium text-slate-400 transition-colors">Acara</p>
+          <button onclick="switchView('approvals')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="approvals">
+              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">fact_check</span>
+              <p class="text-[10px] font-medium text-slate-400 transition-colors">ACC</p>
           </button>
 
           <button onclick="switchView('finance')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="finance">
@@ -367,7 +379,7 @@
         if(viewId === 'home') loadHomeData();
         if(viewId === 'users') loadUsers();
         if(viewId === 'profile') loadProfileData();
-        if(viewId === 'activities') loadActivities();
+        if(viewId === 'approvals') loadApprovals();
         if(viewId === 'finance') loadFinance();
     };
 
@@ -395,15 +407,34 @@
     // --- DASHBOARD & CHART ---
     async function loadHomeData() {
         const fin = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc")));
-        let bal = 0, inc = 0, exp = 0;
+        const acts = await getDocs(collection(db, "activities"));
+        
+        let bal = 0, inc = 0, exp = 0, pendingCount = 0;
+
         fin.forEach(d => {
             const f = d.data();
             if(f.status === 'approved') {
                 const a = Number(f.amount)||0;
                 if(f.type === 'income') { bal+=a; inc+=a; } else { bal-=a; exp+=a; }
+            } else if (f.status === 'pending') {
+                pendingCount++;
             }
         });
+
+        acts.forEach(d => {
+            if(d.data().status === 'pending') pendingCount++;
+        });
+
         animateValue($("cardBalance"), 0, bal, 1500);
+        
+        // Update Pending Badge
+        const badge = $("homePendingBadge");
+        if(pendingCount > 0) {
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+
         renderChart(inc, exp);
     }
 
@@ -545,14 +576,24 @@
         });
     }
 
-    // --- ACTIVITIES ---
-    async function loadActivities(){
-        const list = $("actList"); list.innerHTML = "";
-        const snap = await getDocs(query(collection(db,"activities"), orderBy("date","asc")));
-        snap.forEach(d => {
+    // --- APPROVALS (Updated) ---
+    async function loadApprovals(){
+        const aList = $("actList"); aList.innerHTML = "";
+        const fList = $("finPendingList"); fList.innerHTML = "";
+        
+        // 1. Kegiatan Pending
+        const acts = await getDocs(query(collection(db,"activities"), orderBy("date","asc")));
+        let pendingActCount = 0;
+        
+        acts.forEach(d => {
             const x = d.data();
-            list.innerHTML += `
-                <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm flex items-center gap-3">
+            // Tampilkan Pending di atas, atau yang sudah approved dengan tanda centang (Opsional: disini fokus pending)
+            // Di sini kita tampilkan SEMUA kegiatan agar Ketua bisa lihat agenda, tapi yang pending ada tombol ACC
+            const isPending = x.status === 'pending';
+            
+            // Layout Kegiatan
+            const html = `
+                <div class="bg-white p-3 rounded-xl border ${isPending?'border-orange-300 bg-orange-50':'border-slate-100'} shadow-sm flex items-center gap-3">
                     <div class="bg-blue-50 w-14 h-14 rounded-lg flex flex-col items-center justify-center text-blue-600 shrink-0">
                         <span class="text-[10px] font-bold uppercase">${new Date(x.date).toLocaleString('default', {month:'short'})}</span>
                         <span class="text-xl font-bold">${new Date(x.date).getDate()}</span>
@@ -561,10 +602,74 @@
                         <h4 class="text-sm font-bold text-brand-primary line-clamp-1">${x.title}</h4>
                         <p class="text-[10px] text-slate-400 flex items-center gap-1"><span class="material-symbols-rounded text-[10px]">location_on</span> ${x.location}</p>
                     </div>
-                    <button onclick="deleteDocData('activities','${d.id}')" class="text-slate-300 hover:text-red-500"><span class="material-symbols-rounded">delete</span></button>
+                    
+                    <div class="flex items-center gap-2">
+                         ${isPending ? 
+                           `<button onclick="approveDoc('activities','${d.id}')" class="bg-gold text-white p-2 rounded-full shadow-lg hover:scale-110 transition-transform"><span class="material-symbols-rounded text-sm">check</span></button>` 
+                           : 
+                           '<span class="text-teal-600 material-symbols-rounded">verified</span>'
+                         }
+                         <button onclick="deleteDocData('activities','${d.id}')" class="text-slate-300 hover:text-red-500"><span class="material-symbols-rounded">delete</span></button>
+                    </div>
                 </div>
             `;
+            aList.innerHTML += html;
         });
+
+        // 2. Keuangan Pending (Hanya Pending yang muncul disini agar fokus)
+        const fin = await getDocs(query(collection(db,"financial_records"), orderBy("createdAt","desc")));
+        let hasPendingFin = false;
+        
+        fin.forEach(d => {
+            const f = d.data();
+            if(f.status === 'pending') {
+                hasPendingFin = true;
+                const isInc = f.type === 'income';
+                fList.innerHTML += `
+                    <div class="bg-white p-3 rounded-xl border border-orange-300 bg-orange-50 shadow-sm flex items-center justify-between">
+                        <div>
+                            <h4 class="text-sm font-bold text-brand-primary">${f.note}</h4>
+                            <p class="text-[10px] text-slate-400">${new Date(f.createdAt?.seconds*1000).toLocaleDateString()}</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs font-bold ${isInc?'text-green-600':'text-red-500'}">${isInc?'+':'-'} ${Number(f.amount).toLocaleString()}</span>
+                            <button onclick="approveDoc('financial_records','${d.id}')" class="bg-gold text-white p-2 rounded-full shadow-lg hover:scale-110 transition-transform"><span class="material-symbols-rounded text-sm">check</span></button>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+        
+        if(!hasPendingFin) fList.innerHTML = '<p class="text-xs text-slate-400 italic text-center py-4">Tidak ada data keuangan pending.</p>';
+    }
+
+    // --- APPROVE FUNCTION (SAMA DENGAN WAKIL KETUA) ---
+    window.approveDoc = async (col, id) => {
+        if(!confirm("Yakin ingin menyetujui (ACC) data ini?")) return;
+        toggleLoader(true);
+        try {
+            console.log(`Mencoba ACC: ${col}/${id} oleh Ketua ${UID}`);
+            
+            // Update dengan serverTimestamp dan ID Approver
+            await updateDoc(doc(db, col, id), { 
+                status: "approved",
+                approvedBy: UID,
+                approvedAt: serverTimestamp()
+            });
+
+            showToast("Berhasil di-ACC!");
+            await Promise.all([loadHomeData(), loadApprovals()]);
+            
+        } catch(e) { 
+            console.error("ERROR SAAT ACC:", e);
+            if(e.code === 'permission-denied') {
+                showToast("Izin ditolak! Cek Rules Database.", "error");
+            } else {
+                showToast("Gagal ACC: " + e.message, "error");
+            }
+        } finally { 
+            toggleLoader(false); 
+        }
     }
 
     window.openAddActivityModal = () => {
@@ -576,21 +681,28 @@
         showModal("TAMBAH AGENDA", html, async () => {
             if(!$("acT").value) return showToast("Judul wajib diisi","error");
             toggleLoader(true);
-            try { await addDoc(collection(db,"activities"), {title:$("acT").value, date:$("acD").value, location:$("acL").value, createdAt:serverTimestamp()}); closeModal(); loadActivities(); showToast("Agenda Dibuat"); }
+            try { await addDoc(collection(db,"activities"), {title:$("acT").value, date:$("acD").value, location:$("acL").value, status: 'approved', createdAt:serverTimestamp()}); closeModal(); loadApprovals(); showToast("Agenda Dibuat"); }
             catch(e){ showToast("Gagal","error"); } finally { toggleLoader(false); }
         });
     }
 
-    // --- FINANCE ---
+    // --- FINANCE LIST (Approved Only) ---
     async function loadFinance(){
         const list = $("finList"); list.innerHTML = "";
         const snap = await getDocs(query(collection(db,"financial_records"), orderBy("createdAt","desc"), limit(30)));
         snap.forEach(d => {
-            const f = d.data(); const isIn = f.type==='income';
+            const f = d.data(); 
+            // Di list ini tampilkan semua tapi tandai yang pending
+            const isIn = f.type==='income';
+            const isPending = f.status === 'pending';
+            
             list.innerHTML += `
-                <div class="flex justify-between items-center border-b border-slate-50 py-3">
+                <div class="flex justify-between items-center border-b border-slate-50 py-3 ${isPending ? 'opacity-50' : ''}">
                     <div>
-                        <p class="text-sm font-bold text-brand-primary">${f.note}</p>
+                        <p class="text-sm font-bold text-brand-primary flex items-center gap-1">
+                            ${f.note} 
+                            ${isPending ? '<span class="text-[8px] bg-orange-100 text-orange-600 px-1 rounded">PENDING</span>' : ''}
+                        </p>
                         <p class="text-[10px] text-slate-400">${new Date(f.createdAt?.seconds*1000).toLocaleDateString()}</p>
                     </div>
                     <span class="text-sm font-bold ${isIn?'text-green-600':'text-red-500'}">${isIn?'+':'-'} ${Number(f.amount).toLocaleString()}</span>
@@ -599,7 +711,7 @@
         });
     }
 
-    window.deleteDocData = async(col,id) => { if(confirm("Hapus item ini?")){ await deleteDoc(doc(db,col,id)); if(col==='activities') loadActivities(); } }
+    window.deleteDocData = async(col,id) => { if(confirm("Hapus item ini?")){ await deleteDoc(doc(db,col,id)); if(col==='activities') loadApprovals(); } }
     $("logoutBtn").onclick = () => signOut(auth).then(() => location.href = "login.html");
   </script>
 </body>
