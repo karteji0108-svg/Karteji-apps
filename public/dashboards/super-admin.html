@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0B1120" />
-  <title>Super Admin | KARTEJI (Pro)</title>
+  <title>Super Admin | KARTEJI (Pro Secured)</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24..48,400,1,0" />
@@ -137,7 +137,6 @@
 
 <body class="min-h-screen relative overflow-x-hidden pb-32 selection:bg-orange-200 selection:text-orange-900">
 
-  <!-- Ambient liquid background -->
   <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
     <div class="absolute inset-0"
       style="background:
@@ -153,17 +152,14 @@
          style="background: rgba(249,115,22,.55)"></div>
   </div>
 
-  <!-- Toast -->
   <div id="toastContainer" class="fixed top-4 left-0 right-0 z-[100] flex flex-col items-center gap-2 pointer-events-none px-4"></div>
 
-  <!-- Global Loader -->
   <div id="globalLoader" class="fixed inset-0 z-[9999] hidden items-center justify-center flex-col gap-4 backdrop-blur-md"
        style="background: rgba(255,255,255,.60)">
     <div class="w-12 h-12 border-4 border-slate-200 border-t-accent rounded-full animate-spin"></div>
     <p class="text-xs font-extrabold" style="color: rgba(148,163,184,.95)">Memproses data...</p>
   </div>
 
-  <!-- CRUD Modal -->
   <div id="crudModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-all">
     <div class="glass-card w-full max-w-md rounded-[2rem] p-6 relative shadow-2xl animate-[slideUpSoft_.25s_ease-out]">
       <div class="flex justify-between items-center mb-6">
@@ -185,7 +181,6 @@
     </div>
   </div>
 
-  <!-- Header (shrink on scroll) -->
   <header id="appHeader" data-shrink="false" class="sticky top-0 z-30 px-6 pt-8 pb-4">
     <div class="rounded-[1.75rem] glass-card px-5 py-4">
       <div class="flex justify-between items-center">
@@ -196,13 +191,11 @@
         </div>
 
         <div class="flex gap-2 items-center">
-          <!-- NEW: Global Search -->
           <button onclick="openGlobalSearch()" class="tap focus-ring w-10 h-10 rounded-full flex items-center justify-center no-print"
                   style="background: rgba(148,163,184,.12); color: rgba(148,163,184,.95)" aria-label="Cari">
             <span class="material-symbols-rounded">search</span>
           </button>
 
-          <!-- NEW: Theme Toggle -->
           <button id="btn-theme" class="tap focus-ring w-10 h-10 rounded-full flex items-center justify-center no-print"
                   style="background: rgba(148,163,184,.12); color: rgba(148,163,184,.95)" aria-label="Ganti tema">
             <span id="themeIcon" class="material-symbols-rounded">dark_mode</span>
@@ -220,7 +213,6 @@
         </div>
       </div>
 
-      <!-- NEW: chip row -->
       <div class="chipRow mt-3 flex flex-wrap items-center gap-2">
         <span id="clockChip" class="text-[10px] font-extrabold tracking-widest px-2 py-1 rounded-full"
               style="background: rgba(148,163,184,.12); color: rgba(148,163,184,.95)">
@@ -240,7 +232,6 @@
 
   <main class="px-5 mt-1 relative z-10">
 
-    <!-- HOME -->
     <section id="view-home" class="view-section active">
 
       <div class="w-full rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 group transition-all"
@@ -308,7 +299,6 @@
       </div>
     </section>
 
-    <!-- USERS -->
     <section id="view-users" class="view-section">
       <div class="flex justify-between items-end mb-4 px-1">
         <div>
@@ -333,7 +323,6 @@
       <div id="userList" class="space-y-3 pb-20"></div>
     </section>
 
-    <!-- INVENTORY -->
     <section id="view-inventory" class="view-section">
       <div class="flex justify-between items-center mb-6 px-1 sticky top-0 py-2 z-10" style="background: transparent;">
         <div>
@@ -348,7 +337,6 @@
       <div id="invList" class="grid grid-cols-2 gap-3 pb-20"></div>
     </section>
 
-    <!-- PROFILE -->
     <section id="view-profile" class="view-section">
       <div class="flex flex-col items-center pt-4 pb-20">
         <div class="relative group cursor-pointer tap" onclick="$('profileUpload').click()">
@@ -422,7 +410,6 @@
       </div>
     </section>
 
-    <!-- FINANCE -->
     <section id="view-finance" class="view-section">
       <div class="flex justify-between items-center mb-4 px-1 sticky top-0 py-2 z-10" style="background: transparent;">
         <div>
@@ -457,7 +444,6 @@
       </div>
     </section>
 
-    <!-- EVENTS -->
     <section id="view-events" class="view-section">
       <div class="flex justify-between items-center mb-6 px-1 sticky top-0 py-2 z-10" style="background: transparent;">
         <div>
@@ -472,7 +458,6 @@
       <div id="actList" class="grid grid-cols-1 gap-4 pb-20"></div>
     </section>
 
-    <!-- ALERTS -->
     <section id="view-alerts" class="view-section">
       <div class="flex justify-between items-center mb-6 px-1 sticky top-0 py-2 z-10" style="background: transparent;">
         <div>
@@ -489,7 +474,6 @@
 
   </main>
 
-  <!-- Bottom Nav -->
   <nav class="fixed bottom-0 w-full glass-nav pb-6 pt-2 px-4 z-50 rounded-t-[2rem] no-print">
     <div class="flex justify-between items-center max-w-sm mx-auto">
       <button onclick="switchView('home')" class="nav-btn active flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="home">
@@ -521,7 +505,6 @@
     </div>
   </nav>
 
-  <!-- More Menu -->
   <div id="moreMenu" class="fixed bottom-24 right-4 glass-card rounded-2xl p-2 z-40 hidden flex-col gap-2 w-44 transition-all duration-300 origin-bottom-right animate-[slideUpSoft_.2s_ease-out] no-print">
     <button onclick="switchView('events'); toggleMoreMenu()" class="tap focus-ring flex items-center gap-3 p-2 rounded-xl text-left"
             style="background: rgba(148,163,184,.10)">
@@ -538,8 +521,6 @@
       <div class="bg-red-50/70 text-red-600 p-1.5 rounded-lg"><span class="material-symbols-rounded text-lg">campaign</span></div>
       <span class="text-xs font-extrabold" style="color: var(--fg0)">Info</span>
     </button>
-
-    <!-- NEW: Audit Log -->
     <button onclick="openAuditLog(); toggleMoreMenu()" class="tap focus-ring flex items-center gap-3 p-2 rounded-xl text-left"
             style="background: rgba(148,163,184,.10)">
       <div class="bg-slate-100/70 text-slate-700 p-1.5 rounded-lg"><span class="material-symbols-rounded text-lg">receipt_long</span></div>
@@ -572,7 +553,19 @@
     let newProfileFile = null;
     let financeChartInstance = null;
 
-    // ============ NEW FEATURE #1: Theme Toggle ============
+    // ============ SECURITY HELPER (XSS Protection) ============
+    // Wajib digunakan di semua innerHTML
+    function clean(text) {
+      if (!text) return "";
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // ============ INITIALIZERS ============
     const btnTheme = document.getElementById("btn-theme");
     const themeIcon = document.getElementById("themeIcon");
     function getTheme(){ return document.documentElement.getAttribute('data-theme') || 'light'; }
@@ -587,14 +580,12 @@
     setTheme(getTheme());
     btnTheme?.addEventListener("click", toggleTheme);
 
-    // ============ NEW FEATURE #2: Header Shrink ============
     const appHeader = document.getElementById("appHeader");
     window.addEventListener("scroll", () => {
       const shrink = window.scrollY > 14;
       if(appHeader) appHeader.setAttribute("data-shrink", shrink ? "true" : "false");
     }, { passive: true });
 
-    // ============ NEW FEATURE #3: Clock + Today Summary ============
     function tickClock(){
       const d = new Date();
       const hh = String(d.getHours()).padStart(2,'0');
@@ -605,7 +596,7 @@
     setInterval(tickClock, 1000 * 20);
     tickClock();
 
-    // ============ NEW FEATURE #4: Audit Log helper ============
+    // ============ AUDIT HELPER (Safe Mode) ============
     async function writeAudit(action, payload = {}){
       try{
         if(!ME_UID) return;
@@ -615,7 +606,7 @@
           payload,
           createdAt: serverTimestamp()
         });
-      }catch(e){ /* silent */ }
+      }catch(e){ console.warn("Audit Log gagal (diabaikan agar app tetap jalan):", e); }
     }
 
     // ============ UX UTILITIES ============
@@ -628,7 +619,7 @@
       el.style.color = 'white';
       el.innerHTML = `
         <span class="material-symbols-rounded text-lg">${isErr ? 'error' : 'check_circle'}</span>
-        <span class="text-xs font-extrabold">${msg}</span>
+        <span class="text-xs font-extrabold">${clean(msg)}</span>
       `;
       container.appendChild(el);
       setTimeout(() => {
@@ -651,7 +642,6 @@
       window.requestAnimationFrame(step);
     }
 
-    // ============ NAVIGATION ============
     window.switchView = (viewId) => {
       document.querySelectorAll('.view-section').forEach(el => {
         el.classList.remove('active');
@@ -712,7 +702,7 @@
       window.print();
     }
 
-    // ============ NEW FEATURE #2: Global Search Modal ============
+    // ============ GLOBAL SEARCH ============
     window.openGlobalSearch = () => {
       const html = `
         <div class="space-y-3">
@@ -724,28 +714,19 @@
           </div>
           <div class="grid grid-cols-2 gap-2">
             <button class="tap focus-ring py-3 rounded-xl text-xs font-extrabold"
-              style="background: rgba(59,130,246,.12); color: rgba(59,130,246,.95)"
-              onclick="runGlobalSearch('users')">Cari User</button>
+              style="background: rgba(59,130,246,.12); color: rgba(59,130,246,.95)" onclick="runGlobalSearch('users')">Cari User</button>
             <button class="tap focus-ring py-3 rounded-xl text-xs font-extrabold"
-              style="background: rgba(15,23,42,.10); color: var(--fg0)"
-              onclick="runGlobalSearch('finance')">Cari Kas</button>
+              style="background: rgba(15,23,42,.10); color: var(--fg0)" onclick="runGlobalSearch('finance')">Cari Kas</button>
             <button class="tap focus-ring py-3 rounded-xl text-xs font-extrabold"
-              style="background: rgba(37,99,235,.12); color: rgba(37,99,235,.95)"
-              onclick="runGlobalSearch('events')">Cari Acara</button>
+              style="background: rgba(37,99,235,.12); color: rgba(37,99,235,.95)" onclick="runGlobalSearch('events')">Cari Acara</button>
             <button class="tap focus-ring py-3 rounded-xl text-xs font-extrabold"
-              style="background: rgba(239,68,68,.12); color: rgba(239,68,68,.95)"
-              onclick="runGlobalSearch('alerts')">Cari Info</button>
+              style="background: rgba(239,68,68,.12); color: rgba(239,68,68,.95)" onclick="runGlobalSearch('alerts')">Cari Info</button>
           </div>
           <div class="grid grid-cols-1 gap-2">
             <button class="tap focus-ring py-3 rounded-xl text-xs font-extrabold"
-              style="background: rgba(124,58,237,.12); color: rgba(124,58,237,.95)"
-              onclick="runGlobalSearch('inventory')">Cari Inventaris</button>
+              style="background: rgba(124,58,237,.12); color: rgba(124,58,237,.95)" onclick="runGlobalSearch('inventory')">Cari Inventaris</button>
           </div>
-
           <div id="gRes" class="mt-2 space-y-2"></div>
-          <p class="text-[10px] font-extrabold tracking-widest uppercase" style="color: rgba(148,163,184,.85)">
-            Tips: isi kata kunci lalu pilih kategori.
-          </p>
         </div>
       `;
       showModal("Pencarian Global", html, null);
@@ -753,7 +734,7 @@
     };
 
     window.runGlobalSearch = async (type) => {
-      const q = (document.getElementById("gq")?.value || "").trim().toLowerCase();
+      const q = clean((document.getElementById("gq")?.value || "").trim().toLowerCase());
       const box = document.getElementById("gRes");
       if(!box) return;
       if(!q) { box.innerHTML = `<div class="text-xs font-extrabold" style="color:#ef4444">Isi kata kunci dulu.</div>`; return; }
@@ -782,48 +763,31 @@
 
         box.innerHTML = items.slice(0,8).map(x => `
           <div class="glass-inset rounded-xl p-3">
-            <div class="text-xs font-extrabold" style="color: var(--fg0)">${(x.name||x.title||x.note||"Item")}</div>
-            <div class="text-[10px] font-extrabold" style="color: rgba(148,163,184,.9)">${type.toUpperCase()} • ${x.date || (x.createdAt?.seconds ? new Date(x.createdAt.seconds*1000).toLocaleDateString('id-ID') : '')}</div>
+            <div class="text-xs font-extrabold" style="color: var(--fg0)">${clean(x.name||x.title||x.note||"Item")}</div>
+            <div class="text-[10px] font-extrabold" style="color: rgba(148,163,184,.9)">${type.toUpperCase()}</div>
           </div>
         `).join("");
 
         await writeAudit("global_search", { type, q, found: items.length });
       }catch(e){
-        box.innerHTML = `<div class="text-xs font-extrabold" style="color:#ef4444">Gagal mencari. Coba lagi.</div>`;
-      }finally{
-        toggleLoader(false);
-      }
+        box.innerHTML = `<div class="text-xs font-extrabold" style="color:#ef4444">Gagal mencari.</div>`;
+      }finally{ toggleLoader(false); }
     };
 
-    // ============ NEW FEATURE #4: Action Center ============
+    // ============ ACTION CENTER ============
     window.openActionCenter = () => {
       const html = `
         <div class="space-y-3">
-          <button class="tap focus-ring w-full py-3 rounded-xl text-xs font-extrabold"
-            style="background: rgba(15,23,42,.88); color: white"
-            onclick="location.reload()">Refresh Semua Data</button>
-
-          <button class="tap focus-ring w-full py-3 rounded-xl text-xs font-extrabold"
-            style="background: rgba(34,197,94,.12); color: rgb(34,197,94)"
-            onclick="exportTableToCSV('users')">Export Users (CSV)</button>
-
-          <button class="tap focus-ring w-full py-3 rounded-xl text-xs font-extrabold"
-            style="background: rgba(59,130,246,.12); color: rgba(59,130,246,.95)"
-            onclick="exportTableToCSV('finance')">Export Kas (CSV)</button>
-
-          <button class="tap focus-ring w-full py-3 rounded-xl text-xs font-extrabold"
-            style="background: rgba(148,163,184,.12); color: rgba(148,163,184,.95)"
-            onclick="printFinance()">Print Kas</button>
-
-          <p class="text-[10px] font-extrabold tracking-widest uppercase" style="color: rgba(148,163,184,.85)">
-            Action Center: shortcut untuk admin cepat.
-          </p>
+          <button class="tap focus-ring w-full py-3 rounded-xl text-xs font-extrabold" style="background: rgba(15,23,42,.88); color: white" onclick="location.reload()">Refresh Semua Data</button>
+          <button class="tap focus-ring w-full py-3 rounded-xl text-xs font-extrabold" style="background: rgba(34,197,94,.12); color: rgb(34,197,94)" onclick="exportTableToCSV('users')">Export Users (CSV)</button>
+          <button class="tap focus-ring w-full py-3 rounded-xl text-xs font-extrabold" style="background: rgba(59,130,246,.12); color: rgba(59,130,246,.95)" onclick="exportTableToCSV('finance')">Export Kas (CSV)</button>
+          <button class="tap focus-ring w-full py-3 rounded-xl text-xs font-extrabold" style="background: rgba(148,163,184,.12); color: rgba(148,163,184,.95)" onclick="printFinance()">Print Kas</button>
         </div>
       `;
       showModal("Action Center", html, null);
     };
 
-    // ============ NEW FEATURE #5: Audit Log Viewer ============
+    // ============ AUDIT VIEWER ============
     window.openAuditLog = async () => {
       toggleLoader(true);
       try{
@@ -837,8 +801,8 @@
             const dt = a.createdAt?.seconds ? new Date(a.createdAt.seconds*1000).toLocaleString('id-ID') : '-';
             html += `
               <div class="glass-inset rounded-xl p-3">
-                <div class="text-xs font-extrabold" style="color: var(--fg0)">${a.action || 'action'}</div>
-                <div class="text-[10px] font-extrabold" style="color: rgba(148,163,184,.9)">by ${String(a.actorUid||'').slice(0,8).toUpperCase()} • ${dt}</div>
+                <div class="text-xs font-extrabold" style="color: var(--fg0)">${clean(a.action)}</div>
+                <div class="text-[10px] font-extrabold" style="color: rgba(148,163,184,.9)">by ${clean(String(a.actorUid||'').slice(0,8).toUpperCase())} • ${dt}</div>
               </div>
             `;
           });
@@ -846,21 +810,17 @@
         html += `</div>`;
         showModal("Audit Log", html, null);
       }catch(e){
-        showModal("Audit Log", `<div class="text-xs font-extrabold" style="color:#ef4444">Gagal memuat audit log.</div>`, null);
-      }finally{
-        toggleLoader(false);
-      }
+        showModal("Audit Log", `<div class="text-xs font-extrabold" style="color:#ef4444">Gagal memuat (Perlu Akses Super Admin).</div>`, null);
+      }finally{ toggleLoader(false); }
     };
 
-    // ============ DATA ============
+    // ============ DATA & AUTH ============
     async function uploadToCloudinary(file) {
       if(!file) return null;
       if(!file.type.startsWith('image/')){ showToast("File harus gambar!", "error"); return null; }
-
       const form = new FormData();
       form.append("file", file);
       form.append("upload_preset", UPLOAD_PRESET);
-
       const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: "POST", body: form });
       const d = await res.json();
       if(d.error) { showToast("Gagal Upload Gambar", "error"); throw new Error(d.error.message); }
@@ -880,8 +840,6 @@
       try {
         const finSnapshot = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc")));
         let bal = 0, lastInc = 0, lastExp = 0, chartIncome = 0, chartExpense = 0;
-
-        // Today summary
         const now = new Date();
         const y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
         const startToday = new Date(y,m,d,0,0,0);
@@ -899,11 +857,9 @@
               bal -= amt; chartExpense += amt;
               if(lastExp === 0) lastExp = amt;
             }
-
             const ts = f.createdAt?.seconds ? new Date(f.createdAt.seconds*1000) : null;
             if(ts && ts >= startToday && ts <= endToday){
-              if(f.type === 'income') todayIn += amt;
-              else todayOut += amt;
+              if(f.type === 'income') todayIn += amt; else todayOut += amt;
             }
           }
         });
@@ -912,18 +868,16 @@
         $("lastIncomeAmt").textContent = "Rp " + lastInc.toLocaleString('id-ID');
         $("lastExpenseAmt").textContent = "Rp " + lastExp.toLocaleString('id-ID');
         $("todayChip").textContent = `TODAY: ${todayIn.toLocaleString('id-ID')} IN / ${todayOut.toLocaleString('id-ID')} OUT`;
-
         renderChart(chartIncome, chartExpense);
 
-        // Widgets
         const evSnapshot = await getDocs(query(collection(db, "activities"), orderBy("date", "asc"), limit(1)));
         if(!evSnapshot.empty) {
           const e = evSnapshot.docs[0].data();
-          $("widgetEvent").textContent = `${e.title} (${e.date})`;
+          $("widgetEvent").textContent = `${clean(e.title)} (${clean(e.date)})`;
         } else $("widgetEvent").textContent = "Belum ada acara mendatang";
 
         const notifSnapshot = await getDocs(query(collection(db, "notifications"), orderBy("createdAt", "desc"), limit(1)));
-        if(!notifSnapshot.empty) $("widgetAlert").textContent = notifSnapshot.docs[0].data().title;
+        if(!notifSnapshot.empty) $("widgetAlert").textContent = clean(notifSnapshot.docs[0].data().title);
         else $("widgetAlert").textContent = "Tidak ada pengumuman";
 
         const uSnapshot = await getDocs(collection(db, "users"));
@@ -934,27 +888,17 @@
     function renderChart(inc, exp) {
       const ctx = $("financeChart").getContext('2d');
       if(financeChartInstance) financeChartInstance.destroy();
-
       financeChartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
           labels: ['Masuk', 'Keluar'],
-          datasets: [{
-            data: [inc, exp],
-            backgroundColor: ['#4ade80', '#f87171'],
-            borderWidth: 0,
-            hoverOffset: 10
-          }]
+          datasets: [{ data: [inc, exp], backgroundColor: ['#4ade80', '#f87171'], borderWidth: 0, hoverOffset: 10 }]
         },
         options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { position: 'right', labels: { boxWidth: 10, font: { family: 'Plus Jakarta Sans', size: 10 } } },
-            tooltip: { callbacks: { label: (c) => ` Rp ${Number(c.raw||0).toLocaleString('id-ID')}` } }
-          },
-          cutout: '75%',
-          layout: { padding: 10 }
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { family: 'Plus Jakarta Sans', size: 10 } } },
+            tooltip: { callbacks: { label: (c) => ` Rp ${Number(c.raw||0).toLocaleString('id-ID')}` } } },
+          cutout: '75%', layout: { padding: 10 }
         }
       });
     }
@@ -965,20 +909,17 @@
         if(snap.exists()){
           const d = snap.data();
           const photoUrl = d.photo?.url || "https://via.placeholder.com/150";
-
-          $("headerName").textContent = d.name || "Admin";
+          $("headerName").textContent = clean(d.name) || "Admin";
           $("headerPhoto").src = photoUrl;
           $("profileImage").src = photoUrl;
-          $("profileNameDisplay").textContent = d.name || "Tanpa Nama";
-          $("profileEmailDisplay").textContent = d.email;
-
+          $("profileNameDisplay").textContent = clean(d.name) || "Tanpa Nama";
+          $("profileEmailDisplay").textContent = clean(d.email);
           const role = d.role ? d.role.replace('_', ' ') : 'ANGGOTA';
           $("profileRoleBadge").textContent = role;
-
-          $("editName").value = d.name || "";
-          $("editPhone").value = d.phone || "";
-          $("editAddress").value = d.address || "";
-          $("editBio").value = d.bio || "";
+          $("editName").value = clean(d.name) || "";
+          $("editPhone").value = clean(d.phone) || "";
+          $("editAddress").value = clean(d.address) || "";
+          $("editBio").value = clean(d.bio) || "";
         }
       } catch(e) { console.error("Profile Load Error:", e); }
     }
@@ -1008,7 +949,7 @@
             <div class="flex gap-4 items-center mt-3">
               <img src="${u.photo?.url || 'https://via.placeholder.com/150'}" class="w-16 h-16 rounded-xl object-cover bg-slate-700 border border-slate-500">
               <div>
-                <h3 class="text-lg font-extrabold leading-none">${u.name || 'Nama Anggota'}</h3>
+                <h3 class="text-lg font-extrabold leading-none">${clean(u.name) || 'Nama Anggota'}</h3>
                 <p class="text-[10px] text-slate-300 mt-1 uppercase">${(u.role || 'Anggota').replace('_',' ')}</p>
                 <p class="text-[9px] text-slate-400 mt-0.5">${String(ME_UID).substring(0,8).toUpperCase()}</p>
               </div>
@@ -1031,50 +972,25 @@
       const btn = event?.target;
       const originalText = btn?.innerText || "SIMPAN PROFIL";
       if(btn){ btn.innerText = "MENYIMPAN..."; btn.disabled = true; }
-
       toggleLoader(true);
       try {
-        let updateData = {
-          name: $("editName").value,
-          phone: $("editPhone").value,
-          address: $("editAddress").value,
-          bio: $("editBio").value
-        };
-
+        let updateData = { name: $("editName").value, phone: $("editPhone").value, address: $("editAddress").value, bio: $("editBio").value };
         if(newProfileFile) {
           const uploaded = await uploadToCloudinary(newProfileFile);
           if(uploaded) updateData.photo = uploaded;
         }
-
         await updateDoc(doc(db, "users", ME_UID), updateData);
         await writeAudit("profile_update", { fields: Object.keys(updateData) });
         showToast("Profil berhasil diperbarui!");
         await loadProfileData();
         newProfileFile = null;
-      } catch(e) {
-        console.error(e);
-        showToast("Gagal simpan profil", "error");
-      } finally {
-        toggleLoader(false);
-        if(btn){ btn.innerText = originalText; btn.disabled = false; }
-      }
-    }
-
-    window.filterList = (listId, queryStr) => {
-      const list = $(listId);
-      if(!list) return;
-      const items = list.children;
-      const term = String(queryStr||"").toLowerCase();
-      for(let item of items) {
-        const text = item.innerText.toLowerCase();
-        item.style.display = text.includes(term) ? "" : "none";
-      }
+      } catch(e) { console.error(e); showToast("Gagal simpan profil", "error"); }
+      finally { toggleLoader(false); if(btn){ btn.innerText = originalText; btn.disabled = false; } }
     }
 
     window.exportTableToCSV = (type) => {
       let rows = [];
       const timestamp = new Date().toISOString().slice(0,10);
-
       if(type === 'finance') {
         rows.push(["Tanggal", "Keterangan", "Tipe", "Jumlah"]);
         const items = document.querySelectorAll("#finList > div");
@@ -1094,7 +1010,6 @@
           rows.push([name, role]);
         });
       }
-
       let csvContent = "data:text/csv;charset=utf-8,";
       rows.forEach(e => csvContent += e.join(",") + "\r\n");
       const encodedUri = encodeURI(csvContent);
@@ -1104,29 +1019,26 @@
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
       writeAudit("export_csv", { type });
       showToast("CSV berhasil dibuat.");
     }
 
-    // ============ LIST LOADERS ============
+    // ============ LIST LOADERS (WITH SECURITY) ============
     async function loadUsers() {
       const list = $("userList"); list.innerHTML = "";
       try {
         const snap = await getDocs(query(collection(db, "users"), orderBy("name")));
         const roles = ["anggota", "koordinator", "sekretaris", "bendahara", "wakil_ketua", "ketua", "super_admin"];
-
         snap.forEach(d => {
           const u = d.data();
           if(d.id === ME_UID) return;
           let options = roles.map(r => `<option value="${r}" ${u.role===r ? 'selected' : ''}>${r.replace('_',' ').toUpperCase()}</option>`).join('');
-
           list.innerHTML += `
             <div class="glass-card p-4 rounded-2xl flex items-center justify-between">
               <div class="flex items-center gap-3 overflow-hidden">
                 <img src="${u.photo?.url || 'https://via.placeholder.com/50'}" class="w-10 h-10 rounded-full object-cover" style="background: rgba(148,163,184,.12)">
                 <div class="min-w-0">
-                  <p class="text-sm font-extrabold truncate" style="color: var(--fg0)">${u.name || 'User'}</p>
+                  <p class="text-sm font-extrabold truncate" style="color: var(--fg0)">${clean(u.name) || 'User'}</p>
                   <select onchange="changeRole('${d.id}', this.value)"
                           class="text-xs font-extrabold rounded border-none outline-none cursor-pointer uppercase py-1 mt-1"
                           style="background: rgba(148,163,184,.10); color: #F97316">
@@ -1144,14 +1056,23 @@
       } catch(e) { console.error(e); }
     }
 
+    // ============ FIX: IMPROVED CHANGE ROLE ============
     window.changeRole = async (uid, val) => {
+      if (!uid) { showToast("Error: ID User tidak ditemukan", "error"); return; }
       toggleLoader(true);
       try {
-        await updateDoc(doc(db, "users", uid), { role: val });
+        const userRef = doc(db, "users", uid);
+        await updateDoc(userRef, { role: val });
         await writeAudit("role_change", { uid, role: val });
-        showToast("Role diupdate!");
-      } catch(e){ showToast("Gagal ubah role", "error"); }
-      finally { toggleLoader(false); }
+        showToast("Role berhasil diupdate!");
+      } catch(e) {
+        console.error("GAGAL GANTI ROLE:", e);
+        if (e.code === 'permission-denied') {
+          showToast("Gagal: Izin ditolak (Cek Firestore Rules/Anda bukan Super Admin)", "error");
+        } else {
+          showToast("Gagal update role", "error");
+        }
+      } finally { toggleLoader(false); }
     }
 
     async function loadInventory() {
@@ -1159,7 +1080,6 @@
       try {
         const snap = await getDocs(query(collection(db, "inventory"), orderBy("name")));
         if(snap.empty) { list.innerHTML = '<p class="col-span-2 text-center text-xs mt-4" style="color: rgba(148,163,184,.95)">Belum ada barang.</p>'; return; }
-
         snap.forEach(d => {
           const i = d.data();
           list.innerHTML += `
@@ -1172,11 +1092,11 @@
                 <div class="flex justify-between items-start">
                   <span class="text-[10px] font-extrabold px-2 py-0.5 rounded"
                         style="background: ${i.status === 'good' ? 'rgba(34,197,94,.12)' : 'rgba(239,68,68,.12)'}; color: ${i.status === 'good' ? 'rgb(34,197,94)' : 'rgb(239,68,68)'}">
-                    ${i.qty} Unit
+                    ${clean(i.qty)} Unit
                   </span>
                 </div>
-                <h4 class="text-xs font-extrabold line-clamp-1 mt-1" style="color: var(--fg0)">${i.name}</h4>
-                <p class="text-[10px] line-clamp-1" style="color: rgba(148,163,184,.95)">${i.desc || ''}</p>
+                <h4 class="text-xs font-extrabold line-clamp-1 mt-1" style="color: var(--fg0)">${clean(i.name)}</h4>
+                <p class="text-[10px] line-clamp-1" style="color: rgba(148,163,184,.95)">${clean(i.desc) || ''}</p>
               </div>
               <button onclick="deleteDocData('inventory','${d.id}')" class="tap absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center shadow-sm"
                       style="background: rgba(255,255,255,.75); color: rgb(239,68,68)">
@@ -1193,7 +1113,6 @@
       try {
         const snap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc")));
         if(snap.empty) { list.innerHTML = '<p class="text-center text-sm mt-10" style="color: rgba(148,163,184,.95)">Belum ada data kas.</p>'; return; }
-
         snap.forEach(d => {
           const f = d.data();
           const isInc = f.type === 'income';
@@ -1206,7 +1125,7 @@
                   <span class="material-symbols-rounded text-xl">${isInc ? 'arrow_downward' : 'arrow_upward'}</span>
                 </div>
                 <div>
-                  <p class="text-sm font-extrabold line-clamp-1 break-all" style="color: var(--fg0)">${f.note || '-'}</p>
+                  <p class="text-sm font-extrabold line-clamp-1 break-all" style="color: var(--fg0)">${clean(f.note) || '-'}</p>
                   <div class="flex items-center gap-2 mt-1">
                     <p class="text-[10px] font-bold text-slate-400">${dt}</p>
                     <button onclick="deleteDocData('financial_records','${d.id}')" class="text-[10px] font-extrabold px-2 py-0.5 rounded-md active:scale-95 transition-transform no-print"
@@ -1226,7 +1145,6 @@
       try {
         const snap = await getDocs(query(collection(db, "activities"), orderBy("date", "asc")));
         if(snap.empty) { list.innerHTML = '<p class="text-center text-sm mt-10" style="color: rgba(148,163,184,.95)">Belum ada kegiatan.</p>'; return; }
-
         snap.forEach(d => {
           const x = d.data();
           list.innerHTML += `
@@ -1234,10 +1152,10 @@
               <img src="${x.cover?.url || 'https://via.placeholder.com/150'}" class="w-28 h-full object-cover">
               <div class="p-4 flex flex-col justify-center w-full min-w-0">
                 <div class="w-fit px-2 py-0.5 rounded text-[9px] font-extrabold uppercase mb-1"
-                     style="background: rgba(37,99,235,.12); color: rgba(37,99,235,.95)">${x.date || '-'}</div>
-                <h3 class="text-sm font-extrabold line-clamp-2 leading-tight" style="color: var(--fg0)">${x.title || '-'}</h3>
+                     style="background: rgba(37,99,235,.12); color: rgba(37,99,235,.95)">${clean(x.date) || '-'}</div>
+                <h3 class="text-sm font-extrabold line-clamp-2 leading-tight" style="color: var(--fg0)">${clean(x.title) || '-'}</h3>
                 <p class="text-[10px] text-slate-400 line-clamp-1 flex items-center gap-1 mt-1.5">
-                  <span class="material-symbols-rounded text-[12px]">location_on</span> ${x.location || '-'}
+                  <span class="material-symbols-rounded text-[12px]">location_on</span> ${clean(x.location) || '-'}
                 </p>
               </div>
               <button onclick="deleteDocData('activities','${d.id}')" class="tap absolute bottom-2 right-2 rounded-full p-2 z-20 active:scale-90 transition-transform no-print"
@@ -1255,7 +1173,6 @@
       try {
         const snap = await getDocs(query(collection(db, "notifications"), orderBy("createdAt", "desc")));
         if(snap.empty) { list.innerHTML = '<p class="text-center text-sm mt-10" style="color: rgba(148,163,184,.95)">Belum ada pengumuman.</p>'; return; }
-
         snap.forEach(d => {
           const n = d.data();
           const important = n.level === 'important';
@@ -1265,17 +1182,28 @@
               <div class="flex justify-between items-start mb-2">
                 <h4 class="text-sm font-extrabold uppercase tracking-wide flex items-center gap-2" style="color: var(--fg0)">
                   ${important ? '<span class="material-symbols-rounded text-red-500 text-sm">warning</span>' : '<span class="material-symbols-rounded text-accent text-sm">info</span>'}
-                  ${n.title || '-'}
+                  ${clean(n.title) || '-'}
                 </h4>
                 <button onclick="deleteDocData('notifications','${d.id}')" class="tap text-slate-300 hover:text-red-500 active:scale-90 transition-transform no-print">
                   <span class="material-symbols-rounded text-lg">close</span>
                 </button>
               </div>
-              <p class="text-xs leading-relaxed" style="color: rgba(148,163,184,.95)">${n.body || ''}</p>
+              <p class="text-xs leading-relaxed" style="color: rgba(148,163,184,.95)">${clean(n.body) || ''}</p>
             </div>
           `;
         });
       } catch(e) { console.error(e); }
+    }
+
+    window.filterList = (listId, queryStr) => {
+      const list = $(listId);
+      if(!list) return;
+      const items = list.children;
+      const term = String(queryStr||"").toLowerCase();
+      for(let item of items) {
+        const text = item.innerText.toLowerCase();
+        item.style.display = text.includes(term) ? "" : "none";
+      }
     }
 
     // ============ MODALS ============
@@ -1295,11 +1223,7 @@
         toggleLoader(true);
         try {
           await addDoc(collection(db,"financial_records"), {
-            type: $("finT").value,
-            amount: $("finA").value,
-            note: $("finN").value,
-            status: "approved",
-            createdAt: serverTimestamp()
+            type: $("finT").value, amount: $("finA").value, note: $("finN").value, status: "approved", createdAt: serverTimestamp()
           });
           await writeAudit("finance_add", { type: $("finT").value, amount: $("finA").value });
           closeModal(); await loadHomeData(); await loadFinance();
@@ -1335,14 +1259,8 @@
           let imgData = null;
           const fileInput = $("invFile");
           if (fileInput.files.length > 0) imgData = await uploadToCloudinary(fileInput.files[0]);
-
           await addDoc(collection(db, "inventory"), {
-            name: $("invN").value,
-            qty: $("invQ").value,
-            desc: $("invD").value,
-            status: $("invS").value,
-            image: imgData,
-            createdAt: serverTimestamp()
+            name: $("invN").value, qty: $("invQ").value, desc: $("invD").value, status: $("invS").value, image: imgData, createdAt: serverTimestamp()
           });
           await writeAudit("inventory_add", { name: $("invN").value, qty: $("invQ").value });
           closeModal(); await loadInventory();
@@ -1372,8 +1290,7 @@
           let cover = null;
           if($("actF").files.length > 0) cover = await uploadToCloudinary($("actF").files[0]);
           await addDoc(collection(db,"activities"), {
-            title:$("actT").value, date:$("actD").value, location:$("actL").value,
-            cover, status:"approved", createdAt:serverTimestamp()
+            title:$("actT").value, date:$("actD").value, location:$("actL").value, cover, status:"approved", createdAt:serverTimestamp()
           });
           await writeAudit("activity_add", { title: $("actT").value, date: $("actD").value });
           closeModal(); await loadHomeData(); await loadActivities();
@@ -1414,15 +1331,13 @@
         await deleteDoc(doc(db, col, id));
         await writeAudit("delete", { col, id });
         showToast("Data dihapus.");
-
         if(col==='users') await loadUsers();
         else if(col==='financial_records') await loadFinance();
         else if(col==='activities') await loadActivities();
         else if(col==='notifications') await loadNotifications();
         else if(col==='inventory') await loadInventory();
-
         await loadHomeData();
-      } catch(e) { console.error(e); showToast("Gagal menghapus.", "error"); }
+      } catch(e) { console.error(e); showToast("Gagal menghapus (Akses Ditolak).", "error"); }
       finally { toggleLoader(false); }
     };
 
