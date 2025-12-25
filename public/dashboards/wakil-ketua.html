@@ -19,7 +19,7 @@
             brand: { primary: '#0F172A', light: '#334155' },
             teal: { DEFAULT: '#0D9488', light: '#CCFBF1', dark: '#115E59' }
           },
-          animation: { 
+          animation: {
             'blob': 'blob 10s infinite',
             'slide-in-top': 'slideInTop 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both',
           },
@@ -31,8 +31,8 @@
               '100%': { transform: 'translate(0px, 0px) scale(1)' },
             },
             slideInTop: {
-                '0%': { transform: 'translateY(-100px)', opacity: '0' },
-                '100%': { transform: 'translateY(0)', opacity: '1' }
+              '0%': { transform: 'translateY(-100px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' }
             }
           }
         }
@@ -54,12 +54,22 @@
     .view-section.active { display: block; opacity: 1; transform: translateY(0); }
     .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #0D9488; }
     .nav-btn.active p { color: #0F172A; font-weight: 700; }
-    
+
+    /* Dark mode (NEW) */
+    html.dark body { background-color: #0B1220; color: #E5E7EB; }
+    html.dark .glass-nav { background: rgba(15, 23, 42, 0.82); border-top: 1px solid rgba(255,255,255,0.06); }
+    html.dark .bg-white { background-color: rgba(15,23,42,0.92) !important; }
+    html.dark .text-brand-primary { color: #E5E7EB !important; }
+    html.dark .text-slate-400 { color: rgba(203,213,225,0.75) !important; }
+    html.dark .text-slate-500 { color: rgba(203,213,225,0.85) !important; }
+    html.dark .border-slate-100, html.dark .border-slate-200 { border-color: rgba(255,255,255,0.08) !important; }
+    html.dark .bg-slate-50, html.dark .bg-slate-100 { background-color: rgba(255,255,255,0.06) !important; }
+
     @media print {
-        body * { visibility: hidden; }
-        #printArea, #printArea * { visibility: visible; }
-        #printArea { position: absolute; left: 0; top: 0; width: 100%; background: white; padding: 20px; z-index: 9999; }
-        .no-print { display: none !important; }
+      body * { visibility: hidden; }
+      #printArea, #printArea * { visibility: visible; }
+      #printArea { position: absolute; left: 0; top: 0; width: 100%; background: white; padding: 20px; z-index: 9999; }
+      .no-print { display: none !important; }
     }
   </style>
 </head>
@@ -80,206 +90,282 @@
 
   <div id="gate" class="fixed inset-0 bg-slate-900 z-[9998] hidden items-center justify-center p-6 text-center backdrop-blur-sm">
     <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full animate-[slideInTop_0.5s]">
-        <div class="bg-red-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span class="material-symbols-rounded text-red-500 text-4xl">lock</span>
-        </div>
-        <h2 class="text-2xl font-extrabold text-brand-primary mb-2">Akses Ditolak</h2>
-        <p class="text-slate-500 text-sm mb-6">Halaman ini khusus Wakil Ketua.</p>
-        <a href="../login.html" class="block w-full bg-brand-primary text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors">Kembali</a>
+      <div class="bg-red-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+        <span class="material-symbols-rounded text-red-500 text-4xl">lock</span>
+      </div>
+      <h2 class="text-2xl font-extrabold text-brand-primary mb-2">Akses Ditolak</h2>
+      <p class="text-slate-500 text-sm mb-6">Halaman ini khusus Wakil Ketua.</p>
+      <a href="../login.html" class="block w-full bg-brand-primary text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors">Kembali</a>
     </div>
   </div>
 
   <div id="crudModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-all">
-    <div class="bg-white w-full max-w-md rounded-[2rem] p-6 relative shadow-2xl animate-[slideUp_0.3s_ease-out]">
+    <div class="bg-white w-full max-w-md rounded-[2rem] p-6 relative shadow-2xl">
       <div class="flex justify-between items-center mb-6">
-          <h2 id="modalTitle" class="text-xl font-extrabold text-brand-primary uppercase tracking-tight">Judul</h2>
-          <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors text-slate-500">
-            <span class="material-symbols-rounded text-xl">close</span>
-          </button>
+        <h2 id="modalTitle" class="text-xl font-extrabold text-brand-primary uppercase tracking-tight">Judul</h2>
+        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors text-slate-500">
+          <span class="material-symbols-rounded text-xl">close</span>
+        </button>
       </div>
       <div id="modalBody" class="space-y-4 max-h-[60vh] overflow-y-auto no-scrollbar"></div>
       <button id="modalSubmitBtn" class="mt-6 w-full rounded-xl bg-brand-primary text-white py-4 text-sm font-bold shadow-lg shadow-slate-300 hover:bg-slate-800 active:scale-95 transition-all">SIMPAN</button>
     </div>
   </div>
 
-  <header class="sticky top-0 z-30 px-6 pt-8 pb-4 bg-gradient-to-b from-[#F8FAFC] via-[#F8FAFC] to-transparent">
-      <div class="flex justify-between items-center">
-          <div class="flex items-center gap-3">
-              <button onclick="switchView('profile')" class="relative group active:scale-95 transition-transform">
-                <img id="headerPhoto" class="w-12 h-12 rounded-full border-2 border-white shadow-md object-cover" src="https://via.placeholder.com/100">
-                <div class="absolute bottom-0 right-0 w-4 h-4 bg-teal border-2 border-white rounded-full flex items-center justify-center text-[8px] text-white font-bold">2</div>
-              </button>
-              <div>
-                  <p class="text-[10px] font-bold text-teal-dark uppercase tracking-widest bg-teal-light px-2 py-0.5 rounded-full w-fit mb-0.5">Wakil Ketua</p>
-                  <h1 id="headerName" class="text-xl font-extrabold text-brand-primary leading-none">Memuat...</h1>
-              </div>
-          </div>
-          <button onclick="location.reload()" class="w-10 h-10 rounded-full bg-white border border-slate-100 shadow-sm flex items-center justify-center active:scale-95 text-slate-400">
-            <span class="material-symbols-rounded">refresh</span>
-          </button>
+  <header class="sticky top-0 z-30 px-6 pt-7 pb-4 bg-gradient-to-b from-[#F8FAFC] via-[#F8FAFC] to-transparent">
+    <div class="flex justify-between items-center gap-2">
+      <div class="flex items-center gap-3">
+        <button onclick="switchView('profile')" class="relative group active:scale-95 transition-transform">
+          <img id="headerPhoto" class="w-12 h-12 rounded-full border-2 border-white shadow-md object-cover" src="https://via.placeholder.com/100">
+          <div class="absolute bottom-0 right-0 w-4 h-4 bg-teal border-2 border-white rounded-full flex items-center justify-center text-[8px] text-white font-bold">2</div>
+        </button>
+        <div>
+          <p class="text-[10px] font-bold text-teal-dark uppercase tracking-widest bg-teal-light px-2 py-0.5 rounded-full w-fit mb-0.5">Wakil Ketua</p>
+          <h1 id="headerName" class="text-xl font-extrabold text-brand-primary leading-none">Memuat...</h1>
+        </div>
       </div>
+
+      <div class="flex items-center gap-2 no-print">
+        <!-- Dark mode (NEW) -->
+        <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-white border border-slate-100 shadow-sm flex items-center justify-center active:scale-95 text-slate-500" title="Mode Gelap/Terang">
+          <span id="themeIcon" class="material-symbols-rounded">dark_mode</span>
+        </button>
+        <button onclick="location.reload()" class="w-10 h-10 rounded-full bg-white border border-slate-100 shadow-sm flex items-center justify-center active:scale-95 text-slate-400">
+          <span class="material-symbols-rounded">refresh</span>
+        </button>
+      </div>
+    </div>
   </header>
 
   <main class="px-5 mt-2 relative z-10">
 
-      <section id="view-home" class="view-section active">
-          <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 group transition-all">
-              <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500 transform group-hover:scale-110"><span class="material-symbols-rounded text-9xl">verified_user</span></div>
-              <div class="relative z-10">
-                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Status Operasional</p>
-                <h2 id="cardBalance" class="text-4xl font-black tracking-tight mb-6">Rp 0</h2>
-                
-                <div class="bg-white/10 rounded-2xl p-4 backdrop-blur-md border border-white/5 flex items-center justify-between cursor-pointer active:scale-95 transition-transform" onclick="switchView('approvals')">
-                    <div>
-                        <p class="text-[9px] font-bold uppercase text-slate-300 mb-1">Perlu Persetujuan (ACC)</p>
-                        <p id="pendingCount" class="text-xl font-bold text-teal-300 leading-tight">0 Item</p>
-                    </div>
-                    <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center animate-pulse">
-                        <span class="material-symbols-rounded text-white text-2xl">pending_actions</span>
-                    </div>
-                </div>
-              </div>
-          </div>
-
-          <div class="bg-white rounded-[1.5rem] p-5 shadow-sm border border-slate-100 mt-6">
-             <div class="flex items-center gap-2 mb-4">
-                <span class="material-symbols-rounded text-slate-400">pie_chart</span>
-                <span class="text-xs font-bold text-slate-500 uppercase">Efisiensi Kegiatan & Kas</span>
-             </div>
-             <div class="h-40 relative w-full flex items-center justify-center">
-                <canvas id="opsChart"></canvas>
-             </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3 mt-6">
-              <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 shadow-sm active:scale-95 transition-transform" onclick="switchView('approvals')">
-                   <div class="w-10 h-10 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center mb-2"><span class="material-symbols-rounded">fact_check</span></div>
-                   <div>
-                       <h3 class="text-xs font-bold text-brand-primary">Verifikasi</h3>
-                       <p class="text-[10px] text-slate-400">ACC Kas & Acara</p>
-                   </div>
-              </div>
-
-              <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 shadow-sm active:scale-95 transition-transform" onclick="switchView('users')">
-                   <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-2"><span class="material-symbols-rounded">manage_accounts</span></div>
-                   <div>
-                       <h3 class="text-xs font-bold text-brand-primary">Anggota</h3>
-                       <p class="text-[10px] text-slate-400">Kelola Jabatan</p>
-                   </div>
-              </div>
-          </div>
-      </section>
-
-      <section id="view-users" class="view-section">
-          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
-            <div>
-                <h2 class="text-2xl font-bold text-brand-primary">Anggota</h2>
-                <p class="text-xs text-slate-400">Koordinasi Tim</p>
-            </div>
-            <span id="userCountBadge" class="bg-brand-primary text-white text-xs px-3 py-1.5 rounded-full font-bold">0</span>
-          </div>
-          <div id="userList" class="space-y-3 pb-20"></div>
-      </section>
-
-      <section id="view-profile" class="view-section">
-        <div class="flex flex-col items-center pt-4 pb-20">
-            <div class="relative group cursor-pointer active:scale-95 transition-transform" onclick="$('profileUpload').click()">
-                <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl shadow-slate-200">
-                <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span class="material-symbols-rounded text-white">photo_camera</span>
-                </div>
-            </div>
-            <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
-            
-            <h2 id="profileNameDisplay" class="text-xl font-bold text-brand-primary mt-4 mb-0.5">Nama Wakil</h2>
-            <div id="profileRoleBadge" class="px-3 py-0.5 bg-teal text-white rounded-full text-[10px] font-extrabold uppercase tracking-wide mb-1 shadow-lg shadow-teal/30">WAKIL KETUA</div>
-            <p id="profileEmailDisplay" class="text-sm text-slate-400">email@user.com</p>
-
-            <button onclick="showIdCard()" class="mt-4 w-full max-w-xs bg-slate-800 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-xl">
-                <span class="material-symbols-rounded">badge</span> Kartu Wakil Ketua
-            </button>
-
-            <div class="w-full mt-8 space-y-4 px-1">
-                <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm space-y-4">
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">badge</span> Nama Lengkap</label>
-                        <input id="editName" type="text" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-teal">
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">call</span> No. WhatsApp</label>
-                        <input id="editPhone" type="tel" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-teal">
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">home_pin</span> Alamat</label>
-                        <textarea id="editAddress" rows="2" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-teal resize-none"></textarea>
-                    </div>
-                </div>
-                
-                <button onclick="saveProfile()" class="w-full bg-brand-primary text-white py-4 rounded-2xl font-bold shadow-lg shadow-slate-300 hover:bg-slate-800 transition-all active:scale-95">SIMPAN PROFIL</button>
-                <button id="logoutBtn" class="w-full bg-red-50 text-red-500 py-4 rounded-2xl font-bold hover:bg-red-100 transition-all active:scale-95 flex items-center justify-center gap-2">
-                    <span class="material-symbols-rounded">logout</span> KELUAR
-                </button>
-            </div>
+    <!-- HOME -->
+    <section id="view-home" class="view-section active">
+      <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 group transition-all">
+        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500 transform group-hover:scale-110">
+          <span class="material-symbols-rounded text-9xl">verified_user</span>
         </div>
-      </section>
+        <div class="relative z-10">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Kas (Approved)</p>
+          <h2 id="cardBalance" class="text-4xl font-black tracking-tight mb-6">Rp 0</h2>
 
-      <section id="view-approvals" class="view-section">
-          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
+          <div class="bg-white/10 rounded-2xl p-4 backdrop-blur-md border border-white/5 flex items-center justify-between cursor-pointer active:scale-95 transition-transform" onclick="switchView('approvals')">
             <div>
-                <h2 class="text-2xl font-bold text-brand-primary">Pusat Verifikasi</h2>
-                <p class="text-xs text-slate-400">Setujui kegiatan & keuangan</p>
+              <p class="text-[9px] font-bold uppercase text-slate-300 mb-1">Perlu Persetujuan (ACC)</p>
+              <p id="pendingCount" class="text-xl font-bold text-teal-300 leading-tight">0 Item</p>
             </div>
-            <button onclick="printFinance()" class="w-10 h-10 bg-slate-200 text-slate-600 rounded-full flex items-center justify-center active:scale-90 shadow-sm" title="Print Laporan"><span class="material-symbols-rounded">print</span></button>
+            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center animate-pulse">
+              <span class="material-symbols-rounded text-white text-2xl">pending_actions</span>
+            </div>
           </div>
-          
-          <div class="space-y-6 pb-20">
-              <div>
-                  <h3 class="text-sm font-bold text-slate-500 mb-3 px-1">KEGIATAN (PENDING)</h3>
-                  <div id="actList" class="space-y-3"></div>
-              </div>
 
-              <div id="printArea" class="bg-transparent">
-                  <div class="hidden mb-4 border-b-2 border-slate-800 pb-4 no-print-hide">
-                     <h1 class="text-2xl font-bold uppercase">Laporan Keuangan</h1>
-                     <p class="text-sm">Diverifikasi oleh Wakil Ketua pada: <span id="printDate"></span></p>
-                 </div>
-                 <h3 class="text-sm font-bold text-slate-500 mb-3 px-1 no-print">KEUANGAN & KAS</h3>
-                 <div id="finList" class="space-y-3"></div>
-              </div>
+          <!-- Quick Actions (NEW) -->
+          <div class="mt-4 grid grid-cols-2 gap-2">
+            <button onclick="bulkApprove()" class="bg-teal text-white py-2.5 rounded-xl text-xs font-extrabold active:scale-95 flex items-center justify-center gap-1 no-print">
+              <span class="material-symbols-rounded text-sm">done_all</span> ACC Semua Pending
+            </button>
+            <button onclick="openBackupModal()" class="bg-white/10 border border-white/10 py-2.5 rounded-xl text-xs font-extrabold active:scale-95 flex items-center justify-center gap-1 no-print">
+              <span class="material-symbols-rounded text-sm">cloud_download</span> Backup JSON
+            </button>
           </div>
-      </section>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-[1.5rem] p-5 shadow-sm border border-slate-100 mt-6">
+        <div class="flex items-center justify-between gap-2 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-rounded text-slate-400">pie_chart</span>
+            <span class="text-xs font-bold text-slate-500 uppercase">Efisiensi (Approved vs Pending)</span>
+          </div>
+          <button onclick="switchView('audit')" class="text-[10px] font-extrabold bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg active:scale-95 no-print flex items-center gap-1">
+            <span class="material-symbols-rounded text-sm">history</span> Audit
+          </button>
+        </div>
+        <div class="h-44 relative w-full flex items-center justify-center">
+          <canvas id="opsChart"></canvas>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 mt-6">
+        <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 shadow-sm active:scale-95 transition-transform" onclick="switchView('approvals')">
+          <div class="w-10 h-10 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center mb-2">
+            <span class="material-symbols-rounded">fact_check</span>
+          </div>
+          <div>
+            <h3 class="text-xs font-bold text-brand-primary">Verifikasi</h3>
+            <p class="text-[10px] text-slate-400">ACC Kas & Acara</p>
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 shadow-sm active:scale-95 transition-transform" onclick="switchView('users')">
+          <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-2">
+            <span class="material-symbols-rounded">manage_accounts</span>
+          </div>
+          <div>
+            <h3 class="text-xs font-bold text-brand-primary">Anggota</h3>
+            <p class="text-[10px] text-slate-400">Kelola Jabatan</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- USERS -->
+    <section id="view-users" class="view-section">
+      <div class="flex justify-between items-center mb-4 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
+        <div>
+          <h2 class="text-2xl font-bold text-brand-primary">Anggota</h2>
+          <p class="text-xs text-slate-400">Koordinasi Tim</p>
+        </div>
+        <span id="userCountBadge" class="bg-brand-primary text-white text-xs px-3 py-1.5 rounded-full font-bold">0</span>
+      </div>
+
+      <!-- Search (NEW) -->
+      <div class="mb-4 relative">
+        <span class="material-symbols-rounded absolute left-3 top-2.5 text-slate-400 text-lg">search</span>
+        <input id="searchUser" oninput="filterList('userList', this.value)" placeholder="Cari nama / role..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none focus:border-teal shadow-sm">
+      </div>
+
+      <div id="userList" class="space-y-3 pb-20"></div>
+    </section>
+
+    <!-- PROFILE -->
+    <section id="view-profile" class="view-section">
+      <div class="flex flex-col items-center pt-4 pb-20">
+        <div class="relative group cursor-pointer active:scale-95 transition-transform" onclick="$('profileUpload').click()">
+          <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl shadow-slate-200">
+          <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <span class="material-symbols-rounded text-white">photo_camera</span>
+          </div>
+        </div>
+        <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
+
+        <h2 id="profileNameDisplay" class="text-xl font-bold text-brand-primary mt-4 mb-0.5">Nama Wakil</h2>
+        <div id="profileRoleBadge" class="px-3 py-0.5 bg-teal text-white rounded-full text-[10px] font-extrabold uppercase tracking-wide mb-1 shadow-lg shadow-teal/30">WAKIL KETUA</div>
+        <p id="profileEmailDisplay" class="text-sm text-slate-400">email@user.com</p>
+
+        <button onclick="showIdCard()" class="mt-4 w-full max-w-xs bg-slate-800 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-xl no-print">
+          <span class="material-symbols-rounded">badge</span> Kartu Wakil Ketua
+        </button>
+
+        <div class="w-full mt-8 space-y-4 px-1">
+          <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm space-y-4">
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">badge</span> Nama Lengkap</label>
+              <input id="editName" type="text" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-teal">
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">call</span> No. WhatsApp</label>
+              <input id="editPhone" type="tel" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-teal">
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">home_pin</span> Alamat</label>
+              <textarea id="editAddress" rows="2" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-teal resize-none"></textarea>
+            </div>
+          </div>
+
+          <button onclick="saveProfile()" class="w-full bg-brand-primary text-white py-4 rounded-2xl font-bold shadow-lg shadow-slate-300 hover:bg-slate-800 transition-all active:scale-95">SIMPAN PROFIL</button>
+          <button id="logoutBtn" class="w-full bg-red-50 text-red-500 py-4 rounded-2xl font-bold hover:bg-red-100 transition-all active:scale-95 flex items-center justify-center gap-2">
+            <span class="material-symbols-rounded">logout</span> KELUAR
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- APPROVALS -->
+    <section id="view-approvals" class="view-section">
+      <div class="flex justify-between items-center mb-4 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
+        <div>
+          <h2 class="text-2xl font-bold text-brand-primary">Pusat Verifikasi</h2>
+          <p class="text-xs text-slate-400">ACC kegiatan & keuangan</p>
+        </div>
+        <div class="flex items-center gap-2 no-print">
+          <button onclick="exportFinanceCSV()" class="w-10 h-10 bg-emerald-600 text-white rounded-full flex items-center justify-center active:scale-90 shadow-lg" title="Export CSV">
+            <span class="material-symbols-rounded">download</span>
+          </button>
+          <button onclick="printFinance()" class="w-10 h-10 bg-slate-200 text-slate-600 rounded-full flex items-center justify-center active:scale-90 shadow-sm" title="Print">
+            <span class="material-symbols-rounded">print</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Finance (NEW) -->
+      <div class="mb-4 relative no-print">
+        <span class="material-symbols-rounded absolute left-3 top-2.5 text-slate-400 text-lg">search</span>
+        <input id="searchFin" oninput="filterList('finList', this.value)" placeholder="Cari transaksi (note)..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none focus:border-teal shadow-sm">
+      </div>
+
+      <div class="space-y-6 pb-20">
+        <div>
+          <h3 class="text-sm font-bold text-slate-500 mb-3 px-1">KEGIATAN (PENDING)</h3>
+          <div id="actList" class="space-y-3"></div>
+        </div>
+
+        <div id="printArea" class="bg-transparent">
+          <div class="hidden mb-4 border-b-2 border-slate-800 pb-4">
+            <h1 class="text-2xl font-bold uppercase">Laporan Keuangan</h1>
+            <p class="text-sm">Diverifikasi oleh Wakil Ketua pada: <span id="printDate"></span></p>
+          </div>
+          <h3 class="text-sm font-bold text-slate-500 mb-3 px-1 no-print">KEUANGAN & KAS</h3>
+          <div id="finList" class="space-y-3"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AUDIT (NEW) -->
+    <section id="view-audit" class="view-section">
+      <div class="flex justify-between items-center mb-4 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
+        <div>
+          <h2 class="text-2xl font-bold text-brand-primary">Audit Log</h2>
+          <p class="text-xs text-slate-400">Riwayat aksi Wakil Ketua</p>
+        </div>
+        <button onclick="loadAudit(true)" class="bg-slate-100 text-slate-700 px-3 py-2 rounded-xl font-extrabold text-xs active:scale-95 no-print flex items-center gap-1">
+          <span class="material-symbols-rounded text-sm">refresh</span> Refresh
+        </button>
+      </div>
+
+      <div id="auditList" class="space-y-3 pb-20"></div>
+    </section>
 
   </main>
 
-  <nav class="fixed bottom-0 w-full glass-nav pb-6 pt-2 px-4 z-50 rounded-t-[2rem]">
-      <div class="flex justify-between items-center max-w-sm mx-auto">
-          <button onclick="switchView('home')" class="nav-btn active flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="home">
-              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">dashboard</span>
-              <p class="text-[10px] font-medium text-slate-400 transition-colors">Home</p>
-          </button>
-          
-          <button onclick="switchView('users')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="users">
-              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">group</span>
-              <p class="text-[10px] font-medium text-slate-400 transition-colors">Anggota</p>
-          </button>
+  <nav class="fixed bottom-0 w-full glass-nav pb-6 pt-2 px-4 z-50 rounded-t-[2rem] no-print">
+    <div class="flex justify-between items-center max-w-sm mx-auto">
+      <button onclick="switchView('home')" class="nav-btn active flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="home">
+        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">dashboard</span>
+        <p class="text-[10px] font-medium text-slate-400 transition-colors">Home</p>
+      </button>
 
-          <div class="relative -top-6">
-            <button onclick="switchView('profile')" class="nav-btn w-14 h-14 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-xl shadow-slate-400 hover:scale-105 active:scale-95 transition-all ring-4 ring-white" data-target="profile">
-                <span class="material-symbols-rounded text-3xl">person</span>
-            </button>
-          </div>
+      <button onclick="switchView('users')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="users">
+        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">group</span>
+        <p class="text-[10px] font-medium text-slate-400 transition-colors">Anggota</p>
+      </button>
 
-          <button onclick="switchView('approvals')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="approvals">
-              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">fact_check</span>
-              <p class="text-[10px] font-medium text-slate-400 transition-colors">Approval</p>
-          </button>
+      <div class="relative -top-6">
+        <button onclick="switchView('profile')" class="nav-btn w-14 h-14 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-xl shadow-slate-400 hover:scale-105 active:scale-95 transition-all ring-4 ring-white" data-target="profile">
+          <span class="material-symbols-rounded text-3xl">person</span>
+        </button>
       </div>
+
+      <button onclick="switchView('approvals')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="approvals">
+        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">fact_check</span>
+        <p class="text-[10px] font-medium text-slate-400 transition-colors">Approval</p>
+      </button>
+
+      <!-- Audit tab (NEW) -->
+      <button onclick="switchView('audit')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="audit">
+        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">history</span>
+        <p class="text-[10px] font-medium text-slate-400 transition-colors">Audit</p>
+      </button>
+    </div>
   </nav>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, getDocs, addDoc, query, orderBy, limit, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import {
+      getFirestore, doc, getDoc, updateDoc, deleteDoc,
+      collection, getDocs, addDoc, query, orderBy, limit, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
@@ -289,298 +375,531 @@
       messagingSenderId: "1017734829960",
       appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d"
     };
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+
     const CLOUD_NAME = "dbxktcwug";
-    const UPLOAD_PRESET = "Karteji"; 
+    const UPLOAD_PRESET = "Karteji";
 
     window.$ = (id) => document.getElementById(id);
     let UID = null;
     let newProfileFile = null;
     let opsChart = null;
+    let financeCache = [];
 
-    // --- UX UTILITIES ---
+    // THEME (NEW)
+    function applyTheme() {
+      const t = localStorage.getItem("karteji_theme") || "light";
+      document.documentElement.classList.toggle("dark", t === "dark");
+      const icon = $("themeIcon");
+      if(icon) icon.textContent = (t === "dark") ? "light_mode" : "dark_mode";
+    }
+    window.toggleTheme = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      localStorage.setItem("karteji_theme", isDark ? "light" : "dark");
+      applyTheme();
+      showToast(isDark ? "Mode Terang aktif" : "Mode Gelap aktif");
+    };
+    applyTheme();
+
+    // TOAST
     window.showToast = (msg, type = 'success') => {
-        const container = $('toastContainer');
-        const el = document.createElement('div');
-        const color = type === 'error' ? 'bg-red-500' : 'bg-slate-800';
-        el.className = `${color} text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 animate-slide-in-top pointer-events-auto min-w-[200px] backdrop-blur-sm bg-opacity-90`;
-        el.innerHTML = `<span class="material-symbols-rounded text-lg">${type==='error'?'error':'check_circle'}</span><span class="text-xs font-bold">${msg}</span>`;
-        container.appendChild(el);
-        setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 3000);
+      const container = $('toastContainer');
+      const el = document.createElement('div');
+      const color = type === 'error' ? 'bg-red-500' : 'bg-slate-800';
+      el.className = `${color} text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 animate-slide-in-top pointer-events-auto min-w-[220px] backdrop-blur-sm bg-opacity-90`;
+      el.innerHTML = `<span class="material-symbols-rounded text-lg">${type==='error'?'error':'check_circle'}</span><span class="text-xs font-bold">${msg}</span>`;
+      container.appendChild(el);
+      setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 250); }, 2800);
     };
 
     function animateValue(obj, start, end, duration) {
-        if(!obj) return;
-        let startTimestamp = null;
-        const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            obj.innerHTML = "Rp " + Math.floor(progress * (end - start) + start).toLocaleString('id-ID');
-            if (progress < 1) { window.requestAnimationFrame(step); }
-        };
-        window.requestAnimationFrame(step);
+      if(!obj) return;
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        obj.innerHTML = "Rp " + Math.floor(progress * (end - start) + start).toLocaleString('id-ID');
+        if (progress < 1) window.requestAnimationFrame(step);
+      };
+      window.requestAnimationFrame(step);
     }
 
     window.toggleLoader = (show) => {
-        const l = $("globalLoader");
-        if(show) { l.classList.remove('hidden'); l.classList.add('flex'); } else { l.classList.add('hidden'); l.classList.remove('flex'); }
+      const l = $("globalLoader");
+      if(show) { l.classList.remove('hidden'); l.classList.add('flex'); }
+      else { l.classList.add('hidden'); l.classList.remove('flex'); }
     };
 
     window.closeModal = () => $("crudModal").classList.add('hidden');
     window.showModal = (title, bodyHtml, onSave) => {
-        $("modalTitle").textContent = title;
-        $("modalBody").innerHTML = bodyHtml;
-        $("crudModal").classList.remove('hidden'); $("crudModal").classList.add('flex');
-        const btn = $("modalSubmitBtn");
-        const newBtn = btn.cloneNode(true);
-        btn.parentNode.replaceChild(newBtn, btn);
-        newBtn.onclick = onSave;
-        if (!onSave) newBtn.style.display = 'none'; else newBtn.style.display = 'block';
+      $("modalTitle").textContent = title;
+      $("modalBody").innerHTML = bodyHtml;
+      $("crudModal").classList.remove('hidden'); $("crudModal").classList.add('flex');
+      const btn = $("modalSubmitBtn");
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+      newBtn.onclick = onSave;
+      newBtn.style.display = onSave ? 'block' : 'none';
     };
 
-    window.printFinance = () => { $("printDate").innerText = new Date().toLocaleString('id-ID'); window.print(); }
+    window.printFinance = () => { $("printDate").innerText = new Date().toLocaleString('id-ID'); window.print(); };
+
+    window.filterList = (listId, q) => {
+      const list = $(listId);
+      const term = (q || "").toLowerCase();
+      for(const item of list.children){
+        const text = item.innerText.toLowerCase();
+        item.style.display = text.includes(term) ? "" : "none";
+      }
+    };
 
     window.switchView = (viewId) => {
-        document.querySelectorAll('.view-section').forEach(el => { el.classList.remove('active'); setTimeout(() => { if(!el.classList.contains('active')) el.style.display = 'none'; }, 200); });
-        const target = $(`view-${viewId}`); target.style.display = 'block'; setTimeout(() => target.classList.add('active'), 10);
-        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-        const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`); if(activeBtn) activeBtn.classList.add('active');
-        
-        if(viewId === 'home') loadHomeData();
-        if(viewId === 'users') loadUsers();
-        if(viewId === 'profile') loadProfileData();
-        if(viewId === 'approvals') loadApprovals();
+      document.querySelectorAll('.view-section').forEach(el => {
+        el.classList.remove('active');
+        setTimeout(() => { if(!el.classList.contains('active')) el.style.display = 'none'; }, 200);
+      });
+
+      const target = $(`view-${viewId}`);
+      target.style.display = 'block';
+      setTimeout(() => target.classList.add('active'), 10);
+
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`);
+      if(activeBtn) activeBtn.classList.add('active');
+
+      if(viewId === 'home') loadHomeData();
+      if(viewId === 'users') loadUsers();
+      if(viewId === 'profile') loadProfileData();
+      if(viewId === 'approvals') loadApprovals();
+      if(viewId === 'audit') loadAudit(false);
     };
 
     async function upload(file) {
-        if(!file) return null;
-        const fd = new FormData(); fd.append("file", file); fd.append("upload_preset", UPLOAD_PRESET);
-        try { const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{ method:"POST", body:fd }); const d = await res.json(); return { url:d.secure_url }; } catch(e) { showToast("Gagal Upload", "error"); throw e; }
+      if(!file) return null;
+      if(!file.type.startsWith("image/")) { showToast("File harus gambar", "error"); return null; }
+      const fd = new FormData(); fd.append("file", file); fd.append("upload_preset", UPLOAD_PRESET);
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{ method:"POST", body:fd });
+      const d = await res.json();
+      if(d?.error) throw new Error(d.error.message);
+      return { url:d.secure_url };
     }
 
-    // --- AUTH ---
+    // AUDIT LOG (NEW)
+    async function writeAudit(action, targetType="-", targetId="-", meta={}) {
+      try {
+        await addDoc(collection(db, "audit_logs"), {
+          actorUid: UID,
+          actorRole: "wakil_ketua",
+          action,
+          targetType,
+          targetId,
+          meta,
+          createdAt: serverTimestamp()
+        });
+      } catch(e) { console.warn("audit gagal:", e?.message); }
+    }
+
+    // AUTH
     onAuthStateChanged(auth, async user => {
-        if(!user) return location.href = "login.html";
-        toggleLoader(true);
-        try {
-            const snap = await getDoc(doc(db,"users",user.uid));
-            if(!snap.exists() || (snap.data().role !== "wakil_ketua" && snap.data().role !== "super_admin")){
-                toggleLoader(false); $("gate").classList.remove("hidden"); $("gate").classList.add("flex"); return;
-            }
-            UID = user.uid;
-            await Promise.all([loadHomeData(), loadProfileData()]);
-        } catch(e) { console.error(e); }
-        toggleLoader(false);
+      if(!user) return location.href = "login.html";
+      toggleLoader(true);
+      try {
+        const snap = await getDoc(doc(db,"users",user.uid));
+        if(!snap.exists() || (snap.data().role !== "wakil_ketua" && snap.data().role !== "super_admin")){
+          toggleLoader(false); $("gate").classList.remove("hidden"); $("gate").classList.add("flex"); return;
+        }
+        UID = user.uid;
+        await Promise.all([loadHomeData(), loadProfileData()]);
+      } catch(e) {
+        console.error(e);
+        showToast("Gagal memuat (cek koneksi/rules)", "error");
+      }
+      toggleLoader(false);
     });
 
-    // --- DASHBOARD ---
+    // DASHBOARD (fix: pending count akurat)
     async function loadHomeData() {
-        const fin = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc")));
-        let bal = 0, pending = 0, approved = 0;
+      try {
+        const finSnap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc")));
+        const actSnap = await getDocs(query(collection(db, "activities"), orderBy("createdAt", "desc")));
 
-        fin.forEach(d => {
-            const f = d.data();
-            if(f.status === 'approved') {
-                approved++;
-                if(f.type === 'income') bal += Number(f.amount); else bal -= Number(f.amount);
-            } else if(f.status === 'pending') {
-                pending++;
-            }
+        let bal = 0;
+        let pending = 0;
+        let approved = 0;
+
+        finSnap.forEach(d => {
+          const f = d.data();
+          if(f.status === 'approved') {
+            approved++;
+            if(f.type === 'income') bal += Number(f.amount||0);
+            else bal -= Number(f.amount||0);
+          } else if(f.status === 'pending') pending++;
         });
 
-        const acts = await getDocs(collection(db, "activities"));
-        acts.forEach(d => {
-            if(d.data().status === 'pending') pending++;
-            else approved++;
+        actSnap.forEach(d => {
+          const a = d.data();
+          if(a.status === 'approved') approved++;
+          if(a.status === 'pending') pending++;
         });
 
-        animateValue($("cardBalance"), 0, bal, 1500);
+        animateValue($("cardBalance"), 0, bal, 1200);
         $("pendingCount").textContent = pending > 0 ? `${pending} Item` : "Semua Aman";
-        if(pending > 0) $("pendingCount").classList.add("text-orange-400");
-        
+        $("pendingCount").classList.toggle("text-orange-400", pending > 0);
+
         renderChart(approved, pending);
+      } catch(e){
+        console.error(e);
+        showToast("Gagal load dashboard", "error");
+      }
     }
 
     function renderChart(app, pend) {
-        const ctx = $("opsChart").getContext('2d');
-        if(opsChart) opsChart.destroy();
-        opsChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Selesai (Approved)', 'Menunggu (Pending)'],
-                datasets: [{
-                    data: [app, pend],
-                    backgroundColor: ['#0D9488', '#F97316'],
-                    borderWidth: 0,
-                    hoverOffset: 10
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } } },
-                cutout: '70%'
-            }
-        });
-    }
-
-    // --- PROFILE ---
-    async function loadProfileData() {
-        const snap = await getDoc(doc(db, "users", UID));
-        if(snap.exists()){
-            const d = snap.data();
-            $("headerName").textContent = d.name || "Wakil";
-            $("headerPhoto").src = d.photo?.url || "https://via.placeholder.com/150";
-            $("profileImage").src = d.photo?.url || "https://via.placeholder.com/150";
-            $("profileNameDisplay").textContent = d.name;
-            $("profileEmailDisplay").textContent = d.email;
-            $("editName").value = d.name||""; $("editPhone").value = d.phone||""; $("editAddress").value = d.address||"";
+      const ctx = $("opsChart").getContext('2d');
+      if(opsChart) opsChart.destroy();
+      opsChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Approved', 'Pending'],
+          datasets: [{
+            data: [app, pend],
+            backgroundColor: ['#0D9488', '#F97316'],
+            borderWidth: 0,
+            hoverOffset: 10
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } },
+          cutout: '70%'
         }
+      });
     }
 
-    window.previewProfileImage = (input) => { if (input.files[0]) { newProfileFile = input.files[0]; $("profileImage").src = URL.createObjectURL(newProfileFile); } }
+    // PROFILE
+    async function loadProfileData() {
+      const snap = await getDoc(doc(db, "users", UID));
+      if(snap.exists()){
+        const d = snap.data();
+        $("headerName").textContent = d.name || "Wakil";
+        $("headerPhoto").src = d.photo?.url || "https://via.placeholder.com/150";
+        $("profileImage").src = d.photo?.url || "https://via.placeholder.com/150";
+        $("profileNameDisplay").textContent = d.name || "-";
+        $("profileEmailDisplay").textContent = d.email || "-";
+        $("editName").value = d.name||""; $("editPhone").value = d.phone||""; $("editAddress").value = d.address||"";
+      }
+    }
+
+    window.previewProfileImage = (input) => {
+      if (input.files?.[0]) { newProfileFile = input.files[0]; $("profileImage").src = URL.createObjectURL(newProfileFile); }
+    };
 
     window.saveProfile = async () => {
-        toggleLoader(true);
-        try {
-            let data = { name:$("editName").value, phone:$("editPhone").value, address:$("editAddress").value };
-            if(newProfileFile) { data.photo = await upload(newProfileFile); }
-            await updateDoc(doc(db, "users", UID), data);
-            showToast("Profil Disimpan"); await loadProfileData();
-        } catch(e) { showToast("Gagal update", "error"); } finally { toggleLoader(false); }
-    }
+      toggleLoader(true);
+      try {
+        let data = { name:$("editName").value.trim(), phone:$("editPhone").value.trim(), address:$("editAddress").value.trim() };
+        if(newProfileFile) data.photo = await upload(newProfileFile);
+        await updateDoc(doc(db, "users", UID), data);
+        await writeAudit("profile_update", "users", UID, { fields:Object.keys(data) });
+        showToast("Profil Disimpan"); newProfileFile = null; await loadProfileData();
+      } catch(e) {
+        console.error(e);
+        showToast("Gagal update", "error");
+      } finally { toggleLoader(false); }
+    };
 
     window.showIdCard = async () => {
-        const snap = await getDoc(doc(db, "users", UID));
-        const u = snap.data();
-        const html = `
-            <div class="bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-white p-5 rounded-2xl relative overflow-hidden shadow-2xl border-t border-slate-600">
-                <div class="absolute -right-10 -top-10 w-40 h-40 bg-teal/20 rounded-full blur-3xl"></div>
-                <div class="flex justify-between items-center mb-6 relative z-10">
-                    <div class="flex items-center gap-2"><div class="w-8 h-8 bg-white/10 rounded flex items-center justify-center"><span class="material-symbols-rounded text-teal">verified</span></div><span class="font-bold tracking-widest text-xs">KARTEJI OPS</span></div>
-                </div>
-                <div class="flex gap-4 items-center">
-                     <img src="${u.photo?.url||'https://via.placeholder.com/100'}" class="w-20 h-20 rounded-xl object-cover border-2 border-teal shadow-lg bg-slate-800">
-                     <div>
-                        <h2 class="text-xl font-bold leading-none mb-1 text-teal">${u.name}</h2>
-                        <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">WAKIL KETUA</p>
-                        <p class="text-[9px] mt-2 text-slate-500">ID: ${UID.substring(0,8).toUpperCase()}</p>
-                     </div>
-                </div>
+      const snap = await getDoc(doc(db, "users", UID));
+      const u = snap.data() || {};
+      const html = `
+        <div class="bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-white p-5 rounded-2xl relative overflow-hidden shadow-2xl border-t border-slate-600">
+          <div class="absolute -right-10 -top-10 w-40 h-40 bg-teal/20 rounded-full blur-3xl"></div>
+          <div class="flex justify-between items-center mb-6 relative z-10">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 bg-white/10 rounded flex items-center justify-center">
+                <span class="material-symbols-rounded text-teal">verified</span>
+              </div>
+              <span class="font-bold tracking-widest text-xs">KARTEJI OPS</span>
             </div>
-        `;
-        showModal("KARTU IDENTITAS DIGITAL", html, null);
-    }
+          </div>
+          <div class="flex gap-4 items-center">
+            <img src="${u.photo?.url||'https://via.placeholder.com/100'}" class="w-20 h-20 rounded-xl object-cover border-2 border-teal shadow-lg bg-slate-800">
+            <div>
+              <h2 class="text-xl font-bold leading-none mb-1 text-teal">${u.name||'Wakil Ketua'}</h2>
+              <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">WAKIL KETUA</p>
+              <p class="text-[9px] mt-2 text-slate-500">ID: ${UID.substring(0,8).toUpperCase()}</p>
+            </div>
+          </div>
+        </div>
+      `;
+      showModal("KARTU IDENTITAS DIGITAL", html, null);
+    };
 
-    // --- USERS ---
+    // USERS (role edit allowed except ketua/super_admin)
     async function loadUsers(){
-        const list = $("userList"); list.innerHTML = "";
-        const snap = await getDocs(query(collection(db,"users"), orderBy("name")));
-        $("userCountBadge").textContent = snap.size;
-        const roles = ["anggota", "koordinator", "sekretaris", "bendahara", "wakil_ketua"];
+      const list = $("userList"); list.innerHTML = "";
+      const snap = await getDocs(query(collection(db,"users"), orderBy("name")));
+      $("userCountBadge").textContent = snap.size;
 
-        snap.forEach(d => {
-            const u = d.data();
-            if(d.id === UID) return;
-            const isLocked = (u.role === "super_admin" || u.role === "ketua");
+      const roles = ["anggota", "koordinator", "sekretaris", "bendahara", "wakil_ketua"];
 
-            let control = isLocked ? `<span class="text-[10px] font-bold bg-slate-100 px-2 py-1 rounded text-slate-400">LOCKED</span>` : 
-            `<select onchange="changeRole('${d.id}',this.value)" class="text-xs bg-slate-50 border border-slate-200 rounded p-1 font-bold uppercase outline-none">${roles.map(r=>`<option value="${r}" ${u.role===r?'selected':''}>${r}</option>`).join('')}</select>`;
+      snap.forEach(d => {
+        const u = d.data();
+        if(d.id === UID) return;
 
-            list.innerHTML += `
-                <div class="bg-white p-4 rounded-xl flex items-center gap-3 border border-slate-100 shadow-sm">
-                    <img src="${u.photo?.url||'https://via.placeholder.com/40'}" class="w-12 h-12 rounded-full object-cover bg-slate-200">
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-bold text-brand-primary truncate">${u.name}</p>
-                        <div class="mt-1 flex items-center gap-2">${control}</div>
-                    </div>
-                </div>
-            `;
-        });
+        const isLocked = (u.role === "super_admin" || u.role === "ketua");
+        const control = isLocked
+          ? `<span class="text-[10px] font-bold bg-slate-100 px-2 py-1 rounded text-slate-400">LOCKED</span>`
+          : `<select onchange="changeRole('${d.id}',this.value,'${u.role||''}')" class="text-xs bg-slate-50 border border-slate-200 rounded p-2 font-bold uppercase outline-none">
+               ${roles.map(r=>`<option value="${r}" ${u.role===r?'selected':''}>${r.replace('_',' ')}</option>`).join('')}
+             </select>`;
+
+        list.innerHTML += `
+          <div class="bg-white p-4 rounded-2xl flex items-center gap-3 border border-slate-100 shadow-sm">
+            <img src="${u.photo?.url||'https://via.placeholder.com/40'}" class="w-12 h-12 rounded-full object-cover bg-slate-200">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-bold text-brand-primary truncate">${u.name||'User'}</p>
+              <p class="text-[10px] text-slate-400 truncate">${u.role||'-'}</p>
+              <div class="mt-2 flex items-center gap-2">${control}</div>
+            </div>
+          </div>
+        `;
+      });
     }
-    
-    window.changeRole = async (uid, val) => {
-        if(!confirm("Ubah jabatan?")) return loadUsers();
-        toggleLoader(true);
-        try { await updateDoc(doc(db,"users",uid), {role:val}); showToast("Jabatan Diubah"); } catch(e){ showToast("Gagal","error"); } finally { toggleLoader(false); }
-    }
 
-    // --- APPROVALS (Updated Logic) ---
+    window.changeRole = async (uid, val, oldVal) => {
+      if(!confirm("Ubah jabatan?")) return loadUsers();
+      toggleLoader(true);
+      try {
+        await updateDoc(doc(db,"users",uid), { role: val });
+        await writeAudit("role_change", "users", uid, { from: oldVal, to: val });
+        showToast("Jabatan Diubah");
+      } catch(e){
+        console.error(e);
+        showToast("Gagal ubah jabatan", "error");
+      } finally {
+        toggleLoader(false);
+      }
+    };
+
+    // APPROVALS (pending only)
     async function loadApprovals(){
-        const aList = $("actList"); aList.innerHTML = "";
-        const fList = $("finList"); fList.innerHTML = "";
-        
-        // Load Activities
-        const acts = await getDocs(query(collection(db,"activities"), orderBy("createdAt","desc")));
-        if(acts.empty) aList.innerHTML = '<p class="text-xs text-slate-400 italic">Tidak ada kegiatan.</p>';
-        acts.forEach(d => {
-            const x = d.data();
-            const isPending = x.status === 'pending';
-            aList.innerHTML += `
-                <div class="bg-white p-3 rounded-xl border ${isPending?'border-orange-300 bg-orange-50':'border-slate-100'} shadow-sm flex items-center justify-between">
-                    <div>
-                        <h4 class="text-sm font-bold text-brand-primary">${x.title}</h4>
-                        <p class="text-[10px] text-slate-400">${x.date || '-'} | ${x.location}</p>
-                    </div>
-                    ${isPending ? `<button onclick="approveDoc('activities','${d.id}')" class="bg-teal-500 text-white p-2 rounded-full shadow-lg hover:scale-110 transition-transform"><span class="material-symbols-rounded text-sm">check</span></button>` : '<span class="text-teal-600 material-symbols-rounded">verified</span>'}
-                </div>
-            `;
-        });
+      const aList = $("actList"); aList.innerHTML = "";
+      const fList = $("finList"); fList.innerHTML = "";
+      financeCache = [];
 
-        // Load Finance
-        const fin = await getDocs(query(collection(db,"financial_records"), orderBy("createdAt","desc"), limit(30)));
-        fin.forEach(d => {
-            const f = d.data();
-            const isPending = f.status === 'pending';
-            const isInc = f.type === 'income';
-            fList.innerHTML += `
-                <div class="bg-white p-3 rounded-xl border ${isPending?'border-orange-300 bg-orange-50':'border-slate-100'} shadow-sm flex items-center justify-between">
-                    <div>
-                        <h4 class="text-sm font-bold text-brand-primary">${f.note}</h4>
-                        <p class="text-[10px] text-slate-400">${new Date(f.createdAt?.seconds*1000).toLocaleDateString()}</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-xs font-bold ${isInc?'text-green-600':'text-red-500'}">${isInc?'+':'-'} ${Number(f.amount).toLocaleString()}</span>
-                        ${isPending ? `<button onclick="approveDoc('financial_records','${d.id}')" class="bg-teal-500 text-white p-2 rounded-full shadow-lg hover:scale-110 transition-transform"><span class="material-symbols-rounded text-sm">check</span></button>` : '<span class="text-teal-600 material-symbols-rounded">verified</span>'}
-                    </div>
-                </div>
-            `;
-        });
+      // Activities pending only
+      const acts = await getDocs(query(collection(db,"activities"), orderBy("createdAt","desc"), limit(80)));
+      let hasPendAct = false;
+      acts.forEach(d => {
+        const x = d.data();
+        if(x.status !== 'pending') return;
+        hasPendAct = true;
+        aList.innerHTML += `
+          <div class="bg-white p-3 rounded-xl border border-orange-300 bg-orange-50 shadow-sm flex items-center justify-between">
+            <div class="min-w-0">
+              <h4 class="text-sm font-bold text-brand-primary line-clamp-1">${x.title||'Kegiatan'}</h4>
+              <p class="text-[10px] text-slate-400 line-clamp-1">${x.date||'-'} | ${x.location||'-'}</p>
+            </div>
+            <button onclick="approveDoc('activities','${d.id}')" class="bg-teal text-white p-2 rounded-full shadow-lg hover:scale-110 transition-transform">
+              <span class="material-symbols-rounded text-sm">check</span>
+            </button>
+          </div>
+        `;
+      });
+      if(!hasPendAct) aList.innerHTML = `<p class="text-xs text-slate-400 italic px-1">Tidak ada kegiatan pending.</p>`;
+
+      // Finance (show all 30 but allow approve pending)
+      const fin = await getDocs(query(collection(db,"financial_records"), orderBy("createdAt","desc"), limit(60)));
+      if(fin.empty) fList.innerHTML = `<p class="text-xs text-slate-400 italic px-1">Tidak ada data keuangan.</p>`;
+      fin.forEach(d => {
+        const f = d.data();
+        financeCache.push({ id:d.id, ...f });
+
+        const isPending = f.status === 'pending';
+        const isInc = f.type === 'income';
+        const date = f.createdAt?.seconds ? new Date(f.createdAt.seconds*1000).toLocaleDateString('id-ID') : "-";
+
+        fList.innerHTML += `
+          <div class="bg-white p-3 rounded-xl border ${isPending?'border-orange-300 bg-orange-50':'border-slate-100'} shadow-sm flex items-center justify-between">
+            <div class="min-w-0">
+              <h4 class="text-sm font-bold text-brand-primary line-clamp-1">${f.note||'-'}</h4>
+              <p class="text-[10px] text-slate-400">${date}</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-extrabold ${isInc?'text-green-600':'text-red-500'} whitespace-nowrap">${isInc?'+':'-'} ${Number(f.amount||0).toLocaleString('id-ID')}</span>
+              ${isPending ? `
+                <button onclick="approveDoc('financial_records','${d.id}')" class="bg-teal text-white p-2 rounded-full shadow-lg hover:scale-110 transition-transform">
+                  <span class="material-symbols-rounded text-sm">check</span>
+                </button>
+              ` : `<span class="text-teal-600 material-symbols-rounded">verified</span>`}
+            </div>
+          </div>
+        `;
+      });
+
+      await loadHomeData();
     }
 
-    // --- FUNGSI APPROVE YANG SUDAH DIPERBAIKI ---
+    // APPROVE
     window.approveDoc = async (col, id) => {
-        if(!confirm("Yakin ingin menyetujui (ACC) data ini?")) return;
-        toggleLoader(true);
-        try {
-            console.log(`Mencoba ACC: ${col}/${id} oleh ${UID}`);
-            
-            // Update dengan serverTimestamp dan ID Approver
-            await updateDoc(doc(db, col, id), { 
-                status: "approved",
-                approvedBy: UID,
-                approvedAt: serverTimestamp()
-            });
+      if(!confirm("Yakin ingin ACC data ini?")) return;
+      toggleLoader(true);
+      try {
+        await updateDoc(doc(db, col, id), { status:"approved", approvedBy: UID, approvedAt: serverTimestamp() });
+        await writeAudit("approve", col, id, {});
+        showToast("Berhasil di-ACC!");
+        await Promise.all([loadHomeData(), loadApprovals()]);
+      } catch(e) {
+        console.error(e);
+        showToast(e?.code === 'permission-denied' ? "Izin ditolak! Cek Rules DB." : ("Gagal ACC: " + (e?.message||"Error")), "error");
+      } finally {
+        toggleLoader(false);
+      }
+    };
 
-            showToast("Berhasil di-ACC!");
-            
-            // Reload data secara paralel agar lebih cepat
-            await Promise.all([loadHomeData(), loadApprovals()]);
-            
-        } catch(e) { 
-            console.error("ERROR SAAT ACC:", e);
-            if(e.code === 'permission-denied') {
-                showToast("Izin ditolak! Cek Rules Database.", "error");
-            } else {
-                showToast("Gagal ACC: " + e.message, "error");
-            }
-        } finally { 
-            toggleLoader(false); 
+    // BULK APPROVE (NEW)
+    window.bulkApprove = async () => {
+      if(!confirm("ACC SEMUA data pending? (kegiatan + keuangan)")) return;
+      toggleLoader(true);
+      try {
+        // activities pending
+        const acts = await getDocs(query(collection(db,"activities"), orderBy("createdAt","desc"), limit(200)));
+        const fin = await getDocs(query(collection(db,"financial_records"), orderBy("createdAt","desc"), limit(200)));
+
+        let count = 0;
+
+        for(const d of acts.docs){
+          const a = d.data();
+          if(a.status === "pending"){
+            await updateDoc(doc(db,"activities",d.id), { status:"approved", approvedBy: UID, approvedAt: serverTimestamp() });
+            count++;
+          }
         }
+        for(const d of fin.docs){
+          const f = d.data();
+          if(f.status === "pending"){
+            await updateDoc(doc(db,"financial_records",d.id), { status:"approved", approvedBy: UID, approvedAt: serverTimestamp() });
+            count++;
+          }
+        }
+
+        await writeAudit("bulk_approve", "multi", "-", { approvedCount: count });
+        showToast(`Bulk ACC selesai: ${count} item`);
+        await Promise.all([loadHomeData(), loadApprovals()]);
+      } catch(e){
+        console.error(e);
+        showToast("Bulk ACC gagal (cek rules)", "error");
+      } finally {
+        toggleLoader(false);
+      }
+    };
+
+    // EXPORT FINANCE CSV (NEW)
+    window.exportFinanceCSV = async () => {
+      if(!financeCache.length) await loadApprovals();
+      let csv = "Tanggal,Status,Tipe,Nominal,Catatan\n";
+      financeCache.forEach(f => {
+        const date = f.createdAt?.seconds ? new Date(f.createdAt.seconds*1000).toLocaleDateString('id-ID') : "-";
+        csv += `"${date}","${f.status||''}","${f.type||''}","${Number(f.amount||0)}","${(f.note||'').replaceAll('"','""')}"\n`;
+      });
+      downloadText(csv, `Keuangan_${new Date().toISOString().slice(0,10)}.csv`, "text/csv;charset=utf-8");
+      await writeAudit("export_finance_csv", "financial_records", "-", { total: financeCache.length });
+      showToast("CSV diunduh");
+    };
+
+    // BACKUP JSON (NEW)
+    window.openBackupModal = () => {
+      const html = `
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-600">
+          <p class="font-extrabold text-brand-primary mb-1">Backup JSON</p>
+          <p class="text-xs text-slate-500">Snapshot ringkas (maks 200 data per koleksi).</p>
+        </div>
+        <button onclick="downloadBackup()" class="w-full bg-brand-primary text-white py-4 rounded-xl font-extrabold active:scale-95">Download Backup</button>
+      `;
+      showModal("BACKUP DATA", html, null);
+    };
+
+    window.downloadBackup = async () => {
+      toggleLoader(true);
+      try {
+        const [uSnap, fSnap, aSnap] = await Promise.all([
+          getDocs(query(collection(db,"users"), orderBy("name"), limit(200))),
+          getDocs(query(collection(db,"financial_records"), orderBy("createdAt","desc"), limit(200))),
+          getDocs(query(collection(db,"activities"), orderBy("createdAt","desc"), limit(200))),
+        ]);
+
+        const pack = {
+          generatedAt: new Date().toISOString(),
+          generatedByUid: UID,
+          role: "wakil_ketua",
+          users: uSnap.docs.map(d => ({ id:d.id, ...d.data() })),
+          financial_records: fSnap.docs.map(d => ({ id:d.id, ...d.data() })),
+          activities: aSnap.docs.map(d => ({ id:d.id, ...d.data() })),
+        };
+
+        downloadText(JSON.stringify(pack, null, 2), `KARTEJI_Backup_Wakil_${new Date().toISOString().slice(0,10)}.json`, "application/json");
+        await writeAudit("backup_json_download", "backup", "-", { users:uSnap.size, finance:fSnap.size, activities:aSnap.size });
+        closeModal();
+        showToast("Backup diunduh");
+      } catch(e){
+        console.error(e);
+        showToast("Gagal backup (cek rules)", "error");
+      } finally {
+        toggleLoader(false);
+      }
+    };
+
+    // AUDIT VIEW (NEW)
+    window.loadAudit = async () => {
+      const list = $("auditList"); list.innerHTML = "";
+      try {
+        const snap = await getDocs(query(collection(db,"audit_logs"), orderBy("createdAt","desc"), limit(60)));
+        if(snap.empty) {
+          list.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Belum ada audit log.</p>`;
+          return;
+        }
+        snap.forEach(d => {
+          const a = d.data();
+          const dt = a.createdAt?.seconds ? new Date(a.createdAt.seconds*1000).toLocaleString('id-ID') : "-";
+          list.innerHTML += `
+            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="text-sm font-black text-brand-primary">${(a.action||'-').toUpperCase()}</p>
+                  <p class="text-[10px] text-slate-400 mt-1">${dt}</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-[10px] font-extrabold bg-slate-100 text-slate-600 px-2 py-1 rounded">${a.targetType||'-'}</p>
+                  <p class="text-[10px] text-slate-400 mt-1 truncate max-w-[150px]">${a.targetId||'-'}</p>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+      } catch(e){
+        console.error(e);
+        list.innerHTML = `<p class="text-xs text-red-500 italic text-center py-6">Gagal memuat audit log.</p>`;
+      }
+    };
+
+    // DOWNLOAD HELPER
+    function downloadText(content, filename, mime){
+      const blob = new Blob([content], { type: mime || "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
     }
 
+    // LOGOUT
     $("logoutBtn").onclick = async () => { await signOut(auth); location.href = "login.html"; };
   </script>
 </body>
