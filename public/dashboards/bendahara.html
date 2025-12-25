@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Bendahara | Finance</title>
+  <title>Sekretaris | Administration</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -17,7 +16,7 @@
           fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
           colors: {
             brand: { primary: '#0F172A', light: '#334155' },
-            emerald: { DEFAULT: '#10B981', light: '#D1FAE5', dark: '#047857' } // Emerald theme for Money
+            sky: { DEFAULT: '#0EA5E9', light: '#E0F2FE', dark: '#0369A1' } 
           },
           animation: { 
             'blob': 'blob 10s infinite',
@@ -52,31 +51,31 @@
     }
     .view-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
     .view-section.active { display: block; opacity: 1; transform: translateY(0); }
-    .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #10B981; }
+    .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #0EA5E9; }
     .nav-btn.active p { color: #0F172A; font-weight: 700; }
     
-    /* Print Styling */
-    @media print {
-        body * { visibility: hidden; }
-        #printArea, #printArea * { visibility: visible; }
-        #printArea { position: absolute; left: 0; top: 0; width: 100%; background: white; padding: 20px; z-index: 9999; }
-        .no-print { display: none !important; }
+    /* Animation for online indicator */
+    @keyframes pulse-green {
+      0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+      70% { box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
     }
+    .online-pulse { animation: pulse-green 2s infinite; }
   </style>
 </head>
 
-<body class="min-h-screen relative overflow-x-hidden pb-32 selection:bg-emerald-200 selection:text-emerald-900">
+<body class="min-h-screen relative overflow-x-hidden pb-32 selection:bg-sky-200 selection:text-sky-900">
 
   <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-emerald-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
+    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-sky-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
     <div class="absolute top-[20%] right-[-10%] w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
   </div>
 
   <div id="toastContainer" class="fixed top-4 left-0 right-0 z-[100] flex flex-col items-center gap-2 pointer-events-none px-4"></div>
 
   <div id="globalLoader" class="fixed inset-0 bg-white/80 z-[9999] flex items-center justify-center flex-col gap-4 backdrop-blur-md hidden">
-    <div class="w-12 h-12 border-4 border-slate-200 border-t-emerald rounded-full animate-spin"></div>
-    <p class="text-xs font-bold text-slate-400 animate-pulse">MEMPROSES TRANSAKSI...</p>
+    <div class="w-12 h-12 border-4 border-slate-200 border-t-sky rounded-full animate-spin"></div>
+    <p class="text-xs font-bold text-slate-400 animate-pulse">MEMPROSES DATA...</p>
   </div>
 
   <div id="gate" class="fixed inset-0 bg-slate-900 z-[9998] hidden items-center justify-center p-6 text-center backdrop-blur-sm">
@@ -85,7 +84,7 @@
             <span class="material-symbols-rounded text-red-500 text-4xl">lock</span>
         </div>
         <h2 class="text-2xl font-extrabold text-brand-primary mb-2">Akses Ditolak</h2>
-        <p class="text-slate-500 text-sm mb-6">Halaman ini khusus Bendahara.</p>
+        <p class="text-slate-500 text-sm mb-6">Halaman ini khusus Sekretaris.</p>
         <a href="../login.html" class="block w-full bg-brand-primary text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors">Kembali</a>
     </div>
   </div>
@@ -107,11 +106,11 @@
       <div class="flex justify-between items-center">
           <div class="flex items-center gap-3">
               <button onclick="switchView('profile')" class="relative group active:scale-95 transition-transform">
-                <img id="headerPhoto" class="w-12 h-12 rounded-full border-2 border-white shadow-md object-cover" src="https://via.placeholder.com/100">
-                <div class="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full flex items-center justify-center text-[10px] text-white font-bold">Rp</div>
+                <img id="headerPhoto" class="w-12 h-12 rounded-full border-2 border-white shadow-md object-cover bg-slate-200" src="https://via.placeholder.com/100">
+                <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] text-white font-bold online-pulse"></div>
               </button>
               <div>
-                  <p class="text-[10px] font-bold text-emerald-700 uppercase tracking-widest bg-emerald-100 px-2 py-0.5 rounded-full w-fit mb-0.5">Bendahara</p>
+                  <p class="text-[10px] font-bold text-sky-700 uppercase tracking-widest bg-sky-100 px-2 py-0.5 rounded-full w-fit mb-0.5">Sekretaris</p>
                   <h1 id="headerName" class="text-xl font-extrabold text-brand-primary leading-none">Memuat...</h1>
               </div>
           </div>
@@ -124,109 +123,148 @@
   <main class="px-5 mt-2 relative z-10">
 
       <section id="view-home" class="view-section active">
+          
+          <div class="mb-5">
+            <div class="flex items-center justify-between mb-2 px-1">
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Anggota Online
+                </h3>
+                <span id="onlineCount" class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold">0 Aktif</span>
+            </div>
+            <div id="onlineUsersList" class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+                <div class="animate-pulse flex gap-2">
+                    <div class="w-10 h-10 rounded-full bg-slate-200"></div>
+                    <div class="w-10 h-10 rounded-full bg-slate-200"></div>
+                </div>
+            </div>
+          </div>
+
           <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 group transition-all">
-              <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500 transform group-hover:scale-110"><span class="material-symbols-rounded text-9xl">savings</span></div>
+              <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500 transform group-hover:scale-110"><span class="material-symbols-rounded text-9xl">folder_shared</span></div>
               <div class="relative z-10">
-                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Saldo Kas Aktif</p>
-                <h2 id="cardBalance" class="text-4xl font-black tracking-tight mb-8">Rp 0</h2>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Total Arsip Digital</p>
+                <h2 id="totalDocs" class="text-4xl font-black tracking-tight mb-8">0</h2>
                 
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5">
+                    <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5 cursor-pointer active:scale-95 transition-transform" onclick="switchView('surat')">
                         <div class="flex items-center gap-1.5 mb-1">
-                            <div class="bg-green-400/20 p-1 rounded-full"><span class="material-symbols-rounded text-[10px] text-green-300">arrow_downward</span></div>
-                            <span class="text-[9px] font-bold uppercase text-slate-300">Masuk</span>
+                            <div class="bg-sky-400/20 p-1 rounded-full"><span class="material-symbols-rounded text-[10px] text-sky-300">mail</span></div>
+                            <span class="text-[9px] font-bold uppercase text-slate-300">Surat</span>
                         </div>
-                        <p id="sumIncome" class="text-sm font-bold text-white leading-tight">Rp 0</p>
+                        <p id="countLetters" class="text-lg font-bold text-white leading-tight">0</p>
                     </div>
-                    <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5">
+                    <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5 cursor-pointer active:scale-95 transition-transform" onclick="switchView('notulen')">
                         <div class="flex items-center gap-1.5 mb-1">
-                            <div class="bg-red-400/20 p-1 rounded-full"><span class="material-symbols-rounded text-[10px] text-red-300">arrow_upward</span></div>
-                            <span class="text-[9px] font-bold uppercase text-slate-300">Keluar</span>
+                            <div class="bg-orange-400/20 p-1 rounded-full"><span class="material-symbols-rounded text-[10px] text-orange-300">edit_note</span></div>
+                            <span class="text-[9px] font-bold uppercase text-slate-300">Notulen</span>
                         </div>
-                        <p id="sumExpense" class="text-sm font-bold text-white leading-tight">Rp 0</p>
+                        <p id="countMinutes" class="text-lg font-bold text-white leading-tight">0</p>
                     </div>
                 </div>
               </div>
           </div>
 
-          <button onclick="openFinanceModal()" class="w-full mt-6 bg-emerald-500 text-white p-4 rounded-2xl shadow-lg shadow-emerald-500/30 flex items-center justify-between group active:scale-95 transition-all">
-              <div class="flex items-center gap-4">
-                  <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                      <span class="material-symbols-rounded text-2xl">add</span>
-                  </div>
-                  <div class="text-left">
-                      <h4 class="text-sm font-bold">Catat Transaksi Baru</h4>
-                      <p class="text-[10px] text-emerald-100">Input pemasukan / pengeluaran</p>
-                  </div>
-              </div>
-              <span class="material-symbols-rounded group-hover:translate-x-1 transition-transform">chevron_right</span>
-          </button>
+          <div class="bg-white rounded-[1.5rem] p-5 shadow-sm border border-slate-100 mt-4 flex items-center justify-between">
+             <div>
+                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Info Saldo Kas (Organisasi)</p>
+                 <h2 id="homeBalance" class="text-2xl font-black text-brand-primary">Rp 0</h2>
+             </div>
+             <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center">
+                 <span class="material-symbols-rounded">savings</span>
+             </div>
+          </div>
 
-          <div class="bg-white rounded-[1.5rem] p-5 shadow-sm border border-slate-100 mt-6">
-             <div class="flex items-center gap-2 mb-4">
-                <span class="material-symbols-rounded text-slate-400">bar_chart</span>
-                <span class="text-xs font-bold text-slate-500 uppercase">Analitik Arus Kas</span>
-             </div>
-             <div class="h-48 relative w-full flex items-center justify-center">
-                <canvas id="financeChart"></canvas>
-             </div>
+          <div class="grid grid-cols-2 gap-3 mt-4">
+              <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-36 relative group overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer active:scale-95" onclick="switchView('surat')">
+                   <div class="absolute inset-0 bg-gradient-to-br from-sky-50 to-transparent opacity-50"></div>
+                   <div class="relative z-10">
+                       <span class="material-symbols-rounded text-sky-500 mb-2 text-2xl">mark_email_unread</span>
+                       <p class="text-[10px] text-slate-400 uppercase font-bold">Surat Menyurat</p>
+                   </div>
+                   <h3 class="relative z-10 text-xs font-bold text-brand-primary mt-1 line-clamp-2">Arsip Surat Masuk & Keluar</h3>
+              </div>
+
+              <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-36 relative group overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer active:scale-95" onclick="switchView('notulen')">
+                   <div class="absolute inset-0 bg-gradient-to-br from-orange-50 to-transparent opacity-50"></div>
+                   <div class="relative z-10">
+                       <span class="material-symbols-rounded text-accent mb-2 text-2xl">history_edu</span>
+                       <p class="text-[10px] text-slate-400 uppercase font-bold">Notulensi</p>
+                   </div>
+                   <h3 class="relative z-10 text-xs font-bold text-brand-primary mt-1 line-clamp-2">Catat Hasil Rapat</h3>
+              </div>
           </div>
       </section>
 
-      <section id="view-finance" class="view-section">
+      <section id="view-notulen" class="view-section">
           <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
             <div>
-                <h2 class="text-2xl font-bold text-brand-primary">Buku Kas</h2>
-                <p class="text-xs text-slate-400">Riwayat & Laporan</p>
+                <h2 class="text-2xl font-bold text-brand-primary">Notulen</h2>
+                <p class="text-xs text-slate-400">Catatan rapat</p>
             </div>
-            <div class="flex gap-2">
-                <button onclick="printFinance()" class="w-10 h-10 bg-slate-200 text-slate-600 rounded-full flex items-center justify-center active:scale-90 shadow-sm" title="Cetak Laporan"><span class="material-symbols-rounded">print</span></button>
-                <button onclick="openFinanceModal()" class="w-10 h-10 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform">
-                    <span class="material-symbols-rounded">add</span>
-                </button>
-            </div>
+            <button onclick="openNotulenForm()" class="w-10 h-10 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+                <span class="material-symbols-rounded">add</span>
+            </button>
           </div>
+          <div id="listNotulen" class="space-y-3 pb-20"></div>
+      </section>
 
-          <div id="printArea" class="bg-transparent">
-              <div class="hidden mb-4 border-b-2 border-slate-800 pb-4 no-print-hide">
-                 <h1 class="text-2xl font-bold uppercase">Laporan Kas Karteji</h1>
-                 <p class="text-sm">Dicetak oleh Bendahara pada: <span id="printDate"></span></p>
-             </div>
-             <div id="finList" class="space-y-3 pb-20"></div>
+      <section id="view-surat" class="view-section">
+          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
+            <div>
+                <h2 class="text-2xl font-bold text-brand-primary">Surat</h2>
+                <p class="text-xs text-slate-400">Arsip persuratan</p>
+            </div>
+            <button onclick="openSuratForm()" class="w-10 h-10 bg-sky-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+                <span class="material-symbols-rounded">add</span>
+            </button>
           </div>
+          <div id="listSurat" class="space-y-3 pb-20"></div>
+      </section>
+
+      <section id="view-arsip" class="view-section">
+          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
+            <div>
+                <h2 class="text-2xl font-bold text-brand-primary">Dokumen</h2>
+                <p class="text-xs text-slate-400">File digital (SK, AD/ART)</p>
+            </div>
+            <button onclick="openArsipForm()" class="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+                <span class="material-symbols-rounded">upload_file</span>
+            </button>
+          </div>
+          <div id="listArsip" class="grid grid-cols-2 gap-3 pb-20"></div>
       </section>
 
       <section id="view-profile" class="view-section">
         <div class="flex flex-col items-center pt-4 pb-20">
             <div class="relative group cursor-pointer active:scale-95 transition-transform" onclick="$('profileUpload').click()">
-                <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl shadow-slate-200">
+                <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl shadow-slate-200 bg-slate-200">
                 <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <span class="material-symbols-rounded text-white">photo_camera</span>
                 </div>
             </div>
             <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
             
-            <h2 id="profileNameDisplay" class="text-xl font-bold text-brand-primary mt-4 mb-0.5">Nama Bendahara</h2>
-            <div id="profileRoleBadge" class="px-3 py-0.5 bg-emerald-500 text-white rounded-full text-[10px] font-extrabold uppercase tracking-wide mb-1 shadow-lg shadow-emerald-500/30">BENDAHARA</div>
+            <h2 id="profileNameDisplay" class="text-xl font-bold text-brand-primary mt-4 mb-0.5">Nama Sekretaris</h2>
+            <div id="profileRoleBadge" class="px-3 py-0.5 bg-sky-500 text-white rounded-full text-[10px] font-extrabold uppercase tracking-wide mb-1 shadow-lg shadow-sky-500/30">SEKRETARIS</div>
             <p id="profileEmailDisplay" class="text-sm text-slate-400">email@user.com</p>
 
             <button onclick="showIdCard()" class="mt-4 w-full max-w-xs bg-slate-800 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-xl">
-                <span class="material-symbols-rounded">badge</span> Kartu Bendahara
+                <span class="material-symbols-rounded">badge</span> Kartu Sekretaris
             </button>
 
             <div class="w-full mt-8 space-y-4 px-1">
                 <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm space-y-4">
                     <div>
                         <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">badge</span> Nama Lengkap</label>
-                        <input id="editName" type="text" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-emerald-500">
+                        <input id="editName" type="text" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-sky-500">
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">call</span> No. WhatsApp</label>
-                        <input id="editPhone" type="tel" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-emerald-500">
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">call</span> No. WhatsApp / HP</label>
+                        <input id="editPhone" type="tel" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-sky-500">
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">home_pin</span> Alamat</label>
-                        <textarea id="editAddress" rows="2" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-emerald-500 resize-none"></textarea>
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">home_pin</span> Alamat Domisili</label>
+                        <textarea id="editAddress" rows="2" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-sky-500 resize-none"></textarea>
                     </div>
                 </div>
                 
@@ -247,15 +285,25 @@
               <p class="text-[10px] font-medium text-slate-400 transition-colors">Home</p>
           </button>
           
+          <button onclick="switchView('notulen')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="notulen">
+              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">edit_note</span>
+              <p class="text-[10px] font-medium text-slate-400 transition-colors">Notulen</p>
+          </button>
+
           <div class="relative -top-6">
             <button onclick="switchView('profile')" class="nav-btn w-14 h-14 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-xl shadow-slate-400 hover:scale-105 active:scale-95 transition-all ring-4 ring-white" data-target="profile">
                 <span class="material-symbols-rounded text-3xl">person</span>
             </button>
           </div>
 
-          <button onclick="switchView('finance')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="finance">
-              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">account_balance_wallet</span>
-              <p class="text-[10px] font-medium text-slate-400 transition-colors">Buku Kas</p>
+          <button onclick="switchView('surat')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="surat">
+              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">mail</span>
+              <p class="text-[10px] font-medium text-slate-400 transition-colors">Surat</p>
+          </button>
+
+          <button onclick="switchView('arsip')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="arsip">
+              <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">folder_open</span>
+              <p class="text-[10px] font-medium text-slate-400 transition-colors">Arsip</p>
           </button>
       </div>
   </nav>
@@ -263,7 +311,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
@@ -277,12 +325,11 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
     const CLOUD_NAME = "dbxktcwug";
-    const UPLOAD_PRESET = "Karteji"; 
+    const PRESET_DOCS = "Karteji"; 
 
     window.$ = (id) => document.getElementById(id);
     let UID = null;
     let newProfileFile = null;
-    let financeChart = null;
 
     // --- UX UTILITIES ---
     window.showToast = (msg, type = 'success') => {
@@ -324,170 +371,269 @@
         if (!onSave) newBtn.style.display = 'none'; else newBtn.style.display = 'block';
     };
 
-    window.printFinance = () => { $("printDate").innerText = new Date().toLocaleString('id-ID'); window.print(); }
-
     window.switchView = (viewId) => {
         document.querySelectorAll('.view-section').forEach(el => { el.classList.remove('active'); setTimeout(() => { if(!el.classList.contains('active')) el.style.display = 'none'; }, 200); });
         const target = $(`view-${viewId}`); target.style.display = 'block'; setTimeout(() => target.classList.add('active'), 10);
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
         const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`); if(activeBtn) activeBtn.classList.add('active');
         
-        if(viewId === 'home') loadHomeData();
-        if(viewId === 'finance') loadFinance();
+        if(viewId === 'home') loadHomeStats();
+        if(viewId === 'notulen') loadNotulen();
+        if(viewId === 'surat') loadSurat();
+        if(viewId === 'arsip') loadArsip();
         if(viewId === 'profile') loadProfileData();
     };
 
     async function upload(file) {
         if(!file) return null;
-        const fd = new FormData(); fd.append("file", file); fd.append("upload_preset", UPLOAD_PRESET);
-        try { const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{ method:"POST", body:fd }); const d = await res.json(); return { url:d.secure_url }; } catch(e) { showToast("Gagal Upload", "error"); throw e; }
+        const fd = new FormData(); fd.append("file", file); fd.append("upload_preset", PRESET_DOCS);
+        try { const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, { method: "POST", body: fd }); const d = await res.json(); return { url: d.secure_url }; } 
+        catch (e) { showToast("Gagal Upload", "error"); throw e; }
     }
 
-    // --- AUTH ---
+    // --- AUTH & ONLINE PRESENCE ---
     onAuthStateChanged(auth, async user => {
         if(!user) return location.href = "login.html";
         toggleLoader(true);
         try {
             const snap = await getDoc(doc(db,"users",user.uid));
-            if(!snap.exists() || (snap.data().role !== "bendahara" && snap.data().role !== "super_admin")){
+            if(!snap.exists() || (snap.data().role !== "sekretaris" && snap.data().role !== "super_admin")){
                 toggleLoader(false); $("gate").classList.remove("hidden"); $("gate").classList.add("flex"); return;
             }
             UID = user.uid;
-            await Promise.all([loadHomeData(), loadFinance(), loadProfileData()]);
+            
+            // Set Online
+            updateOnlineStatus(true);
+            window.addEventListener('beforeunload', () => updateOnlineStatus(false));
+
+            await Promise.all([loadHomeStats(), loadOnlineUsers(), loadNotulen(), loadSurat(), loadArsip(), loadProfileData()]);
         } catch(e) { console.error(e); }
         toggleLoader(false);
     });
 
-    // --- HOME & CHART ---
-    async function loadHomeData() {
-        const fin = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc")));
-        let bal = 0, inc = 0, exp = 0;
-        
-        fin.forEach(d => {
-            const f = d.data();
-            if(f.status === 'approved') {
-                const amt = Number(f.amount);
-                if(f.type === 'income') { bal += amt; inc += amt; } 
-                else { bal -= amt; exp += amt; }
-            }
-        });
-
-        animateValue($("cardBalance"), 0, bal, 1500);
-        $("sumIncome").textContent = "Rp " + inc.toLocaleString('id-ID');
-        $("sumExpense").textContent = "Rp " + exp.toLocaleString('id-ID');
-        
-        renderChart(inc, exp);
+    async function updateOnlineStatus(isOnline) {
+        if(!UID) return;
+        try {
+            await updateDoc(doc(db, "users", UID), {
+                isOnline: isOnline,
+                lastSeen: serverTimestamp()
+            });
+        } catch(e) { console.log("Status update error", e); }
     }
 
-    function renderChart(income, expense) {
-        const ctx = $("financeChart").getContext('2d');
-        if(financeChart) financeChart.destroy();
-        financeChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Pemasukan', 'Pengeluaran'],
-                datasets: [{
-                    label: 'Keuangan (Rp)',
-                    data: [income, expense],
-                    backgroundColor: ['#10B981', '#EF4444'],
-                    borderRadius: 10,
-                    barThickness: 50
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display:false }, tooltip: { callbacks: { label: (c)=> `Rp ${c.raw.toLocaleString()}` } } },
-                scales: { y: { grid: {display:false}, beginAtZero: true }, x: { grid: {display:false} } }
-            }
-        });
+    // --- HOME STATS & FINANCE ---
+    async function loadHomeStats() {
+        try {
+            const notul = await getDocs(collection(db, "minutes"));
+            const surat = await getDocs(collection(db, "letters"));
+            const arsip = await getDocs(collection(db, "archives"));
+            $("countMinutes").textContent = notul.size;
+            $("countLetters").textContent = surat.size;
+            $("totalDocs").textContent = notul.size + surat.size + arsip.size;
+
+            const finSnap = await getDocs(query(collection(db, "financial_records")));
+            let bal = 0;
+            finSnap.forEach(d => {
+                const f = d.data();
+                if(f.status === 'approved') {
+                    const amt = Number(f.amount) || 0;
+                    if(f.type === 'income') bal += amt; else bal -= amt;
+                }
+            });
+            animateValue($("homeBalance"), 0, bal, 1500);
+            loadOnlineUsers(); // Refresh online users too
+        } catch (e) { console.error(e); }
     }
 
-    // --- FINANCE LOGIC ---
-    async function loadFinance(){
-        const list = $("finList"); list.innerHTML = "";
-        const snap = await getDocs(query(collection(db,"financial_records"), orderBy("createdAt","desc"), limit(50)));
-        
-        snap.forEach(d => {
-            const f = d.data();
-            const isInc = f.type === 'income';
-            const isPending = f.status === 'pending';
+    // --- LOAD ONLINE USERS (DIPERBAIKI UNTUK HANDLE NO PHOTO) ---
+    async function loadOnlineUsers() {
+        const list = $("onlineUsersList");
+        list.innerHTML = "";
+        try {
+            const q = query(collection(db, "users"), where("isOnline", "==", true));
+            const snap = await getDocs(q);
             
+            $("onlineCount").textContent = `${snap.size} Aktif`;
+            
+            if(snap.empty) {
+                list.innerHTML = `<span class="text-xs text-slate-400 italic">Hanya Anda yang online.</span>`;
+                return;
+            }
+
+            snap.forEach(d => {
+                const u = d.data();
+                // FIX: Generate avatar jika foto kosong
+                let avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=random&color=fff&size=50`;
+                if(u.photo && u.photo.url) avatar = u.photo.url;
+
+                list.innerHTML += `
+                    <div class="flex flex-col items-center min-w-[60px] cursor-pointer" onclick="showToast('${u.name} sedang online')">
+                        <div class="relative">
+                            <img src="${avatar}" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm bg-slate-200">
+                            <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full animate-pulse"></div>
+                        </div>
+                        <p class="text-[9px] font-bold text-slate-600 mt-1 truncate w-full text-center">${u.name.split(' ')[0]}</p>
+                    </div>
+                `;
+            });
+        } catch(e) { console.error("Error loading online users", e); }
+    }
+
+    // --- NOTULEN ---
+    async function loadNotulen() {
+        const list = $("listNotulen"); list.innerHTML = "";
+        const snap = await getDocs(query(collection(db, "minutes"), orderBy("createdAt", "desc")));
+        snap.forEach(d => {
+            const x = d.data();
             list.innerHTML += `
-                 <div class="bg-white p-4 rounded-2xl flex justify-between items-start border ${isPending?'border-orange-300 bg-orange-50':'border-slate-100'} shadow-sm relative break-inside-avoid">
-                    <div class="flex items-start gap-3">
-                         <div class="w-10 h-10 rounded-full ${isInc ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'} flex items-center justify-center shrink-0 no-print">
-                            <span class="material-symbols-rounded text-xl">${isInc ? 'arrow_downward' : 'arrow_upward'}</span>
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold text-brand-primary line-clamp-1">${f.note || 'Transaksi'}</p>
-                            <p class="text-[10px] text-slate-400 font-medium mb-1">${new Date(f.createdAt?.seconds*1000).toLocaleDateString()}</p>
-                            <p class="text-[9px] ${isPending ? 'text-orange-500 font-bold' : 'text-green-600 font-medium'}">${isPending ? 'Menunggu ACC' : 'Terverifikasi'}</p>
-                            
-                            <div class="flex gap-2 mt-2 no-print">
-                                ${f.proof ? `<a href="${f.proof.url}" target="_blank" class="text-blue-500 text-[10px] font-bold bg-blue-50 px-2 py-0.5 rounded">Bukti Foto</a>` : ''}
-                                ${f.createdByUid === UID && isPending ? `<button onclick="deleteDocData('financial_records', '${d.id}')" class="text-red-500 text-[10px] font-bold bg-red-50 px-2 py-0.5 rounded">Batal</button>` : ''}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-sm font-bold ${isInc?'text-green-600':'text-red-500'} whitespace-nowrap">${isInc?'+':'-'} ${Number(f.amount).toLocaleString('id-ID')}</p>
-                    </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm relative group">
+                    <p class="text-[10px] font-bold text-accent mb-1 uppercase tracking-wider">${x.date || '-'}</p>
+                    <h4 class="text-sm font-bold text-brand-primary">${x.title}</h4>
+                    <p class="text-xs text-slate-400 mt-1 line-clamp-2">${x.body}</p>
+                    <button onclick="deleteDocData('minutes','${d.id}')" class="absolute top-2 right-2 text-slate-300 hover:text-red-500 active:scale-95"><span class="material-symbols-rounded">delete</span></button>
                 </div>
             `;
         });
     }
 
-    window.openFinanceModal = () => {
+    window.openNotulenForm = () => {
         const html = `
-            <select id="fType" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-brand-primary font-bold outline-none mb-3">
-                <option value="income">Pemasukan (+)</option>
-                <option value="expense">Pengeluaran (-)</option>
-            </select>
-            <input id="fAmt" type="number" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-brand-primary text-lg font-black outline-none mb-3 placeholder-slate-400" placeholder="0">
-            <textarea id="fNote" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-brand-primary text-sm font-bold outline-none h-20 mb-3 placeholder-slate-400 resize-none" placeholder="Keterangan transaksi..."></textarea>
-            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 border-dashed cursor-pointer hover:bg-slate-100" onclick="$('fProof').click()">
-                <p class="text-[10px] font-bold text-slate-400 text-center mb-1 uppercase">Upload Bukti / Struk</p>
-                <input id="fProof" type="file" class="hidden" accept="image/*">
-            </div>
+            <input id="nTitle" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 mb-3 text-sm font-bold" placeholder="Judul Rapat">
+            <input id="nDate" type="date" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 mb-3 text-sm">
+            <textarea id="nBody" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 h-24 text-sm" placeholder="Isi pembahasan..."></textarea>
         `;
-        showModal("CATAT TRANSAKSI", html, async () => {
-            const amount = $("fAmt").value;
-            if(!amount || amount <= 0) return showToast("Nominal salah!", "error");
+        showModal("CATAT NOTULEN", html, async () => {
+            if(!$("nTitle").value) return showToast("Judul wajib diisi", "error");
             toggleLoader(true);
             try {
-                let proof = null;
-                if($("fProof").files[0]) proof = await upload($("fProof").files[0]);
-                
-                await addDoc(collection(db, "financial_records"), {
-                    type: $("fType").value, amount: parseInt(amount), note: $("fNote").value,
-                    proof, status: "pending", createdByUid: UID, createdAt: serverTimestamp()
-                });
-                closeModal(); await loadFinance(); await loadHomeData();
-                showToast("Transaksi disimpan!");
-            } catch(e){ showToast("Gagal input", "error"); }
-            finally { toggleLoader(false); }
+                await addDoc(collection(db, "minutes"), { title: $("nTitle").value, date: $("nDate").value, body: $("nBody").value, createdAt: serverTimestamp() });
+                closeModal(); loadNotulen(); loadHomeStats(); showToast("Notulen disimpan");
+            } catch(e) { showToast("Gagal simpan", "error"); } finally { toggleLoader(false); }
         });
-    };
+    }
+
+    // --- SURAT ---
+    async function loadSurat() {
+        const list = $("listSurat"); list.innerHTML = "";
+        const snap = await getDocs(query(collection(db, "letters"), orderBy("createdAt", "desc")));
+        snap.forEach(d => {
+            const x = d.data();
+            list.innerHTML += `
+                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm relative group">
+                    <div class="flex justify-between mb-1">
+                        <span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-bold">${x.type || 'Surat'}</span>
+                        <span class="text-[10px] text-slate-400">${x.number}</span>
+                    </div>
+                    <h4 class="text-sm font-bold text-brand-primary">${x.subject}</h4>
+                    <button onclick="deleteDocData('letters','${d.id}')" class="absolute bottom-2 right-2 text-slate-300 hover:text-red-500 active:scale-95"><span class="material-symbols-rounded">delete</span></button>
+                </div>
+            `;
+        });
+    }
+
+    window.openSuratForm = () => {
+        const html = `
+            <input id="lSub" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 mb-3 text-sm font-bold" placeholder="Perihal Surat">
+            <div class="grid grid-cols-2 gap-2 mb-3">
+                <input id="lNo" class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs" placeholder="No. Surat">
+                <input id="lType" class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs" placeholder="Jenis">
+            </div>
+        `;
+        showModal("ARSIP SURAT", html, async () => {
+            if(!$("lSub").value) return showToast("Perihal wajib diisi", "error");
+            toggleLoader(true);
+            try {
+                await addDoc(collection(db, "letters"), { subject: $("lSub").value, number: $("lNo").value, type: $("lType").value, createdAt: serverTimestamp() });
+                closeModal(); loadSurat(); loadHomeStats(); showToast("Surat diarsipkan");
+            } catch(e) { showToast("Gagal simpan", "error"); } finally { toggleLoader(false); }
+        });
+    }
+
+    // --- ARSIP ---
+    async function loadArsip() {
+        const list = $("listArsip"); list.innerHTML = "";
+        const snap = await getDocs(query(collection(db, "archives"), orderBy("createdAt", "desc")));
+        snap.forEach(d => {
+            const x = d.data();
+            list.innerHTML += `
+                <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm relative group text-center flex flex-col items-center">
+                    <div class="bg-green-50 w-10 h-10 rounded-full flex items-center justify-center mb-2 text-green-600">
+                        <span class="material-symbols-rounded">description</span>
+                    </div>
+                    <h4 class="text-xs font-bold text-brand-primary w-full truncate">${x.title}</h4>
+                    <a href="${x.file?.url}" target="_blank" class="text-[10px] text-sky-500 font-bold mt-1 hover:underline">Download</a>
+                    <button onclick="deleteDocData('archives','${d.id}')" class="absolute top-1 right-1 text-slate-300 hover:text-red-500 active:scale-95"><span class="material-symbols-rounded text-sm">close</span></button>
+                </div>
+            `;
+        });
+    }
+
+    window.openArsipForm = () => {
+        const html = `
+            <input id="aTitle" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 mb-3 text-sm font-bold" placeholder="Nama Dokumen">
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 border-dashed cursor-pointer hover:bg-slate-100" onclick="$('aFile').click()">
+                <p class="text-[10px] text-slate-400 text-center font-bold">KLIK UNTUK UPLOAD FILE</p>
+                <input id="aFile" type="file" class="hidden">
+            </div>
+        `;
+        showModal("UPLOAD FILE", html, async () => {
+            if(!$("aFile").files[0]) return showToast("Pilih file!", "error");
+            toggleLoader(true);
+            try {
+                const file = await upload($("aFile").files[0]);
+                await addDoc(collection(db, "archives"), { title: $("aTitle").value, file, createdAt: serverTimestamp() });
+                closeModal(); loadArsip(); loadHomeStats(); showToast("File diupload");
+            } catch(e) { showToast("Gagal upload", "error"); } finally { toggleLoader(false); }
+        });
+    }
 
     window.deleteDocData = async (col, id) => {
-        if(!confirm("Hapus data?")) return;
+        if(!confirm("Hapus permanen?")) return;
         toggleLoader(true);
-        try { await deleteDoc(doc(db, col, id)); showToast("Data dihapus"); await loadFinance(); await loadHomeData(); } 
-        catch(e) { showToast("Gagal hapus", "error"); } finally { toggleLoader(false); }
-    };
+        try {
+            await deleteDoc(doc(db, col, id));
+            showToast("Item dihapus");
+            if(col === 'minutes') loadNotulen();
+            if(col === 'letters') loadSurat();
+            if(col === 'archives') loadArsip();
+            loadHomeStats();
+        } catch(e) { showToast("Gagal hapus", "error"); } finally { toggleLoader(false); }
+    }
 
-    // --- PROFILE ---
+    // --- PROFILE (DIPERBAIKI UNTUK MENANGANI FOTO NULL) ---
     async function loadProfileData() {
-        const snap = await getDoc(doc(db, "users", UID));
-        if(snap.exists()){
-            const d = snap.data();
-            $("headerName").textContent = d.name || "Bendahara";
-            $("headerPhoto").src = d.photo?.url || "https://via.placeholder.com/150";
-            $("profileImage").src = d.photo?.url || "https://via.placeholder.com/150";
-            $("profileNameDisplay").textContent = d.name;
-            $("profileEmailDisplay").textContent = d.email;
-            $("editName").value = d.name||""; $("editPhone").value = d.phone||""; $("editAddress").value = d.address||"";
+        try {
+            const snap = await getDoc(doc(db, "users", UID));
+            if(snap.exists()){
+                const d = snap.data();
+                
+                // --- LOGIKA FOTO PROFIL BARU ---
+                // Default: Inisial Nama (UI Avatars)
+                let photoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(d.name || 'User')}&background=random&color=fff&size=150`;
+
+                // Cek data foto dari DB
+                if (d.photo) {
+                    if (d.photo.url) { photoUrl = d.photo.url; } 
+                    else if (typeof d.photo === 'string') { photoUrl = d.photo; }
+                }
+
+                // Update Elemen
+                const elHeader = $("headerPhoto");
+                const elProfile = $("profileImage");
+                
+                if(elHeader) elHeader.src = photoUrl;
+                if(elProfile) elProfile.src = photoUrl;
+
+                if($("headerName")) $("headerName").textContent = d.name || "Sekretaris";
+                if($("profileNameDisplay")) $("profileNameDisplay").textContent = d.name || "Tanpa Nama";
+                if($("profileEmailDisplay")) $("profileEmailDisplay").textContent = d.email || "-";
+                
+                if($("editName")) $("editName").value = d.name || ""; 
+                if($("editPhone")) $("editPhone").value = d.phone || ""; 
+                if($("editAddress")) $("editAddress").value = d.address || "";
+            }
+        } catch(e) {
+            console.error("Gagal load profil:", e);
         }
     }
 
@@ -508,15 +654,15 @@
         const u = snap.data();
         const html = `
             <div class="bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-white p-5 rounded-2xl relative overflow-hidden shadow-2xl border-t border-slate-600">
-                <div class="absolute -right-10 -top-10 w-40 h-40 bg-emerald-500/20 rounded-full blur-3xl"></div>
+                <div class="absolute -right-10 -top-10 w-40 h-40 bg-sky-500/20 rounded-full blur-3xl"></div>
                 <div class="flex justify-between items-center mb-6 relative z-10">
-                    <div class="flex items-center gap-2"><div class="w-8 h-8 bg-white/10 rounded flex items-center justify-center"><span class="material-symbols-rounded text-emerald-500">payments</span></div><span class="font-bold tracking-widest text-xs">KARTEJI FINANCE</span></div>
+                    <div class="flex items-center gap-2"><div class="w-8 h-8 bg-white/10 rounded flex items-center justify-center"><span class="material-symbols-rounded text-sky-500">folder_shared</span></div><span class="font-bold tracking-widest text-xs">KARTEJI ADMIN</span></div>
                 </div>
                 <div class="flex gap-4 items-center">
-                     <img src="${u.photo?.url||'https://via.placeholder.com/100'}" class="w-20 h-20 rounded-xl object-cover border-2 border-emerald-500 shadow-lg bg-slate-800">
+                     <img src="${u.photo?.url||'https://via.placeholder.com/100'}" class="w-20 h-20 rounded-xl object-cover border-2 border-sky-500 shadow-lg bg-slate-800">
                      <div>
-                        <h2 class="text-xl font-bold leading-none mb-1 text-emerald-400">${u.name}</h2>
-                        <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">BENDAHARA</p>
+                        <h2 class="text-xl font-bold leading-none mb-1 text-sky-400">${u.name}</h2>
+                        <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">SEKRETARIS</p>
                         <p class="text-[9px] mt-2 text-slate-500">ID: ${UID.substring(0,8).toUpperCase()}</p>
                      </div>
                 </div>
@@ -525,7 +671,11 @@
         showModal("KARTU IDENTITAS DIGITAL", html, null);
     }
 
-    $("logoutBtn").onclick = async () => { await signOut(auth); location.href = "../login.html"; };
+    $("logoutBtn").onclick = async () => { 
+        await updateOnlineStatus(false); 
+        await signOut(auth); 
+        location.href = "../login.html"; 
+    };
   </script>
 </body>
 </html>
