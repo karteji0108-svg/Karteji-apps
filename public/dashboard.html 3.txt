@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Verifikasi Akses | KARTEJI</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+          colors: {
+            brand: {
+              primary: '#0F172A', // Navy Utama
+            },
+            accent: {
+              DEFAULT: '#F97316', // Orange
+            }
+          },
+          animation: {
+            'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            'blob': 'blob 10s infinite',
+            'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            slideUp: {
+              'from': { transform: 'translateY(40px)', opacity: '0' },
+              'to': { transform: 'translateY(0)', opacity: '1' }
+            },
+            blob: {
+              '0%': { transform: 'translate(0px, 0px) scale(1)' },
+              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+              '100%': { transform: 'translate(0px, 0px) scale(1)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .glass-card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+    }
+    body::-webkit-scrollbar { display: none; }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 h-screen w-screen overflow-hidden relative">
+
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-orange-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
+  </div>
+
+  <section class="absolute inset-0 z-30 flex flex-col justify-center items-center px-6">
+    
+    <div class="glass-card w-full max-w-[340px] rounded-[2rem] p-8 text-center animate-slide-up relative z-10">
+      
+      <div class="relative w-20 h-20 mx-auto mb-6">
+        <div class="absolute inset-0 bg-blue-50 rounded-full animate-ping opacity-75"></div>
+        <div class="relative w-full h-full bg-white rounded-full flex items-center justify-center shadow-sm border border-slate-100">
+            <span class="material-symbols-rounded text-4xl text-brand-primary animate-pulse-fast">security</span>
+        </div>
+      </div>
+
+      <h1 class="text-xl font-bold text-brand-primary mb-2">Security Check</h1>
+      <p class="text-slate-500 text-sm mb-6 leading-relaxed">Sistem sedang memverifikasi identitas dan hak akses akun Anda.</p>
+
+      <div class="flex items-center justify-center gap-2 mb-4">
+        <div class="w-2 h-2 bg-accent rounded-full animate-bounce"></div>
+        <span id="msg" class="text-xs font-bold text-slate-600 tracking-wide uppercase">Menghubungkan...</span>
+      </div>
+
+      <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden mb-2">
+        <div id="loadingBar" class="h-full bg-brand-primary rounded-full transition-all duration-700 ease-out" style="width:5%"></div>
+      </div>
+
+      <button id="backBtn" class="hidden mt-6 w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 rounded-xl transition-all text-sm flex items-center justify-center gap-2 active:scale-95 shadow-lg">
+        <span class="material-symbols-rounded text-lg">logout</span>
+        <span>Keluar / Login Ulang</span>
+      </button>
+
+    </div>
+
+    <p class="absolute bottom-8 text-[10px] text-slate-400 font-bold tracking-widest opacity-60">KARTEJI SECURE GATEWAY</p>
+  </section>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
+      authDomain: "katar-9cac3.firebaseapp.com",
+      projectId: "katar-9cac3",
+      storageBucket: "katar-9cac3.firebasestorage.app",
+      messagingSenderId: "1017734829960",
+      appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const msgEl = document.getElementById("msg");
+    const backBtn = document.getElementById("backBtn");
+    const loadingBar = document.getElementById("loadingBar");
+
+    function setProgress(pct) {
+      loadingBar.style.width = `${pct}%`;
+    }
+
+    // Routing Map (Folder Structure)
+    const routeByRole = {
+      "super_admin": "dashboards/super-admin.html",
+      "ketua": "dashboards/ketua.html",
+      "wakil_ketua": "dashboards/wakil-ketua.html",
+      "sekretaris": "dashboards/sekretaris.html",
+      "bendahara": "dashboards/bendahara.html",
+      "koordinator": "dashboards/koordinator.html",
+      "anggota": "dashboards/anggota.html"
+    };
+
+    // Helper: Normalize Role String
+    function normalizeRole(role) {
+      if (!role) return "anggota";
+      // Convert: "Super Admin" -> "super_admin", "wakil-ketua" -> "wakil_ketua"
+      let r = String(role).trim().toLowerCase().replace(/[\s-]/g, "_");
+      
+      // Alias Handling (Typo tolerance)
+      const alias = {
+        "superadmin": "super_admin",
+        "admin": "super_admin",
+        "wakil": "wakil_ketua",
+        "wakilketua": "wakil_ketua",
+        "member": "anggota"
+      };
+      return alias[r] || r;
+    }
+
+    async function showError(message) {
+      msgEl.textContent = message || "Gagal memuat profil.";
+      msgEl.className = "text-xs font-bold text-red-500 uppercase tracking-wide";
+      backBtn.classList.remove("hidden");
+      setProgress(100);
+      loadingBar.classList.remove("bg-brand-primary");
+      loadingBar.classList.add("bg-red-500");
+      
+      backBtn.onclick = async () => {
+        await signOut(auth);
+        window.location.href = "login.html";
+      };
+    }
+
+    // Start Animation
+    setTimeout(() => setProgress(30), 100);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        return window.location.href = "login.html";
+      }
+
+      try {
+        msgEl.textContent = "MENGAMBIL DATA PROFIL...";
+        setProgress(60);
+
+        const snap = await getDoc(doc(db, "users", user.uid));
+        
+        if (!snap.exists()) {
+          return showError("Akun tidak ditemukan di database.");
+        }
+
+        const data = snap.data();
+        const rawRole = data?.role;
+        const role = normalizeRole(rawRole);
+        
+        // Safety check: is role mapped?
+        const targetPage = routeByRole[role] || routeByRole["anggota"];
+        
+        console.log(`User: ${user.email} | Raw Role: ${rawRole} | Normalized: ${role} | Target: ${targetPage}`);
+
+        msgEl.textContent = "MENGALIHKAN...";
+        setProgress(100);
+
+        setTimeout(() => {
+            window.location.replace(targetPage);
+        }, 800); 
+        
+      } catch (e) {
+        console.error("Routing Error:", e);
+        showError("Koneksi bermasalah. Coba lagi.");
+      }
+    });
+  </script>
+
+</body>
+</html>
