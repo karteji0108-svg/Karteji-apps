@@ -39,6 +39,7 @@
       }
     }
   </script>
+
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -46,7 +47,9 @@
   <style>
     body { -webkit-tap-highlight-color: transparent; transition: background-color 0.3s, color 0.3s; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
-    
+
+    .animation-delay-2000 { animation-delay: 2s; }
+
     /* Glassmorphism */
     .glass-nav {
       background: rgba(255, 255, 255, 0.90);
@@ -77,7 +80,6 @@
         box-shadow: 0 20px 40px -5px rgba(139, 92, 246, 0.5);
         border-color: #F472B6;
     }
-    .slot-machine-text { font-variant-numeric: tabular-nums; }
   </style>
 </head>
 
@@ -109,6 +111,7 @@
     </div>
   </div>
 
+  <!-- Raffle Modal -->
   <div id="raffleModal" class="fixed inset-0 z-[80] hidden items-center justify-center p-4 bg-slate-900/95 backdrop-blur-xl transition-all">
     <div class="w-full max-w-sm text-center relative">
         <button onclick="closeRaffle()" class="absolute -top-12 right-0 text-white/50 hover:text-white"><span class="material-symbols-rounded text-3xl">close</span></button>
@@ -136,6 +139,7 @@
     </div>
   </div>
 
+  <!-- Winner Overlay -->
   <div id="winnerOverlay" class="fixed inset-0 z-[90] hidden items-center justify-center p-6 bg-black/80 backdrop-blur-md">
       <div class="bg-white dark:bg-slate-800 w-full max-w-xs rounded-[2rem] p-8 text-center relative animate-elastic-pop pt-16 border border-white/10">
           <div class="absolute -top-12 left-1/2 -translate-x-1/2">
@@ -153,6 +157,7 @@
       </div>
   </div>
 
+  <!-- CRUD Modal -->
   <div id="crudModal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-all">
     <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-[2rem] p-6 relative shadow-2xl animate-[slideUp_0.3s_ease-out]">
       <div class="flex justify-between items-center mb-6">
@@ -170,7 +175,7 @@
       <div class="flex justify-between items-center">
           <div class="flex items-center gap-3">
               <button onclick="switchView('profile')" class="relative group active:scale-95 transition-transform">
-                <img id="headerPhoto" class="w-12 h-12 rounded-full border-2 border-white shadow-md object-cover" src="https://via.placeholder.com/100">
+                <img id="headerPhoto" class="w-12 h-12 rounded-full border-2 border-white shadow-md object-cover" src="https://via.placeholder.com/100" alt="photo">
                 <div class="absolute bottom-0 right-0 w-4 h-4 bg-purple-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] text-white font-bold">K</div>
               </button>
               <div>
@@ -186,6 +191,7 @@
 
   <main class="px-5 mt-2 relative z-10">
 
+      <!-- HOME -->
       <section id="view-home" class="view-section active">
           <div id="countdownWidget" class="hidden mb-4 p-4 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl text-white shadow-lg relative overflow-hidden">
               <div class="absolute right-0 top-0 opacity-10 transform translate-x-4 -translate-y-4"><span class="material-symbols-rounded text-8xl">timer</span></div>
@@ -217,7 +223,7 @@
                    <div class="relative z-10 text-cyan-600 mb-2"><span class="material-symbols-rounded text-3xl">book</span></div>
                    <div><h3 class="text-xs font-bold text-brand-primary dark:text-white">Buku Tamu</h3><p class="text-[10px] text-slate-400">Catat Undangan</p></div>
               </div>
-              <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 relative group overflow-hidden shadow-sm active:scale-95 transition-all" onclick="openInventoryModal()">
+              <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 relative group overflow-hidden shadow-sm active:scale-95 transition-all" onclick="switchView('inventory')">
                    <div class="absolute inset-0 bg-gradient-to-br from-emerald-50 to-transparent opacity-50 dark:opacity-10"></div>
                    <div class="relative z-10 text-emerald-600 mb-2"><span class="material-symbols-rounded text-3xl">inventory_2</span></div>
                    <div><h3 class="text-xs font-bold text-brand-primary dark:text-white">Barang</h3><p class="text-[10px] text-slate-400">Aset Organisasi</p></div>
@@ -235,6 +241,7 @@
           </div>
       </section>
 
+      <!-- KEGIATAN -->
       <section id="view-kegiatan" class="view-section">
           <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] dark:bg-brand-primary py-2 z-10">
             <div><h2 class="text-2xl font-bold text-brand-primary dark:text-white">Acara</h2><p class="text-xs text-slate-400">Agenda Kegiatan</p></div>
@@ -243,10 +250,21 @@
           <div id="eventList" class="grid grid-cols-1 gap-4 pb-20"></div>
       </section>
 
+      <!-- INVENTORY (FIX: sebelumnya belum ada) -->
+      <section id="view-inventory" class="view-section">
+          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] dark:bg-brand-primary py-2 z-10">
+            <div><h2 class="text-2xl font-bold text-brand-primary dark:text-white">Barang</h2><p class="text-xs text-slate-400">Inventaris Organisasi</p></div>
+            <button onclick="openInventoryModal()" class="w-10 h-10 bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"><span class="material-symbols-rounded">add</span></button>
+          </div>
+
+          <div id="invList" class="grid grid-cols-2 gap-3 pb-20"></div>
+      </section>
+
+      <!-- PROFILE -->
       <section id="view-profile" class="view-section">
         <div class="flex flex-col items-center pt-4 pb-20">
             <div class="relative group cursor-pointer active:scale-95 transition-transform" onclick="$('profileUpload').click()">
-                <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl shadow-slate-200 dark:shadow-none">
+                <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl shadow-slate-200 dark:shadow-none" alt="profile">
                 <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><span class="material-symbols-rounded text-white">photo_camera</span></div>
             </div>
             <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
@@ -305,7 +323,7 @@
               <p class="text-[9px] font-medium text-slate-400 dark:text-slate-500 transition-colors">Barang</p>
           </button>
 
-          <button onclick="switchView('profile')" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all md:hidden" data-target="profile">
+          <button onclick="switchView('profile')" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="profile">
               <span class="material-symbols-rounded text-2xl text-slate-400 dark:text-slate-500 transition-colors">settings</span>
               <p class="text-[9px] font-medium text-slate-400 dark:text-slate-500 transition-colors">Akun</p>
           </button>
@@ -315,7 +333,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
@@ -325,17 +343,21 @@
       messagingSenderId: "1017734829960",
       appId: "1:1017734829960:web:6b02b7176f08a23ce28c3d"
     };
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+
     const CLOUD_NAME = "dbxktcwug";
-    const PRESET_IMG = "Karteji"; 
+    const PRESET_IMG = "Karteji";
 
     window.$ = (id) => document.getElementById(id);
+
     let UID = null;
     let newProfileFile = null;
     let candidates = [];
     let tempWinner = null;
+
     const spinSound = document.getElementById('sfxSpin');
     const winSound = document.getElementById('sfxWin');
 
@@ -352,7 +374,9 @@
 
     window.toggleLoader = (show) => {
         const l = $("globalLoader");
-        if(show) { l.classList.remove('hidden'); l.classList.add('flex'); } else { l.classList.add('hidden'); l.classList.remove('flex'); }
+        if(!l) return;
+        if(show) { l.classList.remove('hidden'); l.classList.add('flex'); } 
+        else { l.classList.add('hidden'); l.classList.remove('flex'); }
     };
 
     window.toggleDarkMode = () => {
@@ -365,27 +389,40 @@
     // Initialize Theme
     if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark');
-        $("themeIcon").textContent = 'light_mode';
+        if ($("themeIcon")) $("themeIcon").textContent = 'light_mode';
     }
 
-    window.closeModal = () => $("crudModal").classList.add('hidden');
+    window.closeModal = () => $("crudModal")?.classList.add('hidden');
+
     window.showModal = (title, bodyHtml, onSave) => {
         $("modalTitle").textContent = title;
         $("modalBody").innerHTML = bodyHtml;
         $("crudModal").classList.remove('hidden'); $("crudModal").classList.add('flex');
+
         const btn = $("modalSubmitBtn");
         const newBtn = btn.cloneNode(true);
         btn.parentNode.replaceChild(newBtn, btn);
         newBtn.onclick = onSave;
-        if (!onSave) newBtn.style.display = 'none'; else newBtn.style.display = 'block';
+
+        newBtn.style.display = onSave ? 'block' : 'none';
     };
 
     window.switchView = (viewId) => {
-        document.querySelectorAll('.view-section').forEach(el => { el.classList.remove('active'); setTimeout(() => { if(!el.classList.contains('active')) el.style.display = 'none'; }, 200); });
-        const target = $(`view-${viewId}`); target.style.display = 'block'; setTimeout(() => target.classList.add('active'), 10);
+        document.querySelectorAll('.view-section').forEach(el => {
+            el.classList.remove('active');
+            setTimeout(() => { if(!el.classList.contains('active')) el.style.display = 'none'; }, 200);
+        });
+
+        const target = $(`view-${viewId}`);
+        if(target){
+          target.style.display = 'block';
+          setTimeout(() => target.classList.add('active'), 10);
+        }
+
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-        const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`); if(activeBtn) activeBtn.classList.add('active');
-        
+        const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`);
+        if(activeBtn) activeBtn.classList.add('active');
+
         if(viewId === 'home') loadArisanHistory();
         if(viewId === 'inventory') loadInventory();
         if(viewId === 'kegiatan') loadEvents();
@@ -394,20 +431,34 @@
 
     async function upload(file) {
         if(!file) return null;
-        const fd = new FormData(); fd.append("file", file); fd.append("upload_preset", PRESET_IMG);
-        try { const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: "POST", body: fd }); const d = await res.json(); return { url: d.secure_url }; } 
-        catch (e) { showToast("Gagal Upload", "error"); throw e; }
+        const fd = new FormData();
+        fd.append("file", file);
+        fd.append("upload_preset", PRESET_IMG);
+        try {
+          const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: "POST", body: fd });
+          const d = await res.json();
+          return { url: d.secure_url };
+        } catch (e) {
+          showToast("Gagal Upload", "error");
+          throw e;
+        }
     }
 
     // --- AUTH ---
     onAuthStateChanged(auth, async user => {
-        if(!user) return location.href = "login.html";
+        if(!user) return location.href = "../login.html";
         toggleLoader(true);
         try {
             const snap = await getDoc(doc(db,"users",user.uid));
-            if(!snap.exists() || (snap.data().role !== "koordinator" && snap.data().role !== "super_admin")){
-                toggleLoader(false); $("gate").classList.remove("hidden"); $("gate").classList.add("flex"); return;
+            const role = snap.exists() ? snap.data().role : null;
+
+            if(!snap.exists() || (role !== "koordinator" && role !== "super_admin")){
+                toggleLoader(false);
+                $("gate").classList.remove("hidden");
+                $("gate").classList.add("flex");
+                return;
             }
+
             UID = user.uid;
             await Promise.all([loadArisanHistory(), loadEvents(), loadInventory(), loadProfileData()]);
             checkNextEvent();
@@ -417,7 +468,8 @@
 
     // --- FEATURE 1: SOUND & 3D ARISAN ---
     async function loadArisanHistory() {
-        const list = $("winnerHistory"); list.innerHTML = "";
+        const list = $("winnerHistory"); if(!list) return;
+        list.innerHTML = "";
         try {
             const histSnap = await getDocs(query(collection(db, "arisan_history"), orderBy("createdAt", "desc")));
             if(!histSnap.empty) {
@@ -427,16 +479,30 @@
             }
             histSnap.forEach(d => {
                 const w = d.data();
-                list.innerHTML += `<div class="bg-white dark:bg-slate-800 p-4 rounded-2xl flex items-center justify-between border border-slate-100 dark:border-slate-700 shadow-sm"><div class="flex items-center gap-3"><div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600"><span class="material-symbols-rounded">emoji_events</span></div><div><p class="text-sm font-bold text-brand-primary dark:text-white">${w.name}</p><p class="text-[10px] text-slate-400">${new Date(w.createdAt.seconds*1000).toLocaleDateString()}</p></div></div></div>`;
+                list.innerHTML += `
+                  <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl flex items-center justify-between border border-slate-100 dark:border-slate-700 shadow-sm">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600">
+                        <span class="material-symbols-rounded">emoji_events</span>
+                      </div>
+                      <div>
+                        <p class="text-sm font-bold text-brand-primary dark:text-white">${w.name}</p>
+                        <p class="text-[10px] text-slate-400">${new Date(w.createdAt.seconds*1000).toLocaleDateString('id-ID')}</p>
+                      </div>
+                    </div>
+                  </div>
+                `;
             });
         } catch(e) { console.error(e); }
     }
 
     window.openRaffleModal = async () => {
-        toggleLoader(true); candidates = [];
+        toggleLoader(true);
+        candidates = [];
         try {
             const histSnap = await getDocs(collection(db, "arisan_history"));
             const wonIds = histSnap.docs.map(d => d.data().uid);
+
             const usersSnap = await getDocs(collection(db, "users"));
             const eligibleRoles = ['ketua', 'wakil_ketua', 'sekretaris', 'bendahara', 'koordinator', 'anggota'];
 
@@ -454,8 +520,9 @@
             $("raffleModal").classList.remove("hidden"); $("raffleModal").classList.add("flex");
             updateRaffleCard({ name: "SIAP?", photo: null }, true);
             $("btnSpin").disabled = false; $("btnSpin").classList.remove("opacity-50");
-
-        } catch(e) { showToast("Gagal memuat", "error"); } finally { toggleLoader(false); }
+        } catch(e) {
+            showToast("Gagal memuat", "error");
+        } finally { toggleLoader(false); }
     }
 
     function updateRaffleCard(person, isInit = false) {
@@ -464,19 +531,17 @@
         nameEl.textContent = person.name;
 
         if (isInit) {
-             container.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-purple-50 text-purple-300"><span class="material-symbols-rounded text-6xl">casino</span></div>`;
-             return;
+            container.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-purple-50 text-purple-300"><span class="material-symbols-rounded text-6xl">casino</span></div>`;
+            return;
         }
 
-        if (person.photo) {
-            container.innerHTML = `<img src="${person.photo}" class="w-full h-full object-cover">`;
-        } else {
+        if (person.photo) container.innerHTML = `<img src="${person.photo}" class="w-full h-full object-cover">`;
+        else {
             const initials = person.name.substring(0, 2).toUpperCase();
             container.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600 font-black text-4xl">${initials}</div>`;
         }
     }
 
-    // Secure Random
     function getSecureRandomInt(max) {
         const array = new Uint32Array(1);
         window.crypto.getRandomValues(array);
@@ -490,18 +555,24 @@
 
     window.startSpin = () => {
         if(candidates.length === 0) return;
+
         const btn = $("btnSpin");
         const card = $("raffleImageContainer");
-        btn.disabled = true; btn.classList.add("opacity-50"); btn.innerHTML = "MENGACAK...";
-        
-        card.classList.add("spinning");
-        spinSound.play(); // PLAY SOUND
 
-        let duration = 4000; let startTime = null;
+        btn.disabled = true;
+        btn.classList.add("opacity-50");
+        btn.innerHTML = "MENGACAK...";
+
+        card.classList.add("spinning");
+        spinSound.play();
+
+        let duration = 4000;
+        let startTime = null;
 
         function animate(timestamp) {
             if (!startTime) startTime = timestamp;
             const progress = timestamp - startTime;
+
             const rIdx = Math.floor(Math.random() * candidates.length);
             updateRaffleCard(candidates[rIdx]);
 
@@ -510,20 +581,24 @@
                 const winnerIndex = getSecureRandomInt(candidates.length);
                 tempWinner = candidates[winnerIndex];
                 updateRaffleCard(tempWinner);
+
                 card.classList.remove("spinning");
                 spinSound.pause(); spinSound.currentTime = 0;
-                
+
                 setTimeout(() => {
-                    winSound.play(); // PLAY WIN SOUND
+                    winSound.play();
                     $("winnerNameResult").textContent = tempWinner.name;
+
                     const wa = $("winnerAvatarResult");
                     if(tempWinner.photo) wa.innerHTML = `<img src="${tempWinner.photo}" class="w-full h-full object-cover">`;
                     else {
                         const init = tempWinner.name.substring(0,2).toUpperCase();
                         wa.innerHTML = `<div class="w-full h-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-4xl">${init}</div>`;
                     }
+
                     $("raffleModal").classList.add("hidden");
-                    $("winnerOverlay").classList.remove("hidden"); $("winnerOverlay").classList.add("flex");
+                    $("winnerOverlay").classList.remove("hidden");
+                    $("winnerOverlay").classList.add("flex");
                     confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#8B5CF6', '#F472B6', '#FFD700'] });
                 }, 500);
             }
@@ -538,8 +613,11 @@
         toggleLoader(true);
         try {
             await addDoc(collection(db, "arisan_history"), { uid: tempWinner.id, name: tempWinner.name, createdAt: serverTimestamp() });
-            $("winnerOverlay").classList.add("hidden"); loadArisanHistory(); showToast("Disimpan!");
-        } catch(e) { showToast("Gagal simpan", "error"); } finally { toggleLoader(false); }
+            $("winnerOverlay").classList.add("hidden");
+            loadArisanHistory();
+            showToast("Disimpan!");
+        } catch(e) { showToast("Gagal simpan", "error"); }
+        finally { toggleLoader(false); }
     }
 
     // --- FEATURE 2: QUICK NOTES ---
@@ -547,22 +625,21 @@
         const savedNote = localStorage.getItem('coord_notes') || '';
         const html = `<textarea id="quickNote" class="w-full h-40 p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl resize-none outline-none dark:text-white" placeholder="Tulis ide cepat di sini...">${savedNote}</textarea>`;
         showModal("CATATAN KILAT", html, () => {
-            const val = $("quickNote").value;
-            localStorage.setItem('coord_notes', val);
-            closeModal(); showToast("Catatan tersimpan di HP");
+            localStorage.setItem('coord_notes', $("quickNote").value);
+            closeModal();
+            showToast("Catatan tersimpan di HP");
         });
     }
 
     // --- FEATURE 3: GUEST LIST ---
     window.openGuestModal = () => {
-        // Simple View for Guest List
         const html = `
             <input id="gName" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 mb-2 text-sm" placeholder="Nama Tamu">
             <input id="gInst" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 mb-2 text-sm" placeholder="Instansi / Keterangan">
             <button onclick="saveGuest()" class="w-full bg-cyan-500 text-white py-2 rounded-xl text-sm font-bold mt-2">Tambah Tamu</button>
             <div id="guestListDisplay" class="mt-4 max-h-32 overflow-y-auto space-y-2 border-t pt-2 text-left"></div>
         `;
-        showModal("BUKU TAMU", html, null); // No global save, handled internally
+        showModal("BUKU TAMU", html, null);
         loadGuestListInternal();
     }
 
@@ -584,7 +661,7 @@
         let h = "";
         snap.forEach(d => {
             const g = d.data();
-            h += `<div class="bg-slate-50 p-2 rounded text-xs"><b>${g.name}</b> <span class="text-slate-400">(${g.inst})</span></div>`;
+            h += `<div class="bg-slate-50 p-2 rounded text-xs"><b>${g.name}</b> <span class="text-slate-400">(${g.inst || '-'})</span></div>`;
         });
         div.innerHTML = h || "<p class='text-xs text-slate-400'>Belum ada tamu.</p>";
     }
@@ -603,7 +680,7 @@
 
         if(nextEvent) {
             const diffTime = Math.abs(new Date(nextEvent.date) - now);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             $("countdownWidget").classList.remove("hidden");
             $("nextEventName").textContent = nextEvent.title;
             $("nextEventDays").textContent = `${diffDays} Hari Lagi`;
@@ -618,8 +695,8 @@
             let csvContent = "data:text/csv;charset=utf-8,Nama,Tanggal Menang\n";
             snap.forEach(d => {
                 const r = d.data();
-                const date = new Date(r.createdAt.seconds*1000).toLocaleDateString();
-                csvContent += `${r.name},${date}\n`;
+                const date = new Date(r.createdAt.seconds*1000).toLocaleDateString('id-ID');
+                csvContent += `${(r.name || '').replaceAll(',', ' ')},${date}\n`;
             });
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
@@ -632,18 +709,28 @@
         finally { toggleLoader(false); }
     }
 
-    // --- INVENTARIS ---
+    // --- INVENTARIS (FIXED) ---
     async function loadInventory() {
-        const list = $("invList"); list.innerHTML = "";
+        const list = $("invList");
+        if(!list) return;
+        list.innerHTML = "";
+
         const snap = await getDocs(query(collection(db, "inventory"), orderBy("createdAt", "desc")));
+        if(snap.empty){
+          list.innerHTML = `<div class="col-span-2 text-center text-sm text-slate-400 py-10">Belum ada data inventaris.</div>`;
+          return;
+        }
+
         snap.forEach(d => {
             const i = d.data();
             list.innerHTML += `
                 <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden group">
                     ${i.image ? `<img src="${i.image.url}" class="w-full h-24 object-cover rounded-xl mb-2">` : '<div class="w-full h-24 bg-slate-100 dark:bg-slate-700 rounded-xl mb-2 flex items-center justify-center text-slate-300"><span class="material-symbols-rounded">image</span></div>'}
                     <h4 class="text-sm font-bold text-brand-primary dark:text-white">${i.name}</h4>
-                    <p class="text-[10px] text-slate-400 mb-1">${i.qty} Unit • ${i.status}</p>
-                    <button onclick="deleteDocData('inventory','${d.id}')" class="absolute top-2 right-2 bg-white p-1 rounded-full text-red-500 hover:bg-red-500 hover:text-white transition-colors shadow-sm"><span class="material-symbols-rounded text-sm">delete</span></button>
+                    <p class="text-[10px] text-slate-400 mb-1">${i.qty || 0} Unit • ${i.status || '-'}</p>
+                    <button onclick="deleteDocData('inventory','${d.id}')" class="absolute top-2 right-2 bg-white dark:bg-slate-900 p-1 rounded-full text-red-500 hover:bg-red-500 hover:text-white transition-colors shadow-sm">
+                      <span class="material-symbols-rounded text-sm">delete</span>
+                    </button>
                 </div>
             `;
         });
@@ -653,17 +740,30 @@
         const html = `
             <input id="invName" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 mb-2 font-bold text-sm" placeholder="Nama Barang">
             <input id="invQty" type="number" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 mb-2 text-sm" placeholder="Jumlah">
-            <select id="invStatus" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 mb-2 text-sm font-bold"><option value="Baik">Baik</option><option value="Rusak">Rusak</option></select>
+            <select id="invStatus" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 mb-2 text-sm font-bold">
+              <option value="Baik">Baik</option>
+              <option value="Rusak">Rusak</option>
+            </select>
             <input id="invImg" type="file" class="w-full text-xs">
         `;
         showModal("TAMBAH BARANG", html, async () => {
             if(!$("invName").value) return showToast("Isi nama", "error");
             toggleLoader(true);
             try {
-                let image = null; if($("invImg").files[0]) image = await upload($("invImg").files[0]);
-                await addDoc(collection(db, "inventory"), { name: $("invName").value, qty: $("invQty").value, status: $("invStatus").value, image, createdAt: serverTimestamp() });
-                closeModal(); loadInventory(); showToast("Barang disimpan");
-            } catch(e) { showToast("Gagal", "error"); } finally { toggleLoader(false); }
+                let image = null;
+                if($("invImg").files[0]) image = await upload($("invImg").files[0]);
+                await addDoc(collection(db, "inventory"), {
+                  name: $("invName").value,
+                  qty: Number($("invQty").value || 0),
+                  status: $("invStatus").value,
+                  image,
+                  createdAt: serverTimestamp()
+                });
+                closeModal();
+                loadInventory();
+                showToast("Barang disimpan");
+            } catch(e) { showToast("Gagal", "error"); }
+            finally { toggleLoader(false); }
         });
     }
 
@@ -677,23 +777,57 @@
         showModal("TAMBAH ACARA", html, async () => {
             if(!$("evTitle").value) return showToast("Judul wajib", "error");
             toggleLoader(true);
-            try { await addDoc(collection(db, "activities"), { title: $("evTitle").value, date: $("evDate").value, location: $("evLoc").value, status: "approved", createdAt: serverTimestamp() }); closeModal(); loadEvents(); checkNextEvent(); showToast("Acara disimpan"); } catch(e) { showToast("Gagal", "error"); } finally { toggleLoader(false); }
+            try {
+              await addDoc(collection(db, "activities"), {
+                title: $("evTitle").value,
+                date: $("evDate").value,
+                location: $("evLoc").value,
+                status: "approved",
+                createdAt: serverTimestamp()
+              });
+              closeModal();
+              loadEvents();
+              checkNextEvent();
+              showToast("Acara disimpan");
+            } catch(e) { showToast("Gagal", "error"); }
+            finally { toggleLoader(false); }
         });
     }
 
     async function loadEvents() {
-        const list = $("eventList"); list.innerHTML = "";
+        const list = $("eventList");
+        if(!list) return;
+        list.innerHTML = "";
+
         const snap = await getDocs(query(collection(db, "activities"), orderBy("createdAt", "desc")));
+        if(snap.empty){
+          list.innerHTML = `<div class="text-center text-sm text-slate-400 py-10">Belum ada agenda.</div>`;
+          return;
+        }
+
         snap.forEach(d => {
             const x = d.data();
-            list.innerHTML += `<div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm flex justify-between items-center"><div><h4 class="text-sm font-bold text-brand-primary dark:text-white">${x.title}</h4><p class="text-[10px] text-slate-400">${x.date || '-'} | ${x.location}</p></div><button onclick="deleteDocData('activities','${d.id}')" class="text-red-500"><span class="material-symbols-rounded">delete</span></button></div>`;
+            list.innerHTML += `
+              <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm flex justify-between items-center">
+                <div>
+                  <h4 class="text-sm font-bold text-brand-primary dark:text-white">${x.title}</h4>
+                  <p class="text-[10px] text-slate-400">${x.date || '-'} | ${x.location || '-'}</p>
+                </div>
+                <button onclick="deleteDocData('activities','${d.id}')" class="text-red-500"><span class="material-symbols-rounded">delete</span></button>
+              </div>
+            `;
         });
     }
 
     window.deleteDocData = async (col, id) => {
         if(!confirm("Hapus?")) return;
         toggleLoader(true);
-        try { await deleteDoc(doc(db, col, id)); if(col==='inventory') loadInventory(); if(col==='activities') { loadEvents(); checkNextEvent(); } } catch(e){ showToast("Gagal","error"); } finally { toggleLoader(false); }
+        try {
+          await deleteDoc(doc(db, col, id));
+          if(col==='inventory') loadInventory();
+          if(col==='activities') { loadEvents(); checkNextEvent(); }
+        } catch(e){ showToast("Gagal","error"); }
+        finally { toggleLoader(false); }
     }
 
     // --- PROFILE ---
@@ -704,22 +838,29 @@
             $("headerName").textContent = d.name || "Koordinator";
             $("headerPhoto").src = d.photo?.url || "https://via.placeholder.com/150";
             $("profileImage").src = d.photo?.url || "https://via.placeholder.com/150";
-            $("profileNameDisplay").textContent = d.name;
-            $("profileEmailDisplay").textContent = d.email;
+            $("profileNameDisplay").textContent = d.name || "-";
+            $("profileEmailDisplay").textContent = d.email || "-";
             $("editName").value = d.name||""; $("editPhone").value = d.phone||""; $("editAddress").value = d.address||"";
         }
     }
 
-    window.previewProfileImage = (input) => { if (input.files[0]) { newProfileFile = input.files[0]; $("profileImage").src = URL.createObjectURL(newProfileFile); } }
+    window.previewProfileImage = (input) => {
+      if (input.files[0]) {
+        newProfileFile = input.files[0];
+        $("profileImage").src = URL.createObjectURL(newProfileFile);
+      }
+    }
 
     window.saveProfile = async () => {
         toggleLoader(true);
         try {
             let data = { name:$("editName").value, phone:$("editPhone").value, address:$("editAddress").value };
-            if(newProfileFile) { data.photo = await upload(newProfileFile); }
+            if(newProfileFile) data.photo = await upload(newProfileFile);
             await updateDoc(doc(db, "users", UID), data);
-            showToast("Profil Disimpan"); await loadProfileData();
-        } catch(e) { showToast("Gagal update", "error"); } finally { toggleLoader(false); }
+            showToast("Profil Disimpan");
+            await loadProfileData();
+        } catch(e) { showToast("Gagal update", "error"); }
+        finally { toggleLoader(false); }
     }
 
     window.showIdCard = async () => {
@@ -729,12 +870,17 @@
             <div class="bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-white p-5 rounded-2xl relative overflow-hidden shadow-2xl border-t border-slate-600">
                 <div class="absolute -right-10 -top-10 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl"></div>
                 <div class="flex justify-between items-center mb-6 relative z-10">
-                    <div class="flex items-center gap-2"><div class="w-8 h-8 bg-white/10 rounded flex items-center justify-center"><span class="material-symbols-rounded text-purple-500">event</span></div><span class="font-bold tracking-widest text-xs">KARTEJI EVENT</span></div>
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 bg-white/10 rounded flex items-center justify-center">
+                        <span class="material-symbols-rounded text-purple-500">event</span>
+                      </div>
+                      <span class="font-bold tracking-widest text-xs">KARTEJI EVENT</span>
+                    </div>
                 </div>
                 <div class="flex gap-4 items-center">
                      <img src="${u.photo?.url||'https://via.placeholder.com/100'}" class="w-20 h-20 rounded-xl object-cover border-2 border-purple-500 shadow-lg bg-slate-800">
                      <div>
-                        <h2 class="text-xl font-bold leading-none mb-1 text-purple-400">${u.name}</h2>
+                        <h2 class="text-xl font-bold leading-none mb-1 text-purple-400">${u.name || '-'}</h2>
                         <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">KOORDINATOR</p>
                         <p class="text-[9px] mt-2 text-slate-500">ID: ${UID.substring(0,8).toUpperCase()}</p>
                      </div>
