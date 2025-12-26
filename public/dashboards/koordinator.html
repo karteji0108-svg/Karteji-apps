@@ -17,11 +17,10 @@
             purple: { DEFAULT: '#8B5CF6', light: '#EDE9FE', dark: '#6D28D9' },
             dark: { bg: '#0f172a', card: '#1e293b', text: '#f8fafc' }
           },
-          animation: {
+          animation: { 
             'blob': 'blob 10s infinite',
             'bounce-slow': 'bounce 3s infinite',
             'elastic-pop': 'elasticPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
-            'slide-up': 'slideUp 0.3s ease-out both',
           },
           keyframes: {
             blob: {
@@ -34,10 +33,6 @@
               '0%': { opacity: '0', transform: 'scale(0.5)' },
               '60%': { opacity: '1', transform: 'scale(1.1)' },
               '100%': { opacity: '1', transform: 'scale(1)' },
-            },
-            slideUp: {
-              '0%': { opacity: '0', transform: 'translateY(16px)' },
-              '100%': { opacity: '1', transform: 'translateY(0px)' },
             }
           }
         }
@@ -54,6 +49,7 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .animation-delay-2000 { animation-delay: 2s; }
 
+    /* Glassmorphism */
     .glass-nav {
       background: rgba(255, 255, 255, 0.90);
       backdrop-filter: blur(15px);
@@ -62,8 +58,8 @@
       box-shadow: 0 -4px 20px rgba(0,0,0,0.03);
     }
     .dark .glass-nav {
-      background: rgba(15, 23, 42, 0.9);
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(15, 23, 42, 0.9);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .view-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
@@ -71,24 +67,17 @@
     .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #8B5CF6; }
     .nav-btn.active p { color: #0F172A; font-weight: 700; }
     .dark .nav-btn.active p { color: #F8FAFC; }
-
+    
+    /* 3D Card Effect */
     .character-card {
-      transition: transform 0.1s, box-shadow 0.1s;
-      box-shadow: 0 10px 30px -5px rgba(139, 92, 246, 0.3);
-      transform-style: preserve-3d;
+        transition: transform 0.1s, box-shadow 0.1s;
+        box-shadow: 0 10px 30px -5px rgba(139, 92, 246, 0.3);
+        transform-style: preserve-3d;
     }
     .character-card.spinning {
-      transform: scale(1.1) rotateX(10deg);
-      box-shadow: 0 20px 40px -5px rgba(139, 92, 246, 0.5);
-      border-color: #F472B6;
-    }
-
-    /* Print (optional) */
-    @media print {
-      body * { visibility: hidden; }
-      #printArea, #printArea * { visibility: visible; }
-      #printArea { position: absolute; left: 0; top: 0; width: 100%; background: white; padding: 16px; }
-      .no-print { display: none !important; }
+        transform: scale(1.1) rotateX(10deg);
+        box-shadow: 0 20px 40px -5px rgba(139, 92, 246, 0.5);
+        border-color: #F472B6;
     }
   </style>
 </head>
@@ -112,72 +101,69 @@
 
   <div id="gate" class="fixed inset-0 bg-slate-900 z-[9998] hidden items-center justify-center p-6 text-center backdrop-blur-sm">
     <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full animate-elastic-pop">
-      <div class="bg-red-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-        <span class="material-symbols-rounded text-red-500 text-4xl">lock</span>
-      </div>
-      <h2 class="text-2xl font-extrabold text-brand-primary mb-2">Akses Ditolak</h2>
-      <p class="text-slate-500 text-sm mb-6">Halaman ini khusus Koordinator.</p>
-      <a href="../login.html" class="block w-full bg-brand-primary text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors">Kembali</a>
+        <div class="bg-red-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="material-symbols-rounded text-red-500 text-4xl">lock</span>
+        </div>
+        <h2 class="text-2xl font-extrabold text-brand-primary mb-2">Akses Ditolak</h2>
+        <p class="text-slate-500 text-sm mb-6">Halaman ini khusus Koordinator.</p>
+        <a href="../login.html" class="block w-full bg-brand-primary text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors">Kembali</a>
     </div>
   </div>
 
   <!-- Raffle Modal -->
   <div id="raffleModal" class="fixed inset-0 z-[80] hidden items-center justify-center p-4 bg-slate-900/95 backdrop-blur-xl transition-all">
     <div class="w-full max-w-sm text-center relative">
-      <button onclick="closeRaffle()" class="absolute -top-12 right-0 text-white/50 hover:text-white">
-        <span class="material-symbols-rounded text-3xl">close</span>
-      </button>
-
-      <p class="text-purple-300 font-bold tracking-[0.2em] text-xs mb-6 uppercase">Mesin Pengundian Arisan</p>
-
-      <div class="bg-white rounded-[2.5rem] p-6 shadow-2xl shadow-purple-500/20 mb-8 border-4 border-purple-500 relative overflow-hidden flex flex-col items-center justify-center h-72">
-        <div class="absolute inset-0 bg-purple-50 opacity-50" style="background-image: radial-gradient(#8B5CF6 1px, transparent 1px); background-size: 15px 15px;"></div>
-
-        <div class="relative z-10 w-full flex flex-col items-center">
-          <div id="raffleImageContainer" class="w-36 h-36 rounded-full border-8 border-purple-200 bg-slate-100 overflow-hidden shadow-2xl mb-5 character-card mx-auto">
-            <div class="w-full h-full flex items-center justify-center bg-purple-50 text-purple-300">
-              <span class="material-symbols-rounded text-6xl">casino</span>
+        <button onclick="closeRaffle()" class="absolute -top-12 right-0 text-white/50 hover:text-white"><span class="material-symbols-rounded text-3xl">close</span></button>
+        <p class="text-purple-300 font-bold tracking-[0.2em] text-xs mb-6 uppercase">Mesin Pengundian Arisan</p>
+        
+        <div class="bg-white rounded-[2.5rem] p-6 shadow-2xl shadow-purple-500/20 mb-8 border-4 border-purple-500 relative overflow-hidden flex flex-col items-center justify-center h-72">
+            <div class="absolute inset-0 bg-purple-50 opacity-50" style="background-image: radial-gradient(#8B5CF6 1px, transparent 1px); background-size: 15px 15px;"></div>
+            
+            <div class="relative z-10 w-full flex flex-col items-center">
+                <div id="raffleImageContainer" class="w-36 h-36 rounded-full border-8 border-purple-200 bg-slate-100 overflow-hidden shadow-2xl mb-5 character-card mx-auto">
+                    <div class="w-full h-full flex items-center justify-center bg-purple-50 text-purple-300">
+                        <span class="material-symbols-rounded text-6xl">casino</span>
+                    </div>
+                </div>
+                <h2 id="raffleName" class="text-3xl font-black text-brand-primary tracking-tight truncate max-w-full px-2">SIAP?</h2>
+                <p class="text-[10px] text-purple-400 font-bold tracking-widest mt-1">SISTEM PENGACAK AMAN</p>
             </div>
-          </div>
-          <h2 id="raffleName" class="text-3xl font-black text-brand-primary tracking-tight truncate max-w-full px-2">SIAP?</h2>
-          <p class="text-[10px] text-purple-400 font-bold tracking-widest mt-1">SISTEM PENGACAK AMAN</p>
         </div>
-      </div>
 
-      <button id="btnSpin" onclick="startSpin()" class="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white py-5 rounded-2xl font-black text-xl shadow-lg shadow-purple-500/40 active:scale-95 transition-transform flex items-center justify-center gap-2">
-        <span class="material-symbols-rounded">play_circle</span> MULAI ACAK
-      </button>
-
-      <p id="raffleStatus" class="mt-4 text-slate-400 text-xs">Kandidat Tersedia: <span id="eligibleCountDisplay" class="font-bold text-white">0</span> orang</p>
+        <button id="btnSpin" onclick="startSpin()" class="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white py-5 rounded-2xl font-black text-xl shadow-lg shadow-purple-500/40 active:scale-95 transition-transform flex items-center justify-center gap-2">
+            <span class="material-symbols-rounded">play_circle</span> MULAI ACAK
+        </button>
+        
+        <p id="raffleStatus" class="mt-4 text-slate-400 text-xs">Kandidat Tersedia: <span id="eligibleCountDisplay" class="font-bold text-white">0</span> orang</p>
     </div>
   </div>
 
   <!-- Winner Overlay -->
   <div id="winnerOverlay" class="fixed inset-0 z-[90] hidden items-center justify-center p-6 bg-black/80 backdrop-blur-md">
-    <div class="bg-white dark:bg-slate-800 w-full max-w-xs rounded-[2rem] p-8 text-center relative animate-elastic-pop pt-16 border border-white/10">
-      <div class="absolute -top-12 left-1/2 -translate-x-1/2">
-        <div id="winnerAvatarResult" class="w-28 h-28 rounded-full border-4 border-white dark:border-slate-700 shadow-2xl bg-slate-200 overflow-hidden"></div>
-        <div class="absolute -bottom-2 -right-2 w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center border-2 border-white shadow-md text-yellow-800 animate-bounce">
-          <span class="material-symbols-rounded">emoji_events</span>
-        </div>
+      <div class="bg-white dark:bg-slate-800 w-full max-w-xs rounded-[2rem] p-8 text-center relative animate-elastic-pop pt-16 border border-white/10">
+          <div class="absolute -top-12 left-1/2 -translate-x-1/2">
+              <div id="winnerAvatarResult" class="w-28 h-28 rounded-full border-4 border-white dark:border-slate-700 shadow-2xl bg-slate-200 overflow-hidden"></div>
+              <div class="absolute -bottom-2 -right-2 w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center border-2 border-white shadow-md text-yellow-800 animate-bounce">
+                  <span class="material-symbols-rounded">emoji_events</span>
+              </div>
+          </div>
+          
+          <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-2">PEMENANG PERIODE INI</p>
+          <h2 id="winnerNameResult" class="text-2xl font-black text-brand-primary dark:text-white mt-1 mb-6 leading-tight">Nama</h2>
+          
+          <button onclick="confirmWinner()" class="w-full bg-brand-primary dark:bg-purple-600 text-white py-3 rounded-xl font-bold mb-2 shadow-lg active:scale-95 transition-transform">Simpan Hasil</button>
+          <button onclick="closeWinner()" class="w-full text-slate-400 py-2 text-xs font-bold hover:text-red-500">Batalkan</button>
       </div>
-
-      <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-2">PEMENANG PERIODE INI</p>
-      <h2 id="winnerNameResult" class="text-2xl font-black text-brand-primary dark:text-white mt-1 mb-6 leading-tight">Nama</h2>
-
-      <button id="btnConfirmWinner" onclick="confirmWinner()" class="w-full bg-brand-primary dark:bg-purple-600 text-white py-3 rounded-xl font-bold mb-2 shadow-lg active:scale-95 transition-transform">Simpan Hasil</button>
-      <button onclick="closeWinner()" class="w-full text-slate-400 py-2 text-xs font-bold hover:text-red-500">Batalkan</button>
-    </div>
   </div>
 
-  <!-- CRUD Modal -->
+  <!-- CRUD Modal (dipakai juga untuk modal lokasi) -->
   <div id="crudModal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-all">
-    <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-[2rem] p-6 relative shadow-2xl animate-slide-up">
+    <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-[2rem] p-6 relative shadow-2xl animate-[slideUp_0.3s_ease-out]">
       <div class="flex justify-between items-center mb-6">
-        <h2 id="modalTitle" class="text-xl font-extrabold text-brand-primary dark:text-white uppercase tracking-tight">Judul</h2>
-        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-300">
-          <span class="material-symbols-rounded text-xl">close</span>
-        </button>
+          <h2 id="modalTitle" class="text-xl font-extrabold text-brand-primary dark:text-white uppercase tracking-tight">Judul</h2>
+          <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-300">
+            <span class="material-symbols-rounded text-xl">close</span>
+          </button>
       </div>
       <div id="modalBody" class="space-y-4 max-h-[60vh] overflow-y-auto no-scrollbar text-slate-800 dark:text-slate-200"></div>
       <button id="modalSubmitBtn" class="mt-6 w-full rounded-xl bg-brand-primary dark:bg-purple-600 text-white py-4 text-sm font-bold shadow-lg active:scale-95 transition-all">SIMPAN</button>
@@ -185,211 +171,253 @@
   </div>
 
   <header class="sticky top-0 z-30 px-6 pt-8 pb-4 bg-gradient-to-b from-[#F8FAFC] dark:from-brand-primary via-[#F8FAFC] dark:via-brand-primary to-transparent transition-colors">
-    <div class="flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <button onclick="switchView('profile')" class="relative group active:scale-95 transition-transform">
-          <img id="headerPhoto" class="w-12 h-12 rounded-full border-2 border-white shadow-md object-cover" src="https://via.placeholder.com/100" alt="photo">
-          <div class="absolute bottom-0 right-0 w-4 h-4 bg-purple-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] text-white font-bold">K</div>
-        </button>
-        <div>
-          <p class="text-[10px] font-bold text-purple-700 dark:text-purple-300 uppercase tracking-widest bg-purple-100 dark:bg-purple-900/50 px-2 py-0.5 rounded-full w-fit mb-0.5">Koordinator</p>
-          <h1 id="headerName" class="text-xl font-extrabold text-brand-primary dark:text-white leading-none">Memuat...</h1>
-        </div>
+      <div class="flex justify-between items-center">
+          <div class="flex items-center gap-3">
+              <button onclick="switchView('profile')" class="relative group active:scale-95 transition-transform">
+                <img id="headerPhoto" class="w-12 h-12 rounded-full border-2 border-white shadow-md object-cover" src="https://via.placeholder.com/100" alt="photo">
+                <div class="absolute bottom-0 right-0 w-4 h-4 bg-purple-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] text-white font-bold">K</div>
+              </button>
+              <div>
+                  <p class="text-[10px] font-bold text-purple-700 dark:text-purple-300 uppercase tracking-widest bg-purple-100 dark:bg-purple-900/50 px-2 py-0.5 rounded-full w-fit mb-0.5">Koordinator</p>
+                  <h1 id="headerName" class="text-xl font-extrabold text-brand-primary dark:text-white leading-none">Memuat...</h1>
+              </div>
+          </div>
+          <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm flex items-center justify-center active:scale-95 text-slate-400 dark:text-slate-200 transition-colors">
+            <span id="themeIcon" class="material-symbols-rounded">dark_mode</span>
+          </button>
       </div>
-
-      <div class="flex items-center gap-2 no-print">
-        <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm flex items-center justify-center active:scale-95 text-slate-400 dark:text-slate-200 transition-colors" title="Mode Gelap/Terang">
-          <span id="themeIcon" class="material-symbols-rounded">dark_mode</span>
-        </button>
-        <button onclick="location.reload()" class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm flex items-center justify-center active:scale-95 text-slate-400 dark:text-slate-200 transition-colors" title="Refresh">
-          <span class="material-symbols-rounded">refresh</span>
-        </button>
-      </div>
-    </div>
   </header>
 
   <main class="px-5 mt-2 relative z-10">
 
-    <!-- HOME -->
-    <section id="view-home" class="view-section active">
-      <div id="countdownWidget" class="hidden mb-4 p-4 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl text-white shadow-lg relative overflow-hidden">
-        <div class="absolute right-0 top-0 opacity-10 transform translate-x-4 -translate-y-4"><span class="material-symbols-rounded text-8xl">timer</span></div>
-        <p class="text-[10px] font-bold uppercase tracking-widest opacity-80 mb-1">Acara Selanjutnya</p>
-        <h3 id="nextEventName" class="text-lg font-bold leading-tight">Nama Acara</h3>
-        <p id="nextEventDays" class="text-3xl font-black mt-1">0 Hari Lagi</p>
-      </div>
-
-      <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 dark:shadow-none group transition-all">
-        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500 transform group-hover:scale-110">
-          <span class="material-symbols-rounded text-9xl">celebration</span>
-        </div>
-        <div class="relative z-10">
-          <p class="text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Status Arisan</p>
-          <h2 id="lastWinner" class="text-2xl font-black tracking-tight mb-2 leading-tight">Belum Ada Pemenang</h2>
-          <p class="text-xs text-slate-400 mb-6" id="lastDate">Periode ini belum diundi</p>
-
-          <button onclick="openRaffleModal()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-xl font-bold shadow-lg shadow-purple-500/30 active:scale-95 transition-all flex items-center justify-center gap-2 no-print">
-            <span class="material-symbols-rounded animate-bounce-slow">casino</span> KOCOK ARISAN
-          </button>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-2 gap-3 mt-6 no-print">
-        <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 relative group overflow-hidden shadow-sm active:scale-95 transition-all" onclick="openNotesModal()">
-          <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 to-transparent opacity-50 dark:opacity-10"></div>
-          <div class="relative z-10 text-yellow-600 mb-2"><span class="material-symbols-rounded text-3xl">sticky_note_2</span></div>
-          <div><h3 class="text-xs font-bold text-brand-primary dark:text-white">Catatan</h3><p class="text-[10px] text-slate-400">Notepad Cepat</p></div>
-        </div>
-
-        <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 relative group overflow-hidden shadow-sm active:scale-95 transition-all" onclick="openGuestModal()">
-          <div class="absolute inset-0 bg-gradient-to-br from-cyan-50 to-transparent opacity-50 dark:opacity-10"></div>
-          <div class="relative z-10 text-cyan-600 mb-2"><span class="material-symbols-rounded text-3xl">book</span></div>
-          <div><h3 class="text-xs font-bold text-brand-primary dark:text-white">Buku Tamu</h3><p class="text-[10px] text-slate-400">Catat Undangan</p></div>
-        </div>
-
-        <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 relative group overflow-hidden shadow-sm active:scale-95 transition-all" onclick="switchView('inventory')">
-          <div class="absolute inset-0 bg-gradient-to-br from-emerald-50 to-transparent opacity-50 dark:opacity-10"></div>
-          <div class="relative z-10 text-emerald-600 mb-2"><span class="material-symbols-rounded text-3xl">inventory_2</span></div>
-          <div><h3 class="text-xs font-bold text-brand-primary dark:text-white">Barang</h3><p class="text-[10px] text-slate-400">Aset Organisasi</p></div>
-        </div>
-
-        <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 relative group overflow-hidden shadow-sm active:scale-95 transition-all" onclick="openExportMenu()">
-          <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent opacity-50 dark:opacity-10"></div>
-          <div class="relative z-10 text-blue-600 mb-2"><span class="material-symbols-rounded text-3xl">download</span></div>
-          <div><h3 class="text-xs font-bold text-brand-primary dark:text-white">Export</h3><p class="text-[10px] text-slate-400">CSV Data</p></div>
-        </div>
-      </div>
-
-      <div class="mt-6" id="printArea">
-        <h3 class="text-sm font-bold text-brand-primary dark:text-slate-300 uppercase tracking-wide mb-3 px-1">Riwayat Pemenang</h3>
-        <div id="winnerHistory" class="space-y-3 pb-20"></div>
-      </div>
-    </section>
-
-    <!-- KEGIATAN -->
-    <section id="view-kegiatan" class="view-section">
-      <div class="flex justify-between items-center mb-3 px-1 sticky top-0 bg-[#F8FAFC] dark:bg-brand-primary py-2 z-10">
-        <div>
-          <h2 class="text-2xl font-bold text-brand-primary dark:text-white">Acara</h2>
-          <p class="text-xs text-slate-400">Agenda Kegiatan</p>
-        </div>
-        <button onclick="openEventModal()" class="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform no-print">
-          <span class="material-symbols-rounded">add</span>
-        </button>
-      </div>
-
-      <!-- Search (NEW) -->
-      <div class="mb-4 relative no-print">
-        <span class="material-symbols-rounded absolute left-3 top-2.5 text-slate-400 text-lg">search</span>
-        <input id="searchEvents" oninput="filterList('eventList', this.value)" placeholder="Cari acara / lokasi..." class="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-purple shadow-sm">
-      </div>
-
-      <div id="eventList" class="grid grid-cols-1 gap-4 pb-20"></div>
-    </section>
-
-    <!-- INVENTORY -->
-    <section id="view-inventory" class="view-section">
-      <div class="flex justify-between items-center mb-3 px-1 sticky top-0 bg-[#F8FAFC] dark:bg-brand-primary py-2 z-10">
-        <div>
-          <h2 class="text-2xl font-bold text-brand-primary dark:text-white">Barang</h2>
-          <p class="text-xs text-slate-400">Inventaris Organisasi</p>
-        </div>
-        <button onclick="openInventoryModal()" class="w-10 h-10 bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform no-print">
-          <span class="material-symbols-rounded">add</span>
-        </button>
-      </div>
-
-      <!-- Search (NEW) -->
-      <div class="mb-4 relative no-print">
-        <span class="material-symbols-rounded absolute left-3 top-2.5 text-slate-400 text-lg">search</span>
-        <input id="searchInv" oninput="filterList('invList', this.value)" placeholder="Cari nama barang / status..." class="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-emerald-500 shadow-sm">
-      </div>
-
-      <div id="invList" class="grid grid-cols-2 gap-3 pb-20"></div>
-    </section>
-
-    <!-- PROFILE -->
-    <section id="view-profile" class="view-section">
-      <div class="flex flex-col items-center pt-4 pb-20">
-        <div class="relative group cursor-pointer active:scale-95 transition-transform" onclick="$('profileUpload').click()">
-          <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl shadow-slate-200 dark:shadow-none" alt="profile">
-          <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <span class="material-symbols-rounded text-white">photo_camera</span>
-          </div>
-        </div>
-        <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
-
-        <h2 id="profileNameDisplay" class="text-xl font-bold text-brand-primary dark:text-white mt-4 mb-0.5">Nama Koordinator</h2>
-        <div id="profileRoleBadge" class="px-3 py-0.5 bg-purple-500 text-white rounded-full text-[10px] font-extrabold uppercase tracking-wide mb-1 shadow-lg shadow-purple-500/30">KOORDINATOR</div>
-        <p id="profileEmailDisplay" class="text-sm text-slate-400">email@user.com</p>
-
-        <button onclick="showIdCard()" class="mt-4 w-full max-w-xs bg-slate-800 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-xl no-print">
-          <span class="material-symbols-rounded">badge</span> Kartu Digital
-        </button>
-
-        <div class="w-full mt-8 space-y-4 px-1">
-          <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm space-y-4">
-            <div>
-              <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase">Nama Lengkap</label>
-              <input id="editName" type="text" class="w-full p-3 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl border border-slate-100 dark:border-slate-700 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-purple-500">
-            </div>
-            <div>
-              <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase">No. WhatsApp</label>
-              <input id="editPhone" type="tel" class="w-full p-3 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl border border-slate-100 dark:border-slate-700 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-purple-500">
-            </div>
-            <div>
-              <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase">Alamat</label>
-              <textarea id="editAddress" rows="2" class="w-full p-3 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl border border-slate-100 dark:border-slate-700 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-purple-500 resize-none"></textarea>
-            </div>
+      <!-- HOME -->
+      <section id="view-home" class="view-section active">
+          <div id="countdownWidget" class="hidden mb-4 p-4 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl text-white shadow-lg relative overflow-hidden">
+              <div class="absolute right-0 top-0 opacity-10 transform translate-x-4 -translate-y-4"><span class="material-symbols-rounded text-8xl">timer</span></div>
+              <p class="text-[10px] font-bold uppercase tracking-widest opacity-80 mb-1">Acara Selanjutnya</p>
+              <h3 id="nextEventName" class="text-lg font-bold leading-tight">Nama Acara</h3>
+              <p id="nextEventDays" class="text-3xl font-black mt-1">0 Hari Lagi</p>
           </div>
 
-          <button onclick="saveProfile()" class="w-full bg-brand-primary dark:bg-purple-600 text-white py-4 rounded-2xl font-bold shadow-lg active:scale-95">SIMPAN PROFIL</button>
-          <button id="logoutBtn" class="w-full bg-red-50 text-red-500 py-4 rounded-2xl font-bold hover:bg-red-100 dark:hover:bg-red-900/20 transition-all active:scale-95 flex items-center justify-center gap-2">
-            <span class="material-symbols-rounded">logout</span> KELUAR
-          </button>
+          <!-- =========================
+               NEW: WIDGET CUACA + SHOLAT
+               ========================= -->
+          <div class="mb-4 grid grid-cols-1 gap-3">
+            <!-- Cuaca -->
+            <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl p-4 shadow-sm">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Cuaca</p>
+                  <h3 id="wCity" class="text-lg font-black text-brand-primary dark:text-white leading-tight">-</h3>
+                  <p id="wDesc" class="text-xs text-slate-400 mt-1">Memuat...</p>
+                </div>
+                <div class="text-right">
+                  <p id="wTemp" class="text-3xl font-black text-brand-primary dark:text-white">--°</p>
+                  <p id="wFeels" class="text-[10px] text-slate-400">Feels: --°</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-2 mt-4">
+                <div class="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-xl p-3">
+                  <p class="text-[10px] text-slate-400 font-bold">Kelembapan</p>
+                  <p id="wHum" class="text-sm font-extrabold">-</p>
+                </div>
+                <div class="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-xl p-3">
+                  <p class="text-[10px] text-slate-400 font-bold">Angin</p>
+                  <p id="wWind" class="text-sm font-extrabold">-</p>
+                </div>
+                <div class="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-xl p-3">
+                  <p class="text-[10px] text-slate-400 font-bold">Update</p>
+                  <p id="wUpdated" class="text-sm font-extrabold">-</p>
+                </div>
+              </div>
+
+              <div class="mt-4 flex gap-2">
+                <button onclick="refreshWeatherAndPrayer()" class="flex-1 bg-slate-900 dark:bg-purple-600 text-white py-3 rounded-xl font-bold text-xs active:scale-95">
+                  Refresh
+                </button>
+                <button onclick="openLocationModal()" class="px-4 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 py-3 rounded-xl font-bold text-xs active:scale-95">
+                  Lokasi
+                </button>
+              </div>
+              <p class="mt-2 text-[10px] text-slate-400">Cuaca realtime butuh API Key OpenWeather.</p>
+            </div>
+
+            <!-- Sholat + Imsak -->
+            <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl p-4 shadow-sm">
+              <div class="flex items-start justify-between">
+                <div>
+                  <p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Jadwal Sholat + Imsak</p>
+                  <h3 id="pCity" class="text-lg font-black text-brand-primary dark:text-white leading-tight">-</h3>
+                  <p id="pDate" class="text-xs text-slate-400 mt-1">-</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-[10px] font-bold text-slate-400">Next</p>
+                  <p id="pNext" class="text-sm font-extrabold text-brand-primary dark:text-white">-</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 mt-4 text-sm">
+                <div class="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-xl p-3 flex justify-between">
+                  <span class="font-bold text-slate-500">Imsak</span><span id="tImsak" class="font-extrabold">-</span>
+                </div>
+                <div class="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-xl p-3 flex justify-between">
+                  <span class="font-bold text-slate-500">Subuh</span><span id="tFajr" class="font-extrabold">-</span>
+                </div>
+                <div class="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-xl p-3 flex justify-between">
+                  <span class="font-bold text-slate-500">Dzuhur</span><span id="tDhuhr" class="font-extrabold">-</span>
+                </div>
+                <div class="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-xl p-3 flex justify-between">
+                  <span class="font-bold text-slate-500">Ashar</span><span id="tAsr" class="font-extrabold">-</span>
+                </div>
+                <div class="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-xl p-3 flex justify-between">
+                  <span class="font-bold text-slate-500">Maghrib</span><span id="tMaghrib" class="font-extrabold">-</span>
+                </div>
+                <div class="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-xl p-3 flex justify-between">
+                  <span class="font-bold text-slate-500">Isya</span><span id="tIsha" class="font-extrabold">-</span>
+                </div>
+              </div>
+              <p class="mt-2 text-[10px] text-slate-400">Jadwal sholat harian berbasis lokasi (lat/lon).</p>
+            </div>
+          </div>
+          <!-- =========================
+               END NEW WIDGET
+               ========================= -->
+
+          <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 dark:shadow-none group transition-all">
+              <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500 transform group-hover:scale-110"><span class="material-symbols-rounded text-9xl">celebration</span></div>
+              <div class="relative z-10">
+                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Status Arisan</p>
+                <h2 id="lastWinner" class="text-2xl font-black tracking-tight mb-2 leading-tight">Belum Ada Pemenang</h2>
+                <p class="text-xs text-slate-400 mb-6" id="lastDate">Periode ini belum diundi</p>
+                <button onclick="openRaffleModal()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-xl font-bold shadow-lg shadow-purple-500/30 active:scale-95 transition-all flex items-center justify-center gap-2">
+                    <span class="material-symbols-rounded animate-bounce-slow">casino</span> KOCOK ARISAN
+                </button>
+              </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 mt-6">
+              <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 relative group overflow-hidden shadow-sm active:scale-95 transition-all" onclick="openNotesModal()">
+                   <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 to-transparent opacity-50 dark:opacity-10"></div>
+                   <div class="relative z-10 text-yellow-600 mb-2"><span class="material-symbols-rounded text-3xl">sticky_note_2</span></div>
+                   <div><h3 class="text-xs font-bold text-brand-primary dark:text-white">Catatan</h3><p class="text-[10px] text-slate-400">Notepad Cepat</p></div>
+              </div>
+              <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 relative group overflow-hidden shadow-sm active:scale-95 transition-all" onclick="openGuestModal()">
+                   <div class="absolute inset-0 bg-gradient-to-br from-cyan-50 to-transparent opacity-50 dark:opacity-10"></div>
+                   <div class="relative z-10 text-cyan-600 mb-2"><span class="material-symbols-rounded text-3xl">book</span></div>
+                   <div><h3 class="text-xs font-bold text-brand-primary dark:text-white">Buku Tamu</h3><p class="text-[10px] text-slate-400">Catat Undangan</p></div>
+              </div>
+              <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 relative group overflow-hidden shadow-sm active:scale-95 transition-all" onclick="switchView('inventory')">
+                   <div class="absolute inset-0 bg-gradient-to-br from-emerald-50 to-transparent opacity-50 dark:opacity-10"></div>
+                   <div class="relative z-10 text-emerald-600 mb-2"><span class="material-symbols-rounded text-3xl">inventory_2</span></div>
+                   <div><h3 class="text-xs font-bold text-brand-primary dark:text-white">Barang</h3><p class="text-[10px] text-slate-400">Aset Organisasi</p></div>
+              </div>
+              <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 relative group overflow-hidden shadow-sm active:scale-95 transition-all" onclick="exportData()">
+                   <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent opacity-50 dark:opacity-10"></div>
+                   <div class="relative z-10 text-blue-600 mb-2"><span class="material-symbols-rounded text-3xl">download</span></div>
+                   <div><h3 class="text-xs font-bold text-brand-primary dark:text-white">Export</h3><p class="text-[10px] text-slate-400">Data Pemenang</p></div>
+              </div>
+          </div>
+
+          <div class="mt-6">
+              <h3 class="text-sm font-bold text-brand-primary dark:text-slate-300 uppercase tracking-wide mb-3 px-1">Riwayat Pemenang</h3>
+              <div id="winnerHistory" class="space-y-3 pb-20"></div>
+          </div>
+      </section>
+
+      <!-- KEGIATAN -->
+      <section id="view-kegiatan" class="view-section">
+          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] dark:bg-brand-primary py-2 z-10">
+            <div><h2 class="text-2xl font-bold text-brand-primary dark:text-white">Acara</h2><p class="text-xs text-slate-400">Agenda Kegiatan</p></div>
+            <button onclick="openEventModal()" class="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"><span class="material-symbols-rounded">add</span></button>
+          </div>
+          <div id="eventList" class="grid grid-cols-1 gap-4 pb-20"></div>
+      </section>
+
+      <!-- INVENTORY -->
+      <section id="view-inventory" class="view-section">
+          <div class="flex justify-between items-center mb-6 px-1 sticky top-0 bg-[#F8FAFC] dark:bg-brand-primary py-2 z-10">
+            <div><h2 class="text-2xl font-bold text-brand-primary dark:text-white">Barang</h2><p class="text-xs text-slate-400">Inventaris Organisasi</p></div>
+            <button onclick="openInventoryModal()" class="w-10 h-10 bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"><span class="material-symbols-rounded">add</span></button>
+          </div>
+
+          <div id="invList" class="grid grid-cols-2 gap-3 pb-20"></div>
+      </section>
+
+      <!-- PROFILE -->
+      <section id="view-profile" class="view-section">
+        <div class="flex flex-col items-center pt-4 pb-20">
+            <div class="relative group cursor-pointer active:scale-95 transition-transform" onclick="$('profileUpload').click()">
+                <img id="profileImage" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl shadow-slate-200 dark:shadow-none" alt="profile">
+                <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><span class="material-symbols-rounded text-white">photo_camera</span></div>
+            </div>
+            <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
+            
+            <h2 id="profileNameDisplay" class="text-xl font-bold text-brand-primary dark:text-white mt-4 mb-0.5">Nama Koordinator</h2>
+            <div id="profileRoleBadge" class="px-3 py-0.5 bg-purple-500 text-white rounded-full text-[10px] font-extrabold uppercase tracking-wide mb-1 shadow-lg shadow-purple-500/30">KOORDINATOR</div>
+            <p id="profileEmailDisplay" class="text-sm text-slate-400">email@user.com</p>
+
+            <button onclick="showIdCard()" class="mt-4 w-full max-w-xs bg-slate-800 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-xl">
+                <span class="material-symbols-rounded">badge</span> Kartu Digital
+            </button>
+
+            <div class="w-full mt-8 space-y-4 px-1">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm space-y-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase">Nama Lengkap</label>
+                        <input id="editName" type="text" class="w-full p-3 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl border border-slate-100 dark:border-slate-700 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase">No. WhatsApp</label>
+                        <input id="editPhone" type="tel" class="w-full p-3 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl border border-slate-100 dark:border-slate-700 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase">Alamat</label>
+                        <textarea id="editAddress" rows="2" class="w-full p-3 bg-slate-50 dark:bg-slate-900 dark:text-white rounded-xl border border-slate-100 dark:border-slate-700 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-purple-500 resize-none"></textarea>
+                    </div>
+                </div>
+                <button onclick="saveProfile()" class="w-full bg-brand-primary dark:bg-purple-600 text-white py-4 rounded-2xl font-bold shadow-lg active:scale-95">SIMPAN PROFIL</button>
+                <button id="logoutBtn" class="w-full bg-red-50 text-red-500 py-4 rounded-2xl font-bold hover:bg-red-100 dark:hover:bg-red-900/20 transition-all active:scale-95 flex items-center justify-center gap-2"><span class="material-symbols-rounded">logout</span> KELUAR</button>
+            </div>
         </div>
-      </div>
-    </section>
+      </section>
 
   </main>
 
-  <nav class="fixed bottom-0 w-full glass-nav pb-6 pt-2 px-4 z-50 rounded-t-[2rem] no-print">
-    <div class="flex justify-between items-center max-w-sm mx-auto">
-      <button onclick="switchView('home')" class="nav-btn active flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="home">
-        <span class="material-symbols-rounded text-2xl text-slate-400 dark:text-slate-500 transition-colors">home</span>
-        <p class="text-[9px] font-medium text-slate-400 dark:text-slate-500 transition-colors">Home</p>
-      </button>
+  <nav class="fixed bottom-0 w-full glass-nav pb-6 pt-2 px-4 z-50 rounded-t-[2rem]">
+      <div class="flex justify-between items-center max-w-sm mx-auto">
+          <button onclick="switchView('home')" class="nav-btn active flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="home">
+              <span class="material-symbols-rounded text-2xl text-slate-400 dark:text-slate-500 transition-colors">home</span>
+              <p class="text-[9px] font-medium text-slate-400 dark:text-slate-500 transition-colors">Home</p>
+          </button>
+          
+          <button onclick="switchView('kegiatan')" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="kegiatan">
+              <span class="material-symbols-rounded text-2xl text-slate-400 dark:text-slate-500 transition-colors">event</span>
+              <p class="text-[9px] font-medium text-slate-400 dark:text-slate-500 transition-colors">Acara</p>
+          </button>
 
-      <button onclick="switchView('kegiatan')" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="kegiatan">
-        <span class="material-symbols-rounded text-2xl text-slate-400 dark:text-slate-500 transition-colors">event</span>
-        <p class="text-[9px] font-medium text-slate-400 dark:text-slate-500 transition-colors">Acara</p>
-      </button>
+          <div class="relative -top-6">
+            <button onclick="switchView('profile')" class="nav-btn w-14 h-14 bg-brand-primary dark:bg-purple-600 text-white rounded-full flex items-center justify-center shadow-xl shadow-slate-400 dark:shadow-purple-900/50 hover:scale-105 active:scale-95 transition-all ring-4 ring-white dark:ring-brand-primary" data-target="profile">
+                <span class="material-symbols-rounded text-3xl">person</span>
+            </button>
+          </div>
 
-      <div class="relative -top-6">
-        <button onclick="switchView('profile')" class="nav-btn w-14 h-14 bg-brand-primary dark:bg-purple-600 text-white rounded-full flex items-center justify-center shadow-xl shadow-slate-400 dark:shadow-purple-900/50 hover:scale-105 active:scale-95 transition-all ring-4 ring-white dark:ring-brand-primary" data-target="profile">
-          <span class="material-symbols-rounded text-3xl">person</span>
-        </button>
+          <button onclick="switchView('inventory')" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="inventory">
+              <span class="material-symbols-rounded text-2xl text-slate-400 dark:text-slate-500 transition-colors">inventory_2</span>
+              <p class="text-[9px] font-medium text-slate-400 dark:text-slate-500 transition-colors">Barang</p>
+          </button>
+
+          <button onclick="switchView('profile')" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="profile">
+              <span class="material-symbols-rounded text-2xl text-slate-400 dark:text-slate-500 transition-colors">settings</span>
+              <p class="text-[9px] font-medium text-slate-400 dark:text-slate-500 transition-colors">Akun</p>
+          </button>
       </div>
-
-      <button onclick="switchView('inventory')" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="inventory">
-        <span class="material-symbols-rounded text-2xl text-slate-400 dark:text-slate-500 transition-colors">inventory_2</span>
-        <p class="text-[9px] font-medium text-slate-400 dark:text-slate-500 transition-colors">Barang</p>
-      </button>
-
-      <button onclick="switchView('profile')" class="nav-btn flex flex-col items-center gap-1 p-2 w-12 transition-all" data-target="profile">
-        <span class="material-symbols-rounded text-2xl text-slate-400 dark:text-slate-500 transition-colors">settings</span>
-        <p class="text-[9px] font-medium text-slate-400 dark:text-slate-500 transition-colors">Akun</p>
-      </button>
-    </div>
   </nav>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import {
-      getFirestore, doc, getDoc, updateDoc, deleteDoc,
-      collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp, where
-    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAQxpD7ea9gHWGiU3wYXr0XHyl-SNyFYNs",
@@ -407,747 +435,790 @@
     const CLOUD_NAME = "dbxktcwug";
     const PRESET_IMG = "Karteji";
 
+    // =========================
+    // NEW: OPENWEATHER API KEY
+    // =========================
+    // Isi API key kamu di sini:
+    const OPENWEATHER_KEY = "ISI_API_KEY_OPENWEATHER_KAMU";
+
     window.$ = (id) => document.getElementById(id);
 
     let UID = null;
     let newProfileFile = null;
-
     let candidates = [];
     let tempWinner = null;
-    let heartbeatTimer = null;
 
     const spinSound = document.getElementById('sfxSpin');
     const winSound = document.getElementById('sfxWin');
 
-    // ===== THEME (synced with Sekretaris style) =====
-    function applyTheme() {
-      const t = localStorage.getItem("karteji_theme") || "light";
-      document.documentElement.classList.toggle("dark", t === "dark");
-      const icon = $("themeIcon");
-      if(icon) icon.textContent = (t === "dark") ? "light_mode" : "dark_mode";
-    }
-    window.toggleTheme = async () => {
-      const isDark = document.documentElement.classList.contains("dark");
-      localStorage.setItem("karteji_theme", isDark ? "light" : "dark");
-      applyTheme();
-      showToast(isDark ? "Mode Terang aktif" : "Mode Gelap aktif");
-      await writeAudit("theme_toggle", "ui", "-", { to: isDark ? "light" : "dark" });
-    };
-    applyTheme();
-
-    // ===== UX UTILITIES =====
-    window.showToast = (msg, type = 'success') => {
-      const container = $('toastContainer');
-      const el = document.createElement('div');
-      const color = type === 'error' ? 'bg-red-500' : 'bg-slate-800 dark:bg-slate-700';
-      el.className = `${color} text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 animate-elastic-pop pointer-events-auto min-w-[200px] backdrop-blur-sm bg-opacity-90`;
-      el.innerHTML = `<span class="material-symbols-rounded text-lg">${type==='error'?'error':'check_circle'}</span><span class="text-xs font-bold">${msg}</span>`;
-      container.appendChild(el);
-      setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 3000);
-    };
-
-    window.toggleLoader = (show) => {
-      const l = $("globalLoader");
-      if(!l) return;
-      if(show) { l.classList.remove('hidden'); l.classList.add('flex'); }
-      else { l.classList.add('hidden'); l.classList.remove('flex'); }
-    };
-
-    window.closeModal = () => $("crudModal")?.classList.add('hidden');
-
-    window.showModal = (title, bodyHtml, onSave) => {
-      $("modalTitle").textContent = title;
-      $("modalBody").innerHTML = bodyHtml;
-      $("crudModal").classList.remove('hidden'); $("crudModal").classList.add('flex');
-
-      const btn = $("modalSubmitBtn");
-      const newBtn = btn.cloneNode(true);
-      btn.parentNode.replaceChild(newBtn, btn);
-      newBtn.onclick = onSave;
-
-      newBtn.style.display = onSave ? 'block' : 'none';
-    };
-
-    window.filterList = (listId, q) => {
-      const list = $(listId);
-      if(!list) return;
-      const term = (q || "").toLowerCase();
-      for(const item of list.children){
-        const text = (item.innerText || "").toLowerCase();
-        item.style.display = text.includes(term) ? "" : "none";
-      }
-    };
-
-    window.switchView = (viewId) => {
-      document.querySelectorAll('.view-section').forEach(el => {
-        el.classList.remove('active');
-        setTimeout(() => { if(!el.classList.contains('active')) el.style.display = 'none'; }, 200);
-      });
-
-      const target = $(`view-${viewId}`);
-      if(target){
-        target.style.display = 'block';
-        setTimeout(() => target.classList.add('active'), 10);
-      }
-
-      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-      const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`);
-      if(activeBtn) activeBtn.classList.add('active');
-
-      if(viewId === 'home') { loadArisanHistory(); checkNextEvent(); }
-      if(viewId === 'inventory') loadInventory();
-      if(viewId === 'kegiatan') loadEvents();
-      if(viewId === 'profile') loadProfileData();
-    };
-
-    // ===== CLOUDINARY UPLOAD =====
-    async function upload(file) {
-      if(!file) return null;
-      const fd = new FormData();
-      fd.append("file", file);
-      fd.append("upload_preset", PRESET_IMG);
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: "POST", body: fd });
-      const d = await res.json();
-      if(d?.error) throw new Error(d.error.message);
-      return { url: d.secure_url };
-    }
-
-    // ===== AUDIT LOG =====
-    async function writeAudit(action, targetType="-", targetId="-", meta={}) {
+    // --- (opsional) audit log ringan ---
+    async function writeAudit(action, meta={}) {
       try {
+        if(!UID) return;
         await addDoc(collection(db, "audit_logs"), {
           actorUid: UID,
           actorRole: "koordinator",
           action,
-          targetType,
-          targetId,
           meta,
           createdAt: serverTimestamp()
         });
-      } catch(e) { console.warn("audit gagal:", e?.message); }
-    }
-
-    // ===== ONLINE PRESENCE =====
-    async function updateOnlineStatus(isOnline) {
-      if(!UID) return;
-      try {
-        await updateDoc(doc(db, "users", UID), { isOnline, lastSeen: serverTimestamp() });
       } catch(e) {}
     }
 
-    // ===== AUTH =====
-    onAuthStateChanged(auth, async user => {
-      if(!user) return location.href = "../login.html";
-      toggleLoader(true);
-      try {
-        const snap = await getDoc(doc(db,"users",user.uid));
-        const role = snap.exists() ? snap.data().role : null;
+    // --- UX UTILITIES ---
+    window.showToast = (msg, type = 'success') => {
+        const container = $('toastContainer');
+        const el = document.createElement('div');
+        const color = type === 'error' ? 'bg-red-500' : 'bg-slate-800 dark:bg-slate-700';
+        el.className = `${color} text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 animate-elastic-pop pointer-events-auto min-w-[200px] backdrop-blur-sm bg-opacity-90`;
+        el.innerHTML = `<span class="material-symbols-rounded text-lg">${type==='error'?'error':'check_circle'}</span><span class="text-xs font-bold">${msg}</span>`;
+        container.appendChild(el);
+        setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 3000);
+    };
 
-        if(!snap.exists() || (role !== "koordinator" && role !== "super_admin")){
-          toggleLoader(false);
-          $("gate").classList.remove("hidden");
-          $("gate").classList.add("flex");
-          return;
-        }
+    window.toggleLoader = (show) => {
+        const l = $("globalLoader");
+        if(!l) return;
+        if(show) { l.classList.remove('hidden'); l.classList.add('flex'); } 
+        else { l.classList.add('hidden'); l.classList.remove('flex'); }
+    };
 
-        UID = user.uid;
+    window.toggleDarkMode = () => {
+        document.documentElement.classList.toggle('dark');
+        const isDark = document.documentElement.classList.contains('dark');
+        $("themeIcon").textContent = isDark ? 'light_mode' : 'dark_mode';
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        writeAudit("theme_toggle", { to: isDark ? "dark" : "light" });
+    }
 
-        await updateOnlineStatus(true);
-        await writeAudit("login_open", "auth", UID, {});
-        heartbeatTimer = setInterval(() => updateOnlineStatus(true), 25000);
+    // Initialize Theme
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+        if ($("themeIcon")) $("themeIcon").textContent = 'light_mode';
+    }
 
-        window.addEventListener('beforeunload', () => updateOnlineStatus(false));
-        document.addEventListener("visibilitychange", () => {
-          if(document.hidden) updateOnlineStatus(false);
-          else updateOnlineStatus(true);
+    window.closeModal = () => $("crudModal")?.classList.add('hidden');
+
+    window.showModal = (title, bodyHtml, onSave) => {
+        $("modalTitle").textContent = title;
+        $("modalBody").innerHTML = bodyHtml;
+        $("crudModal").classList.remove('hidden'); $("crudModal").classList.add('flex');
+
+        const btn = $("modalSubmitBtn");
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        newBtn.onclick = onSave;
+
+        newBtn.style.display = onSave ? 'block' : 'none';
+    };
+
+    window.switchView = (viewId) => {
+        document.querySelectorAll('.view-section').forEach(el => {
+            el.classList.remove('active');
+            setTimeout(() => { if(!el.classList.contains('active')) el.style.display = 'none'; }, 200);
         });
 
-        await Promise.all([loadArisanHistory(), loadEvents(), loadInventory(), loadProfileData()]);
-        checkNextEvent();
-      } catch(e) { console.error(e); showToast("Gagal memuat (cek rules/koneksi)", "error"); }
-      toggleLoader(false);
+        const target = $(`view-${viewId}`);
+        if(target){
+          target.style.display = 'block';
+          setTimeout(() => target.classList.add('active'), 10);
+        }
+
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`);
+        if(activeBtn) activeBtn.classList.add('active');
+
+        if(viewId === 'home') loadArisanHistory();
+        if(viewId === 'inventory') loadInventory();
+        if(viewId === 'kegiatan') loadEvents();
+        if(viewId === 'profile') loadProfileData();
+
+        // NEW: refresh widget saat kembali ke Home
+        if(viewId === 'home') refreshWeatherAndPrayer();
+    };
+
+    async function upload(file) {
+        if(!file) return null;
+        const fd = new FormData();
+        fd.append("file", file);
+        fd.append("upload_preset", PRESET_IMG);
+        try {
+          const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: "POST", body: fd });
+          const d = await res.json();
+          return { url: d.secure_url };
+        } catch (e) {
+          showToast("Gagal Upload", "error");
+          throw e;
+        }
+    }
+
+    // =========================
+    // NEW: LOKASI + CUACA + SHOLAT
+    // =========================
+    const DEFAULT_LOC = { city: "Semarang", lat: -6.966667, lon: 110.416664 };
+
+    function getSavedLocation(){
+      try {
+        const s = localStorage.getItem("karteji_loc");
+        if(s) return JSON.parse(s);
+      } catch(e){}
+      return DEFAULT_LOC;
+    }
+    function saveLocation(loc){
+      localStorage.setItem("karteji_loc", JSON.stringify(loc));
+    }
+    function pad2(n){ return String(n).padStart(2,"0"); }
+    function formatTimeHHMM(d){ return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`; }
+
+    async function reverseGeocode(lat, lon){
+      if(!OPENWEATHER_KEY || OPENWEATHER_KEY === "ISI_API_KEY_OPENWEATHER_KAMU") return null;
+      const url = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${OPENWEATHER_KEY}`;
+      const r = await fetch(url);
+      const j = await r.json();
+      if(Array.isArray(j) && j[0]) return j[0].name || null;
+      return null;
+    }
+
+    window.openLocationModal = () => {
+      const loc = getSavedLocation();
+      const html = `
+        <div class="space-y-3">
+          <p class="text-xs text-slate-400">Pilih lokasi untuk Cuaca & Jadwal Sholat. Bisa pakai GPS atau isi manual.</p>
+
+          <button onclick="useGPSLocation()" class="w-full bg-purple-600 text-white py-3 rounded-xl font-bold active:scale-95">
+            Gunakan Lokasi GPS
+          </button>
+
+          <div class="grid grid-cols-2 gap-2">
+            <input id="locCity" class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" placeholder="Nama Kota" value="${loc.city||''}">
+            <input id="locLat" class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" placeholder="Lat" value="${loc.lat||''}">
+            <input id="locLon" class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" placeholder="Lon" value="${loc.lon||''}">
+            <button onclick="saveManualLocation()" class="w-full bg-slate-900 dark:bg-purple-600 text-white py-3 rounded-xl font-bold active:scale-95">
+              Simpan
+            </button>
+          </div>
+
+          <p class="text-[10px] text-slate-400">Contoh lat/lon Semarang: -6.966667 / 110.416664</p>
+        </div>
+      `;
+      showModal("LOKASI", html, null);
+    };
+
+    window.useGPSLocation = () => {
+      if(!navigator.geolocation) return showToast("GPS tidak didukung", "error");
+      toggleLoader(true);
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        try {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          let city = "Lokasi Saya";
+          const guessed = await reverseGeocode(lat, lon);
+          if(guessed) city = guessed;
+
+          saveLocation({ city, lat, lon });
+          closeModal();
+          await refreshWeatherAndPrayer();
+          showToast("Lokasi diperbarui");
+          writeAudit("set_location_gps", { city, lat, lon });
+        } catch(e){
+          showToast("Gagal set lokasi", "error");
+        } finally {
+          toggleLoader(false);
+        }
+      }, () => {
+        toggleLoader(false);
+        showToast("Izin GPS ditolak", "error");
+      }, { enableHighAccuracy: true, timeout: 10000 });
+    };
+
+    window.saveManualLocation = async () => {
+      const city = ($("locCity").value || "").trim() || "Kota";
+      const lat = Number(($("locLat").value || "").trim());
+      const lon = Number(($("locLon").value || "").trim());
+      if(Number.isNaN(lat) || Number.isNaN(lon)) return showToast("Lat/Lon tidak valid", "error");
+
+      saveLocation({ city, lat, lon });
+      closeModal();
+      await refreshWeatherAndPrayer();
+      showToast("Lokasi disimpan");
+      writeAudit("set_location_manual", { city, lat, lon });
+    };
+
+    async function fetchWeather(lat, lon){
+      if(!OPENWEATHER_KEY || OPENWEATHER_KEY === "ISI_API_KEY_OPENWEATHER_KAMU"){
+        throw new Error("OPENWEATHER_KEY belum diisi");
+      }
+      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_KEY}&units=metric&lang=id`;
+      const r = await fetch(url);
+      if(!r.ok) throw new Error("Gagal ambil cuaca");
+      return await r.json();
+    }
+
+    async function fetchPrayerTimes(lat, lon){
+      const d = new Date();
+      const dd = d.getDate();
+      const mm = d.getMonth() + 1;
+      const yyyy = d.getFullYear();
+      // method=11 (praktis), bisa kamu ganti kalau mau
+      const url = `https://api.aladhan.com/v1/timings/${dd}-${mm}-${yyyy}?latitude=${lat}&longitude=${lon}&method=11&school=0`;
+      const r = await fetch(url);
+      if(!r.ok) throw new Error("Gagal ambil jadwal sholat");
+      const j = await r.json();
+      if(!j?.data?.timings) throw new Error("Data sholat tidak valid");
+      return j;
+    }
+
+    function normalizeTimeStr(t){
+      return String(t || "-").split(" ")[0];
+    }
+
+    function computeNextPrayer(timings){
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+      const order = [
+        ["Imsak", timings.Imsak],
+        ["Subuh", timings.Fajr],
+        ["Dzuhur", timings.Dhuhr],
+        ["Ashar", timings.Asr],
+        ["Maghrib", timings.Maghrib],
+        ["Isya", timings.Isha]
+      ];
+
+      for(const [name, t] of order){
+        const hhmm = normalizeTimeStr(t);
+        const [hh, mi] = hhmm.split(":").map(Number);
+        if(Number.isNaN(hh) || Number.isNaN(mi)) continue;
+        const dt = new Date(today.getTime());
+        dt.setHours(hh, mi, 0, 0);
+        if(dt > now){
+          return `${name} • ${hhmm}`;
+        }
+      }
+      return `Imsak • ${normalizeTimeStr(timings.Imsak)} (besok)`;
+    }
+
+    window.refreshWeatherAndPrayer = async () => {
+      const loc = getSavedLocation();
+
+      try {
+        // CUACA
+        try {
+          const w = await fetchWeather(loc.lat, loc.lon);
+          $("wCity").textContent = loc.city || (w.name || "-");
+          $("wDesc").textContent = (w.weather?.[0]?.description || "—");
+          $("wTemp").textContent = `${Math.round(w.main?.temp ?? 0)}°`;
+          $("wFeels").textContent = `Feels: ${Math.round(w.main?.feels_like ?? 0)}°`;
+          $("wHum").textContent = `${Math.round(w.main?.humidity ?? 0)}%`;
+          $("wWind").textContent = `${Math.round(w.wind?.speed ?? 0)} m/s`;
+          $("wUpdated").textContent = formatTimeHHMM(new Date());
+        } catch(e){
+          $("wCity").textContent = loc.city || "-";
+          $("wDesc").textContent = `Cuaca tidak tersedia (API key?)`;
+          $("wTemp").textContent = `--°`;
+          $("wFeels").textContent = `Feels: --°`;
+          $("wHum").textContent = `-`;
+          $("wWind").textContent = `-`;
+          $("wUpdated").textContent = formatTimeHHMM(new Date());
+        }
+
+        // SHOLAT + IMSAK
+        const p = await fetchPrayerTimes(loc.lat, loc.lon);
+        const timings = p.data.timings;
+
+        $("pCity").textContent = loc.city || "-";
+        $("pDate").textContent = p.data.date?.readable || new Date().toLocaleDateString("id-ID");
+        $("tImsak").textContent = normalizeTimeStr(timings.Imsak);
+        $("tFajr").textContent  = normalizeTimeStr(timings.Fajr);
+        $("tDhuhr").textContent = normalizeTimeStr(timings.Dhuhr);
+        $("tAsr").textContent   = normalizeTimeStr(timings.Asr);
+        $("tMaghrib").textContent = normalizeTimeStr(timings.Maghrib);
+        $("tIsha").textContent  = normalizeTimeStr(timings.Isha);
+
+        $("pNext").textContent = computeNextPrayer({
+          Imsak: timings.Imsak,
+          Fajr: timings.Fajr,
+          Dhuhr: timings.Dhuhr,
+          Asr: timings.Asr,
+          Maghrib: timings.Maghrib,
+          Isha: timings.Isha
+        });
+
+        writeAudit("refresh_weather_prayer", { city: loc.city, lat: loc.lat, lon: loc.lon });
+      } catch(e){
+        console.error(e);
+      }
+    };
+
+    // --- AUTH ---
+    let widgetTimer = null;
+
+    onAuthStateChanged(auth, async user => {
+        if(!user) return location.href = "../login.html";
+        toggleLoader(true);
+        try {
+            const snap = await getDoc(doc(db,"users",user.uid));
+            const role = snap.exists() ? snap.data().role : null;
+
+            if(!snap.exists() || (role !== "koordinator" && role !== "super_admin")){
+                toggleLoader(false);
+                $("gate").classList.remove("hidden");
+                $("gate").classList.add("flex");
+                return;
+            }
+
+            UID = user.uid;
+
+            await Promise.all([loadArisanHistory(), loadEvents(), loadInventory(), loadProfileData()]);
+            checkNextEvent();
+
+            // NEW: auto-load widget
+            await refreshWeatherAndPrayer();
+
+            // NEW: refresh tiap 15 menit
+            if(widgetTimer) clearInterval(widgetTimer);
+            widgetTimer = setInterval(() => refreshWeatherAndPrayer(), 15 * 60 * 1000);
+
+            writeAudit("login_open", { role });
+        } catch(e) { console.error(e); }
+        toggleLoader(false);
     });
 
-    // ===== ARISAN =====
+    // --- FEATURE 1: SOUND & 3D ARISAN ---
     async function loadArisanHistory() {
-      const list = $("winnerHistory"); if(!list) return;
-      list.innerHTML = "";
-      try {
-        const histSnap = await getDocs(query(collection(db, "arisan_history"), orderBy("createdAt", "desc")));
-
-        if(!histSnap.empty) {
-          const last = histSnap.docs[0].data();
-          $("lastWinner").textContent = last.name || "-";
-          const dt = last.createdAt?.seconds ? new Date(last.createdAt.seconds*1000) : null;
-          $("lastDate").textContent = dt ? `Dimenangkan pada ${dt.toLocaleDateString('id-ID')}` : "Tanggal tidak tersedia";
-        }
-
-        if(histSnap.empty){
-          list.innerHTML = `<div class="text-center text-sm text-slate-400 py-10">Belum ada pemenang.</div>`;
-          return;
-        }
-
-        histSnap.forEach(d => {
-          const w = d.data();
-          const dt = w.createdAt?.seconds ? new Date(w.createdAt.seconds*1000) : null;
-          list.innerHTML += `
-            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl flex items-center justify-between border border-slate-100 dark:border-slate-700 shadow-sm">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600">
-                  <span class="material-symbols-rounded">emoji_events</span>
-                </div>
-                <div>
-                  <p class="text-sm font-bold text-brand-primary dark:text-white">${w.name || '-'}</p>
-                  <p class="text-[10px] text-slate-400">${dt ? dt.toLocaleDateString('id-ID') : '-'}</p>
-                </div>
-              </div>
-            </div>
-          `;
-        });
-      } catch(e) { console.error(e); }
+        const list = $("winnerHistory"); if(!list) return;
+        list.innerHTML = "";
+        try {
+            const histSnap = await getDocs(query(collection(db, "arisan_history"), orderBy("createdAt", "desc")));
+            if(!histSnap.empty) {
+                const last = histSnap.docs[0].data();
+                $("lastWinner").textContent = last.name;
+                $("lastDate").textContent = `Dimenangkan pada ${new Date(last.createdAt.seconds*1000).toLocaleDateString('id-ID')}`;
+            }
+            histSnap.forEach(d => {
+                const w = d.data();
+                list.innerHTML += `
+                  <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl flex items-center justify-between border border-slate-100 dark:border-slate-700 shadow-sm">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600">
+                        <span class="material-symbols-rounded">emoji_events</span>
+                      </div>
+                      <div>
+                        <p class="text-sm font-bold text-brand-primary dark:text-white">${w.name}</p>
+                        <p class="text-[10px] text-slate-400">${new Date(w.createdAt.seconds*1000).toLocaleDateString('id-ID')}</p>
+                      </div>
+                    </div>
+                  </div>
+                `;
+            });
+        } catch(e) { console.error(e); }
     }
 
     window.openRaffleModal = async () => {
-      toggleLoader(true);
-      candidates = [];
-      try {
-        const histSnap = await getDocs(collection(db, "arisan_history"));
-        const wonIds = histSnap.docs.map(d => d.data().uid).filter(Boolean);
+        toggleLoader(true);
+        candidates = [];
+        try {
+            const histSnap = await getDocs(collection(db, "arisan_history"));
+            const wonIds = histSnap.docs.map(d => d.data().uid);
 
-        const usersSnap = await getDocs(collection(db, "users"));
-        const eligibleRoles = ['ketua', 'wakil_ketua', 'sekretaris', 'bendahara', 'koordinator', 'anggota'];
+            const usersSnap = await getDocs(collection(db, "users"));
+            const eligibleRoles = ['ketua', 'wakil_ketua', 'sekretaris', 'bendahara', 'koordinator', 'anggota'];
 
-        usersSnap.forEach(d => {
-          const u = d.data() || {};
-          const userRole = u.role || 'anggota';
-          if(eligibleRoles.includes(userRole) && !wonIds.includes(d.id)) {
-            candidates.push({ id: d.id, name: u.name || 'User', photo: u.photo?.url || null });
-          }
-        });
+            usersSnap.forEach(d => {
+                const u = d.data();
+                const userRole = u.role ? u.role : 'anggota';
+                if(eligibleRoles.includes(userRole) && !wonIds.includes(d.id)) { 
+                    candidates.push({ id: d.id, name: u.name, photo: u.photo ? u.photo.url : null }); 
+                }
+            });
 
-        if(candidates.length === 0) {
-          showToast("Semua sudah pernah menang", "error");
-          toggleLoader(false);
-          return;
-        }
+            if(candidates.length === 0) { alert("Semua sudah menang!"); toggleLoader(false); return; }
 
-        $("eligibleCountDisplay").textContent = candidates.length;
-        $("raffleModal").classList.remove("hidden"); $("raffleModal").classList.add("flex");
-        updateRaffleCard({ name: "SIAP?", photo: null }, true);
-
-        const btn = $("btnSpin");
-        btn.disabled = false;
-        btn.classList.remove("opacity-50");
-        btn.innerHTML = `<span class="material-symbols-rounded">play_circle</span> MULAI ACAK`;
-
-        await writeAudit("open_raffle", "arisan", "-", { eligible: candidates.length });
-      } catch(e) {
-        console.error(e);
-        showToast("Gagal memuat kandidat", "error");
-      } finally { toggleLoader(false); }
+            $("eligibleCountDisplay").textContent = candidates.length;
+            $("raffleModal").classList.remove("hidden"); $("raffleModal").classList.add("flex");
+            updateRaffleCard({ name: "SIAP?", photo: null }, true);
+            $("btnSpin").disabled = false; $("btnSpin").classList.remove("opacity-50");
+        } catch(e) {
+            showToast("Gagal memuat", "error");
+        } finally { toggleLoader(false); }
     }
 
     function updateRaffleCard(person, isInit = false) {
-      const container = $("raffleImageContainer");
-      const nameEl = $("raffleName");
-      nameEl.textContent = person.name || "-";
+        const container = $("raffleImageContainer");
+        const nameEl = $("raffleName");
+        nameEl.textContent = person.name;
 
-      if (isInit) {
-        container.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-purple-50 text-purple-300"><span class="material-symbols-rounded text-6xl">casino</span></div>`;
-        return;
-      }
+        if (isInit) {
+            container.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-purple-50 text-purple-300"><span class="material-symbols-rounded text-6xl">casino</span></div>`;
+            return;
+        }
 
-      if (person.photo) container.innerHTML = `<img src="${person.photo}" class="w-full h-full object-cover">`;
-      else {
-        const initials = (person.name || "U").substring(0, 2).toUpperCase();
-        container.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600 font-black text-4xl">${initials}</div>`;
-      }
+        if (person.photo) container.innerHTML = `<img src="${person.photo}" class="w-full h-full object-cover">`;
+        else {
+            const initials = person.name.substring(0, 2).toUpperCase();
+            container.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600 font-black text-4xl">${initials}</div>`;
+        }
     }
 
     function getSecureRandomInt(max) {
-      const array = new Uint32Array(1);
-      window.crypto.getRandomValues(array);
-      return array[0] % max;
+        const array = new Uint32Array(1);
+        window.crypto.getRandomValues(array);
+        return array[0] % max;
     }
 
     window.closeRaffle = () => {
-      spinSound.pause(); spinSound.currentTime = 0;
-      $("raffleModal").classList.add("hidden");
+        spinSound.pause(); spinSound.currentTime = 0;
+        $("raffleModal").classList.add("hidden");
     }
 
-    window.startSpin = async () => {
-      if(candidates.length === 0) return;
+    window.startSpin = () => {
+        if(candidates.length === 0) return;
 
-      const btn = $("btnSpin");
-      const card = $("raffleImageContainer");
+        const btn = $("btnSpin");
+        const card = $("raffleImageContainer");
 
-      btn.disabled = true;
-      btn.classList.add("opacity-50");
-      btn.innerHTML = "MENGACAK...";
+        btn.disabled = true;
+        btn.classList.add("opacity-50");
+        btn.innerHTML = "MENGACAK...";
 
-      card.classList.add("spinning");
-      spinSound.play();
+        card.classList.add("spinning");
+        spinSound.play();
 
-      let duration = 4000;
-      let startTime = null;
+        let duration = 4000;
+        let startTime = null;
 
-      await writeAudit("spin_start", "arisan", "-", { duration });
+        function animate(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const progress = timestamp - startTime;
 
-      function animate(timestamp) {
-        if (!startTime) startTime = timestamp;
-        const progress = timestamp - startTime;
+            const rIdx = Math.floor(Math.random() * candidates.length);
+            updateRaffleCard(candidates[rIdx]);
 
-        const rIdx = Math.floor(Math.random() * candidates.length);
-        updateRaffleCard(candidates[rIdx]);
-
-        if (progress < duration) requestAnimationFrame(animate);
-        else {
-          const winnerIndex = getSecureRandomInt(candidates.length);
-          tempWinner = candidates[winnerIndex];
-          updateRaffleCard(tempWinner);
-
-          card.classList.remove("spinning");
-          spinSound.pause(); spinSound.currentTime = 0;
-
-          setTimeout(() => {
-            winSound.play();
-
-            $("winnerNameResult").textContent = tempWinner.name;
-            const wa = $("winnerAvatarResult");
-            if(tempWinner.photo) wa.innerHTML = `<img src="${tempWinner.photo}" class="w-full h-full object-cover">`;
+            if (progress < duration) requestAnimationFrame(animate);
             else {
-              const init = tempWinner.name.substring(0,2).toUpperCase();
-              wa.innerHTML = `<div class="w-full h-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-4xl">${init}</div>`;
+                const winnerIndex = getSecureRandomInt(candidates.length);
+                tempWinner = candidates[winnerIndex];
+                updateRaffleCard(tempWinner);
+
+                card.classList.remove("spinning");
+                spinSound.pause(); spinSound.currentTime = 0;
+
+                setTimeout(() => {
+                    winSound.play();
+                    $("winnerNameResult").textContent = tempWinner.name;
+
+                    const wa = $("winnerAvatarResult");
+                    if(tempWinner.photo) wa.innerHTML = `<img src="${tempWinner.photo}" class="w-full h-full object-cover">`;
+                    else {
+                        const init = tempWinner.name.substring(0,2).toUpperCase();
+                        wa.innerHTML = `<div class="w-full h-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-4xl">${init}</div>`;
+                    }
+
+                    $("raffleModal").classList.add("hidden");
+                    $("winnerOverlay").classList.remove("hidden");
+                    $("winnerOverlay").classList.add("flex");
+                    confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#8B5CF6', '#F472B6', '#FFD700'] });
+                }, 500);
             }
-
-            $("raffleModal").classList.add("hidden");
-            $("winnerOverlay").classList.remove("hidden");
-            $("winnerOverlay").classList.add("flex");
-
-            confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#8B5CF6', '#F472B6', '#FFD700'] });
-          }, 450);
         }
-      }
-
-      requestAnimationFrame(animate);
+        requestAnimationFrame(animate);
     }
 
-    window.closeWinner = () => {
-      $("winnerOverlay").classList.add("hidden");
-      openRaffleModal();
-    };
+    window.closeWinner = () => { $("winnerOverlay").classList.add("hidden"); openRaffleModal(); }
 
     window.confirmWinner = async () => {
-      if(!tempWinner) return;
+        if(!tempWinner) return;
+        toggleLoader(true);
+        try {
+            await addDoc(collection(db, "arisan_history"), { uid: tempWinner.id, name: tempWinner.name, createdAt: serverTimestamp() });
+            $("winnerOverlay").classList.add("hidden");
+            loadArisanHistory();
+            showToast("Disimpan!");
+            writeAudit("arisan_winner_saved", { uid: tempWinner.id, name: tempWinner.name });
+        } catch(e) { showToast("Gagal simpan", "error"); }
+        finally { toggleLoader(false); }
+    }
 
-      const btn = $("btnConfirmWinner");
-      btn.disabled = true;
-      btn.classList.add("opacity-60");
-      btn.textContent = "Menyimpan...";
-
-      toggleLoader(true);
-      try {
-        // basic guard: cek lagi biar ngurangi double save cepat
-        const histSnap = await getDocs(query(collection(db, "arisan_history"), where("uid","==", tempWinner.id), limit(1)));
-        if(!histSnap.empty){
-          showToast("Pemenang ini sudah tercatat", "error");
-          $("winnerOverlay").classList.add("hidden");
-          await loadArisanHistory();
-          return;
-        }
-
-        const ref = await addDoc(collection(db, "arisan_history"), {
-          uid: tempWinner.id,
-          name: tempWinner.name,
-          createdAt: serverTimestamp()
+    // --- FEATURE 2: QUICK NOTES ---
+    window.openNotesModal = () => {
+        const savedNote = localStorage.getItem('coord_notes') || '';
+        const html = `<textarea id="quickNote" class="w-full h-40 p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl resize-none outline-none dark:text-white" placeholder="Tulis ide cepat di sini...">${savedNote}</textarea>`;
+        showModal("CATATAN KILAT", html, () => {
+            localStorage.setItem('coord_notes', $("quickNote").value);
+            closeModal();
+            showToast("Catatan tersimpan di HP");
+            writeAudit("quick_notes_saved", {});
         });
-
-        await writeAudit("spin_confirm_winner", "arisan_history", ref.id, { uid: tempWinner.id, name: tempWinner.name });
-
-        $("winnerOverlay").classList.add("hidden");
-        tempWinner = null;
-        await loadArisanHistory();
-        showToast("Disimpan!");
-      } catch(e) {
-        console.error(e);
-        showToast("Gagal simpan", "error");
-      } finally {
-        toggleLoader(false);
-        btn.disabled = false;
-        btn.classList.remove("opacity-60");
-        btn.textContent = "Simpan Hasil";
-      }
     }
 
-    // ===== QUICK NOTES =====
-    window.openNotesModal = async () => {
-      const savedNote = localStorage.getItem('coord_notes') || '';
-      const html = `
-        <textarea id="quickNote" class="w-full h-40 p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl resize-none outline-none dark:text-white" placeholder="Tulis ide cepat di sini...">${savedNote}</textarea>
-        <p class="text-[10px] text-slate-400">Catatan tersimpan di HP (localStorage)</p>
-      `;
-      showModal("CATATAN KILAT", html, async () => {
-        localStorage.setItem('coord_notes', $("quickNote").value || "");
-        closeModal();
-        showToast("Catatan tersimpan");
-        await writeAudit("save_quick_notes", "local", "-", { length: ($("quickNote").value||"").length });
-      });
-    }
-
-    // ===== GUEST LIST =====
+    // --- FEATURE 3: GUEST LIST ---
     window.openGuestModal = () => {
-      const html = `
-        <input id="gName" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 mb-2 text-sm" placeholder="Nama Tamu">
-        <input id="gInst" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 mb-2 text-sm" placeholder="Instansi / Keterangan">
-        <button onclick="saveGuest()" class="w-full bg-cyan-500 text-white py-2 rounded-xl text-sm font-bold mt-2">Tambah Tamu</button>
-        <div id="guestListDisplay" class="mt-4 max-h-32 overflow-y-auto space-y-2 border-t border-slate-200 dark:border-slate-700 pt-2 text-left"></div>
-      `;
-      showModal("BUKU TAMU", html, null);
-      loadGuestListInternal();
-      writeAudit("open_guest_book", "guests", "-", {});
+        const html = `
+            <input id="gName" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 mb-2 text-sm" placeholder="Nama Tamu">
+            <input id="gInst" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 mb-2 text-sm" placeholder="Instansi / Keterangan">
+            <button onclick="saveGuest()" class="w-full bg-cyan-500 text-white py-2 rounded-xl text-sm font-bold mt-2">Tambah Tamu</button>
+            <div id="guestListDisplay" class="mt-4 max-h-32 overflow-y-auto space-y-2 border-t pt-2 text-left"></div>
+        `;
+        showModal("BUKU TAMU", html, null);
+        loadGuestListInternal();
     }
 
     window.saveGuest = async () => {
-      const name = ($("gName").value || "").trim();
-      if(!name) return showToast("Nama tamu wajib", "error");
-      try {
-        const ref = await addDoc(collection(db, "guests"), {
-          name,
-          inst: ($("gInst").value || "").trim(),
-          createdAt: serverTimestamp()
-        });
-        $("gName").value = ""; $("gInst").value = "";
-        await writeAudit("create_guest", "guests", ref.id, { name });
-        loadGuestListInternal();
-      } catch(e) { console.error(e); showToast("Gagal tambah tamu", "error"); }
+        const name = $("gName").value;
+        if(!name) return;
+        try {
+            await addDoc(collection(db, "guests"), { name, inst: $("gInst").value, createdAt: serverTimestamp() });
+            $("gName").value = ""; $("gInst").value = "";
+            loadGuestListInternal();
+            writeAudit("guest_added", { name });
+        } catch(e) { console.error(e); }
     }
 
     async function loadGuestListInternal() {
-      const div = $("guestListDisplay");
-      if(!div) return;
-      div.innerHTML = "Loading...";
-      const snap = await getDocs(query(collection(db, "guests"), orderBy("createdAt", "desc"), limit(5)));
-      let h = "";
-      snap.forEach(d => {
-        const g = d.data();
-        h += `<div class="bg-slate-50 dark:bg-slate-900 p-2 rounded text-xs border border-slate-200 dark:border-slate-700"><b>${g.name}</b> <span class="text-slate-400">(${g.inst || '-'})</span></div>`;
-      });
-      div.innerHTML = h || "<p class='text-xs text-slate-400'>Belum ada tamu.</p>";
+        const div = $("guestListDisplay");
+        if(!div) return;
+        div.innerHTML = "Loading...";
+        const snap = await getDocs(query(collection(db, "guests"), orderBy("createdAt", "desc"), limit(5)));
+        let h = "";
+        snap.forEach(d => {
+            const g = d.data();
+            h += `<div class="bg-slate-50 p-2 rounded text-xs"><b>${g.name}</b> <span class="text-slate-400">(${g.inst || '-'})</span></div>`;
+        });
+        div.innerHTML = h || "<p class='text-xs text-slate-400'>Belum ada tamu.</p>";
     }
 
-    // ===== COUNTDOWN NEXT EVENT =====
+    // --- FEATURE 4: COUNTDOWN ---
     async function checkNextEvent() {
-      try {
         const snap = await getDocs(query(collection(db, "activities"), orderBy("date", "asc")));
         const now = new Date();
         let nextEvent = null;
 
         snap.forEach(d => {
-          const ev = d.data() || {};
-          const evDate = ev.date ? new Date(ev.date) : null;
-          if(evDate && evDate >= now && !nextEvent) nextEvent = ev;
+            const ev = d.data();
+            const evDate = new Date(ev.date);
+            if(evDate >= now && !nextEvent) nextEvent = ev;
         });
 
         if(nextEvent) {
-          const diffTime = Math.abs(new Date(nextEvent.date) - now);
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-          $("countdownWidget").classList.remove("hidden");
-          $("nextEventName").textContent = nextEvent.title || "-";
-          $("nextEventDays").textContent = `${diffDays} Hari Lagi`;
-        } else {
-          $("countdownWidget").classList.add("hidden");
+            const diffTime = Math.abs(new Date(nextEvent.date) - now);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            $("countdownWidget").classList.remove("hidden");
+            $("nextEventName").textContent = nextEvent.title;
+            $("nextEventDays").textContent = `${diffDays} Hari Lagi`;
         }
-      } catch(e) { /* ignore */ }
     }
 
-    // ===== EXPORT MENU (NEW) =====
-    function downloadText(content, filename, mime){
-      const blob = new Blob([content], { type: mime || "text/plain" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url; a.download = filename;
-      document.body.appendChild(a);
-      a.click(); a.remove();
-      URL.revokeObjectURL(url);
+    // --- FEATURE 5: EXPORT CSV ---
+    window.exportData = async () => {
+        toggleLoader(true);
+        try {
+            const snap = await getDocs(collection(db, "arisan_history"));
+            let csvContent = "data:text/csv;charset=utf-8,Nama,Tanggal Menang\n";
+            snap.forEach(d => {
+                const r = d.data();
+                const date = new Date(r.createdAt.seconds*1000).toLocaleDateString('id-ID');
+                csvContent += `${(r.name || '').replaceAll(',', ' ')},${date}\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "riwayat_arisan.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            writeAudit("export_arisan_csv", {});
+        } catch(e) { showToast("Gagal export", "error"); }
+        finally { toggleLoader(false); }
     }
 
-    window.openExportMenu = () => {
-      const html = `
-        <div class="grid grid-cols-1 gap-2">
-          <button onclick="exportArisanCSV()" class="w-full bg-purple-600 text-white py-3 rounded-xl font-bold active:scale-95 flex items-center justify-center gap-2">
-            <span class="material-symbols-rounded">download</span> CSV Riwayat Arisan
-          </button>
-          <button onclick="exportInventoryCSV()" class="w-full bg-emerald-600 text-white py-3 rounded-xl font-bold active:scale-95 flex items-center justify-center gap-2">
-            <span class="material-symbols-rounded">download</span> CSV Inventaris
-          </button>
-          <button onclick="exportActivitiesCSV()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold active:scale-95 flex items-center justify-center gap-2">
-            <span class="material-symbols-rounded">download</span> CSV Acara
-          </button>
-          <button onclick="window.print()" class="w-full bg-slate-800 text-white py-3 rounded-xl font-bold active:scale-95 flex items-center justify-center gap-2">
-            <span class="material-symbols-rounded">print</span> Cetak Riwayat
-          </button>
-        </div>
-      `;
-      showModal("EXPORT DATA", html, null);
-    };
-
-    window.exportArisanCSV = async () => {
-      toggleLoader(true);
-      try {
-        const snap = await getDocs(query(collection(db, "arisan_history"), orderBy("createdAt","desc")));
-        let csv = "Nama,Tanggal Menang\n";
-        snap.forEach(d => {
-          const r = d.data() || {};
-          const dt = r.createdAt?.seconds ? new Date(r.createdAt.seconds*1000).toLocaleDateString('id-ID') : "";
-          csv += `"${(r.name||"").replaceAll('"','""')}","${dt}"\n`;
-        });
-        downloadText(csv, `Riwayat_Arisan_${new Date().toISOString().slice(0,10)}.csv`, "text/csv;charset=utf-8");
-        await writeAudit("export_arisan_csv", "arisan_history", "-", { total: snap.size });
-        showToast("CSV Arisan diunduh");
-      } catch(e) { showToast("Gagal export", "error"); }
-      finally { toggleLoader(false); }
-    };
-
-    window.exportInventoryCSV = async () => {
-      toggleLoader(true);
-      try {
-        const snap = await getDocs(query(collection(db, "inventory"), orderBy("createdAt","desc")));
-        let csv = "Nama,Jumlah,Status,LinkFoto\n";
-        snap.forEach(d => {
-          const r = d.data() || {};
-          csv += `"${(r.name||"").replaceAll('"','""')}","${Number(r.qty||0)}","${(r.status||"").replaceAll('"','""')}","${r.image?.url||""}"\n`;
-        });
-        downloadText(csv, `Inventaris_${new Date().toISOString().slice(0,10)}.csv`, "text/csv;charset=utf-8");
-        await writeAudit("export_inventory_csv", "inventory", "-", { total: snap.size });
-        showToast("CSV Inventaris diunduh");
-      } catch(e) { showToast("Gagal export", "error"); }
-      finally { toggleLoader(false); }
-    };
-
-    window.exportActivitiesCSV = async () => {
-      toggleLoader(true);
-      try {
-        const snap = await getDocs(query(collection(db, "activities"), orderBy("createdAt","desc")));
-        let csv = "Judul,Tanggal,Lokasi,Status\n";
-        snap.forEach(d => {
-          const r = d.data() || {};
-          csv += `"${(r.title||"").replaceAll('"','""')}","${r.date||""}","${(r.location||"").replaceAll('"','""')}","${(r.status||"").replaceAll('"','""')}"\n`;
-        });
-        downloadText(csv, `Acara_${new Date().toISOString().slice(0,10)}.csv`, "text/csv;charset=utf-8");
-        await writeAudit("export_activities_csv", "activities", "-", { total: snap.size });
-        showToast("CSV Acara diunduh");
-      } catch(e) { showToast("Gagal export", "error"); }
-      finally { toggleLoader(false); }
-    };
-
-    // ===== INVENTORY =====
+    // --- INVENTARIS ---
     async function loadInventory() {
-      const list = $("invList");
-      if(!list) return;
-      list.innerHTML = "";
+        const list = $("invList");
+        if(!list) return;
+        list.innerHTML = "";
 
-      const snap = await getDocs(query(collection(db, "inventory"), orderBy("createdAt", "desc")));
-      if(snap.empty){
-        list.innerHTML = `<div class="col-span-2 text-center text-sm text-slate-400 py-10">Belum ada data inventaris.</div>`;
-        return;
-      }
+        const snap = await getDocs(query(collection(db, "inventory"), orderBy("createdAt", "desc")));
+        if(snap.empty){
+          list.innerHTML = `<div class="col-span-2 text-center text-sm text-slate-400 py-10">Belum ada data inventaris.</div>`;
+          return;
+        }
 
-      snap.forEach(d => {
-        const i = d.data() || {};
-        list.innerHTML += `
-          <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden group">
-            ${i.image?.url ? `<img src="${i.image.url}" class="w-full h-24 object-cover rounded-xl mb-2">`
-              : `<div class="w-full h-24 bg-slate-100 dark:bg-slate-700 rounded-xl mb-2 flex items-center justify-center text-slate-300"><span class="material-symbols-rounded">image</span></div>`
-            }
-            <h4 class="text-sm font-bold text-brand-primary dark:text-white">${i.name || '-'}</h4>
-            <p class="text-[10px] text-slate-400 mb-1">${Number(i.qty||0)} Unit • ${i.status || '-'}</p>
-            <button onclick="deleteDocData('inventory','${d.id}')" class="absolute top-2 right-2 bg-white dark:bg-slate-900 p-1 rounded-full text-red-500 hover:bg-red-500 hover:text-white transition-colors shadow-sm no-print">
-              <span class="material-symbols-rounded text-sm">delete</span>
-            </button>
-          </div>
-        `;
-      });
+        snap.forEach(d => {
+            const i = d.data();
+            list.innerHTML += `
+                <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden group">
+                    ${i.image ? `<img src="${i.image.url}" class="w-full h-24 object-cover rounded-xl mb-2">` : '<div class="w-full h-24 bg-slate-100 dark:bg-slate-700 rounded-xl mb-2 flex items-center justify-center text-slate-300"><span class="material-symbols-rounded">image</span></div>'}
+                    <h4 class="text-sm font-bold text-brand-primary dark:text-white">${i.name}</h4>
+                    <p class="text-[10px] text-slate-400 mb-1">${i.qty || 0} Unit • ${i.status || '-'}</p>
+                    <button onclick="deleteDocData('inventory','${d.id}')" class="absolute top-2 right-2 bg-white dark:bg-slate-900 p-1 rounded-full text-red-500 hover:bg-red-500 hover:text-white transition-colors shadow-sm">
+                      <span class="material-symbols-rounded text-sm">delete</span>
+                    </button>
+                </div>
+            `;
+        });
     }
 
     window.openInventoryModal = () => {
-      const html = `
-        <input id="invName" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 mb-2 font-bold text-sm" placeholder="Nama Barang">
-        <input id="invQty" type="number" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 mb-2 text-sm" placeholder="Jumlah">
-        <select id="invStatus" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 mb-2 text-sm font-bold">
-          <option value="Baik">Baik</option>
-          <option value="Rusak">Rusak</option>
-        </select>
-        <input id="invImg" type="file" class="w-full text-xs" accept="image/*">
-      `;
-      showModal("TAMBAH BARANG", html, async () => {
-        if(!($("invName").value || "").trim()) return showToast("Isi nama", "error");
-        toggleLoader(true);
-        try {
-          let image = null;
-          if($("invImg").files?.[0]) image = await upload($("invImg").files[0]);
-
-          const ref = await addDoc(collection(db, "inventory"), {
-            name: ($("invName").value || "").trim(),
-            qty: Number($("invQty").value || 0),
-            status: $("invStatus").value,
-            image,
-            createdAt: serverTimestamp()
-          });
-
-          await writeAudit("create_inventory", "inventory", ref.id, { name: ($("invName").value||"").trim() });
-          closeModal();
-          loadInventory();
-          showToast("Barang disimpan");
-        } catch(e) { console.error(e); showToast("Gagal", "error"); }
-        finally { toggleLoader(false); }
-      });
+        const html = `
+            <input id="invName" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 mb-2 font-bold text-sm" placeholder="Nama Barang">
+            <input id="invQty" type="number" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 mb-2 text-sm" placeholder="Jumlah">
+            <select id="invStatus" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 mb-2 text-sm font-bold">
+              <option value="Baik">Baik</option>
+              <option value="Rusak">Rusak</option>
+            </select>
+            <input id="invImg" type="file" class="w-full text-xs">
+        `;
+        showModal("TAMBAH BARANG", html, async () => {
+            if(!$("invName").value) return showToast("Isi nama", "error");
+            toggleLoader(true);
+            try {
+                let image = null;
+                if($("invImg").files[0]) image = await upload($("invImg").files[0]);
+                await addDoc(collection(db, "inventory"), {
+                  name: $("invName").value,
+                  qty: Number($("invQty").value || 0),
+                  status: $("invStatus").value,
+                  image,
+                  createdAt: serverTimestamp()
+                });
+                closeModal();
+                loadInventory();
+                showToast("Barang disimpan");
+                writeAudit("inventory_added", { name: $("invName").value });
+            } catch(e) { showToast("Gagal", "error"); }
+            finally { toggleLoader(false); }
+        });
     }
 
-    // ===== EVENTS =====
+    // --- ACARA & UMUM ---
     window.openEventModal = () => {
-      const html = `
-        <input id="evTitle" class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl mb-2 text-sm font-bold" placeholder="Nama Acara">
-        <input id="evDate" type="date" class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl mb-2 text-xs">
-        <input id="evLoc" class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl mb-2 text-xs" placeholder="Lokasi">
-      `;
-      showModal("TAMBAH ACARA", html, async () => {
-        if(!($("evTitle").value || "").trim()) return showToast("Judul wajib", "error");
-        toggleLoader(true);
-        try {
-          const ref = await addDoc(collection(db, "activities"), {
-            title: ($("evTitle").value || "").trim(),
-            date: $("evDate").value,
-            location: ($("evLoc").value || "").trim(),
-            status: "approved",
-            createdAt: serverTimestamp()
-          });
-          await writeAudit("create_activity", "activities", ref.id, { title: ($("evTitle").value||"").trim() });
-          closeModal();
-          loadEvents();
-          checkNextEvent();
-          showToast("Acara disimpan");
-        } catch(e) { console.error(e); showToast("Gagal", "error"); }
-        finally { toggleLoader(false); }
-      });
+        const html = `
+            <input id="evTitle" class="w-full p-3 bg-slate-50 rounded-xl mb-2 text-sm font-bold" placeholder="Nama Acara">
+            <input id="evDate" type="date" class="w-full p-3 bg-slate-50 rounded-xl mb-2 text-xs">
+            <input id="evLoc" class="w-full p-3 bg-slate-50 rounded-xl mb-2 text-xs" placeholder="Lokasi">
+        `;
+        showModal("TAMBAH ACARA", html, async () => {
+            if(!$("evTitle").value) return showToast("Judul wajib", "error");
+            toggleLoader(true);
+            try {
+              await addDoc(collection(db, "activities"), {
+                title: $("evTitle").value,
+                date: $("evDate").value,
+                location: $("evLoc").value,
+                status: "approved",
+                createdAt: serverTimestamp()
+              });
+              closeModal();
+              loadEvents();
+              checkNextEvent();
+              showToast("Acara disimpan");
+              writeAudit("event_added", { title: $("evTitle").value });
+            } catch(e) { showToast("Gagal", "error"); }
+            finally { toggleLoader(false); }
+        });
     }
 
     async function loadEvents() {
-      const list = $("eventList");
-      if(!list) return;
-      list.innerHTML = "";
+        const list = $("eventList");
+        if(!list) return;
+        list.innerHTML = "";
 
-      const snap = await getDocs(query(collection(db, "activities"), orderBy("createdAt", "desc")));
-      if(snap.empty){
-        list.innerHTML = `<div class="text-center text-sm text-slate-400 py-10">Belum ada agenda.</div>`;
-        return;
-      }
+        const snap = await getDocs(query(collection(db, "activities"), orderBy("createdAt", "desc")));
+        if(snap.empty){
+          list.innerHTML = `<div class="text-center text-sm text-slate-400 py-10">Belum ada agenda.</div>`;
+          return;
+        }
 
-      snap.forEach(d => {
-        const x = d.data() || {};
-        list.innerHTML += `
-          <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm flex justify-between items-center">
-            <div>
-              <h4 class="text-sm font-bold text-brand-primary dark:text-white">${x.title || '-'}</h4>
-              <p class="text-[10px] text-slate-400">${x.date || '-'} | ${x.location || '-'}</p>
-            </div>
-            <button onclick="deleteDocData('activities','${d.id}')" class="text-red-500 active:scale-95 no-print">
-              <span class="material-symbols-rounded">delete</span>
-            </button>
-          </div>
-        `;
-      });
+        snap.forEach(d => {
+            const x = d.data();
+            list.innerHTML += `
+              <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm flex justify-between items-center">
+                <div>
+                  <h4 class="text-sm font-bold text-brand-primary dark:text-white">${x.title}</h4>
+                  <p class="text-[10px] text-slate-400">${x.date || '-'} | ${x.location || '-'}</p>
+                </div>
+                <button onclick="deleteDocData('activities','${d.id}')" class="text-red-500"><span class="material-symbols-rounded">delete</span></button>
+              </div>
+            `;
+        });
     }
 
-    // ===== DELETE =====
     window.deleteDocData = async (col, id) => {
-      if(!confirm("Hapus?")) return;
-      toggleLoader(true);
-      try {
-        await deleteDoc(doc(db, col, id));
-        await writeAudit("delete", col, id, {});
-        if(col==='inventory') loadInventory();
-        if(col==='activities') { loadEvents(); checkNextEvent(); }
-        showToast("Dihapus");
-      } catch(e){ console.error(e); showToast("Gagal","error"); }
-      finally { toggleLoader(false); }
+        if(!confirm("Hapus?")) return;
+        toggleLoader(true);
+        try {
+          await deleteDoc(doc(db, col, id));
+          if(col==='inventory') loadInventory();
+          if(col==='activities') { loadEvents(); checkNextEvent(); }
+          writeAudit("delete_doc", { col, id });
+        } catch(e){ showToast("Gagal","error"); }
+        finally { toggleLoader(false); }
     }
 
-    // ===== PROFILE =====
+    // --- PROFILE ---
     async function loadProfileData() {
-      const snap = await getDoc(doc(db, "users", UID));
-      if(snap.exists()){
-        const d = snap.data() || {};
-        $("headerName").textContent = d.name || "Koordinator";
-        $("headerPhoto").src = d.photo?.url || "https://via.placeholder.com/150";
-        $("profileImage").src = d.photo?.url || "https://via.placeholder.com/150";
-        $("profileNameDisplay").textContent = d.name || "-";
-        $("profileEmailDisplay").textContent = d.email || "-";
-        $("editName").value = d.name||""; $("editPhone").value = d.phone||""; $("editAddress").value = d.address||"";
-      }
+        const snap = await getDoc(doc(db, "users", UID));
+        if(snap.exists()){
+            const d = snap.data();
+            $("headerName").textContent = d.name || "Koordinator";
+            $("headerPhoto").src = d.photo?.url || "https://via.placeholder.com/150";
+            $("profileImage").src = d.photo?.url || "https://via.placeholder.com/150";
+            $("profileNameDisplay").textContent = d.name || "-";
+            $("profileEmailDisplay").textContent = d.email || "-";
+            $("editName").value = d.name||""; $("editPhone").value = d.phone||""; $("editAddress").value = d.address||"";
+        }
     }
 
     window.previewProfileImage = (input) => {
-      if (input.files?.[0]) {
+      if (input.files[0]) {
         newProfileFile = input.files[0];
         $("profileImage").src = URL.createObjectURL(newProfileFile);
       }
     }
 
     window.saveProfile = async () => {
-      toggleLoader(true);
-      try {
-        let data = {
-          name: ($("editName").value || "").trim(),
-          phone: ($("editPhone").value || "").trim(),
-          address: ($("editAddress").value || "").trim()
-        };
-        if(newProfileFile) data.photo = await upload(newProfileFile);
-
-        await updateDoc(doc(db, "users", UID), data);
-        await writeAudit("profile_update", "users", UID, { fields: Object.keys(data) });
-
-        showToast("Profil Disimpan");
-        newProfileFile = null;
-        await loadProfileData();
-      } catch(e) { console.error(e); showToast("Gagal update", "error"); }
-      finally { toggleLoader(false); }
+        toggleLoader(true);
+        try {
+            let data = { name:$("editName").value, phone:$("editPhone").value, address:$("editAddress").value };
+            if(newProfileFile) data.photo = await upload(newProfileFile);
+            await updateDoc(doc(db, "users", UID), data);
+            showToast("Profil Disimpan");
+            await loadProfileData();
+            writeAudit("profile_update", { fields: Object.keys(data) });
+        } catch(e) { showToast("Gagal update", "error"); }
+        finally { toggleLoader(false); }
     }
 
     window.showIdCard = async () => {
-      const snap = await getDoc(doc(db, "users", UID));
-      const u = snap.data() || {};
-      const html = `
-        <div class="bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-white p-5 rounded-2xl relative overflow-hidden shadow-2xl border-t border-slate-600">
-          <div class="absolute -right-10 -top-10 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl"></div>
-          <div class="flex justify-between items-center mb-6 relative z-10">
-            <div class="flex items-center gap-2">
-              <div class="w-8 h-8 bg-white/10 rounded flex items-center justify-center">
-                <span class="material-symbols-rounded text-purple-500">event</span>
-              </div>
-              <span class="font-bold tracking-widest text-xs">KARTEJI EVENT</span>
+        const snap = await getDoc(doc(db, "users", UID));
+        const u = snap.data();
+        const html = `
+            <div class="bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-white p-5 rounded-2xl relative overflow-hidden shadow-2xl border-t border-slate-600">
+                <div class="absolute -right-10 -top-10 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl"></div>
+                <div class="flex justify-between items-center mb-6 relative z-10">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 bg-white/10 rounded flex items-center justify-center">
+                        <span class="material-symbols-rounded text-purple-500">event</span>
+                      </div>
+                      <span class="font-bold tracking-widest text-xs">KARTEJI EVENT</span>
+                    </div>
+                </div>
+                <div class="flex gap-4 items-center">
+                     <img src="${u.photo?.url||'https://via.placeholder.com/100'}" class="w-20 h-20 rounded-xl object-cover border-2 border-purple-500 shadow-lg bg-slate-800">
+                     <div>
+                        <h2 class="text-xl font-bold leading-none mb-1 text-purple-400">${u.name || '-'}</h2>
+                        <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">KOORDINATOR</p>
+                        <p class="text-[9px] mt-2 text-slate-500">ID: ${UID.substring(0,8).toUpperCase()}</p>
+                     </div>
+                </div>
             </div>
-          </div>
-          <div class="flex gap-4 items-center">
-            <img src="${u.photo?.url||'https://via.placeholder.com/100'}" class="w-20 h-20 rounded-xl object-cover border-2 border-purple-500 shadow-lg bg-slate-800">
-            <div>
-              <h2 class="text-xl font-bold leading-none mb-1 text-purple-400">${u.name || '-'}</h2>
-              <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">KOORDINATOR</p>
-              <p class="text-[9px] mt-2 text-slate-500">ID: ${UID.substring(0,8).toUpperCase()}</p>
-            </div>
-          </div>
-        </div>
-      `;
-      showModal("KARTU IDENTITAS DIGITAL", html, null);
-      await writeAudit("show_id_card", "users", UID, {});
+        `;
+        showModal("KARTU IDENTITAS DIGITAL", html, null);
     }
 
-    // ===== LOGOUT =====
     $("logoutBtn").onclick = async () => {
-      try {
-        await updateOnlineStatus(false);
-        await writeAudit("logout", "auth", UID, {});
-      } catch(e){}
-      if(heartbeatTimer) clearInterval(heartbeatTimer);
+      try { writeAudit("logout", {}); } catch(e){}
+      if(widgetTimer) clearInterval(widgetTimer);
       await signOut(auth);
       location.href = "../login.html";
     };
