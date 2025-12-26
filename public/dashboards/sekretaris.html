@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Sekretaris | Administration</title>
+  <title>Bendahara | Administration</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
     tailwind.config = {
@@ -16,7 +17,9 @@
           fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
           colors: {
             brand: { primary: '#0F172A', light: '#334155' },
-            sky: { DEFAULT: '#0EA5E9', light: '#E0F2FE', dark: '#0369A1' }
+            sky: { DEFAULT: '#0EA5E9', light: '#E0F2FE', dark: '#0369A1' },
+            emeraldx: { DEFAULT: '#10B981' },
+            orangex: { DEFAULT: '#F97316' }
           },
           animation: {
             'blob': 'blob 10s infinite',
@@ -52,7 +55,7 @@
     .view-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
     .view-section.active { display: block; opacity: 1; transform: translateY(0); }
     .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #0EA5E9; }
-    .nav-btn.active p { color: #0F172A; font-weight: 700; }
+    .nav-btn.active p { color: #0F172A; font-weight: 800; }
 
     /* online indicator */
     @keyframes pulse-green {
@@ -62,7 +65,7 @@
     }
     .online-pulse { animation: pulse-green 2s infinite; }
 
-    /* Dark mode (NEW) */
+    /* Dark mode */
     html.dark body { background-color: #0B1220; color: #E5E7EB; }
     html.dark .glass-nav { background: rgba(15, 23, 42, 0.82); border-top: 1px solid rgba(255,255,255,0.06); }
     html.dark .bg-white { background-color: rgba(15,23,42,0.92) !important; }
@@ -83,42 +86,48 @@
 
 <body class="min-h-screen relative overflow-x-hidden pb-32 selection:bg-sky-200 selection:text-sky-900">
 
+  <!-- BG blobs -->
   <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-sky-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
-    <div class="absolute top-[20%] right-[-10%] w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
+    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-emerald-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
+    <div class="absolute top-[20%] right-[-10%] w-96 h-96 bg-sky-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
   </div>
 
+  <!-- Toast -->
   <div id="toastContainer" class="fixed top-4 left-0 right-0 z-[100] flex flex-col items-center gap-2 pointer-events-none px-4"></div>
 
+  <!-- Loader -->
   <div id="globalLoader" class="fixed inset-0 bg-white/80 z-[9999] flex items-center justify-center flex-col gap-4 backdrop-blur-md hidden">
     <div class="w-12 h-12 border-4 border-slate-200 border-t-sky rounded-full animate-spin"></div>
-    <p class="text-xs font-bold text-slate-400 animate-pulse">MEMPROSES DATA...</p>
+    <p class="text-xs font-black text-slate-400 animate-pulse tracking-widest">MEMPROSES...</p>
   </div>
 
+  <!-- Gate -->
   <div id="gate" class="fixed inset-0 bg-slate-900 z-[9998] hidden items-center justify-center p-6 text-center backdrop-blur-sm">
     <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full animate-[slideInTop_0.5s]">
       <div class="bg-red-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
         <span class="material-symbols-rounded text-red-500 text-4xl">lock</span>
       </div>
       <h2 class="text-2xl font-extrabold text-brand-primary mb-2">Akses Ditolak</h2>
-      <p class="text-slate-500 text-sm mb-6">Halaman ini khusus Sekretaris.</p>
-      <a href="../login.html" class="block w-full bg-brand-primary text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors">Kembali</a>
+      <p class="text-slate-500 text-sm mb-6">Halaman ini khusus Bendahara.</p>
+      <a href="../login.html" class="block w-full bg-brand-primary text-white py-3 rounded-xl font-extrabold hover:bg-slate-800 transition-colors">Kembali</a>
     </div>
   </div>
 
+  <!-- Modal -->
   <div id="crudModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-all">
     <div class="bg-white w-full max-w-md rounded-[2rem] p-6 relative shadow-2xl">
       <div class="flex justify-between items-center mb-6">
-        <h2 id="modalTitle" class="text-xl font-extrabold text-brand-primary uppercase tracking-tight">Judul</h2>
+        <h2 id="modalTitle" class="text-xl font-black text-brand-primary uppercase tracking-tight">Judul</h2>
         <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors text-slate-500">
           <span class="material-symbols-rounded text-xl">close</span>
         </button>
       </div>
       <div id="modalBody" class="space-y-4 max-h-[70vh] overflow-y-auto no-scrollbar"></div>
-      <button id="modalSubmitBtn" class="mt-6 w-full rounded-xl bg-brand-primary text-white py-4 text-sm font-bold shadow-lg shadow-slate-300 hover:bg-slate-800 active:scale-95 transition-all">SIMPAN</button>
+      <button id="modalSubmitBtn" class="mt-6 w-full rounded-xl bg-brand-primary text-white py-4 text-sm font-extrabold shadow-lg shadow-slate-300 hover:bg-slate-800 active:scale-95 transition-all">SIMPAN</button>
     </div>
   </div>
 
+  <!-- Header -->
   <header class="sticky top-0 z-30 px-6 pt-7 pb-4 bg-gradient-to-b from-[#F8FAFC] via-[#F8FAFC] to-transparent">
     <div class="flex justify-between items-center gap-2">
       <div class="flex items-center gap-3">
@@ -127,8 +136,8 @@
           <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] text-white font-bold online-pulse"></div>
         </button>
         <div>
-          <p class="text-[10px] font-bold text-sky-700 uppercase tracking-widest bg-sky-100 px-2 py-0.5 rounded-full w-fit mb-0.5">Sekretaris</p>
-          <h1 id="headerName" class="text-xl font-extrabold text-brand-primary leading-none">Memuat...</h1>
+          <p class="text-[10px] font-extrabold text-emerald-700 uppercase tracking-widest bg-emerald-100 px-2 py-0.5 rounded-full w-fit mb-0.5">Bendahara</p>
+          <h1 id="headerName" class="text-xl font-black text-brand-primary leading-none">Memuat...</h1>
         </div>
       </div>
 
@@ -147,13 +156,13 @@
 
     <!-- HOME -->
     <section id="view-home" class="view-section active">
-
+      <!-- Online -->
       <div class="mb-5">
         <div class="flex items-center justify-between mb-2 px-1">
           <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
             <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Anggota Online
           </h3>
-          <span id="onlineCount" class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold">0 Aktif</span>
+          <span id="onlineCount" class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-extrabold">0 Aktif</span>
         </div>
         <div id="onlineUsersList" class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
           <div class="animate-pulse flex gap-2">
@@ -163,139 +172,162 @@
         </div>
       </div>
 
+      <!-- Hero -->
       <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 group transition-all">
         <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500 transform group-hover:scale-110">
-          <span class="material-symbols-rounded text-9xl">folder_shared</span>
+          <span class="material-symbols-rounded text-9xl">paid</span>
         </div>
         <div class="relative z-10">
-          <p class="text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Total Arsip Digital</p>
-          <h2 id="totalDocs" class="text-4xl font-black tracking-tight mb-8">0</h2>
+          <p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-300 mb-1">Saldo Kas (Approved)</p>
+          <h2 id="homeBalance" class="text-4xl font-black tracking-tight mb-6">Rp 0</h2>
 
-          <div class="grid grid-cols-2 gap-3">
-            <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5 cursor-pointer active:scale-95 transition-transform" onclick="switchView('surat')">
-              <div class="flex items-center gap-1.5 mb-1">
-                <div class="bg-sky-400/20 p-1 rounded-full">
-                  <span class="material-symbols-rounded text-[10px] text-sky-300">mail</span>
-                </div>
-                <span class="text-[9px] font-bold uppercase text-slate-300">Surat</span>
-              </div>
-              <p id="countLetters" class="text-lg font-bold text-white leading-tight">0</p>
+          <div class="grid grid-cols-3 gap-2">
+            <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5">
+              <p class="text-[9px] uppercase text-slate-300 font-extrabold">Pending</p>
+              <p id="homePending" class="text-lg font-black">0</p>
             </div>
-            <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5 cursor-pointer active:scale-95 transition-transform" onclick="switchView('notulen')">
-              <div class="flex items-center gap-1.5 mb-1">
-                <div class="bg-orange-400/20 p-1 rounded-full">
-                  <span class="material-symbols-rounded text-[10px] text-orange-300">edit_note</span>
-                </div>
-                <span class="text-[9px] font-bold uppercase text-slate-300">Notulen</span>
-              </div>
-              <p id="countMinutes" class="text-lg font-bold text-white leading-tight">0</p>
+            <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5">
+              <p class="text-[9px] uppercase text-slate-300 font-extrabold">Income</p>
+              <p id="homeIncome" class="text-lg font-black">0</p>
+            </div>
+            <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5">
+              <p class="text-[9px] uppercase text-slate-300 font-extrabold">Expense</p>
+              <p id="homeExpense" class="text-lg font-black">0</p>
             </div>
           </div>
 
-          <!-- Quick tools (NEW) -->
           <div class="mt-4 grid grid-cols-2 gap-2 no-print">
-            <button onclick="exportMinutesCSV()" class="bg-sky text-white py-2.5 rounded-xl text-xs font-extrabold active:scale-95 flex items-center justify-center gap-1">
-              <span class="material-symbols-rounded text-sm">download</span> CSV Notulen
+            <button onclick="switchView('transaksi')" class="bg-emeraldx text-white py-2.5 rounded-xl text-xs font-black active:scale-95 flex items-center justify-center gap-1">
+              <span class="material-symbols-rounded text-sm">add</span> Tambah Transaksi
             </button>
-            <button onclick="exportLettersCSV()" class="bg-white/10 border border-white/10 py-2.5 rounded-xl text-xs font-extrabold active:scale-95 flex items-center justify-center gap-1">
-              <span class="material-symbols-rounded text-sm">download</span> CSV Surat
+            <button onclick="switchView('approval')" class="bg-white/10 border border-white/10 py-2.5 rounded-xl text-xs font-black active:scale-95 flex items-center justify-center gap-1">
+              <span class="material-symbols-rounded text-sm">rule</span> Approval
             </button>
           </div>
         </div>
       </div>
 
-      <div class="bg-white rounded-[1.5rem] p-5 shadow-sm border border-slate-100 mt-4 flex items-center justify-between">
-        <div>
-          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Info Saldo Kas (Read Only)</p>
-          <h2 id="homeBalance" class="text-2xl font-black text-brand-primary">Rp 0</h2>
-        </div>
-        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center">
-          <span class="material-symbols-rounded">savings</span>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-2 gap-3 mt-4">
-        <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-36 relative group overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer active:scale-95" onclick="switchView('surat')">
-          <div class="absolute inset-0 bg-gradient-to-br from-sky-50 to-transparent opacity-50"></div>
-          <div class="relative z-10">
-            <span class="material-symbols-rounded text-sky-500 mb-2 text-2xl">mark_email_unread</span>
-            <p class="text-[10px] text-slate-400 uppercase font-bold">Surat Menyurat</p>
+      <!-- Chart Card -->
+      <div class="bg-white rounded-[1.5rem] p-5 shadow-sm border border-slate-100 mt-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Ringkasan 30 Hari</p>
+            <h3 class="text-lg font-black text-brand-primary">Income vs Expense</h3>
           </div>
-          <h3 class="relative z-10 text-xs font-bold text-brand-primary mt-1 line-clamp-2">Arsip Surat Masuk & Keluar</h3>
+          <button class="no-print text-xs font-black bg-slate-100 px-3 py-2 rounded-xl active:scale-95" onclick="refreshCharts()">
+            <span class="material-symbols-rounded text-sm align-[-2px]">refresh</span> Refresh
+          </button>
         </div>
-
-        <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-36 relative group overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer active:scale-95" onclick="switchView('notulen')">
-          <div class="absolute inset-0 bg-gradient-to-br from-orange-50 to-transparent opacity-50"></div>
-          <div class="relative z-10">
-            <span class="material-symbols-rounded text-sky-500 mb-2 text-2xl">history_edu</span>
-            <p class="text-[10px] text-slate-400 uppercase font-bold">Notulensi</p>
-          </div>
-          <h3 class="relative z-10 text-xs font-bold text-brand-primary mt-1 line-clamp-2">Catat Hasil Rapat</h3>
+        <div class="mt-4">
+          <canvas id="chart30d" height="120"></canvas>
         </div>
       </div>
     </section>
 
-    <!-- NOTULEN -->
-    <section id="view-notulen" class="view-section">
+    <!-- TRANSAKSI -->
+    <section id="view-transaksi" class="view-section">
       <div class="flex justify-between items-center mb-4 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
         <div>
-          <h2 class="text-2xl font-bold text-brand-primary">Notulen</h2>
-          <p class="text-xs text-slate-400">Catatan rapat</p>
+          <h2 class="text-2xl font-black text-brand-primary">Transaksi</h2>
+          <p class="text-xs text-slate-400">Input pemasukan & pengeluaran</p>
         </div>
-        <button onclick="openNotulenForm()" class="w-10 h-10 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform no-print">
+        <button onclick="openTransaksiForm()" class="w-10 h-10 bg-emeraldx text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform no-print">
           <span class="material-symbols-rounded">add</span>
         </button>
       </div>
 
-      <!-- Search (NEW) -->
       <div class="mb-4 relative no-print">
         <span class="material-symbols-rounded absolute left-3 top-2.5 text-slate-400 text-lg">search</span>
-        <input id="searchMinutes" oninput="filterList('listNotulen', this.value)" placeholder="Cari judul / isi notulen..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none focus:border-sky shadow-sm">
+        <input id="searchTransaksi" oninput="filterList('listTransaksi', this.value)" placeholder="Cari keterangan / kategori..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none focus:border-sky shadow-sm">
       </div>
 
-      <div id="listNotulen" class="space-y-3 pb-20"></div>
+      <div id="listTransaksi" class="space-y-3 pb-24"></div>
     </section>
 
-    <!-- SURAT -->
-    <section id="view-surat" class="view-section">
+    <!-- APPROVAL -->
+    <section id="view-approval" class="view-section">
       <div class="flex justify-between items-center mb-4 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
         <div>
-          <h2 class="text-2xl font-bold text-brand-primary">Surat</h2>
-          <p class="text-xs text-slate-400">Arsip persuratan</p>
+          <h2 class="text-2xl font-black text-brand-primary">Approval</h2>
+          <p class="text-xs text-slate-400">Transaksi menunggu persetujuan</p>
         </div>
-        <button onclick="openSuratForm()" class="w-10 h-10 bg-sky-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform no-print">
-          <span class="material-symbols-rounded">add</span>
+        <button onclick="loadApproval()" class="w-10 h-10 bg-sky text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform no-print">
+          <span class="material-symbols-rounded">refresh</span>
         </button>
       </div>
 
-      <!-- Search (NEW) -->
-      <div class="mb-4 relative no-print">
-        <span class="material-symbols-rounded absolute left-3 top-2.5 text-slate-400 text-lg">search</span>
-        <input id="searchLetters" oninput="filterList('listSurat', this.value)" placeholder="Cari perihal / nomor / jenis..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none focus:border-sky shadow-sm">
-      </div>
-
-      <div id="listSurat" class="space-y-3 pb-20"></div>
-    </section>
-
-    <!-- ARSIP -->
-    <section id="view-arsip" class="view-section">
-      <div class="flex justify-between items-center mb-4 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
-        <div>
-          <h2 class="text-2xl font-bold text-brand-primary">Dokumen</h2>
-          <p class="text-xs text-slate-400">File digital (SK, AD/ART)</p>
-        </div>
-        <button onclick="openArsipForm()" class="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform no-print">
-          <span class="material-symbols-rounded">upload_file</span>
+      <div class="mb-4 grid grid-cols-2 gap-2 no-print">
+        <button onclick="exportFinanceCSV('pending')" class="bg-sky text-white py-2.5 rounded-xl text-xs font-black active:scale-95 flex items-center justify-center gap-1">
+          <span class="material-symbols-rounded text-sm">download</span> CSV Pending
+        </button>
+        <button onclick="exportFinanceCSV('approved')" class="bg-white border border-slate-200 py-2.5 rounded-xl text-xs font-black active:scale-95 flex items-center justify-center gap-1">
+          <span class="material-symbols-rounded text-sm">download</span> CSV Approved
         </button>
       </div>
 
-      <!-- Search (NEW) -->
-      <div class="mb-4 relative no-print">
-        <span class="material-symbols-rounded absolute left-3 top-2.5 text-slate-400 text-lg">search</span>
-        <input id="searchArsip" oninput="filterList('listArsip', this.value)" placeholder="Cari nama dokumen..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none focus:border-sky shadow-sm">
+      <div id="listApproval" class="space-y-3 pb-24"></div>
+    </section>
+
+    <!-- LAPORAN -->
+    <section id="view-laporan" class="view-section">
+      <div class="flex justify-between items-center mb-4 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
+        <div>
+          <h2 class="text-2xl font-black text-brand-primary">Laporan</h2>
+          <p class="text-xs text-slate-400">Filter & rekap</p>
+        </div>
+        <button onclick="loadLaporan()" class="w-10 h-10 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform no-print">
+          <span class="material-symbols-rounded">query_stats</span>
+        </button>
       </div>
 
-      <div id="listArsip" class="grid grid-cols-2 gap-3 pb-20"></div>
+      <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm no-print">
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-[10px] font-extrabold text-slate-400 uppercase">Dari</label>
+            <input id="fFrom" type="date" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+          </div>
+          <div>
+            <label class="text-[10px] font-extrabold text-slate-400 uppercase">Sampai</label>
+            <input id="fTo" type="date" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+          </div>
+          <div>
+            <label class="text-[10px] font-extrabold text-slate-400 uppercase">Jenis</label>
+            <select id="fType" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+              <option value="">Semua</option>
+              <option value="income">Pemasukan</option>
+              <option value="expense">Pengeluaran</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] font-extrabold text-slate-400 uppercase">Status</label>
+            <select id="fStatus" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+              <option value="">Semua</option>
+              <option value="approved">Approved</option>
+              <option value="pending">Pending</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+        </div>
+
+        <button onclick="loadLaporan()" class="mt-3 w-full bg-brand-primary text-white py-3 rounded-xl font-black active:scale-95">
+          Terapkan Filter
+        </button>
+      </div>
+
+      <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm mt-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Total (hasil filter)</p>
+            <h3 id="lapTotal" class="text-2xl font-black text-brand-primary">Rp 0</h3>
+            <p id="lapHint" class="text-xs text-slate-400 mt-1">—</p>
+          </div>
+          <button onclick="exportFinanceCSV('filtered')" class="no-print text-xs font-black bg-slate-100 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
+            <span class="material-symbols-rounded text-sm">download</span> CSV
+          </button>
+        </div>
+      </div>
+
+      <div id="listLaporan" class="space-y-3 pb-24 mt-3"></div>
     </section>
 
     <!-- PROFILE -->
@@ -309,66 +341,66 @@
         </div>
         <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
 
-        <h2 id="profileNameDisplay" class="text-xl font-bold text-brand-primary mt-4 mb-0.5">Nama Sekretaris</h2>
-        <div id="profileRoleBadge" class="px-3 py-0.5 bg-sky-500 text-white rounded-full text-[10px] font-extrabold uppercase tracking-wide mb-1 shadow-lg shadow-sky-500/30">SEKRETARIS</div>
+        <h2 id="profileNameDisplay" class="text-xl font-black text-brand-primary mt-4 mb-0.5">Nama Bendahara</h2>
+        <div class="px-3 py-0.5 bg-emerald-500 text-white rounded-full text-[10px] font-black uppercase tracking-wide mb-1 shadow-lg shadow-emerald-500/30">BENDAHARA</div>
         <p id="profileEmailDisplay" class="text-sm text-slate-400">email@user.com</p>
 
-        <button onclick="showIdCard()" class="mt-4 w-full max-w-xs bg-slate-800 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-xl no-print">
-          <span class="material-symbols-rounded">badge</span> Kartu Sekretaris
+        <button onclick="showIdCard()" class="mt-4 w-full max-w-xs bg-slate-800 text-white py-3 rounded-xl font-black flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-xl no-print">
+          <span class="material-symbols-rounded">badge</span> Kartu Bendahara
         </button>
 
         <div class="w-full mt-8 space-y-4 px-1">
           <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm space-y-4">
             <div>
-              <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">badge</span> Nama Lengkap</label>
+              <label class="text-[10px] font-black text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">badge</span> Nama Lengkap</label>
               <input id="editName" type="text" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-sky-500">
             </div>
             <div>
-              <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">call</span> No. WhatsApp / HP</label>
+              <label class="text-[10px] font-black text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">call</span> No. WhatsApp / HP</label>
               <input id="editPhone" type="tel" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-sky-500">
             </div>
             <div>
-              <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">home_pin</span> Alamat Domisili</label>
+              <label class="text-[10px] font-black text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">home_pin</span> Alamat Domisili</label>
               <textarea id="editAddress" rows="2" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-sky-500 resize-none"></textarea>
             </div>
           </div>
 
-          <button onclick="saveProfile()" class="w-full bg-brand-primary text-white py-4 rounded-2xl font-bold shadow-lg shadow-slate-300 hover:bg-slate-800 transition-all active:scale-95">SIMPAN PROFIL</button>
-          <button id="logoutBtn" class="w-full bg-red-50 text-red-500 py-4 rounded-2xl font-bold hover:bg-red-100 transition-all active:scale-95 flex items-center justify-center gap-2">
+          <button onclick="saveProfile()" class="w-full bg-brand-primary text-white py-4 rounded-2xl font-black shadow-lg shadow-slate-300 hover:bg-slate-800 transition-all active:scale-95">SIMPAN PROFIL</button>
+          <button id="logoutBtn" class="w-full bg-red-50 text-red-500 py-4 rounded-2xl font-black hover:bg-red-100 transition-all active:scale-95 flex items-center justify-center gap-2">
             <span class="material-symbols-rounded">logout</span> KELUAR
           </button>
         </div>
       </div>
     </section>
-
   </main>
 
+  <!-- Bottom Nav -->
   <nav class="fixed bottom-0 w-full glass-nav pb-6 pt-2 px-4 z-50 rounded-t-[2rem] no-print">
     <div class="flex justify-between items-center max-w-sm mx-auto">
-      <button onclick="switchView('home')" class="nav-btn active flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="home">
+      <button onclick="switchView('home')" class="nav-btn active flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="home">
         <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">grid_view</span>
-        <p class="text-[10px] font-medium text-slate-400 transition-colors">Home</p>
+        <p class="text-[10px] font-semibold text-slate-400 transition-colors">Home</p>
       </button>
 
-      <button onclick="switchView('notulen')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="notulen">
-        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">edit_note</span>
-        <p class="text-[10px] font-medium text-slate-400 transition-colors">Notulen</p>
+      <button onclick="switchView('transaksi')" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="transaksi">
+        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">receipt_long</span>
+        <p class="text-[10px] font-semibold text-slate-400 transition-colors">Transaksi</p>
       </button>
 
       <div class="relative -top-6">
-        <button onclick="switchView('profile')" class="nav-btn w-14 h-14 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-xl shadow-slate-400 hover:scale-105 active:scale-95 transition-all ring-4 ring-white" data-target="profile">
-          <span class="material-symbols-rounded text-3xl">person</span>
+        <button onclick="switchView('approval')" class="nav-btn w-14 h-14 bg-sky text-white rounded-full flex items-center justify-center shadow-xl shadow-slate-400 hover:scale-105 active:scale-95 transition-all ring-4 ring-white" data-target="approval">
+          <span class="material-symbols-rounded text-3xl">rule</span>
         </button>
       </div>
 
-      <button onclick="switchView('surat')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="surat">
-        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">mail</span>
-        <p class="text-[10px] font-medium text-slate-400 transition-colors">Surat</p>
+      <button onclick="switchView('laporan')" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="laporan">
+        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">query_stats</span>
+        <p class="text-[10px] font-semibold text-slate-400 transition-colors">Laporan</p>
       </button>
 
-      <button onclick="switchView('arsip')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="arsip">
-        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">folder_open</span>
-        <p class="text-[10px] font-medium text-slate-400 transition-colors">Arsip</p>
+      <button onclick="switchView('profile')" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="profile">
+        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">person</span>
+        <p class="text-[10px] font-semibold text-slate-400 transition-colors">Profil</p>
       </button>
     </div>
   </nav>
@@ -378,7 +410,8 @@
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
     import {
       getFirestore, doc, getDoc, updateDoc, deleteDoc,
-      collection, addDoc, getDocs, query, orderBy, limit, where, serverTimestamp
+      collection, addDoc, getDocs, query, orderBy, limit, where,
+      serverTimestamp, Timestamp
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -394,19 +427,21 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // Cloudinary (bukti transaksi)
     const CLOUD_NAME = "dbxktcwug";
     const PRESET_DOCS = "Karteji";
 
+    // helpers
     window.$ = (id) => document.getElementById(id);
     let UID = null;
     let newProfileFile = null;
 
-    // caches for export
-    let minutesCache = [];
-    let lettersCache = [];
-    let archivesCache = [];
+    // caches
+    let financeCache = [];
+    let filteredCache = [];
+    let chartInstance = null;
 
-    // THEME (NEW)
+    // THEME
     function applyTheme() {
       const t = localStorage.getItem("karteji_theme") || "light";
       document.documentElement.classList.toggle("dark", t === "dark");
@@ -422,28 +457,16 @@
     };
     applyTheme();
 
-    // --- UX UTILITIES ---
+    // UI
     window.showToast = (msg, type = 'success') => {
       const container = $('toastContainer');
       const el = document.createElement('div');
       const color = type === 'error' ? 'bg-red-500' : 'bg-slate-800';
       el.className = `${color} text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 animate-slide-in-top pointer-events-auto min-w-[220px] backdrop-blur-sm bg-opacity-90`;
-      el.innerHTML = `<span class="material-symbols-rounded text-lg">${type==='error'?'error':'check_circle'}</span><span class="text-xs font-bold">${msg}</span>`;
+      el.innerHTML = `<span class="material-symbols-rounded text-lg">${type==='error'?'error':'check_circle'}</span><span class="text-xs font-black">${msg}</span>`;
       container.appendChild(el);
       setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 250); }, 2800);
     };
-
-    function animateValue(obj, start, end, duration) {
-      if(!obj) return;
-      let startTimestamp = null;
-      const step = (timestamp) => {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        obj.innerHTML = "Rp " + Math.floor(progress * (end - start) + start).toLocaleString('id-ID');
-        if (progress < 1) window.requestAnimationFrame(step);
-      };
-      window.requestAnimationFrame(step);
-    }
 
     window.toggleLoader = (show) => {
       const l = $("globalLoader");
@@ -487,12 +510,13 @@
       if(activeBtn) activeBtn.classList.add('active');
 
       if(viewId === 'home') loadHomeStats();
-      if(viewId === 'notulen') loadNotulen();
-      if(viewId === 'surat') loadSurat();
-      if(viewId === 'arsip') loadArsip();
+      if(viewId === 'transaksi') loadTransaksi();
+      if(viewId === 'approval') loadApproval();
+      if(viewId === 'laporan') loadLaporan();
       if(viewId === 'profile') loadProfileData();
     };
 
+    // upload bukti
     async function upload(file) {
       if(!file) return null;
       const fd = new FormData();
@@ -504,12 +528,12 @@
       return { url: d.secure_url, type: d.resource_type, format: d.format, original: d.original_filename };
     }
 
-    // AUDIT LOG (NEW)
+    // AUDIT
     async function writeAudit(action, targetType="-", targetId="-", meta={}) {
       try {
         await addDoc(collection(db, "audit_logs"), {
           actorUid: UID,
-          actorRole: "sekretaris",
+          actorRole: "bendahara",
           action,
           targetType,
           targetId,
@@ -519,7 +543,7 @@
       } catch(e) { console.warn("audit gagal:", e?.message); }
     }
 
-    // --- AUTH & ONLINE PRESENCE (improved) ---
+    // Presence
     let heartbeatTimer = null;
 
     onAuthStateChanged(auth, async user => {
@@ -527,26 +551,32 @@
       toggleLoader(true);
       try {
         const snap = await getDoc(doc(db,"users",user.uid));
-        if(!snap.exists() || (snap.data().role !== "sekretaris" && snap.data().role !== "super_admin")){
-          toggleLoader(false); $("gate").classList.remove("hidden"); $("gate").classList.add("flex"); return;
+        if(!snap.exists() || (snap.data().role !== "bendahara" && snap.data().role !== "super_admin")){
+          toggleLoader(false);
+          $("gate").classList.remove("hidden"); $("gate").classList.add("flex");
+          return;
         }
         UID = user.uid;
 
-        // online status
         await updateOnlineStatus(true);
         await writeAudit("login_open", "auth", UID, {});
 
-        // heartbeat (NEW)
         heartbeatTimer = setInterval(() => updateOnlineStatus(true), 25000);
 
-        // better offline detection
         window.addEventListener('beforeunload', () => updateOnlineStatus(false));
         document.addEventListener("visibilitychange", () => {
           if(document.hidden) updateOnlineStatus(false);
           else updateOnlineStatus(true);
         });
 
-        await Promise.all([loadHomeStats(), loadOnlineUsers(), loadNotulen(), loadSurat(), loadArsip(), loadProfileData()]);
+        await Promise.all([
+          loadProfileData(),
+          loadOnlineUsers(),
+          loadHomeStats(),
+          loadTransaksi(),
+          loadApproval(),
+          loadLaporan(),
+        ]);
       } catch(e) {
         console.error(e);
         showToast("Gagal memuat (cek koneksi/rules)", "error");
@@ -556,56 +586,22 @@
 
     async function updateOnlineStatus(isOnline) {
       if(!UID) return;
-      try {
-        await updateDoc(doc(db, "users", UID), { isOnline, lastSeen: serverTimestamp() });
-      } catch(e) { /* ignore */ }
+      try { await updateDoc(doc(db, "users", UID), { isOnline, lastSeen: serverTimestamp() }); }
+      catch(e) {}
     }
 
-    // --- HOME STATS & FINANCE CHECK ---
-    async function loadHomeStats() {
-      try {
-        // Count Docs
-        const [notul, surat, arsip] = await Promise.all([
-          getDocs(collection(db, "minutes")),
-          getDocs(collection(db, "letters")),
-          getDocs(collection(db, "archives")),
-        ]);
-
-        $("countMinutes").textContent = notul.size;
-        $("countLetters").textContent = surat.size;
-        $("totalDocs").textContent = notul.size + surat.size + arsip.size;
-
-        // Finance balance read-only
-        const finSnap = await getDocs(query(collection(db, "financial_records")));
-        let bal = 0;
-        finSnap.forEach(d => {
-          const f = d.data();
-          if(f.status === 'approved') {
-            const amt = Number(f.amount) || 0;
-            if(f.type === 'income') bal += amt; else bal -= amt;
-          }
-        });
-        animateValue($("homeBalance"), 0, bal, 1200);
-
-        loadOnlineUsers();
-      } catch (e) { console.error(e); }
-    }
-
-    // --- ONLINE USERS ---
     async function loadOnlineUsers() {
       const list = $("onlineUsersList");
       list.innerHTML = "";
       try {
         const qy = query(collection(db, "users"), where("isOnline", "==", true), limit(20));
         const snap = await getDocs(qy);
-
         $("onlineCount").textContent = `${snap.size} Aktif`;
 
         if(snap.empty) {
           list.innerHTML = `<span class="text-xs text-slate-400 italic">Hanya Anda yang online.</span>`;
           return;
         }
-
         snap.forEach(d => {
           const u = d.data();
           list.innerHTML += `
@@ -618,277 +614,571 @@
             </div>
           `;
         });
-      } catch(e) { console.error("Error loading online users", e); }
+      } catch(e) { console.error(e); }
     }
 
-    // --- NOTULEN ---
-    async function loadNotulen() {
-      const list = $("listNotulen"); list.innerHTML = "";
-      minutesCache = [];
-      const snap = await getDocs(query(collection(db, "minutes"), orderBy("createdAt", "desc"), limit(120)));
-
-      if(snap.empty) {
-        list.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Belum ada notulen.</p>`;
-        return;
-      }
-
-      snap.forEach(d => {
-        const x = d.data();
-        minutesCache.push({ id: d.id, ...x });
-
-        list.innerHTML += `
-          <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm relative group">
-            <p class="text-[10px] font-bold text-sky-500 mb-1 uppercase tracking-wider">${x.date || '-'}</p>
-            <h4 class="text-sm font-bold text-brand-primary">${x.title || '-'}</h4>
-            <p class="text-xs text-slate-400 mt-1 line-clamp-2">${x.body || ''}</p>
-
-            <div class="mt-3 flex items-center gap-2 no-print">
-              <button onclick="openMinutesDetail('${d.id}')" class="text-xs font-extrabold bg-sky-100 text-sky-700 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
-                <span class="material-symbols-rounded text-sm">visibility</span> Detail
-              </button>
-              <button onclick="deleteDocData('minutes','${d.id}')" class="text-xs font-extrabold bg-red-50 text-red-600 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
-                <span class="material-symbols-rounded text-sm">delete</span> Hapus
-              </button>
-            </div>
-          </div>
-        `;
-      });
+    function rupiah(n){
+      return "Rp " + (Number(n)||0).toLocaleString("id-ID");
     }
 
-    window.openMinutesDetail = async (id) => {
-      const snap = await getDoc(doc(db, "minutes", id));
-      const x = snap.data() || {};
-      const html = `
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-          <p class="text-[10px] font-extrabold text-sky-600 uppercase tracking-widest">${x.date || '-'}</p>
-          <p class="text-lg font-black text-brand-primary mt-1">${x.title || '-'}</p>
-        </div>
-        <div class="bg-white border border-slate-200 rounded-xl p-4">
-          <p class="text-sm text-slate-600 whitespace-pre-wrap">${(x.body||'').trim() || '-'}</p>
-        </div>
-      `;
-      showModal("DETAIL NOTULEN", html, null);
-    };
-
-    window.openNotulenForm = () => {
-      const html = `
-        <input id="nTitle" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 mb-3 text-sm font-bold" placeholder="Judul Rapat">
-        <input id="nDate" type="date" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 mb-3 text-sm">
-        <textarea id="nBody" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 h-28 text-sm" placeholder="Isi pembahasan..."></textarea>
-      `;
-      showModal("CATAT NOTULEN", html, async () => {
-        if(!$("nTitle").value.trim()) return showToast("Judul wajib diisi", "error");
-        toggleLoader(true);
-        try {
-          const ref = await addDoc(collection(db, "minutes"), {
-            title: $("nTitle").value.trim(),
-            date: $("nDate").value,
-            body: $("nBody").value.trim(),
-            createdAt: serverTimestamp()
-          });
-          await writeAudit("create_minutes", "minutes", ref.id, {});
-          closeModal(); loadNotulen(); loadHomeStats(); showToast("Notulen disimpan");
-        } catch(e) { console.error(e); showToast("Gagal simpan", "error"); }
-        finally { toggleLoader(false); }
-      });
-    };
-
-    // --- SURAT ---
-    async function loadSurat() {
-      const list = $("listSurat"); list.innerHTML = "";
-      lettersCache = [];
-      const snap = await getDocs(query(collection(db, "letters"), orderBy("createdAt", "desc"), limit(120)));
-
-      if(snap.empty) {
-        list.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Belum ada surat.</p>`;
-        return;
-      }
-
-      snap.forEach(d => {
-        const x = d.data();
-        lettersCache.push({ id: d.id, ...x });
-
-        list.innerHTML += `
-          <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm relative group">
-            <div class="flex justify-between mb-1">
-              <span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-extrabold">${x.type || 'Surat'}</span>
-              <span class="text-[10px] text-slate-400 font-bold">${x.number || '-'}</span>
-            </div>
-            <h4 class="text-sm font-bold text-brand-primary">${x.subject || '-'}</h4>
-
-            <div class="mt-3 flex items-center gap-2 no-print">
-              <button onclick="openLetterDetail('${d.id}')" class="text-xs font-extrabold bg-sky-100 text-sky-700 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
-                <span class="material-symbols-rounded text-sm">visibility</span> Detail
-              </button>
-              <button onclick="deleteDocData('letters','${d.id}')" class="text-xs font-extrabold bg-red-50 text-red-600 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
-                <span class="material-symbols-rounded text-sm">delete</span> Hapus
-              </button>
-            </div>
-          </div>
-        `;
-      });
+    function ymd(d){
+      const dt = new Date(d);
+      const mm = String(dt.getMonth()+1).padStart(2,"0");
+      const dd = String(dt.getDate()).padStart(2,"0");
+      return `${dt.getFullYear()}-${mm}-${dd}`;
     }
 
-    window.openLetterDetail = async (id) => {
-      const snap = await getDoc(doc(db, "letters", id));
-      const x = snap.data() || {};
-      const html = `
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-          <p class="text-[10px] font-extrabold text-sky-600 uppercase tracking-widest">${x.type || 'Surat'}</p>
-          <p class="text-lg font-black text-brand-primary mt-1">${x.subject || '-'}</p>
-          <p class="text-xs text-slate-500 mt-2"><span class="font-extrabold">Nomor:</span> ${x.number || '-'}</p>
-        </div>
-      `;
-      showModal("DETAIL SURAT", html, null);
-    };
-
-    function romanMonth(m){ return ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"][m-1] || "I"; }
-
-    function generateLetterNumber(seq, org="KT-CSB") {
-      const now = new Date();
-      const mm = romanMonth(now.getMonth()+1);
-      const yyyy = now.getFullYear();
-      const s = String(seq).padStart(3, "0");
-      return `${s}/${org}/${mm}/${yyyy}`;
+    function animateRupiah(el, start, end, duration=900) {
+      if(!el) return;
+      let startTs = null;
+      const step = (ts) => {
+        if(!startTs) startTs = ts;
+        const p = Math.min((ts-startTs)/duration, 1);
+        const val = Math.floor(p*(end-start)+start);
+        el.textContent = rupiah(val);
+        if(p<1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
     }
 
-    async function getNextLetterSeq() {
-      const k = `letters_seq_${new Date().getFullYear()}`;
-      const curr = Number(localStorage.getItem(k) || "0") + 1;
-      localStorage.setItem(k, String(curr));
-      return curr;
-    }
+    // ===== FINANCE CORE =====
+    // financial_records fields (recommended):
+    // type: "income"|"expense"
+    // amount: number
+    // date: "YYYY-MM-DD"
+    // category: string
+    // note: string
+    // proof: {url,...} optional
+    // status: "pending"|"approved"|"rejected"
+    // createdAt, updatedAt, approvedAt, approvedBy, rejectNote
 
-    window.openSuratForm = async () => {
-      const seq = await getNextLetterSeq();
-      const autoNo = generateLetterNumber(seq);
+    async function loadHomeStats() {
+      try {
+        const snap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt","desc"), limit(400)));
+        let bal = 0;
+        let pending = 0, inc = 0, exp = 0;
 
-      const html = `
-        <input id="lSub" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 mb-3 text-sm font-bold" placeholder="Perihal Surat">
-        <div class="grid grid-cols-2 gap-2 mb-3">
-          <input id="lNo" class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold" value="${autoNo}">
-          <input id="lType" class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs" placeholder="Jenis (Masuk/Keluar/SK...)">
-        </div>
-        <p class="text-[10px] text-slate-500">Nomor otomatis bisa kamu edit kalau perlu.</p>
-      `;
+        const now = Date.now();
+        const from30 = now - 30*24*60*60*1000;
+        let inc30=0, exp30=0;
 
-      showModal("ARSIP SURAT", html, async () => {
-        if(!$("lSub").value.trim()) return showToast("Perihal wajib diisi", "error");
-        toggleLoader(true);
-        try {
-          const ref = await addDoc(collection(db, "letters"), {
-            subject: $("lSub").value.trim(),
-            number: $("lNo").value.trim(),
-            type: $("lType").value.trim(),
-            createdAt: serverTimestamp()
-          });
-          await writeAudit("create_letter", "letters", ref.id, { number: $("lNo").value.trim() });
-          closeModal(); loadSurat(); loadHomeStats(); showToast("Surat diarsipkan");
-        } catch(e) { console.error(e); showToast("Gagal simpan", "error"); }
-        finally { toggleLoader(false); }
-      });
-    };
+        snap.forEach(d => {
+          const f = d.data();
+          const amt = Number(f.amount)||0;
 
-    // --- ARSIP ---
-    async function loadArsip() {
-      const list = $("listArsip"); list.innerHTML = "";
-      archivesCache = [];
-      const snap = await getDocs(query(collection(db, "archives"), orderBy("createdAt", "desc"), limit(120)));
+          if(f.status === "pending") pending++;
 
-      if(snap.empty) {
-        list.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6 col-span-2">Belum ada arsip.</p>`;
-        return;
-      }
+          if(f.status === "approved") {
+            if(f.type === "income") { bal += amt; inc++; }
+            if(f.type === "expense") { bal -= amt; exp++; }
 
-      snap.forEach(d => {
-        const x = d.data();
-        archivesCache.push({ id:d.id, ...x });
-
-        list.innerHTML += `
-          <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm relative group text-center flex flex-col items-center">
-            <div class="bg-green-50 w-10 h-10 rounded-full flex items-center justify-center mb-2 text-green-600">
-              <span class="material-symbols-rounded">description</span>
-            </div>
-            <h4 class="text-xs font-bold text-brand-primary w-full truncate">${x.title || '-'}</h4>
-
-            <div class="mt-2 flex items-center gap-2 no-print">
-              <button onclick="previewFile('${(x.file?.url||'').replaceAll("'","\\'")}')" class="text-[10px] font-extrabold bg-sky-100 text-sky-700 px-2 py-1.5 rounded-lg active:scale-95 flex items-center gap-1">
-                <span class="material-symbols-rounded text-sm">visibility</span> Preview
-              </button>
-              <a href="${x.file?.url || '#'}" target="_blank" class="text-[10px] font-extrabold bg-slate-100 text-slate-700 px-2 py-1.5 rounded-lg hover:opacity-80 flex items-center gap-1">
-                <span class="material-symbols-rounded text-sm">download</span> Link
-              </a>
-            </div>
-
-            <button onclick="deleteDocData('archives','${d.id}')" class="absolute top-1 right-1 text-slate-300 hover:text-red-500 active:scale-95 no-print">
-              <span class="material-symbols-rounded text-sm">close</span>
-            </button>
-          </div>
-        `;
-      });
-    }
-
-    window.previewFile = (url) => {
-      if(!url) return showToast("File tidak tersedia", "error");
-      const ext = (url.split("?")[0].split(".").pop() || "").toLowerCase();
-      const isImg = ["png","jpg","jpeg","webp","gif"].includes(ext);
-      const isPdf = ext === "pdf";
-
-      const html = `
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
-          <p class="text-xs font-extrabold text-brand-primary">Preview Dokumen</p>
-          <p class="text-[10px] text-slate-500 break-all mt-1">${url}</p>
-        </div>
-        <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
-          ${
-            isImg ? `<img src="${url}" class="w-full max-h-[55vh] object-contain bg-black">`
-            : isPdf ? `<iframe src="${url}" class="w-full h-[55vh]"></iframe>`
-            : `<div class="p-5 text-center text-sm text-slate-500">Preview tidak tersedia untuk format ini. Gunakan tombol Link untuk membuka.</div>`
+            // 30d summary
+            const createdAt = f.createdAt?.toDate ? f.createdAt.toDate().getTime() : null;
+            if(createdAt && createdAt >= from30) {
+              if(f.type === "income") inc30 += amt;
+              if(f.type === "expense") exp30 += amt;
+            }
           }
-        </div>
-      `;
-      showModal("PREVIEW", html, null);
-      writeAudit("preview_file", "archives", "-", { url });
+        });
+
+        animateRupiah($("homeBalance"), 0, bal, 1000);
+        $("homePending").textContent = pending;
+        $("homeIncome").textContent = inc;
+        $("homeExpense").textContent = exp;
+
+        renderChart30d(inc30, exp30);
+        loadOnlineUsers();
+      } catch(e) { console.error(e); }
+    }
+
+    function renderChart30d(income, expense) {
+      const ctx = document.getElementById("chart30d");
+      if(!ctx) return;
+
+      const data = {
+        labels: ["Income (30d)", "Expense (30d)"],
+        datasets: [{
+          label: "Rupiah",
+          data: [income, expense],
+          borderWidth: 2
+        }]
+      };
+
+      if(chartInstance) chartInstance.destroy();
+      chartInstance = new Chart(ctx, { type: "bar", data, options: { responsive: true, plugins:{ legend:{ display:false } } } });
+    }
+
+    window.refreshCharts = async () => {
+      await loadHomeStats();
+      await writeAudit("refresh_charts", "ui", "-", {});
+      showToast("Chart diperbarui");
     };
 
-    window.openArsipForm = () => {
+    // ===== LIST TRANSAKSI =====
+    async function loadTransaksi() {
+      const list = $("listTransaksi");
+      list.innerHTML = "";
+      financeCache = [];
+
+      try {
+        const snap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt","desc"), limit(160)));
+
+        if(snap.empty) {
+          list.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Belum ada transaksi.</p>`;
+          return;
+        }
+
+        snap.forEach(d => {
+          const f = d.data();
+          financeCache.push({ id: d.id, ...f });
+
+          const badgeType = f.type === "income"
+            ? `<span class="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-black">INCOME</span>`
+            : `<span class="text-[10px] bg-orange-50 text-orange-700 px-2 py-0.5 rounded font-black">EXPENSE</span>`;
+
+          const badgeStatus =
+            f.status === "approved" ? `<span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-black">APPROVED</span>` :
+            f.status === "rejected" ? `<span class="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded font-black">REJECTED</span>` :
+            `<span class="text-[10px] bg-sky-100 text-sky-700 px-2 py-0.5 rounded font-black">PENDING</span>`;
+
+          const amt = rupiah(f.amount);
+          const date = f.date || "-";
+          const cat = (f.category || "Umum");
+          const note = (f.note || "").trim();
+
+          list.innerHTML += `
+            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  ${badgeType}
+                  ${badgeStatus}
+                </div>
+                <span class="text-[10px] text-slate-400 font-bold">${date}</span>
+              </div>
+
+              <div class="mt-2 flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="text-sm font-black text-brand-primary truncate">${cat}</p>
+                  <p class="text-xs text-slate-400 line-clamp-2">${note || "-"}</p>
+                </div>
+                <p class="text-sm font-black ${f.type==="income" ? "text-emerald-600" : "text-orange-600"} whitespace-nowrap">${amt}</p>
+              </div>
+
+              <div class="mt-3 flex items-center gap-2 no-print">
+                <button onclick="openFinanceDetail('${d.id}')" class="text-xs font-black bg-slate-100 text-slate-700 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
+                  <span class="material-symbols-rounded text-sm">visibility</span> Detail
+                </button>
+                <button onclick="editFinance('${d.id}')" class="text-xs font-black bg-sky-100 text-sky-700 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
+                  <span class="material-symbols-rounded text-sm">edit</span> Edit
+                </button>
+                <button onclick="deleteFinance('${d.id}')" class="text-xs font-black bg-red-50 text-red-600 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
+                  <span class="material-symbols-rounded text-sm">delete</span> Hapus
+                </button>
+              </div>
+            </div>
+          `;
+        });
+      } catch(e) {
+        console.error(e);
+        list.innerHTML = `<p class="text-xs text-red-500 italic text-center py-6">Gagal memuat transaksi.</p>`;
+      }
+    }
+
+    window.openFinanceDetail = async (id) => {
+      const snap = await getDoc(doc(db, "financial_records", id));
+      const f = snap.data() || {};
+      const proof = f.proof?.url
+        ? `<a href="${f.proof.url}" target="_blank" class="text-xs font-black text-sky-700 underline break-all">${f.proof.url}</a>`
+        : `<span class="text-xs text-slate-400">-</span>`;
+
       const html = `
-        <input id="aTitle" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 mb-3 text-sm font-bold" placeholder="Nama Dokumen">
-        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 border-dashed cursor-pointer hover:bg-slate-100" onclick="$('aFile').click()">
-          <p class="text-[10px] text-slate-400 text-center font-bold">KLIK UNTUK UPLOAD FILE (PDF/JPG/PNG)</p>
-          <input id="aFile" type="file" class="hidden" accept=".pdf,image/*">
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+          <p class="text-[10px] font-black text-sky-600 uppercase tracking-widest">${(f.status||"pending").toUpperCase()}</p>
+          <p class="text-lg font-black text-brand-primary mt-1">${(f.category||"Umum")}</p>
+          <p class="text-xs text-slate-500 mt-2"><span class="font-black">Tanggal:</span> ${f.date||"-"}</p>
+          <p class="text-xs text-slate-500"><span class="font-black">Jenis:</span> ${f.type||"-"}</p>
+          <p class="text-xs text-slate-500"><span class="font-black">Nominal:</span> ${rupiah(f.amount)}</p>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl p-4 space-y-2">
+          <p class="text-xs font-black text-slate-500">Keterangan</p>
+          <p class="text-sm text-slate-600 whitespace-pre-wrap">${(f.note||"").trim() || "-"}</p>
+          <div class="pt-2">
+            <p class="text-xs font-black text-slate-500 mb-1">Bukti</p>
+            ${proof}
+          </div>
         </div>
       `;
-      showModal("UPLOAD FILE", html, async () => {
-        if(!$("aTitle").value.trim()) return showToast("Nama dokumen wajib", "error");
-        if(!$("aFile").files[0]) return showToast("Pilih file!", "error");
+      showModal("DETAIL TRANSAKSI", html, null);
+    };
+
+    window.openTransaksiForm = () => {
+      const today = ymd(new Date());
+      const html = `
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-[10px] font-black text-slate-400 uppercase">Jenis</label>
+            <select id="tType" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+              <option value="income">Pemasukan</option>
+              <option value="expense">Pengeluaran</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] font-black text-slate-400 uppercase">Tanggal</label>
+            <input id="tDate" type="date" value="${today}" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+          </div>
+        </div>
+        <div>
+          <label class="text-[10px] font-black text-slate-400 uppercase">Kategori</label>
+          <input id="tCat" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold outline-none focus:border-sky" placeholder="Misal: Kas Rutin / Donasi / Konsumsi">
+        </div>
+        <div>
+          <label class="text-[10px] font-black text-slate-400 uppercase">Nominal</label>
+          <input id="tAmt" type="number" inputmode="numeric" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold outline-none focus:border-sky" placeholder="Contoh: 50000">
+          <p class="text-[10px] text-slate-400 mt-1">Isi angka saja tanpa titik/koma.</p>
+        </div>
+        <div>
+          <label class="text-[10px] font-black text-slate-400 uppercase">Keterangan</label>
+          <textarea id="tNote" rows="3" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky resize-none" placeholder="Detail transaksi..."></textarea>
+        </div>
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 border-dashed cursor-pointer hover:bg-slate-100" onclick="$('tProof').click()">
+          <p class="text-[10px] text-slate-400 text-center font-black">KLIK UNTUK UPLOAD BUKTI (PDF/JPG/PNG)</p>
+          <input id="tProof" type="file" class="hidden" accept=".pdf,image/*">
+        </div>
+        <div class="bg-sky-50 border border-sky-100 rounded-xl p-3">
+          <p class="text-[10px] font-black text-sky-700">Catatan</p>
+          <p class="text-xs text-sky-700 mt-1">Transaksi baru otomatis berstatus <b>pending</b>. Approval dilakukan di menu Approval.</p>
+        </div>
+      `;
+
+      showModal("TAMBAH TRANSAKSI", html, async () => {
+        const type = $("tType").value;
+        const date = $("tDate").value;
+        const category = $("tCat").value.trim();
+        const amount = Number($("tAmt").value || "0");
+        const note = $("tNote").value.trim();
+        const file = $("tProof").files?.[0] || null;
+
+        if(!date) return showToast("Tanggal wajib diisi", "error");
+        if(!category) return showToast("Kategori wajib diisi", "error");
+        if(!amount || amount <= 0) return showToast("Nominal wajib > 0", "error");
+
         toggleLoader(true);
         try {
-          const file = await upload($("aFile").files[0]);
-          const ref = await addDoc(collection(db, "archives"), { title: $("aTitle").value.trim(), file, createdAt: serverTimestamp() });
-          await writeAudit("upload_archive", "archives", ref.id, { title: $("aTitle").value.trim() });
-          closeModal(); loadArsip(); loadHomeStats(); showToast("File diupload");
-        } catch(e) { console.error(e); showToast("Gagal upload", "error"); }
-        finally { toggleLoader(false); }
+          const proof = file ? await upload(file) : null;
+
+          const ref = await addDoc(collection(db, "financial_records"), {
+            type,
+            date,
+            category,
+            amount,
+            note,
+            proof,
+            status: "pending",
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+            createdBy: UID
+          });
+
+          await writeAudit("create_financial", "financial_records", ref.id, { type, amount, status:"pending" });
+          closeModal();
+          await Promise.all([loadTransaksi(), loadApproval(), loadHomeStats()]);
+          showToast("Transaksi dibuat (pending)");
+        } catch(e) {
+          console.error(e);
+          showToast("Gagal simpan transaksi", "error");
+        } finally { toggleLoader(false); }
       });
     };
 
-    window.deleteDocData = async (col, id) => {
-      if(!confirm("Hapus permanen?")) return;
+    window.editFinance = async (id) => {
+      const snap = await getDoc(doc(db, "financial_records", id));
+      const f = snap.data() || {};
+
+      const html = `
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-[10px] font-black text-slate-400 uppercase">Jenis</label>
+            <select id="eType" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+              <option value="income" ${f.type==="income"?"selected":""}>Pemasukan</option>
+              <option value="expense" ${f.type==="expense"?"selected":""}>Pengeluaran</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] font-black text-slate-400 uppercase">Tanggal</label>
+            <input id="eDate" type="date" value="${f.date||''}" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+          </div>
+        </div>
+        <div>
+          <label class="text-[10px] font-black text-slate-400 uppercase">Kategori</label>
+          <input id="eCat" value="${(f.category||"").replaceAll('"','&quot;')}" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold outline-none focus:border-sky">
+        </div>
+        <div>
+          <label class="text-[10px] font-black text-slate-400 uppercase">Nominal</label>
+          <input id="eAmt" type="number" value="${Number(f.amount||0)}" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold outline-none focus:border-sky">
+        </div>
+        <div>
+          <label class="text-[10px] font-black text-slate-400 uppercase">Keterangan</label>
+          <textarea id="eNote" rows="3" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky resize-none">${(f.note||"").replaceAll("<","&lt;")}</textarea>
+        </div>
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 border-dashed cursor-pointer hover:bg-slate-100" onclick="$('eProof').click()">
+          <p class="text-[10px] text-slate-400 text-center font-black">GANTI / TAMBAH BUKTI (opsional)</p>
+          <input id="eProof" type="file" class="hidden" accept=".pdf,image/*">
+        </div>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
+          <p class="text-xs text-slate-500"><span class="font-black">Status:</span> ${(f.status||"pending")}</p>
+          <p class="text-[10px] text-slate-400 mt-1">Edit tidak otomatis mengubah status. Jika ingin ulang approval, ubah ke pending manual lewat admin (atau kita bisa tambah tombol reset status nanti).</p>
+        </div>
+      `;
+
+      showModal("EDIT TRANSAKSI", html, async () => {
+        const type = $("eType").value;
+        const date = $("eDate").value;
+        const category = $("eCat").value.trim();
+        const amount = Number($("eAmt").value || "0");
+        const note = $("eNote").value.trim();
+        const file = $("eProof").files?.[0] || null;
+
+        if(!date) return showToast("Tanggal wajib diisi", "error");
+        if(!category) return showToast("Kategori wajib diisi", "error");
+        if(!amount || amount <= 0) return showToast("Nominal wajib > 0", "error");
+
+        toggleLoader(true);
+        try {
+          const patch = { type, date, category, amount, note, updatedAt: serverTimestamp() };
+          if(file) patch.proof = await upload(file);
+
+          await updateDoc(doc(db, "financial_records", id), patch);
+          await writeAudit("edit_financial", "financial_records", id, { fields: Object.keys(patch) });
+
+          closeModal();
+          await Promise.all([loadTransaksi(), loadApproval(), loadHomeStats(), loadLaporan()]);
+          showToast("Transaksi diperbarui");
+        } catch(e) {
+          console.error(e);
+          showToast("Gagal update", "error");
+        } finally { toggleLoader(false); }
+      });
+    };
+
+    window.deleteFinance = async (id) => {
+      if(!confirm("Hapus transaksi permanen?")) return;
       toggleLoader(true);
       try {
-        await deleteDoc(doc(db, col, id));
-        await writeAudit("delete", col, id, {});
-        showToast("Item dihapus");
-        if(col === 'minutes') loadNotulen();
-        if(col === 'letters') loadSurat();
-        if(col === 'archives') loadArsip();
-        loadHomeStats();
-      } catch(e) { console.error(e); showToast("Gagal hapus", "error"); }
-      finally { toggleLoader(false); }
+        await deleteDoc(doc(db, "financial_records", id));
+        await writeAudit("delete_financial", "financial_records", id, {});
+        showToast("Transaksi dihapus");
+        await Promise.all([loadTransaksi(), loadApproval(), loadHomeStats(), loadLaporan()]);
+      } catch(e) {
+        console.error(e);
+        showToast("Gagal hapus", "error");
+      } finally { toggleLoader(false); }
     };
 
-    // EXPORT CSV (NEW)
+    // ===== APPROVAL =====
+    async function loadApproval() {
+      const list = $("listApproval");
+      list.innerHTML = "";
+
+      try {
+        const snap = await getDocs(query(
+          collection(db, "financial_records"),
+          where("status","==","pending"),
+          orderBy("createdAt","desc"),
+          limit(160)
+        ));
+
+        if(snap.empty) {
+          list.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Tidak ada transaksi pending.</p>`;
+          return;
+        }
+
+        snap.forEach(d => {
+          const f = d.data();
+          const amt = rupiah(f.amount);
+          const date = f.date || "-";
+          const cat = f.category || "Umum";
+          const note = (f.note||"").trim();
+
+          list.innerHTML += `
+            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] bg-sky-100 text-sky-700 px-2 py-0.5 rounded font-black">PENDING</span>
+                <span class="text-[10px] text-slate-400 font-bold">${date}</span>
+              </div>
+
+              <div class="mt-2 flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="text-sm font-black text-brand-primary truncate">${cat}</p>
+                  <p class="text-xs text-slate-400 line-clamp-2">${note || "-"}</p>
+                </div>
+                <p class="text-sm font-black ${f.type==="income" ? "text-emerald-600" : "text-orange-600"} whitespace-nowrap">${amt}</p>
+              </div>
+
+              <div class="mt-3 flex flex-wrap items-center gap-2 no-print">
+                <button onclick="openFinanceDetail('${d.id}')" class="text-xs font-black bg-slate-100 text-slate-700 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
+                  <span class="material-symbols-rounded text-sm">visibility</span> Detail
+                </button>
+                <button onclick="approveFinance('${d.id}')" class="text-xs font-black bg-emerald-100 text-emerald-700 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
+                  <span class="material-symbols-rounded text-sm">check</span> Approve
+                </button>
+                <button onclick="rejectFinance('${d.id}')" class="text-xs font-black bg-red-50 text-red-600 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
+                  <span class="material-symbols-rounded text-sm">close</span> Reject
+                </button>
+              </div>
+            </div>
+          `;
+        });
+      } catch(e) {
+        console.error(e);
+        list.innerHTML = `<p class="text-xs text-red-500 italic text-center py-6">Gagal memuat approval.</p>`;
+      }
+    }
+    window.loadApproval = loadApproval;
+
+    window.approveFinance = async (id) => {
+      if(!confirm("Setujui transaksi ini?")) return;
+      toggleLoader(true);
+      try {
+        await updateDoc(doc(db, "financial_records", id), {
+          status: "approved",
+          approvedAt: serverTimestamp(),
+          approvedBy: UID,
+          updatedAt: serverTimestamp()
+        });
+        await writeAudit("approve_financial", "financial_records", id, {});
+        showToast("Disetujui");
+        await Promise.all([loadApproval(), loadTransaksi(), loadHomeStats(), loadLaporan()]);
+      } catch(e) {
+        console.error(e);
+        showToast("Gagal approve", "error");
+      } finally { toggleLoader(false); }
+    };
+
+    window.rejectFinance = async (id) => {
+      const html = `
+        <div>
+          <label class="text-[10px] font-black text-slate-400 uppercase">Alasan penolakan</label>
+          <textarea id="rejNote" rows="3" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky resize-none" placeholder="Tulis alasan..."></textarea>
+        </div>
+        <div class="bg-red-50 border border-red-100 rounded-xl p-3">
+          <p class="text-[10px] font-black text-red-600">Catatan</p>
+          <p class="text-xs text-red-600 mt-1">Transaksi akan berstatus <b>rejected</b>. Kamu bisa edit transaksi lalu ajukan ulang (buat pending) jika dibutuhkan.</p>
+        </div>
+      `;
+      showModal("REJECT TRANSAKSI", html, async () => {
+        const note = $("rejNote").value.trim();
+        if(!note) return showToast("Alasan wajib diisi", "error");
+        toggleLoader(true);
+        try {
+          await updateDoc(doc(db, "financial_records", id), {
+            status: "rejected",
+            rejectNote: note,
+            rejectedAt: serverTimestamp(),
+            rejectedBy: UID,
+            updatedAt: serverTimestamp()
+          });
+          await writeAudit("reject_financial", "financial_records", id, { note });
+          closeModal();
+          showToast("Ditolak");
+          await Promise.all([loadApproval(), loadTransaksi(), loadHomeStats(), loadLaporan()]);
+        } catch(e) {
+          console.error(e);
+          showToast("Gagal reject", "error");
+        } finally { toggleLoader(false); }
+      });
+    };
+
+    // ===== LAPORAN =====
+    async function loadLaporan() {
+      const list = $("listLaporan");
+      list.innerHTML = "";
+      filteredCache = [];
+
+      try {
+        // Ambil agak banyak lalu filter di client (simpel & aman untuk versi awal)
+        const snap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt","desc"), limit(400)));
+
+        const from = $("fFrom")?.value || "";
+        const to = $("fTo")?.value || "";
+        const type = $("fType")?.value || "";
+        const status = $("fStatus")?.value || "";
+
+        let total = 0;
+        let cnt = 0;
+
+        const isInRange = (d) => {
+          if(!from && !to) return true;
+          if(from && d < from) return false;
+          if(to && d > to) return false;
+          return true;
+        };
+
+        snap.forEach(d => {
+          const f = d.data();
+          const date = f.date || "";
+          if(!isInRange(date)) return;
+          if(type && f.type !== type) return;
+          if(status && f.status !== status) return;
+
+          filteredCache.push({ id: d.id, ...f });
+          cnt++;
+
+          // total: income + , expense -
+          if(f.status === "approved" || status === "approved" || status === "") {
+            const amt = Number(f.amount)||0;
+            if(f.type === "income") total += amt;
+            if(f.type === "expense") total -= amt;
+          }
+        });
+
+        $("lapTotal").textContent = rupiah(total);
+        $("lapHint").textContent = `${cnt} data (filter aktif) • total dihitung (+income -expense)`;
+
+        if(!filteredCache.length) {
+          list.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Tidak ada data sesuai filter.</p>`;
+          return;
+        }
+
+        filteredCache.slice(0, 200).forEach(f => {
+          const badgeType = f.type === "income"
+            ? `<span class="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-black">IN</span>`
+            : `<span class="text-[10px] bg-orange-50 text-orange-700 px-2 py-0.5 rounded font-black">OUT</span>`;
+
+          const badgeStatus =
+            f.status === "approved" ? `<span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-black">APP</span>` :
+            f.status === "rejected" ? `<span class="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded font-black">REJ</span>` :
+            `<span class="text-[10px] bg-sky-100 text-sky-700 px-2 py-0.5 rounded font-black">PEN</span>`;
+
+          list.innerHTML += `
+            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">${badgeType}${badgeStatus}</div>
+                <span class="text-[10px] text-slate-400 font-bold">${f.date||"-"}</span>
+              </div>
+              <div class="mt-2 flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="text-sm font-black text-brand-primary truncate">${f.category||"Umum"}</p>
+                  <p class="text-xs text-slate-400 line-clamp-2">${(f.note||"").trim() || "-"}</p>
+                </div>
+                <p class="text-sm font-black ${f.type==="income" ? "text-emerald-600" : "text-orange-600"} whitespace-nowrap">${rupiah(f.amount)}</p>
+              </div>
+              <div class="mt-3 no-print">
+                <button onclick="openFinanceDetail('${f.id}')" class="text-xs font-black bg-slate-100 text-slate-700 px-3 py-2 rounded-xl active:scale-95 inline-flex items-center gap-1">
+                  <span class="material-symbols-rounded text-sm">visibility</span> Detail
+                </button>
+              </div>
+            </div>
+          `;
+        });
+
+      } catch(e) {
+        console.error(e);
+        list.innerHTML = `<p class="text-xs text-red-500 italic text-center py-6">Gagal memuat laporan.</p>`;
+      }
+    }
+    window.loadLaporan = loadLaporan;
+
+    // ===== EXPORT CSV =====
     function downloadText(content, filename, mime){
       const blob = new Blob([content], { type: mime || "text/plain" });
       const url = URL.createObjectURL(blob);
@@ -899,37 +1189,42 @@
       URL.revokeObjectURL(url);
     }
 
-    window.exportMinutesCSV = async () => {
-      if(!minutesCache.length) await loadNotulen();
-      let csv = "Tanggal,Judul,Isi\n";
-      minutesCache.forEach(x => {
-        const safeTitle = (x.title||"").replaceAll('"','""');
-        const safeBody = (x.body||"").replaceAll('"','""').replaceAll("\n"," ");
-        csv += `"${x.date||''}","${safeTitle}","${safeBody}"\n`;
-      });
-      downloadText(csv, `Notulen_${new Date().toISOString().slice(0,10)}.csv`, "text/csv;charset=utf-8");
-      await writeAudit("export_minutes_csv", "minutes", "-", { total: minutesCache.length });
-      showToast("CSV Notulen diunduh");
+    window.exportFinanceCSV = async (mode) => {
+      toggleLoader(true);
+      try {
+        let rows = [];
+
+        if(mode === "filtered") {
+          rows = filteredCache;
+        } else {
+          // fetch again to be safe
+          const snap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt","desc"), limit(500)));
+          snap.forEach(d => rows.push({ id:d.id, ...d.data() }));
+          if(mode) rows = rows.filter(x => x.status === mode);
+        }
+
+        let csv = "ID,Tanggal,Jenis,Kategori,Nominal,Status,Keterangan,BuktiURL\n";
+        rows.forEach(x => {
+          const safe = (s) => String(s||"").replaceAll('"','""').replaceAll("\n"," ");
+          csv += `"${safe(x.id)}","${safe(x.date)}","${safe(x.type)}","${safe(x.category)}","${safe(x.amount)}","${safe(x.status)}","${safe(x.note)}","${safe(x.proof?.url)}"\n`;
+        });
+
+        const fname = `Finance_${mode||"all"}_${new Date().toISOString().slice(0,10)}.csv`;
+        downloadText(csv, fname, "text/csv;charset=utf-8");
+        await writeAudit("export_finance_csv", "financial_records", "-", { mode, total: rows.length });
+        showToast("CSV diunduh");
+      } catch(e) {
+        console.error(e);
+        showToast("Gagal export CSV", "error");
+      } finally { toggleLoader(false); }
     };
 
-    window.exportLettersCSV = async () => {
-      if(!lettersCache.length) await loadSurat();
-      let csv = "Nomor,Jenis,Perihal\n";
-      lettersCache.forEach(x => {
-        const safeSub = (x.subject||"").replaceAll('"','""');
-        csv += `"${x.number||''}","${x.type||''}","${safeSub}"\n`;
-      });
-      downloadText(csv, `Surat_${new Date().toISOString().slice(0,10)}.csv`, "text/csv;charset=utf-8");
-      await writeAudit("export_letters_csv", "letters", "-", { total: lettersCache.length });
-      showToast("CSV Surat diunduh");
-    };
-
-    // --- PROFILE ---
+    // ===== PROFILE =====
     async function loadProfileData() {
       const snap = await getDoc(doc(db, "users", UID));
       if(snap.exists()){
         const d = snap.data();
-        $("headerName").textContent = d.name || "Sekretaris";
+        $("headerName").textContent = d.name || "Bendahara";
         $("headerPhoto").src = d.photo?.url || "https://via.placeholder.com/150";
         $("profileImage").src = d.photo?.url || "https://via.placeholder.com/150";
         $("profileNameDisplay").textContent = d.name || "-";
@@ -963,20 +1258,20 @@
       const u = snap.data() || {};
       const html = `
         <div class="bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-white p-5 rounded-2xl relative overflow-hidden shadow-2xl border-t border-slate-600">
-          <div class="absolute -right-10 -top-10 w-40 h-40 bg-sky-500/20 rounded-full blur-3xl"></div>
+          <div class="absolute -right-10 -top-10 w-40 h-40 bg-emerald-500/20 rounded-full blur-3xl"></div>
           <div class="flex justify-between items-center mb-6 relative z-10">
             <div class="flex items-center gap-2">
               <div class="w-8 h-8 bg-white/10 rounded flex items-center justify-center">
-                <span class="material-symbols-rounded text-sky-500">folder_shared</span>
+                <span class="material-symbols-rounded text-emerald-400">paid</span>
               </div>
-              <span class="font-bold tracking-widest text-xs">KARTEJI ADMIN</span>
+              <span class="font-black tracking-widest text-xs">KARTEJI ADMIN</span>
             </div>
           </div>
           <div class="flex gap-4 items-center">
-            <img src="${u.photo?.url||'https://via.placeholder.com/100'}" class="w-20 h-20 rounded-xl object-cover border-2 border-sky-500 shadow-lg bg-slate-800">
+            <img src="${u.photo?.url||'https://via.placeholder.com/100'}" class="w-20 h-20 rounded-xl object-cover border-2 border-emerald-400 shadow-lg bg-slate-800">
             <div>
-              <h2 class="text-xl font-bold leading-none mb-1 text-sky-400">${u.name||'Sekretaris'}</h2>
-              <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">SEKRETARIS</p>
+              <h2 class="text-xl font-black leading-none mb-1 text-emerald-300">${u.name||'Bendahara'}</h2>
+              <p class="text-[10px] uppercase tracking-wider text-slate-400 font-black">BENDAHARA</p>
               <p class="text-[9px] mt-2 text-slate-500">ID: ${UID.substring(0,8).toUpperCase()}</p>
             </div>
           </div>
