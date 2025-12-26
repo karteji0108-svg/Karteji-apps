@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Bendahara | Finance</title>
+  <title>Bendahara | Administration</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
     tailwind.config = {
@@ -17,9 +17,9 @@
           fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
           colors: {
             brand: { primary: '#0F172A', light: '#334155' },
-            amber: { DEFAULT: '#F59E0B', light: '#FEF3C7', dark: '#B45309' },
-            emerald: { DEFAULT: '#10B981' },
-            rose: { DEFAULT: '#F43F5E' }
+            sky: { DEFAULT: '#0EA5E9', light: '#E0F2FE', dark: '#0369A1' },
+            emeraldx: { DEFAULT: '#10B981' },
+            orangex: { DEFAULT: '#F97316' }
           },
           animation: {
             'blob': 'blob 10s infinite',
@@ -54,8 +54,19 @@
     }
     .view-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
     .view-section.active { display: block; opacity: 1; transform: translateY(0); }
-    .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #F59E0B; }
+    .nav-btn.active span { font-variation-settings: 'FILL' 1; color: #0EA5E9; }
     .nav-btn.active p { color: #0F172A; font-weight: 800; }
+
+    /* online indicator */
+    @keyframes pulse-green {
+      0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+      70% { box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+    }
+    .online-pulse { animation: pulse-green 2s infinite; }
+
+    /* animation delay helper */
+    .animation-delay-2000 { animation-delay: 2s; }
 
     /* Dark mode */
     html.dark body { background-color: #0B1220; color: #E5E7EB; }
@@ -66,23 +77,30 @@
     html.dark .text-slate-500 { color: rgba(203,213,225,0.85) !important; }
     html.dark .border-slate-100, html.dark .border-slate-200 { border-color: rgba(255,255,255,0.08) !important; }
     html.dark .bg-slate-50, html.dark .bg-slate-100 { background-color: rgba(255,255,255,0.06) !important; }
-    html.dark .shadow-slate-200, html.dark .shadow-slate-300 { box-shadow: 0 12px 30px rgba(0,0,0,0.35) !important; }
+
+    /* clamp helper */
+    .line-clamp-2{
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
 
     @media print {
       body * { visibility: hidden; }
       #printArea, #printArea * { visibility: visible; }
-      #printArea { position: absolute; left: 0; top: 0; width: 100%; background: white; padding: 18px; z-index: 9999; }
+      #printArea { position: absolute; left: 0; top: 0; width: 100%; background: white; padding: 20px; z-index: 9999; }
       .no-print { display: none !important; }
     }
   </style>
 </head>
 
-<body class="min-h-screen relative overflow-x-hidden pb-32 selection:bg-amber-200 selection:text-amber-900">
+<body class="min-h-screen relative overflow-x-hidden pb-32 selection:bg-sky-200 selection:text-sky-900">
 
   <!-- BG blobs -->
   <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-amber-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
-    <div class="absolute top-[25%] right-[-10%] w-96 h-96 bg-rose-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
+    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-emerald-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
+    <div class="absolute top-[20%] right-[-10%] w-96 h-96 bg-sky-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
   </div>
 
   <!-- Toast -->
@@ -90,8 +108,8 @@
 
   <!-- Loader -->
   <div id="globalLoader" class="fixed inset-0 bg-white/80 z-[9999] flex items-center justify-center flex-col gap-4 backdrop-blur-md hidden">
-    <div class="w-12 h-12 border-4 border-slate-200 border-t-amber rounded-full animate-spin"></div>
-    <p class="text-xs font-extrabold text-slate-400 animate-pulse">MEMPROSES DATA...</p>
+    <div class="w-12 h-12 border-4 border-slate-200 border-t-sky rounded-full animate-spin"></div>
+    <p class="text-xs font-black text-slate-400 animate-pulse tracking-widest">MEMPROSES...</p>
   </div>
 
   <!-- Gate -->
@@ -102,7 +120,7 @@
       </div>
       <h2 class="text-2xl font-extrabold text-brand-primary mb-2">Akses Ditolak</h2>
       <p class="text-slate-500 text-sm mb-6">Halaman ini khusus Bendahara.</p>
-      <a href="../login.html" class="block w-full bg-brand-primary text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors">Kembali</a>
+      <a href="../login.html" class="block w-full bg-brand-primary text-white py-3 rounded-xl font-extrabold hover:bg-slate-800 transition-colors">Kembali</a>
     </div>
   </div>
 
@@ -110,7 +128,7 @@
   <div id="crudModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-all">
     <div class="bg-white w-full max-w-md rounded-[2rem] p-6 relative shadow-2xl">
       <div class="flex justify-between items-center mb-6">
-        <h2 id="modalTitle" class="text-xl font-extrabold text-brand-primary uppercase tracking-tight">Judul</h2>
+        <h2 id="modalTitle" class="text-xl font-black text-brand-primary uppercase tracking-tight">Judul</h2>
         <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors text-slate-500">
           <span class="material-symbols-rounded text-xl">close</span>
         </button>
@@ -126,10 +144,10 @@
       <div class="flex items-center gap-3">
         <button onclick="switchView('profile')" class="relative group active:scale-95 transition-transform">
           <img id="headerPhoto" class="w-12 h-12 rounded-full border-2 border-white shadow-md object-cover" src="https://via.placeholder.com/100" alt="photo">
-          <div class="absolute bottom-0 right-0 w-4 h-4 bg-amber border-2 border-white rounded-full flex items-center justify-center text-[8px] text-white font-black">Rp</div>
+          <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] text-white font-bold online-pulse"></div>
         </button>
         <div>
-          <p class="text-[10px] font-extrabold text-amber-dark uppercase tracking-widest bg-amber-light px-2 py-0.5 rounded-full w-fit mb-0.5">Bendahara</p>
+          <p class="text-[10px] font-extrabold text-emerald-700 uppercase tracking-widest bg-emerald-100 px-2 py-0.5 rounded-full w-fit mb-0.5">Bendahara</p>
           <h1 id="headerName" class="text-xl font-black text-brand-primary leading-none">Memuat...</h1>
         </div>
       </div>
@@ -149,181 +167,266 @@
 
     <!-- HOME -->
     <section id="view-home" class="view-section active">
-      <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 group transition-all">
-        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500 transform group-hover:scale-110">
-          <span class="material-symbols-rounded text-9xl">account_balance_wallet</span>
+      <!-- Online -->
+      <div class="mb-5">
+        <div class="flex items-center justify-between mb-2 px-1">
+          <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Anggota Online
+          </h3>
+          <span id="onlineCount" class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-extrabold">0 Aktif</span>
         </div>
-
-        <div class="relative z-10">
-          <p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-300 mb-1">Saldo Kas (Approved)</p>
-          <h2 id="cardBalance" class="text-4xl font-black tracking-tight mb-6">Rp 0</h2>
-
-          <div class="grid grid-cols-2 gap-2">
-            <div class="bg-white/10 rounded-2xl p-4 backdrop-blur-md border border-white/5">
-              <p class="text-[9px] font-extrabold uppercase text-slate-300 mb-1">Pending</p>
-              <p id="pendingCount" class="text-xl font-black text-orange-300 leading-tight">0</p>
-              <p class="text-[10px] text-slate-300/70 mt-0.5">menunggu ACC</p>
-            </div>
-            <div class="bg-white/10 rounded-2xl p-4 backdrop-blur-md border border-white/5">
-              <p class="text-[9px] font-extrabold uppercase text-slate-300 mb-1">This Month</p>
-              <p id="monthNet" class="text-xl font-black text-emerald-300 leading-tight">Rp 0</p>
-              <p class="text-[10px] text-slate-300/70 mt-0.5">netto</p>
-            </div>
-          </div>
-
-          <!-- Quick actions -->
-          <div class="mt-4 grid grid-cols-2 gap-2">
-            <button onclick="openTransactionForm()" class="bg-amber text-slate-900 py-2.5 rounded-xl text-xs font-black active:scale-95 flex items-center justify-center gap-1 no-print">
-              <span class="material-symbols-rounded text-sm">add</span> Input Transaksi
-            </button>
-            <button onclick="openReportModal()" class="bg-white/10 border border-white/10 py-2.5 rounded-xl text-xs font-black active:scale-95 flex items-center justify-center gap-1 no-print">
-              <span class="material-symbols-rounded text-sm">print</span> Laporan Bulan Ini
-            </button>
+        <div id="onlineUsersList" class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+          <div class="animate-pulse flex gap-2">
+            <div class="w-10 h-10 rounded-full bg-slate-200"></div>
+            <div class="w-10 h-10 rounded-full bg-slate-200"></div>
           </div>
         </div>
       </div>
 
-      <div class="bg-white rounded-[1.5rem] p-5 shadow-sm border border-slate-100 mt-6">
-        <div class="flex items-center justify-between gap-2 mb-4">
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-rounded text-slate-400">monitoring</span>
-            <span class="text-xs font-extrabold text-slate-500 uppercase">Tren 6 Bulan</span>
+      <!-- Wallet selector (FITUR BARU #1) -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 mb-4">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Sumber Kas</p>
+            <p class="text-sm font-black text-brand-primary">Pilih Kas aktif</p>
           </div>
-          <button onclick="switchView('transactions')" class="text-[10px] font-black bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg active:scale-95 no-print flex items-center gap-1">
-            <span class="material-symbols-rounded text-sm">receipt_long</span> Transaksi
+          <select id="walletSelect" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold outline-none focus:border-sky min-w-[160px]"></select>
+        </div>
+        <div class="mt-3 flex gap-2 no-print">
+          <button onclick="openWalletManager()" class="text-xs font-black bg-slate-100 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
+            <span class="material-symbols-rounded text-sm">account_balance_wallet</span> Kelola Kas
+          </button>
+          <button onclick="openCategoryManager()" class="text-xs font-black bg-sky-100 text-sky-700 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
+            <span class="material-symbols-rounded text-sm">category</span> Kelola Kategori
           </button>
         </div>
-        <div class="h-44 relative w-full flex items-center justify-center">
-          <canvas id="trendChart"></canvas>
+      </div>
+
+      <!-- Hero -->
+      <div class="w-full bg-brand-primary rounded-[2.5rem] p-7 text-white relative overflow-hidden shadow-xl shadow-slate-300 group transition-all">
+        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500 transform group-hover:scale-110">
+          <span class="material-symbols-rounded text-9xl">paid</span>
+        </div>
+        <div class="relative z-10">
+          <p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-300 mb-1">Saldo Kas (Approved)</p>
+          <h2 id="homeBalance" class="text-4xl font-black tracking-tight mb-6">Rp 0</h2>
+
+          <div class="grid grid-cols-3 gap-2">
+            <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5">
+              <p class="text-[9px] uppercase text-slate-300 font-extrabold">Pending</p>
+              <p id="homePending" class="text-lg font-black">0</p>
+            </div>
+            <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5">
+              <p class="text-[9px] uppercase text-slate-300 font-extrabold">Income</p>
+              <p id="homeIncome" class="text-lg font-black">0</p>
+            </div>
+            <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-white/5">
+              <p class="text-[9px] uppercase text-slate-300 font-extrabold">Expense</p>
+              <p id="homeExpense" class="text-lg font-black">0</p>
+            </div>
+          </div>
+
+          <div class="mt-4 grid grid-cols-2 gap-2 no-print">
+            <button onclick="switchView('transaksi')" class="bg-emeraldx text-white py-2.5 rounded-xl text-xs font-black active:scale-95 flex items-center justify-center gap-1">
+              <span class="material-symbols-rounded text-sm">add</span> Tambah Transaksi
+            </button>
+            <button onclick="switchView('approval')" class="bg-white/10 border border-white/10 py-2.5 rounded-xl text-xs font-black active:scale-95 flex items-center justify-center gap-1">
+              <span class="material-symbols-rounded text-sm">rule</span> Approval
+            </button>
+          </div>
+
+          <!-- Monthly recap (FITUR BARU #3) -->
+          <div class="mt-3 no-print">
+            <button onclick="generateMonthlySummary()" class="w-full bg-white/10 border border-white/10 py-2.5 rounded-xl text-xs font-black active:scale-95 flex items-center justify-center gap-2">
+              <span class="material-symbols-rounded text-sm">calendar_month</span> Generate Rekap Bulan Ini
+            </button>
+          </div>
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-3 mt-6">
-        <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 shadow-sm active:scale-95 transition-transform cursor-pointer" onclick="switchView('transactions')">
-          <div class="w-10 h-10 bg-amber-50 text-amber-700 rounded-full flex items-center justify-center mb-2">
-            <span class="material-symbols-rounded">receipt</span>
-          </div>
+      <!-- Chart Card -->
+      <div class="bg-white rounded-[1.5rem] p-5 shadow-sm border border-slate-100 mt-4">
+        <div class="flex items-center justify-between">
           <div>
-            <h3 class="text-xs font-black text-brand-primary">Buku Kas</h3>
-            <p class="text-[10px] text-slate-400">Input & pantau status</p>
+            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Ringkasan 30 Hari</p>
+            <h3 class="text-lg font-black text-brand-primary">Income vs Expense</h3>
           </div>
+          <button class="no-print text-xs font-black bg-slate-100 px-3 py-2 rounded-xl active:scale-95" onclick="refreshCharts()">
+            <span class="material-symbols-rounded text-sm align-[-2px]">refresh</span> Refresh
+          </button>
         </div>
+        <div class="mt-4">
+          <canvas id="chart30d" height="120"></canvas>
+        </div>
+      </div>
 
-        <div class="bg-white border border-slate-100 rounded-[1.5rem] p-4 flex flex-col justify-between h-32 shadow-sm active:scale-95 transition-transform cursor-pointer" onclick="switchView('budgets')">
-          <div class="w-10 h-10 bg-emerald-50 text-emerald-700 rounded-full flex items-center justify-center mb-2">
-            <span class="material-symbols-rounded">target</span>
-          </div>
-          <div>
-            <h3 class="text-xs font-black text-brand-primary">Anggaran</h3>
-            <p class="text-[10px] text-slate-400">Rencana & realisasi</p>
-          </div>
-        </div>
+      <!-- Quick tools -->
+      <div class="grid grid-cols-2 gap-2 mt-4 no-print">
+        <button onclick="openImportCSV()" class="bg-white border border-slate-200 rounded-2xl p-4 text-left shadow-sm active:scale-95 transition">
+          <p class="text-[10px] font-extrabold text-slate-400 uppercase">Bulk</p>
+          <p class="text-sm font-black text-brand-primary mt-1 flex items-center gap-1">
+            <span class="material-symbols-rounded text-base">upload</span> Import CSV
+          </p>
+          <p class="text-xs text-slate-400 mt-1">Upload transaksi sekaligus</p>
+        </button>
+        <button onclick="switchView('audit')" class="bg-white border border-slate-200 rounded-2xl p-4 text-left shadow-sm active:scale-95 transition">
+          <p class="text-[10px] font-extrabold text-slate-400 uppercase">Transparansi</p>
+          <p class="text-sm font-black text-brand-primary mt-1 flex items-center gap-1">
+            <span class="material-symbols-rounded text-base">history</span> Audit Log
+          </p>
+          <p class="text-xs text-slate-400 mt-1">Lihat histori aksi</p>
+        </button>
       </div>
     </section>
 
-    <!-- TRANSACTIONS -->
-    <section id="view-transactions" class="view-section">
+    <!-- TRANSAKSI -->
+    <section id="view-transaksi" class="view-section">
       <div class="flex justify-between items-center mb-4 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
         <div>
           <h2 class="text-2xl font-black text-brand-primary">Transaksi</h2>
-          <p class="text-xs text-slate-400">Buku kas (pending/approved)</p>
+          <p class="text-xs text-slate-400">Input pemasukan & pengeluaran</p>
         </div>
-        <div class="flex items-center gap-2 no-print">
-          <button onclick="exportFinanceCSV()" class="w-10 h-10 bg-emerald-600 text-white rounded-full flex items-center justify-center active:scale-90 shadow-lg" title="Export CSV">
-            <span class="material-symbols-rounded">download</span>
-          </button>
-          <button onclick="openTransactionForm()" class="w-10 h-10 bg-brand-primary text-white rounded-full flex items-center justify-center active:scale-90 shadow-lg" title="Tambah">
-            <span class="material-symbols-rounded">add</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-2 gap-2 mb-3 no-print">
-        <button onclick="setTxFilter('all')" id="f_all" class="px-3 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-black active:scale-95 flex items-center justify-center gap-1">
-          <span class="material-symbols-rounded text-sm">lists</span> Semua
-        </button>
-        <button onclick="setTxFilter('pending')" id="f_pending" class="px-3 py-2 rounded-xl bg-orange-100 text-orange-700 text-xs font-black active:scale-95 flex items-center justify-center gap-1">
-          <span class="material-symbols-rounded text-sm">pending_actions</span> Pending
-        </button>
-      </div>
-
-      <div class="mb-4 relative no-print">
-        <span class="material-symbols-rounded absolute left-3 top-2.5 text-slate-400 text-lg">search</span>
-        <input id="searchTx" oninput="filterList('txList', this.value)" placeholder="Cari catatan / kategori..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none focus:border-amber shadow-sm">
-      </div>
-
-      <div id="txList" class="space-y-3 pb-20"></div>
-    </section>
-
-    <!-- BUDGETS -->
-    <section id="view-budgets" class="view-section">
-      <div class="flex justify-between items-center mb-4 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
-        <div>
-          <h2 class="text-2xl font-black text-brand-primary">Anggaran</h2>
-          <p class="text-xs text-slate-400">Target per kategori</p>
-        </div>
-        <button onclick="openBudgetForm()" class="w-10 h-10 bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform no-print" title="Tambah Anggaran">
+        <button onclick="openTransaksiForm()" class="w-10 h-10 bg-emeraldx text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform no-print">
           <span class="material-symbols-rounded">add</span>
         </button>
       </div>
 
       <div class="mb-4 relative no-print">
         <span class="material-symbols-rounded absolute left-3 top-2.5 text-slate-400 text-lg">search</span>
-        <input id="searchBudget" oninput="filterList('budgetList', this.value)" placeholder="Cari kategori..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none focus:border-emerald shadow-sm">
+        <input id="searchTransaksi" oninput="filterList('listTransaksi', this.value)" placeholder="Cari keterangan / kategori..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none focus:border-sky shadow-sm">
       </div>
 
-      <div id="budgetList" class="space-y-3 pb-20"></div>
+      <div id="listTransaksi" class="space-y-3 pb-24"></div>
     </section>
 
-    <!-- REPORT -->
-    <section id="view-report" class="view-section">
+    <!-- APPROVAL -->
+    <section id="view-approval" class="view-section">
       <div class="flex justify-between items-center mb-4 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
         <div>
-          <h2 class="text-2xl font-black text-brand-primary">Laporan</h2>
-          <p class="text-xs text-slate-400">Ringkas per bulan</p>
+          <h2 class="text-2xl font-black text-brand-primary">Approval</h2>
+          <p class="text-xs text-slate-400">Transaksi menunggu persetujuan</p>
         </div>
-        <div class="flex items-center gap-2 no-print">
-          <button onclick="printReport()" class="w-10 h-10 bg-slate-200 text-slate-700 rounded-full flex items-center justify-center active:scale-90 shadow-sm" title="Print">
-            <span class="material-symbols-rounded">print</span>
-          </button>
-          <button onclick="exportReportCSV()" class="w-10 h-10 bg-emerald-600 text-white rounded-full flex items-center justify-center active:scale-90 shadow-lg" title="CSV">
-            <span class="material-symbols-rounded">download</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-2 gap-2 mb-3 no-print">
-        <input id="repMonth" type="month" class="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-amber shadow-sm">
-        <button onclick="loadReport()" class="w-full px-3 py-2 rounded-xl bg-brand-primary text-white text-sm font-black active:scale-95 flex items-center justify-center gap-1">
-          <span class="material-symbols-rounded text-sm">refresh</span> Terapkan
+        <button onclick="loadApproval()" class="w-10 h-10 bg-sky text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform no-print">
+          <span class="material-symbols-rounded">refresh</span>
         </button>
       </div>
 
-      <div id="printArea" class="bg-transparent">
-        <div class="hidden mb-3 border-b-2 border-slate-800 pb-3">
-          <h1 class="text-xl font-black uppercase">Laporan Keuangan KARTEJI</h1>
-          <p class="text-sm">Dicetak: <span id="printDate"></span></p>
-          <p class="text-sm">Periode: <span id="printPeriod"></span></p>
-        </div>
+      <div class="mb-4 grid grid-cols-2 gap-2 no-print">
+        <button onclick="exportFinanceCSV('pending')" class="bg-sky text-white py-2.5 rounded-xl text-xs font-black active:scale-95 flex items-center justify-center gap-1">
+          <span class="material-symbols-rounded text-sm">download</span> CSV Pending
+        </button>
+        <button onclick="exportFinanceCSV('approved')" class="bg-white border border-slate-200 py-2.5 rounded-xl text-xs font-black active:scale-95 flex items-center justify-center gap-1">
+          <span class="material-symbols-rounded text-sm">download</span> CSV Approved
+        </button>
+      </div>
 
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
-          <div class="flex items-start justify-between gap-3">
-            <div>
-              <p class="text-[10px] font-extrabold text-slate-400 uppercase">Ringkasan</p>
-              <p id="repSummary" class="text-sm font-black text-brand-primary mt-1">-</p>
-            </div>
-            <div class="text-right">
-              <p class="text-[10px] font-extrabold text-slate-400 uppercase">Saldo Approved</p>
-              <p id="repBalance" class="text-lg font-black text-brand-primary mt-1">Rp 0</p>
-            </div>
+      <div id="listApproval" class="space-y-3 pb-24"></div>
+    </section>
+
+    <!-- LAPORAN -->
+    <section id="view-laporan" class="view-section">
+      <div class="flex justify-between items-center mb-4 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
+        <div>
+          <h2 class="text-2xl font-black text-brand-primary">Laporan</h2>
+          <p class="text-xs text-slate-400">Filter & rekap</p>
+        </div>
+        <div class="flex gap-2 no-print">
+          <button onclick="printLaporan()" class="w-10 h-10 bg-slate-800 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform" title="PDF/Print">
+            <span class="material-symbols-rounded">print</span>
+          </button>
+          <button onclick="loadLaporan()" class="w-10 h-10 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform" title="Load">
+            <span class="material-symbols-rounded">query_stats</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm no-print">
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-[10px] font-extrabold text-slate-400 uppercase">Dari</label>
+            <input id="fFrom" type="date" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+          </div>
+          <div>
+            <label class="text-[10px] font-extrabold text-slate-400 uppercase">Sampai</label>
+            <input id="fTo" type="date" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+          </div>
+          <div>
+            <label class="text-[10px] font-extrabold text-slate-400 uppercase">Jenis</label>
+            <select id="fType" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+              <option value="">Semua</option>
+              <option value="income">Pemasukan</option>
+              <option value="expense">Pengeluaran</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] font-extrabold text-slate-400 uppercase">Status</label>
+            <select id="fStatus" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+              <option value="">Semua</option>
+              <option value="approved">Approved</option>
+              <option value="pending">Pending</option>
+              <option value="rejected">Rejected</option>
+            </select>
           </div>
         </div>
 
-        <div class="mt-3 bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
-          <p class="text-[10px] font-extrabold text-slate-400 uppercase mb-2">Daftar Transaksi (Approved + Pending di bulan)</p>
-          <div id="repList" class="space-y-2"></div>
+        <button onclick="loadLaporan()" class="mt-3 w-full bg-brand-primary text-white py-3 rounded-xl font-black active:scale-95">
+          Terapkan Filter
+        </button>
+      </div>
+
+      <!-- PRINT AREA -->
+      <div id="printArea" class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm mt-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Total (hasil filter)</p>
+            <h3 id="lapTotal" class="text-2xl font-black text-brand-primary">Rp 0</h3>
+            <p id="lapHint" class="text-xs text-slate-400 mt-1">—</p>
+          </div>
+          <button onclick="exportFinanceCSV('filtered')" class="no-print text-xs font-black bg-slate-100 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
+            <span class="material-symbols-rounded text-sm">download</span> CSV
+          </button>
+        </div>
+
+        <div id="listLaporan" class="space-y-3 mt-3"></div>
+      </div>
+
+      <div class="pb-24"></div>
+    </section>
+
+    <!-- AUDIT (FITUR BARU #7) -->
+    <section id="view-audit" class="view-section">
+      <div class="flex justify-between items-center mb-4 px-1 sticky top-0 bg-[#F8FAFC] py-2 z-10">
+        <div>
+          <h2 class="text-2xl font-black text-brand-primary">Audit Log</h2>
+          <p class="text-xs text-slate-400">Histori aksi untuk transparansi</p>
+        </div>
+        <div class="flex gap-2 no-print">
+          <button onclick="exportAuditCSV()" class="w-10 h-10 bg-slate-800 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform" title="Export CSV">
+            <span class="material-symbols-rounded">download</span>
+          </button>
+          <button onclick="loadAudit()" class="w-10 h-10 bg-sky text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform" title="Refresh">
+            <span class="material-symbols-rounded">refresh</span>
+          </button>
         </div>
       </div>
+
+      <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm no-print">
+        <label class="text-[10px] font-extrabold text-slate-400 uppercase">Filter Action</label>
+        <select id="auditAction" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky" onchange="loadAudit()">
+          <option value="">Semua</option>
+          <option value="create_financial">create_financial</option>
+          <option value="edit_financial">edit_financial</option>
+          <option value="delete_financial">delete_financial</option>
+          <option value="approve_financial">approve_financial</option>
+          <option value="reject_financial">reject_financial</option>
+          <option value="export_finance_csv">export_finance_csv</option>
+          <option value="login_open">login_open</option>
+          <option value="logout">logout</option>
+          <option value="theme_toggle">theme_toggle</option>
+        </select>
+      </div>
+
+      <div id="listAudit" class="space-y-3 mt-3 pb-24"></div>
     </section>
 
     <!-- PROFILE -->
@@ -338,7 +441,7 @@
         <input type="file" id="profileUpload" class="hidden" accept="image/*" onchange="previewProfileImage(this)">
 
         <h2 id="profileNameDisplay" class="text-xl font-black text-brand-primary mt-4 mb-0.5">Nama Bendahara</h2>
-        <div class="px-3 py-0.5 bg-amber text-slate-900 rounded-full text-[10px] font-black uppercase tracking-wide mb-1 shadow-lg shadow-amber/30">BENDAHARA</div>
+        <div class="px-3 py-0.5 bg-emerald-500 text-white rounded-full text-[10px] font-black uppercase tracking-wide mb-1 shadow-lg shadow-emerald-500/30">BENDAHARA</div>
         <p id="profileEmailDisplay" class="text-sm text-slate-400">email@user.com</p>
 
         <button onclick="showIdCard()" class="mt-4 w-full max-w-xs bg-slate-800 text-white py-3 rounded-xl font-black flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-xl no-print">
@@ -348,62 +451,62 @@
         <div class="w-full mt-8 space-y-4 px-1">
           <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm space-y-4">
             <div>
-              <label class="text-[10px] font-extrabold text-slate-400 ml-1 uppercase flex items-center gap-1">
-                <span class="material-symbols-rounded text-sm">badge</span> Nama Lengkap
-              </label>
-              <input id="editName" type="text" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-black mt-1 outline-none focus:border-amber">
+              <label class="text-[10px] font-black text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">badge</span> Nama Lengkap</label>
+              <input id="editName" type="text" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-sky-500">
             </div>
             <div>
-              <label class="text-[10px] font-extrabold text-slate-400 ml-1 uppercase flex items-center gap-1">
-                <span class="material-symbols-rounded text-sm">call</span> No. WhatsApp
-              </label>
-              <input id="editPhone" type="tel" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-amber">
+              <label class="text-[10px] font-black text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">call</span> No. WhatsApp / HP</label>
+              <input id="editPhone" type="tel" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-bold mt-1 outline-none focus:border-sky-500">
             </div>
             <div>
-              <label class="text-[10px] font-extrabold text-slate-400 ml-1 uppercase flex items-center gap-1">
-                <span class="material-symbols-rounded text-sm">home_pin</span> Alamat
-              </label>
-              <textarea id="editAddress" rows="2" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-amber resize-none"></textarea>
+              <label class="text-[10px] font-black text-slate-400 ml-1 uppercase flex items-center gap-1"><span class="material-symbols-rounded text-sm">home_pin</span> Alamat Domisili</label>
+              <textarea id="editAddress" rows="2" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 text-brand-primary text-sm font-medium mt-1 outline-none focus:border-sky-500 resize-none"></textarea>
             </div>
           </div>
 
           <button onclick="saveProfile()" class="w-full bg-brand-primary text-white py-4 rounded-2xl font-black shadow-lg shadow-slate-300 hover:bg-slate-800 transition-all active:scale-95">SIMPAN PROFIL</button>
-          <button id="logoutBtn" class="w-full bg-red-50 text-red-600 py-4 rounded-2xl font-black hover:bg-red-100 transition-all active:scale-95 flex items-center justify-center gap-2">
+          <button id="logoutBtn" class="w-full bg-red-50 text-red-500 py-4 rounded-2xl font-black hover:bg-red-100 transition-all active:scale-95 flex items-center justify-center gap-2">
             <span class="material-symbols-rounded">logout</span> KELUAR
           </button>
         </div>
       </div>
     </section>
-
   </main>
 
   <!-- Bottom Nav -->
   <nav class="fixed bottom-0 w-full glass-nav pb-6 pt-2 px-4 z-50 rounded-t-[2rem] no-print">
     <div class="flex justify-between items-center max-w-sm mx-auto">
-      <button onclick="switchView('home')" class="nav-btn active flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="home">
-        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">dashboard</span>
-        <p class="text-[10px] font-bold text-slate-400 transition-colors">Home</p>
+      <button onclick="switchView('home')" class="nav-btn active flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="home">
+        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">grid_view</span>
+        <p class="text-[10px] font-semibold text-slate-400 transition-colors">Home</p>
       </button>
 
-      <button onclick="switchView('transactions')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="transactions">
+      <button onclick="switchView('transaksi')" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="transaksi">
         <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">receipt_long</span>
-        <p class="text-[10px] font-bold text-slate-400 transition-colors">Kas</p>
+        <p class="text-[10px] font-semibold text-slate-400 transition-colors">Transaksi</p>
       </button>
 
       <div class="relative -top-6">
-        <button onclick="openTransactionForm()" class="w-14 h-14 bg-brand-primary text-white rounded-full flex items-center justify-center shadow-xl shadow-slate-400 hover:scale-105 active:scale-95 transition-all ring-4 ring-white">
-          <span class="material-symbols-rounded text-3xl">add</span>
+        <button onclick="switchView('approval')" class="nav-btn w-14 h-14 bg-sky text-white rounded-full flex items-center justify-center shadow-xl shadow-slate-400 hover:scale-105 active:scale-95 transition-all ring-4 ring-white" data-target="approval">
+          <span class="material-symbols-rounded text-3xl">rule</span>
         </button>
       </div>
 
-      <button onclick="switchView('budgets')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="budgets">
-        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">target</span>
-        <p class="text-[10px] font-bold text-slate-400 transition-colors">Budget</p>
+      <button onclick="switchView('laporan')" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="laporan">
+        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">query_stats</span>
+        <p class="text-[10px] font-semibold text-slate-400 transition-colors">Laporan</p>
       </button>
 
-      <button onclick="switchView('report')" class="nav-btn flex flex-col items-center gap-1 p-2 w-14 transition-all" data-target="report">
-        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">summarize</span>
-        <p class="text-[10px] font-bold text-slate-400 transition-colors">Report</p>
+      <button onclick="switchView('profile')" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 transition-all" data-target="profile">
+        <span class="material-symbols-rounded text-2xl text-slate-400 transition-colors">person</span>
+        <p class="text-[10px] font-semibold text-slate-400 transition-colors">Profil</p>
+      </button>
+    </div>
+
+    <!-- hidden extra nav shortcut (audit) -->
+    <div class="max-w-sm mx-auto mt-2 flex justify-center">
+      <button onclick="switchView('audit')" class="text-[10px] font-black text-slate-400 flex items-center gap-1">
+        <span class="material-symbols-rounded text-sm">history</span> Audit
       </button>
     </div>
   </nav>
@@ -413,7 +516,7 @@
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
     import {
       getFirestore, doc, getDoc, updateDoc, deleteDoc,
-      collection, getDocs, addDoc, query, orderBy, limit, where,
+      collection, addDoc, getDocs, query, orderBy, limit, where,
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
@@ -430,19 +533,25 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Cloudinary (receipt upload)
+    // Cloudinary (bukti transaksi)
     const CLOUD_NAME = "dbxktcwug";
-    const UPLOAD_PRESET = "Karteji";
+    const PRESET_DOCS = "Karteji";
 
+    // helpers
     window.$ = (id) => document.getElementById(id);
     let UID = null;
     let newProfileFile = null;
 
     // caches
     let financeCache = [];
-    let budgetsCache = [];
-    let trendChart = null;
-    let txFilter = "all";
+    let filteredCache = [];
+    let auditCache = [];
+    let chartInstance = null;
+
+    // wallet + category caches (FITUR BARU #1, #2)
+    let walletCache = [];
+    let categoryCache = [];
+    let activeWalletId = "default";
 
     // THEME
     function applyTheme() {
@@ -460,29 +569,16 @@
     };
     applyTheme();
 
-    // TOAST
+    // UI
     window.showToast = (msg, type = 'success') => {
       const container = $('toastContainer');
       const el = document.createElement('div');
       const color = type === 'error' ? 'bg-red-500' : 'bg-slate-800';
       el.className = `${color} text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 animate-slide-in-top pointer-events-auto min-w-[220px] backdrop-blur-sm bg-opacity-90`;
-      el.innerHTML = `<span class="material-symbols-rounded text-lg">${type==='error'?'error':'check_circle'}</span><span class="text-xs font-extrabold">${msg}</span>`;
+      el.innerHTML = `<span class="material-symbols-rounded text-lg">${type==='error'?'error':'check_circle'}</span><span class="text-xs font-black">${msg}</span>`;
       container.appendChild(el);
       setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 250); }, 2800);
     };
-
-    function animateCurrency(obj, start, end, duration) {
-      if(!obj) return;
-      let startTimestamp = null;
-      const step = (timestamp) => {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        const val = Math.floor(progress * (end - start) + start);
-        obj.innerHTML = "Rp " + val.toLocaleString('id-ID');
-        if (progress < 1) window.requestAnimationFrame(step);
-      };
-      window.requestAnimationFrame(step);
-    }
 
     window.toggleLoader = (show) => {
       const l = $("globalLoader");
@@ -525,12 +621,25 @@
       const activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`);
       if(activeBtn) activeBtn.classList.add('active');
 
-      if(viewId === 'home') loadHome();
-      if(viewId === 'transactions') loadTransactions();
-      if(viewId === 'budgets') loadBudgets();
-      if(viewId === 'report') loadReport();
+      if(viewId === 'home') loadHomeStats();
+      if(viewId === 'transaksi') loadTransaksi();
+      if(viewId === 'approval') loadApproval();
+      if(viewId === 'laporan') loadLaporan();
+      if(viewId === 'audit') loadAudit();
       if(viewId === 'profile') loadProfileData();
     };
+
+    // upload bukti
+    async function upload(file) {
+      if(!file) return null;
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("upload_preset", PRESET_DOCS);
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, { method: "POST", body: fd });
+      const d = await res.json();
+      if(d?.error) throw new Error(d.error.message);
+      return { url: d.secure_url, type: d.resource_type, format: d.format, original: d.original_filename };
+    }
 
     // AUDIT
     async function writeAudit(action, targetType="-", targetId="-", meta={}) {
@@ -547,31 +656,50 @@
       } catch(e) { console.warn("audit gagal:", e?.message); }
     }
 
-    // Upload receipt/image to cloudinary
-    async function uploadFile(file) {
-      if(!file) return null;
-      const fd = new FormData();
-      fd.append("file", file);
-      fd.append("upload_preset", UPLOAD_PRESET);
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, { method: "POST", body: fd });
-      const d = await res.json();
-      if(d?.error) throw new Error(d.error.message);
-      return { url: d.secure_url, type: d.resource_type, format: d.format, original: d.original_filename };
-    }
+    // Presence
+    let heartbeatTimer = null;
 
-    // AUTH
     onAuthStateChanged(auth, async user => {
       if(!user) return location.href = "../login.html";
       toggleLoader(true);
       try {
         const snap = await getDoc(doc(db,"users",user.uid));
-        const role = snap.exists() ? (snap.data().role || "") : "";
+        const role = snap.exists() ? snap.data().role : null;
+
         if(!snap.exists() || (role !== "bendahara" && role !== "super_admin")){
-          toggleLoader(false); $("gate").classList.remove("hidden"); $("gate").classList.add("flex"); return;
+          toggleLoader(false);
+          $("gate").classList.remove("hidden"); $("gate").classList.add("flex");
+          return;
         }
+
         UID = user.uid;
+
+        await updateOnlineStatus(true);
         await writeAudit("login_open", "auth", UID, {});
-        await Promise.all([loadProfileData(), loadHome()]);
+
+        heartbeatTimer = setInterval(() => updateOnlineStatus(true), 25000);
+
+        window.addEventListener('beforeunload', () => updateOnlineStatus(false));
+        document.addEventListener("visibilitychange", () => {
+          if(document.hidden) updateOnlineStatus(false);
+          else updateOnlineStatus(true);
+        });
+
+        await Promise.all([
+          loadWallets(),
+          loadCategories(),
+        ]);
+
+        await Promise.all([
+          loadProfileData(),
+          loadOnlineUsers(),
+          loadHomeStats(),
+          loadTransaksi(),
+          loadApproval(),
+          loadLaporan(),
+          loadAudit(),
+        ]);
+
       } catch(e) {
         console.error(e);
         showToast("Gagal memuat (cek koneksi/rules)", "error");
@@ -579,7 +707,1086 @@
       toggleLoader(false);
     });
 
-    // PROFILE
+    async function updateOnlineStatus(isOnline) {
+      if(!UID) return;
+      try { await updateDoc(doc(db, "users", UID), { isOnline, lastSeen: serverTimestamp() }); }
+      catch(e) {}
+    }
+
+    async function loadOnlineUsers() {
+      const list = $("onlineUsersList");
+      list.innerHTML = "";
+      try {
+        const qy = query(collection(db, "users"), where("isOnline", "==", true), limit(20));
+        const snap = await getDocs(qy);
+        $("onlineCount").textContent = `${snap.size} Aktif`;
+
+        if(snap.empty) {
+          list.innerHTML = `<span class="text-xs text-slate-400 italic">Hanya Anda yang online.</span>`;
+          return;
+        }
+        snap.forEach(d => {
+          const u = d.data();
+          list.innerHTML += `
+            <div class="flex flex-col items-center min-w-[60px] cursor-pointer" onclick="showToast('${(u.name||'User')} sedang online')">
+              <div class="relative">
+                <img src="${u.photo?.url || 'https://via.placeholder.com/50'}" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" alt="user">
+                <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full animate-pulse"></div>
+              </div>
+              <p class="text-[9px] font-bold text-slate-600 mt-1 truncate w-full text-center">${(u.name||'User').split(' ')[0]}</p>
+            </div>
+          `;
+        });
+      } catch(e) { console.error(e); }
+    }
+
+    function rupiah(n){
+      return "Rp " + (Number(n)||0).toLocaleString("id-ID");
+    }
+
+    function ymd(d){
+      const dt = new Date(d);
+      const mm = String(dt.getMonth()+1).padStart(2,"0");
+      const dd = String(dt.getDate()).padStart(2,"0");
+      return `${dt.getFullYear()}-${mm}-${dd}`;
+    }
+
+    function animateRupiah(el, start, end, duration=900) {
+      if(!el) return;
+      let startTs = null;
+      const step = (ts) => {
+        if(!startTs) startTs = ts;
+        const p = Math.min((ts-startTs)/duration, 1);
+        const val = Math.floor(p*(end-start)+start);
+        el.textContent = rupiah(val);
+        if(p<1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+
+    // ==============================
+    // FITUR BARU #1: WALLET MANAGER
+    // Collection: finance_wallets
+    // fields: name, active (bool), createdAt
+    // Each financial_records now includes walletId
+    // ==============================
+    async function ensureDefaultWallet() {
+      const snap = await getDocs(query(collection(db, "finance_wallets"), limit(1)));
+      if(!snap.empty) return;
+
+      await addDoc(collection(db, "finance_wallets"), {
+        name: "Kas Utama",
+        active: true,
+        createdAt: serverTimestamp()
+      });
+    }
+
+    async function loadWallets() {
+      await ensureDefaultWallet();
+      walletCache = [];
+      const sel = $("walletSelect");
+      if(sel) sel.innerHTML = "";
+
+      const snap = await getDocs(query(collection(db, "finance_wallets"), orderBy("createdAt","asc")));
+      snap.forEach(d => walletCache.push({ id: d.id, ...d.data() }));
+
+      // pick active wallet
+      const saved = localStorage.getItem("karteji_walletId");
+      const candidate = saved && walletCache.find(w => w.id === saved) ? saved : (walletCache.find(w => w.active)?.id || walletCache[0]?.id);
+      activeWalletId = candidate || "default";
+      localStorage.setItem("karteji_walletId", activeWalletId);
+
+      // render select
+      walletCache.forEach(w => {
+        const opt = document.createElement("option");
+        opt.value = w.id;
+        opt.textContent = w.name || "Kas";
+        if(w.id === activeWalletId) opt.selected = true;
+        sel.appendChild(opt);
+      });
+
+      sel.onchange = async () => {
+        activeWalletId = sel.value;
+        localStorage.setItem("karteji_walletId", activeWalletId);
+        showToast("Kas aktif diganti");
+        await writeAudit("wallet_change", "finance_wallets", activeWalletId, {});
+        await Promise.all([loadHomeStats(), loadTransaksi(), loadApproval(), loadLaporan()]);
+      };
+    }
+    window.openWalletManager = async () => {
+      const rows = walletCache.map(w => `
+        <div class="flex items-center justify-between gap-2 bg-slate-50 border border-slate-200 rounded-xl p-3">
+          <div class="min-w-0">
+            <p class="text-sm font-black text-brand-primary truncate">${(w.name||"Kas")}</p>
+            <p class="text-[10px] text-slate-400 font-bold">ID: ${w.id.slice(0,8).toUpperCase()} ${w.id===activeWalletId ? "• (aktif)" : ""}</p>
+          </div>
+          <button class="text-xs font-black bg-slate-100 px-3 py-2 rounded-xl active:scale-95" onclick="setActiveWallet('${w.id}')">Aktifkan</button>
+        </div>
+      `).join("");
+
+      const html = `
+        <div class="space-y-3">
+          ${rows || `<p class="text-xs text-slate-400 italic">Belum ada wallet.</p>`}
+          <div class="pt-2 border-t border-slate-200"></div>
+          <div>
+            <label class="text-[10px] font-black text-slate-400 uppercase">Tambah Kas baru</label>
+            <input id="newWalletName" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold outline-none focus:border-sky" placeholder="Misal: Kas Event / Donasi">
+          </div>
+        </div>
+      `;
+      showModal("KELOLA SUMBER KAS", html, async () => {
+        const name = $("newWalletName").value.trim();
+        if(!name) return showToast("Nama kas wajib diisi", "error");
+        toggleLoader(true);
+        try{
+          const ref = await addDoc(collection(db, "finance_wallets"), { name, active: false, createdAt: serverTimestamp() });
+          await writeAudit("wallet_create", "finance_wallets", ref.id, { name });
+          closeModal();
+          await loadWallets();
+          showToast("Kas baru ditambahkan");
+        }catch(e){ console.error(e); showToast("Gagal tambah kas", "error"); }
+        finally{ toggleLoader(false); }
+      });
+    };
+    window.setActiveWallet = async (id) => {
+      // simple: local active only (tidak memaksa field active di server biar aman)
+      activeWalletId = id;
+      localStorage.setItem("karteji_walletId", activeWalletId);
+      $("walletSelect").value = activeWalletId;
+      showToast("Kas aktif dipilih");
+      closeModal();
+      await writeAudit("wallet_select", "finance_wallets", id, {});
+      await Promise.all([loadHomeStats(), loadTransaksi(), loadApproval(), loadLaporan()]);
+    };
+
+    // ==============================
+    // FITUR BARU #2: CATEGORY MANAGER
+    // Collection: finance_categories
+    // fields: name, createdAt
+    // ==============================
+    async function ensureDefaultCategories(){
+      const snap = await getDocs(query(collection(db, "finance_categories"), limit(1)));
+      if(!snap.empty) return;
+      const defaults = ["Kas Rutin", "Donasi", "Konsumsi", "Operasional", "Kegiatan", "Perlengkapan"];
+      for(const n of defaults){
+        await addDoc(collection(db, "finance_categories"), { name:n, createdAt: serverTimestamp() });
+      }
+    }
+
+    async function loadCategories(){
+      await ensureDefaultCategories();
+      categoryCache = [];
+      const snap = await getDocs(query(collection(db, "finance_categories"), orderBy("createdAt","asc")));
+      snap.forEach(d => categoryCache.push({ id:d.id, ...d.data() }));
+    }
+
+    function renderCategoryOptions(selected=""){
+      const opts = categoryCache.map(c => `<option value="${(c.name||"").replaceAll('"','&quot;')}" ${c.name===selected?"selected":""}>${c.name}</option>`).join("");
+      return `<option value="">Pilih kategori...</option>${opts}<option value="_custom">+ Kategori manual</option>`;
+    }
+
+    window.openCategoryManager = async () => {
+      const rows = categoryCache.map(c => `
+        <div class="flex items-center justify-between gap-2 bg-slate-50 border border-slate-200 rounded-xl p-3">
+          <p class="text-sm font-black text-brand-primary">${c.name||"Kategori"}</p>
+          <button class="text-xs font-black bg-red-50 text-red-600 px-3 py-2 rounded-xl active:scale-95" onclick="deleteCategory('${c.id}')">Hapus</button>
+        </div>
+      `).join("");
+
+      const html = `
+        <div class="space-y-3">
+          ${rows || `<p class="text-xs text-slate-400 italic">Belum ada kategori.</p>`}
+          <div class="pt-2 border-t border-slate-200"></div>
+          <div>
+            <label class="text-[10px] font-black text-slate-400 uppercase">Tambah Kategori</label>
+            <input id="newCatName" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold outline-none focus:border-sky" placeholder="Misal: Inventaris">
+          </div>
+        </div>
+      `;
+      showModal("KELOLA KATEGORI", html, async () => {
+        const name = $("newCatName").value.trim();
+        if(!name) return showToast("Nama kategori wajib diisi", "error");
+        toggleLoader(true);
+        try{
+          const ref = await addDoc(collection(db, "finance_categories"), { name, createdAt: serverTimestamp() });
+          await writeAudit("category_create", "finance_categories", ref.id, { name });
+          closeModal();
+          await loadCategories();
+          showToast("Kategori ditambahkan");
+        }catch(e){ console.error(e); showToast("Gagal tambah kategori", "error"); }
+        finally{ toggleLoader(false); }
+      });
+    };
+
+    window.deleteCategory = async (id) => {
+      if(!confirm("Hapus kategori ini?")) return;
+      toggleLoader(true);
+      try{
+        await deleteDoc(doc(db, "finance_categories", id));
+        await writeAudit("category_delete", "finance_categories", id, {});
+        closeModal();
+        await loadCategories();
+        showToast("Kategori dihapus");
+      }catch(e){ console.error(e); showToast("Gagal hapus kategori", "error"); }
+      finally{ toggleLoader(false); }
+    };
+
+    // ===== FINANCE CORE =====
+    // financial_records fields:
+    // type: "income"|"expense"
+    // amount: number
+    // date: "YYYY-MM-DD"
+    // category: string
+    // note: string
+    // proof: {url,...} optional
+    // status: "pending"|"approved"|"rejected"
+    // walletId: string (FITUR BARU #1)
+    // createdAt, updatedAt, approvedAt, approvedBy, rejectNote
+
+    async function loadHomeStats() {
+      try {
+        const snap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt","desc"), limit(600)));
+        let bal = 0;
+        let pending = 0, inc = 0, exp = 0;
+
+        const now = Date.now();
+        const from30 = now - 30*24*60*60*1000;
+        let inc30=0, exp30=0;
+
+        snap.forEach(d => {
+          const f = d.data();
+          if((f.walletId || "default") !== (activeWalletId || "default")) return;
+
+          const amt = Number(f.amount)||0;
+
+          if(f.status === "pending") pending++;
+
+          if(f.status === "approved") {
+            if(f.type === "income") { bal += amt; inc++; }
+            if(f.type === "expense") { bal -= amt; exp++; }
+
+            const createdAt = f.createdAt?.toDate ? f.createdAt.toDate().getTime() : null;
+            if(createdAt && createdAt >= from30) {
+              if(f.type === "income") inc30 += amt;
+              if(f.type === "expense") exp30 += amt;
+            }
+          }
+        });
+
+        animateRupiah($("homeBalance"), 0, bal, 1000);
+        $("homePending").textContent = pending;
+        $("homeIncome").textContent = inc;
+        $("homeExpense").textContent = exp;
+
+        renderChart30d(inc30, exp30);
+        loadOnlineUsers();
+      } catch(e) { console.error(e); }
+    }
+
+    function renderChart30d(income, expense) {
+      const ctx = document.getElementById("chart30d");
+      if(!ctx) return;
+
+      const data = {
+        labels: ["Income (30d)", "Expense (30d)"],
+        datasets: [{
+          label: "Rupiah",
+          data: [income, expense],
+          borderWidth: 2
+        }]
+      };
+
+      if(chartInstance) chartInstance.destroy();
+      chartInstance = new Chart(ctx, { type: "bar", data, options: { responsive: true, plugins:{ legend:{ display:false } } } });
+    }
+
+    window.refreshCharts = async () => {
+      await loadHomeStats();
+      await writeAudit("refresh_charts", "ui", "-", {});
+      showToast("Chart diperbarui");
+    };
+
+    // ===== LIST TRANSAKSI =====
+    async function loadTransaksi() {
+      const list = $("listTransaksi");
+      list.innerHTML = "";
+      financeCache = [];
+
+      try {
+        const snap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt","desc"), limit(200)));
+
+        const rows = [];
+        snap.forEach(d => {
+          const f = d.data();
+          if((f.walletId || "default") !== (activeWalletId || "default")) return;
+          financeCache.push({ id: d.id, ...f });
+          rows.push({ id: d.id, ...f });
+        });
+
+        if(!rows.length) {
+          list.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Belum ada transaksi untuk kas ini.</p>`;
+          return;
+        }
+
+        rows.forEach(f => {
+          const badgeType = f.type === "income"
+            ? `<span class="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-black">INCOME</span>`
+            : `<span class="text-[10px] bg-orange-50 text-orange-700 px-2 py-0.5 rounded font-black">EXPENSE</span>`;
+
+          const badgeStatus =
+            f.status === "approved" ? `<span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-black">APPROVED</span>` :
+            f.status === "rejected" ? `<span class="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded font-black">REJECTED</span>` :
+            `<span class="text-[10px] bg-sky-100 text-sky-700 px-2 py-0.5 rounded font-black">PENDING</span>`;
+
+          const amt = rupiah(f.amount);
+          const date = f.date || "-";
+          const cat = (f.category || "Umum");
+          const note = (f.note || "").trim();
+
+          list.innerHTML += `
+            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  ${badgeType}
+                  ${badgeStatus}
+                </div>
+                <span class="text-[10px] text-slate-400 font-bold">${date}</span>
+              </div>
+
+              <div class="mt-2 flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="text-sm font-black text-brand-primary truncate">${cat}</p>
+                  <p class="text-xs text-slate-400 line-clamp-2">${note || "-"}</p>
+                </div>
+                <p class="text-sm font-black ${f.type==="income" ? "text-emerald-600" : "text-orange-600"} whitespace-nowrap">${amt}</p>
+              </div>
+
+              <div class="mt-3 flex items-center gap-2 no-print">
+                <button onclick="openFinanceDetail('${f.id}')" class="text-xs font-black bg-slate-100 text-slate-700 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
+                  <span class="material-symbols-rounded text-sm">visibility</span> Detail
+                </button>
+                <button onclick="editFinance('${f.id}')" class="text-xs font-black bg-sky-100 text-sky-700 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
+                  <span class="material-symbols-rounded text-sm">edit</span> Edit
+                </button>
+                <button onclick="deleteFinance('${f.id}')" class="text-xs font-black bg-red-50 text-red-600 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
+                  <span class="material-symbols-rounded text-sm">delete</span> Hapus
+                </button>
+              </div>
+            </div>
+          `;
+        });
+
+      } catch(e) {
+        console.error(e);
+        list.innerHTML = `<p class="text-xs text-red-500 italic text-center py-6">Gagal memuat transaksi.</p>`;
+      }
+    }
+
+    window.openFinanceDetail = async (id) => {
+      const snap = await getDoc(doc(db, "financial_records", id));
+      const f = snap.data() || {};
+      const proof = f.proof?.url
+        ? `<a href="${f.proof.url}" target="_blank" class="text-xs font-black text-sky-700 underline break-all">${f.proof.url}</a>`
+        : `<span class="text-xs text-slate-400">-</span>`;
+
+      const walletName = walletCache.find(w => w.id === (f.walletId||"default"))?.name || "Kas";
+
+      const html = `
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+          <p class="text-[10px] font-black text-sky-600 uppercase tracking-widest">${(f.status||"pending").toUpperCase()}</p>
+          <p class="text-lg font-black text-brand-primary mt-1">${(f.category||"Umum")}</p>
+          <p class="text-xs text-slate-500 mt-2"><span class="font-black">Kas:</span> ${walletName}</p>
+          <p class="text-xs text-slate-500"><span class="font-black">Tanggal:</span> ${f.date||"-"}</p>
+          <p class="text-xs text-slate-500"><span class="font-black">Jenis:</span> ${f.type||"-"}</p>
+          <p class="text-xs text-slate-500"><span class="font-black">Nominal:</span> ${rupiah(f.amount)}</p>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl p-4 space-y-2">
+          <p class="text-xs font-black text-slate-500">Keterangan</p>
+          <p class="text-sm text-slate-600 whitespace-pre-wrap">${(f.note||"").trim() || "-"}</p>
+          <div class="pt-2">
+            <p class="text-xs font-black text-slate-500 mb-1">Bukti</p>
+            ${proof}
+          </div>
+        </div>
+      `;
+      showModal("DETAIL TRANSAKSI", html, null);
+    };
+
+    // FITUR BARU #6: Notifikasi ke pengurus ketika transaksi pending
+    async function createFinanceNotification(financeId, payload){
+      try{
+        await addDoc(collection(db,"notifications"), {
+          type: "finance_pending",
+          title: "Transaksi baru (pending)",
+          message: `${payload.type==="income"?"Pemasukan":"Pengeluaran"} ${rupiah(payload.amount)} • ${payload.category}`,
+          financeId,
+          walletId: payload.walletId || "default",
+          createdAt: serverTimestamp(),
+          readBy: []
+        });
+      }catch(e){}
+    }
+
+    window.openTransaksiForm = () => {
+      const today = ymd(new Date());
+      const html = `
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-[10px] font-black text-slate-400 uppercase">Jenis</label>
+            <select id="tType" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+              <option value="income">Pemasukan</option>
+              <option value="expense">Pengeluaran</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] font-black text-slate-400 uppercase">Tanggal</label>
+            <input id="tDate" type="date" value="${today}" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-[10px] font-black text-slate-400 uppercase">Kas</label>
+            <select id="tWallet" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+              ${walletCache.map(w => `<option value="${w.id}" ${w.id===activeWalletId?"selected":""}>${w.name}</option>`).join("")}
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] font-black text-slate-400 uppercase">Kategori</label>
+            <select id="tCatSelect" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+              ${renderCategoryOptions("")}
+            </select>
+            <input id="tCatManual" class="hidden w-full mt-2 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold outline-none focus:border-sky" placeholder="Tulis kategori manual...">
+          </div>
+        </div>
+
+        <div>
+          <label class="text-[10px] font-black text-slate-400 uppercase">Nominal</label>
+          <input id="tAmt" type="number" inputmode="numeric" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold outline-none focus:border-sky" placeholder="Contoh: 50000">
+          <p class="text-[10px] text-slate-400 mt-1">Isi angka saja tanpa titik/koma.</p>
+        </div>
+        <div>
+          <label class="text-[10px] font-black text-slate-400 uppercase">Keterangan</label>
+          <textarea id="tNote" rows="3" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky resize-none" placeholder="Detail transaksi..."></textarea>
+        </div>
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 border-dashed cursor-pointer hover:bg-slate-100" onclick="$('tProof').click()">
+          <p class="text-[10px] text-slate-400 text-center font-black">KLIK UNTUK UPLOAD BUKTI (PDF/JPG/PNG)</p>
+          <input id="tProof" type="file" class="hidden" accept=".pdf,image/*">
+        </div>
+        <div class="bg-sky-50 border border-sky-100 rounded-xl p-3">
+          <p class="text-[10px] font-black text-sky-700">Catatan</p>
+          <p class="text-xs text-sky-700 mt-1">Transaksi baru otomatis berstatus <b>pending</b>. Approval dilakukan di menu Approval.</p>
+        </div>
+      `;
+
+      showModal("TAMBAH TRANSAKSI", html, async () => {
+        const type = $("tType").value;
+        const date = $("tDate").value;
+        const walletId = $("tWallet").value || activeWalletId || "default";
+
+        const catSelect = $("tCatSelect").value;
+        const category = catSelect === "_custom" ? $("tCatManual").value.trim() : (catSelect || "").trim();
+
+        const amount = Number($("tAmt").value || "0");
+        const note = $("tNote").value.trim();
+        const file = $("tProof").files?.[0] || null;
+
+        if(!date) return showToast("Tanggal wajib diisi", "error");
+        if(!category) return showToast("Kategori wajib diisi", "error");
+        if(!amount || amount <= 0) return showToast("Nominal wajib > 0", "error");
+
+        toggleLoader(true);
+        try {
+          const proof = file ? await upload(file) : null;
+
+          const payload = {
+            type, date, walletId, category, amount, note, proof,
+            status: "pending",
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+            createdBy: UID
+          };
+
+          const ref = await addDoc(collection(db, "financial_records"), payload);
+
+          await writeAudit("create_financial", "financial_records", ref.id, { type, amount, status:"pending", walletId });
+          await createFinanceNotification(ref.id, payload);
+
+          closeModal();
+          await Promise.all([loadTransaksi(), loadApproval(), loadHomeStats()]);
+          showToast("Transaksi dibuat (pending)");
+        } catch(e) {
+          console.error(e);
+          showToast("Gagal simpan transaksi", "error");
+        } finally { toggleLoader(false); }
+      });
+
+      // category manual toggle
+      setTimeout(() => {
+        $("tCatSelect").addEventListener("change", () => {
+          const manual = $("tCatManual");
+          if($("tCatSelect").value === "_custom") manual.classList.remove("hidden");
+          else manual.classList.add("hidden");
+        });
+      }, 50);
+    };
+
+    window.editFinance = async (id) => {
+      const snap = await getDoc(doc(db, "financial_records", id));
+      const f = snap.data() || {};
+
+      const html = `
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-[10px] font-black text-slate-400 uppercase">Jenis</label>
+            <select id="eType" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+              <option value="income" ${f.type==="income"?"selected":""}>Pemasukan</option>
+              <option value="expense" ${f.type==="expense"?"selected":""}>Pengeluaran</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] font-black text-slate-400 uppercase">Tanggal</label>
+            <input id="eDate" type="date" value="${f.date||''}" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-[10px] font-black text-slate-400 uppercase">Kas</label>
+            <select id="eWallet" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+              ${walletCache.map(w => `<option value="${w.id}" ${(w.id === (f.walletId||activeWalletId))?"selected":""}>${w.name}</option>`).join("")}
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] font-black text-slate-400 uppercase">Kategori</label>
+            <select id="eCatSelect" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+              ${renderCategoryOptions(f.category||"")}
+            </select>
+            <input id="eCatManual" class="hidden w-full mt-2 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold outline-none focus:border-sky" placeholder="Tulis kategori manual...">
+          </div>
+        </div>
+
+        <div>
+          <label class="text-[10px] font-black text-slate-400 uppercase">Nominal</label>
+          <input id="eAmt" type="number" value="${Number(f.amount||0)}" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold outline-none focus:border-sky">
+        </div>
+        <div>
+          <label class="text-[10px] font-black text-slate-400 uppercase">Keterangan</label>
+          <textarea id="eNote" rows="3" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky resize-none">${(f.note||"").replaceAll("<","&lt;")}</textarea>
+        </div>
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 border-dashed cursor-pointer hover:bg-slate-100" onclick="$('eProof').click()">
+          <p class="text-[10px] text-slate-400 text-center font-black">GANTI / TAMBAH BUKTI (opsional)</p>
+          <input id="eProof" type="file" class="hidden" accept=".pdf,image/*">
+        </div>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
+          <p class="text-xs text-slate-500"><span class="font-black">Status:</span> ${(f.status||"pending")}</p>
+          <p class="text-[10px] text-slate-400 mt-1">Edit tidak otomatis mengubah status.</p>
+        </div>
+      `;
+
+      showModal("EDIT TRANSAKSI", html, async () => {
+        const type = $("eType").value;
+        const date = $("eDate").value;
+        const walletId = $("eWallet").value || activeWalletId || "default";
+
+        const catSelect = $("eCatSelect").value;
+        const category = catSelect === "_custom" ? $("eCatManual").value.trim() : (catSelect || "").trim();
+
+        const amount = Number($("eAmt").value || "0");
+        const note = $("eNote").value.trim();
+        const file = $("eProof").files?.[0] || null;
+
+        if(!date) return showToast("Tanggal wajib diisi", "error");
+        if(!category) return showToast("Kategori wajib diisi", "error");
+        if(!amount || amount <= 0) return showToast("Nominal wajib > 0", "error");
+
+        toggleLoader(true);
+        try {
+          const patch = { type, date, walletId, category, amount, note, updatedAt: serverTimestamp() };
+          if(file) patch.proof = await upload(file);
+
+          await updateDoc(doc(db, "financial_records", id), patch);
+          await writeAudit("edit_financial", "financial_records", id, { fields: Object.keys(patch) });
+
+          closeModal();
+          await Promise.all([loadTransaksi(), loadApproval(), loadHomeStats(), loadLaporan()]);
+          showToast("Transaksi diperbarui");
+        } catch(e) {
+          console.error(e);
+          showToast("Gagal update", "error");
+        } finally { toggleLoader(false); }
+      });
+
+      setTimeout(() => {
+        $("eCatSelect").addEventListener("change", () => {
+          const manual = $("eCatManual");
+          if($("eCatSelect").value === "_custom") manual.classList.remove("hidden");
+          else manual.classList.add("hidden");
+        });
+      }, 50);
+    };
+
+    window.deleteFinance = async (id) => {
+      if(!confirm("Hapus transaksi permanen?")) return;
+      toggleLoader(true);
+      try {
+        await deleteDoc(doc(db, "financial_records", id));
+        await writeAudit("delete_financial", "financial_records", id, {});
+        showToast("Transaksi dihapus");
+        await Promise.all([loadTransaksi(), loadApproval(), loadHomeStats(), loadLaporan()]);
+      } catch(e) {
+        console.error(e);
+        showToast("Gagal hapus", "error");
+      } finally { toggleLoader(false); }
+    };
+
+    // ===== APPROVAL =====
+    async function loadApproval() {
+      const list = $("listApproval");
+      list.innerHTML = "";
+
+      try {
+        const snap = await getDocs(query(
+          collection(db, "financial_records"),
+          where("status","==","pending"),
+          orderBy("createdAt","desc"),
+          limit(250)
+        ));
+
+        const rows = [];
+        snap.forEach(d => {
+          const f = d.data();
+          if((f.walletId || "default") !== (activeWalletId || "default")) return;
+          rows.push({ id:d.id, ...f });
+        });
+
+        if(!rows.length) {
+          list.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Tidak ada transaksi pending untuk kas ini.</p>`;
+          return;
+        }
+
+        rows.forEach(f => {
+          const amt = rupiah(f.amount);
+          const date = f.date || "-";
+          const cat = f.category || "Umum";
+          const note = (f.note||"").trim();
+
+          list.innerHTML += `
+            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] bg-sky-100 text-sky-700 px-2 py-0.5 rounded font-black">PENDING</span>
+                <span class="text-[10px] text-slate-400 font-bold">${date}</span>
+              </div>
+
+              <div class="mt-2 flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="text-sm font-black text-brand-primary truncate">${cat}</p>
+                  <p class="text-xs text-slate-400 line-clamp-2">${note || "-"}</p>
+                </div>
+                <p class="text-sm font-black ${f.type==="income" ? "text-emerald-600" : "text-orange-600"} whitespace-nowrap">${amt}</p>
+              </div>
+
+              <div class="mt-3 flex flex-wrap items-center gap-2 no-print">
+                <button onclick="openFinanceDetail('${f.id}')" class="text-xs font-black bg-slate-100 text-slate-700 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
+                  <span class="material-symbols-rounded text-sm">visibility</span> Detail
+                </button>
+                <button onclick="approveFinance('${f.id}')" class="text-xs font-black bg-emerald-100 text-emerald-700 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
+                  <span class="material-symbols-rounded text-sm">check</span> Approve
+                </button>
+                <button onclick="rejectFinance('${f.id}')" class="text-xs font-black bg-red-50 text-red-600 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
+                  <span class="material-symbols-rounded text-sm">close</span> Reject
+                </button>
+              </div>
+            </div>
+          `;
+        });
+      } catch(e) {
+        console.error(e);
+        list.innerHTML = `<p class="text-xs text-red-500 italic text-center py-6">Gagal memuat approval.</p>`;
+      }
+    }
+    window.loadApproval = loadApproval;
+
+    window.approveFinance = async (id) => {
+      if(!confirm("Setujui transaksi ini?")) return;
+      toggleLoader(true);
+      try {
+        await updateDoc(doc(db, "financial_records", id), {
+          status: "approved",
+          approvedAt: serverTimestamp(),
+          approvedBy: UID,
+          updatedAt: serverTimestamp()
+        });
+        await writeAudit("approve_financial", "financial_records", id, {});
+        showToast("Disetujui");
+        await Promise.all([loadApproval(), loadTransaksi(), loadHomeStats(), loadLaporan()]);
+      } catch(e) {
+        console.error(e);
+        showToast("Gagal approve", "error");
+      } finally { toggleLoader(false); }
+    };
+
+    window.rejectFinance = async (id) => {
+      const html = `
+        <div>
+          <label class="text-[10px] font-black text-slate-400 uppercase">Alasan penolakan</label>
+          <textarea id="rejNote" rows="3" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky resize-none" placeholder="Tulis alasan..."></textarea>
+        </div>
+        <div class="bg-red-50 border border-red-100 rounded-xl p-3">
+          <p class="text-[10px] font-black text-red-600">Catatan</p>
+          <p class="text-xs text-red-600 mt-1">Transaksi akan berstatus <b>rejected</b>.</p>
+        </div>
+      `;
+      showModal("REJECT TRANSAKSI", html, async () => {
+        const note = $("rejNote").value.trim();
+        if(!note) return showToast("Alasan wajib diisi", "error");
+        toggleLoader(true);
+        try {
+          await updateDoc(doc(db, "financial_records", id), {
+            status: "rejected",
+            rejectNote: note,
+            rejectedAt: serverTimestamp(),
+            rejectedBy: UID,
+            updatedAt: serverTimestamp()
+          });
+          await writeAudit("reject_financial", "financial_records", id, { note });
+          closeModal();
+          showToast("Ditolak");
+          await Promise.all([loadApproval(), loadTransaksi(), loadHomeStats(), loadLaporan()]);
+        } catch(e) {
+          console.error(e);
+          showToast("Gagal reject", "error");
+        } finally { toggleLoader(false); }
+      });
+    };
+
+    // ===== LAPORAN =====
+    async function loadLaporan() {
+      const list = $("listLaporan");
+      list.innerHTML = "";
+      filteredCache = [];
+
+      try {
+        const snap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt","desc"), limit(700)));
+
+        const from = $("fFrom")?.value || "";
+        const to = $("fTo")?.value || "";
+        const type = $("fType")?.value || "";
+        const status = $("fStatus")?.value || "";
+
+        let total = 0;
+        let cnt = 0;
+
+        const isInRange = (d) => {
+          if(!from && !to) return true;
+          if(from && d < from) return false;
+          if(to && d > to) return false;
+          return true;
+        };
+
+        snap.forEach(d => {
+          const f = d.data();
+          if((f.walletId || "default") !== (activeWalletId || "default")) return;
+
+          const date = f.date || "";
+          if(!isInRange(date)) return;
+          if(type && f.type !== type) return;
+          if(status && f.status !== status) return;
+
+          filteredCache.push({ id: d.id, ...f });
+          cnt++;
+
+          if(f.status === "approved" || status === "approved" || status === "") {
+            const amt = Number(f.amount)||0;
+            if(f.type === "income") total += amt;
+            if(f.type === "expense") total -= amt;
+          }
+        });
+
+        $("lapTotal").textContent = rupiah(total);
+        $("lapHint").textContent = `${cnt} data (filter aktif) • total dihitung (+income -expense)`;
+
+        if(!filteredCache.length) {
+          list.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Tidak ada data sesuai filter.</p>`;
+          return;
+        }
+
+        filteredCache.slice(0, 250).forEach(f => {
+          const badgeType = f.type === "income"
+            ? `<span class="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-black">IN</span>`
+            : `<span class="text-[10px] bg-orange-50 text-orange-700 px-2 py-0.5 rounded font-black">OUT</span>`;
+
+          const badgeStatus =
+            f.status === "approved" ? `<span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-black">APP</span>` :
+            f.status === "rejected" ? `<span class="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded font-black">REJ</span>` :
+            `<span class="text-[10px] bg-sky-100 text-sky-700 px-2 py-0.5 rounded font-black">PEN</span>`;
+
+          list.innerHTML += `
+            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">${badgeType}${badgeStatus}</div>
+                <span class="text-[10px] text-slate-400 font-bold">${f.date||"-"}</span>
+              </div>
+              <div class="mt-2 flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="text-sm font-black text-brand-primary truncate">${f.category||"Umum"}</p>
+                  <p class="text-xs text-slate-400 line-clamp-2">${(f.note||"").trim() || "-"}</p>
+                </div>
+                <p class="text-sm font-black ${f.type==="income" ? "text-emerald-600" : "text-orange-600"} whitespace-nowrap">${rupiah(f.amount)}</p>
+              </div>
+              <div class="mt-3 no-print">
+                <button onclick="openFinanceDetail('${f.id}')" class="text-xs font-black bg-slate-100 text-slate-700 px-3 py-2 rounded-xl active:scale-95 inline-flex items-center gap-1">
+                  <span class="material-symbols-rounded text-sm">visibility</span> Detail
+                </button>
+              </div>
+            </div>
+          `;
+        });
+
+      } catch(e) {
+        console.error(e);
+        list.innerHTML = `<p class="text-xs text-red-500 italic text-center py-6">Gagal memuat laporan.</p>`;
+      }
+    }
+    window.loadLaporan = loadLaporan;
+
+    // FITUR BARU #4: Print/PDF
+    window.printLaporan = async () => {
+      await writeAudit("print_laporan", "ui", "-", { walletId: activeWalletId });
+      window.print();
+    };
+
+    // ===== EXPORT CSV =====
+    function downloadText(content, filename, mime){
+      const blob = new Blob([content], { type: mime || "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = filename;
+      document.body.appendChild(a);
+      a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    window.exportFinanceCSV = async (mode) => {
+      toggleLoader(true);
+      try {
+        let rows = [];
+
+        if(mode === "filtered") {
+          rows = filteredCache;
+        } else {
+          const snap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt","desc"), limit(900)));
+          snap.forEach(d => {
+            const f = d.data();
+            if((f.walletId || "default") !== (activeWalletId || "default")) return;
+            rows.push({ id:d.id, ...f });
+          });
+          if(mode) rows = rows.filter(x => x.status === mode);
+        }
+
+        let csv = "ID,Kas,Tanggal,Jenis,Kategori,Nominal,Status,Keterangan,BuktiURL\n";
+        const walletName = (id) => walletCache.find(w => w.id === (id||"default"))?.name || "Kas";
+
+        rows.forEach(x => {
+          const safe = (s) => String(s||"").replaceAll('"','""').replaceAll("\n"," ");
+          csv += `"${safe(x.id)}","${safe(walletName(x.walletId))}","${safe(x.date)}","${safe(x.type)}","${safe(x.category)}","${safe(x.amount)}","${safe(x.status)}","${safe(x.note)}","${safe(x.proof?.url)}"\n`;
+        });
+
+        const fname = `Finance_${(activeWalletId||"kas")}_${mode||"all"}_${new Date().toISOString().slice(0,10)}.csv`;
+        downloadText(csv, fname, "text/csv;charset=utf-8");
+        await writeAudit("export_finance_csv", "financial_records", "-", { mode, total: rows.length, walletId: activeWalletId });
+        showToast("CSV diunduh");
+      } catch(e) {
+        console.error(e);
+        showToast("Gagal export CSV", "error");
+      } finally { toggleLoader(false); }
+    };
+
+    // ==============================
+    // FITUR BARU #5: IMPORT CSV
+    // format header minimal:
+    // date,type,category,amount,note
+    // optional: status, walletId
+    // ==============================
+    function parseCSV(text){
+      const lines = text.split(/\r?\n/).filter(l => l.trim().length);
+      if(lines.length < 2) return [];
+      const headers = lines[0].split(",").map(h => h.trim().toLowerCase());
+      const rows = [];
+      for(let i=1;i<lines.length;i++){
+        const cols = lines[i].split(",").map(c => c.trim());
+        const obj = {};
+        headers.forEach((h,idx) => obj[h] = cols[idx] ?? "");
+        rows.push(obj);
+      }
+      return rows;
+    }
+
+    window.openImportCSV = () => {
+      const html = `
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+          <p class="text-xs font-black text-slate-600">Format CSV</p>
+          <p class="text-[11px] text-slate-500 mt-2">Header minimal: <b>date,type,category,amount,note</b></p>
+          <p class="text-[11px] text-slate-500">Contoh: 2025-12-01,income,Kas Rutin,50000,iuran</p>
+        </div>
+
+        <div>
+          <label class="text-[10px] font-black text-slate-400 uppercase">Kas tujuan</label>
+          <select id="impWallet" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+            ${walletCache.map(w => `<option value="${w.id}" ${w.id===activeWalletId?"selected":""}>${w.name}</option>`).join("")}
+          </select>
+        </div>
+
+        <div>
+          <label class="text-[10px] font-black text-slate-400 uppercase">Status default</label>
+          <select id="impStatus" class="w-full mt-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none focus:border-sky">
+            <option value="pending" selected>pending</option>
+            <option value="approved">approved</option>
+          </select>
+          <p class="text-[10px] text-slate-400 mt-1">Rekomendasi: pending agar lewat approval.</p>
+        </div>
+
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 border-dashed cursor-pointer hover:bg-slate-100" onclick="$('impFile').click()">
+          <p class="text-[10px] text-slate-400 text-center font-black">KLIK UNTUK PILIH FILE CSV</p>
+          <input id="impFile" type="file" class="hidden" accept=".csv,text/csv">
+        </div>
+      `;
+      showModal("IMPORT CSV", html, async () => {
+        const file = $("impFile").files?.[0];
+        if(!file) return showToast("File CSV wajib dipilih", "error");
+        const walletId = $("impWallet").value || activeWalletId;
+        const status = $("impStatus").value || "pending";
+
+        toggleLoader(true);
+        try{
+          const text = await file.text();
+          const rows = parseCSV(text);
+          if(!rows.length) { showToast("CSV kosong / format salah", "error"); toggleLoader(false); return; }
+
+          let ok = 0;
+          for(const r of rows.slice(0, 500)){
+            const date = (r.date||"").trim();
+            const type = (r.type||"").trim();
+            const category = (r.category||"").trim();
+            const amount = Number((r.amount||"0").trim());
+            const note = (r.note||"").trim();
+            if(!date || !type || !category || !amount) continue;
+
+            await addDoc(collection(db,"financial_records"), {
+              date, type, category, amount, note,
+              walletId,
+              status,
+              createdBy: UID,
+              createdAt: serverTimestamp(),
+              updatedAt: serverTimestamp()
+            });
+            ok++;
+          }
+
+          await writeAudit("import_csv", "financial_records", "-", { ok, walletId, status });
+          closeModal();
+          showToast(`Import selesai: ${ok} data`);
+          await Promise.all([loadHomeStats(), loadTransaksi(), loadApproval(), loadLaporan()]);
+        }catch(e){ console.error(e); showToast("Gagal import CSV", "error"); }
+        finally{ toggleLoader(false); }
+      });
+    };
+
+    // ==============================
+    // FITUR BARU #3: MONTHLY SUMMARY
+    // Collection: finance_monthly_summary
+    // fields: month (YYYY-MM), walletId, incomeTotal, expenseTotal, netTotal, generatedAt
+    // ==============================
+    window.generateMonthlySummary = async () => {
+      toggleLoader(true);
+      try{
+        const month = new Date().toISOString().slice(0,7); // YYYY-MM
+        const snap = await getDocs(query(collection(db,"financial_records"), orderBy("createdAt","desc"), limit(900)));
+
+        let inc=0, exp=0;
+        snap.forEach(d => {
+          const f = d.data();
+          if((f.walletId||"default") !== (activeWalletId||"default")) return;
+          if((f.date||"").slice(0,7) !== month) return;
+          if(f.status !== "approved") return;
+          const amt = Number(f.amount)||0;
+          if(f.type==="income") inc += amt;
+          if(f.type==="expense") exp += amt;
+        });
+
+        const ref = await addDoc(collection(db,"finance_monthly_summary"), {
+          month,
+          walletId: activeWalletId || "default",
+          incomeTotal: inc,
+          expenseTotal: exp,
+          netTotal: inc - exp,
+          generatedAt: serverTimestamp(),
+          generatedBy: UID
+        });
+
+        await writeAudit("generate_monthly_summary", "finance_monthly_summary", ref.id, { month, inc, exp });
+        showToast("Rekap bulanan dibuat");
+      }catch(e){ console.error(e); showToast("Gagal generate rekap", "error"); }
+      finally{ toggleLoader(false); }
+    };
+
+    // ===== AUDIT VIEW (FITUR BARU #7) =====
+    async function loadAudit(){
+      const list = $("listAudit");
+      if(!list) return;
+      list.innerHTML = "";
+      auditCache = [];
+
+      try{
+        const act = $("auditAction")?.value || "";
+        const snap = await getDocs(query(collection(db,"audit_logs"), orderBy("createdAt","desc"), limit(200)));
+
+        const rows = [];
+        snap.forEach(d => {
+          const a = d.data();
+          if(act && a.action !== act) return;
+          rows.push({ id:d.id, ...a });
+        });
+
+        auditCache = rows;
+
+        if(!rows.length){
+          list.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Belum ada log.</p>`;
+          return;
+        }
+
+        rows.forEach(a => {
+          const ts = a.createdAt?.toDate ? a.createdAt.toDate().toLocaleString("id-ID") : "-";
+          list.innerHTML += `
+            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+              <div class="flex items-center justify-between">
+                <p class="text-xs font-black text-brand-primary">${a.action||"-"}</p>
+                <span class="text-[10px] text-slate-400 font-bold">${ts}</span>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-1"><span class="font-black">Target:</span> ${(a.targetType||"-")} • ${(a.targetId||"-").slice(0,12)}</p>
+              <p class="text-[11px] text-slate-500"><span class="font-black">Actor:</span> ${(a.actorUid||"-").slice(0,10)} • ${(a.actorRole||"-")}</p>
+            </div>
+          `;
+        });
+      }catch(e){ console.error(e); list.innerHTML = `<p class="text-xs text-red-500 italic text-center py-6">Gagal memuat audit.</p>`; }
+    }
+    window.loadAudit = loadAudit;
+
+    window.exportAuditCSV = async () => {
+      try{
+        let csv = "ID,createdAt,action,actorUid,actorRole,targetType,targetId\n";
+        auditCache.forEach(a => {
+          const safe = (s) => String(s||"").replaceAll('"','""').replaceAll("\n"," ");
+          const ts = a.createdAt?.toDate ? a.createdAt.toDate().toISOString() : "";
+          csv += `"${safe(a.id)}","${safe(ts)}","${safe(a.action)}","${safe(a.actorUid)}","${safe(a.actorRole)}","${safe(a.targetType)}","${safe(a.targetId)}"\n`;
+        });
+        downloadText(csv, `Audit_${new Date().toISOString().slice(0,10)}.csv`, "text/csv;charset=utf-8");
+        await writeAudit("export_audit_csv", "audit_logs", "-", { total: auditCache.length });
+        showToast("Audit CSV diunduh");
+      }catch(e){ console.error(e); showToast("Gagal export audit", "error"); }
+    };
+
+    // ===== PROFILE =====
     async function loadProfileData() {
       const snap = await getDoc(doc(db, "users", UID));
       if(snap.exists()){
@@ -589,9 +1796,7 @@
         $("profileImage").src = d.photo?.url || "https://via.placeholder.com/150";
         $("profileNameDisplay").textContent = d.name || "-";
         $("profileEmailDisplay").textContent = d.email || "-";
-        $("editName").value = d.name||"";
-        $("editPhone").value = d.phone||"";
-        $("editAddress").value = d.address||"";
+        $("editName").value = d.name||""; $("editPhone").value = d.phone||""; $("editAddress").value = d.address||"";
       }
     }
 
@@ -607,16 +1812,12 @@
           phone: $("editPhone").value.trim(),
           address: $("editAddress").value.trim()
         };
-        if(newProfileFile) data.photo = await uploadFile(newProfileFile);
+        if(newProfileFile) data.photo = await upload(newProfileFile);
         await updateDoc(doc(db, "users", UID), data);
         await writeAudit("profile_update", "users", UID, { fields: Object.keys(data) });
-        showToast("Profil Disimpan");
-        newProfileFile = null;
-        await loadProfileData();
-      } catch(e) {
-        console.error(e);
-        showToast("Gagal update", "error");
-      } finally { toggleLoader(false); }
+        showToast("Profil Disimpan"); newProfileFile = null; await loadProfileData();
+      } catch(e) { console.error(e); showToast("Gagal update", "error"); }
+      finally { toggleLoader(false); }
     };
 
     window.showIdCard = async () => {
@@ -624,20 +1825,20 @@
       const u = snap.data() || {};
       const html = `
         <div class="bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-white p-5 rounded-2xl relative overflow-hidden shadow-2xl border-t border-slate-600">
-          <div class="absolute -right-10 -top-10 w-40 h-40 bg-amber/20 rounded-full blur-3xl"></div>
+          <div class="absolute -right-10 -top-10 w-40 h-40 bg-emerald-500/20 rounded-full blur-3xl"></div>
           <div class="flex justify-between items-center mb-6 relative z-10">
             <div class="flex items-center gap-2">
               <div class="w-8 h-8 bg-white/10 rounded flex items-center justify-center">
-                <span class="material-symbols-rounded text-amber">account_balance_wallet</span>
+                <span class="material-symbols-rounded text-emerald-400">paid</span>
               </div>
-              <span class="font-black tracking-widest text-xs">KARTEJI FINANCE</span>
+              <span class="font-black tracking-widest text-xs">KARTEJI ADMIN</span>
             </div>
           </div>
           <div class="flex gap-4 items-center">
-            <img src="${u.photo?.url||'https://via.placeholder.com/100'}" class="w-20 h-20 rounded-xl object-cover border-2 border-amber shadow-lg bg-slate-800">
+            <img src="${u.photo?.url||'https://via.placeholder.com/100'}" class="w-20 h-20 rounded-xl object-cover border-2 border-emerald-400 shadow-lg bg-slate-800" alt="id">
             <div>
-              <h2 class="text-xl font-black leading-none mb-1 text-amber-300">${u.name||'Bendahara'}</h2>
-              <p class="text-[10px] uppercase tracking-wider text-slate-400 font-extrabold">BENDAHARA</p>
+              <h2 class="text-xl font-black leading-none mb-1 text-emerald-300">${u.name||'Bendahara'}</h2>
+              <p class="text-[10px] uppercase tracking-wider text-slate-400 font-black">BENDAHARA</p>
               <p class="text-[9px] mt-2 text-slate-500">ID: ${UID.substring(0,8).toUpperCase()}</p>
             </div>
           </div>
@@ -646,608 +1847,13 @@
       showModal("KARTU IDENTITAS DIGITAL", html, null);
     };
 
-    // HOME: balance + pending + month net + trend
-    async function loadHome() {
-      try {
-        const finSnap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc"), limit(300)));
-        financeCache = finSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-        // approved balance
-        let bal = 0;
-        let pending = 0;
-
-        // month net
-        const now = new Date();
-        const y = now.getFullYear();
-        const m = now.getMonth();
-        let monthNet = 0;
-
-        financeCache.forEach(f => {
-          const amt = Number(f.amount || 0);
-          const isApproved = f.status === "approved";
-          const isPending = f.status === "pending";
-          if(isPending) pending++;
-
-          if(isApproved){
-            if(f.type === "income") bal += amt;
-            else bal -= amt;
-          }
-
-          // month net (approved or pending? -> show all, but highlight net from approved+pending)
-          const dt = f.createdAt?.seconds ? new Date(f.createdAt.seconds*1000) : null;
-          if(dt && dt.getFullYear() === y && dt.getMonth() === m){
-            if(f.type === "income") monthNet += amt;
-            else monthNet -= amt;
-          }
-        });
-
-        animateCurrency($("cardBalance"), 0, bal, 900);
-        $("pendingCount").textContent = String(pending);
-        animateCurrency($("monthNet"), 0, monthNet, 900);
-
-        await renderTrendChart(financeCache);
-
-      } catch(e) {
-        console.error(e);
-        showToast("Gagal memuat dashboard", "error");
-      }
-    }
-
-    function monthKey(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
-
-    async function renderTrendChart(rows) {
-      // last 6 months net (approved only)
-      const now = new Date();
-      const buckets = {};
-      const labels = [];
-
-      for(let i=5;i>=0;i--){
-        const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
-        const k = monthKey(d);
-        buckets[k] = 0;
-        labels.push(k);
-      }
-
-      rows.forEach(f => {
-        if(f.status !== "approved") return;
-        const dt = f.createdAt?.seconds ? new Date(f.createdAt.seconds*1000) : null;
-        if(!dt) return;
-        const k = monthKey(new Date(dt.getFullYear(), dt.getMonth(), 1));
-        if(!(k in buckets)) return;
-        const amt = Number(f.amount||0);
-        buckets[k] += (f.type === "income") ? amt : -amt;
-      });
-
-      const ctx = $("trendChart").getContext("2d");
-      if(trendChart) trendChart.destroy();
-      trendChart = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: labels.map(x => x.replace("-", "/")),
-          datasets: [{ label: "Netto (Approved)", data: labels.map(k => buckets[k] || 0), tension: 0.35, fill: false }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { position: "bottom", labels: { boxWidth: 10, font: { size: 10 } } } },
-          scales: {
-            y: { ticks: { callback: (v)=> "Rp " + Number(v).toLocaleString('id-ID') } }
-          }
-        }
-      });
-    }
-
-    // TRANSACTIONS
-    window.setTxFilter = (mode) => {
-      txFilter = mode;
-      $("f_all").className = "px-3 py-2 rounded-xl text-xs font-black active:scale-95 flex items-center justify-center gap-1 " + (mode==="all" ? "bg-slate-100 text-slate-700" : "bg-white border border-slate-200 text-slate-600");
-      $("f_pending").className = "px-3 py-2 rounded-xl text-xs font-black active:scale-95 flex items-center justify-center gap-1 " + (mode==="pending" ? "bg-orange-100 text-orange-700" : "bg-white border border-slate-200 text-slate-600");
-      loadTransactions();
-    };
-
-    async function loadTransactions(){
-      const list = $("txList");
-      list.innerHTML = "";
-      try {
-        if(!financeCache.length){
-          const snap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc"), limit(200)));
-          financeCache = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-        }
-
-        let rows = [...financeCache];
-        if(txFilter === "pending") rows = rows.filter(x => x.status === "pending");
-
-        if(!rows.length){
-          list.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Belum ada transaksi.</p>`;
-          return;
-        }
-
-        rows.forEach(f => {
-          const isInc = f.type === "income";
-          const isPending = f.status === "pending";
-          const dt = f.createdAt?.seconds ? new Date(f.createdAt.seconds*1000).toLocaleString("id-ID") : "-";
-          const cat = (f.category || "lainnya");
-          const note = (f.note || "-");
-          const byMe = (f.createdBy === UID);
-          const canEdit = isPending && byMe; // edit/delete hanya jika pending & dibuat sendiri
-          const badge = isPending
-            ? `<span class="text-[10px] font-black bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">PENDING</span>`
-            : `<span class="text-[10px] font-black bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">APPROVED</span>`;
-
-          list.innerHTML += `
-            <div class="bg-white p-4 rounded-2xl border ${isPending?'border-orange-200 bg-orange-50':'border-slate-100'} shadow-sm">
-              <div class="flex items-start justify-between gap-2">
-                <div class="min-w-0">
-                  <div class="flex items-center gap-2 mb-1">
-                    ${badge}
-                    <span class="text-[10px] font-extrabold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">${cat.toUpperCase()}</span>
-                  </div>
-                  <p class="text-sm font-black text-brand-primary line-clamp-1">${note}</p>
-                  <p class="text-[10px] text-slate-400 mt-1">${dt}</p>
-                </div>
-                <div class="text-right">
-                  <p class="text-xs font-black ${isInc?'text-emerald-600':'text-rose-500'} whitespace-nowrap">${isInc?'+':'-'} Rp ${Number(f.amount||0).toLocaleString('id-ID')}</p>
-                  ${f.receipt?.url ? `
-                    <button onclick="previewReceipt('${(f.receipt.url||'').replaceAll("'","\\'")}')" class="mt-2 text-[10px] font-black bg-slate-100 text-slate-700 px-2 py-1 rounded-lg active:scale-95 flex items-center gap-1">
-                      <span class="material-symbols-rounded text-sm">visibility</span> Bukti
-                    </button>` : `<p class="text-[10px] text-slate-400 mt-2">-</p>`
-                  }
-                </div>
-              </div>
-
-              <div class="mt-3 flex items-center gap-2 no-print">
-                ${canEdit ? `
-                  <button onclick="openTransactionForm('${f.id}')" class="text-xs font-black bg-amber-100 text-amber-800 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
-                    <span class="material-symbols-rounded text-sm">edit</span> Edit
-                  </button>
-                  <button onclick="deleteTransaction('${f.id}')" class="text-xs font-black bg-red-50 text-red-600 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
-                    <span class="material-symbols-rounded text-sm">delete</span> Hapus
-                  </button>
-                ` : `
-                  <button onclick="showToast('${isPending?'Menunggu ACC Wakil Ketua':'Sudah disetujui'}')" class="text-xs font-black bg-slate-100 text-slate-700 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
-                    <span class="material-symbols-rounded text-sm">info</span> Info
-                  </button>
-                `}
-              </div>
-            </div>
-          `;
-        });
-
-      } catch(e){
-        console.error(e);
-        showToast("Gagal memuat transaksi", "error");
-      }
-    }
-
-    window.previewReceipt = (url) => {
-      if(!url) return showToast("Bukti tidak tersedia", "error");
-      const ext = (url.split("?")[0].split(".").pop() || "").toLowerCase();
-      const isImg = ["png","jpg","jpeg","webp","gif"].includes(ext);
-      const isPdf = ext === "pdf";
-      const html = `
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
-          <p class="text-xs font-black text-brand-primary">Preview Bukti</p>
-          <p class="text-[10px] text-slate-500 break-all mt-1">${url}</p>
-        </div>
-        <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
-          ${
-            isImg ? `<img src="${url}" class="w-full max-h-[55vh] object-contain bg-black">`
-            : isPdf ? `<iframe src="${url}" class="w-full h-[55vh]"></iframe>`
-            : `<div class="p-5 text-center text-sm text-slate-500">Preview tidak tersedia. Buka via link.</div>`
-          }
-        </div>
-        <a href="${url}" target="_blank" class="block w-full mt-3 bg-brand-primary text-white py-3 rounded-xl font-black text-center">Buka Link</a>
-      `;
-      showModal("BUKTI TRANSAKSI", html, null);
-      writeAudit("preview_receipt", "financial_records", "-", { url });
-    };
-
-    window.openTransactionForm = async (editId=null) => {
-      let data = { type:"income", amount:"", category:"kas", note:"", date:"", receipt:null };
-      if(editId){
-        const snap = await getDoc(doc(db, "financial_records", editId));
-        if(snap.exists()) data = { ...data, ...snap.data() };
-      }
-
-      const dtValue = data.date || ""; // optional manual date
-      const html = `
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-          <p class="text-xs font-black text-brand-primary">Input Transaksi</p>
-          <p class="text-[10px] text-slate-500 mt-1">Status awal: <b>PENDING</b> (menunggu ACC Wakil Ketua).</p>
-        </div>
-
-        <div class="grid grid-cols-2 gap-2">
-          <select id="tType" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-black outline-none">
-            <option value="income" ${data.type==="income"?"selected":""}>Pemasukan</option>
-            <option value="expense" ${data.type==="expense"?"selected":""}>Pengeluaran</option>
-          </select>
-          <input id="tAmount" inputmode="numeric" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-black outline-none" placeholder="Nominal (angka)" value="${Number(data.amount||0) ? String(data.amount) : ""}">
-        </div>
-
-        <input id="tCategory" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-black outline-none" placeholder="Kategori (kas/kegiatan/donasi/dll)" value="${(data.category||'') }">
-        <input id="tNote" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold outline-none" placeholder="Catatan (contoh: Iuran Desember)" value="${(data.note||'').replaceAll('"','&quot;')}">
-        <input id="tDate" type="date" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none" value="${dtValue}">
-
-        <div class="bg-slate-50 border border-dashed border-slate-300 rounded-xl p-4">
-          <p class="text-[10px] font-extrabold text-slate-500">Bukti (opsional) - PDF/JPG/PNG</p>
-          <div class="mt-2 flex items-center gap-2">
-            <input id="tReceipt" type="file" accept=".pdf,image/*" class="block w-full text-xs">
-          </div>
-          ${data.receipt?.url ? `
-            <div class="mt-2 flex items-center justify-between gap-2">
-              <p class="text-[10px] text-slate-500 truncate">Sudah ada bukti</p>
-              <button onclick="previewReceipt('${(data.receipt.url||'').replaceAll("'","\\'")}')" class="text-[10px] font-black bg-slate-100 text-slate-700 px-2 py-1 rounded-lg active:scale-95">Preview</button>
-            </div>` : `<p class="text-[10px] text-slate-400 mt-2">Belum ada bukti.</p>`
-          }
-        </div>
-
-        ${editId ? `<div class="bg-orange-50 border border-orange-200 rounded-xl p-3">
-          <p class="text-[10px] font-black text-orange-700">Catatan:</p>
-          <p class="text-[10px] text-orange-700/80 mt-1">Edit hanya untuk transaksi <b>pending</b> yang kamu buat.</p>
-        </div>` : ``}
-      `;
-
-      showModal(editId ? "EDIT TRANSAKSI" : "TAMBAH TRANSAKSI", html, async () => {
-        const type = $("tType").value;
-        const amount = Number(String($("tAmount").value||"").replace(/[^\d]/g,""));
-        const category = $("tCategory").value.trim() || "lainnya";
-        const note = $("tNote").value.trim();
-        const date = $("tDate").value || "";
-
-        if(!amount || amount <= 0) return showToast("Nominal wajib angka > 0", "error");
-        if(!note) return showToast("Catatan wajib diisi", "error");
-
-        toggleLoader(true);
-        try {
-          let receipt = data.receipt || null;
-          const file = $("tReceipt").files?.[0];
-          if(file) receipt = await uploadFile(file);
-
-          if(editId){
-            // safeguard: only update if pending & createdBy=UID
-            const snap = await getDoc(doc(db, "financial_records", editId));
-            const cur = snap.data() || {};
-            if(cur.status !== "pending" || cur.createdBy !== UID){
-              toggleLoader(false);
-              showToast("Tidak bisa edit transaksi ini", "error");
-              closeModal();
-              return;
-            }
-            await updateDoc(doc(db, "financial_records", editId), {
-              type, amount, category, note, date,
-              receipt,
-              updatedAt: serverTimestamp()
-            });
-            await writeAudit("update_finance", "financial_records", editId, { fields:["type","amount","category","note","date","receipt"] });
-            showToast("Transaksi diupdate");
-          } else {
-            const ref = await addDoc(collection(db, "financial_records"), {
-              type, amount, category, note, date,
-              receipt,
-              status: "pending",
-              createdBy: UID,
-              createdAt: serverTimestamp()
-            });
-            await writeAudit("create_finance", "financial_records", ref.id, { type, amount, category });
-            showToast("Transaksi dibuat (pending)");
-          }
-
-          closeModal();
-          await reloadFinanceCache();
-          await Promise.all([loadHome(), loadTransactions()]);
-        } catch(e){
-          console.error(e);
-          showToast(e?.code === "permission-denied" ? "Izin ditolak! Cek Rules DB." : "Gagal simpan", "error");
-        } finally { toggleLoader(false); }
-      });
-    };
-
-    async function reloadFinanceCache(){
-      const snap = await getDocs(query(collection(db, "financial_records"), orderBy("createdAt", "desc"), limit(300)));
-      financeCache = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-    }
-
-    window.deleteTransaction = async (id) => {
-      if(!confirm("Hapus transaksi ini? (hanya pending milikmu)")) return;
-      toggleLoader(true);
-      try {
-        const snap = await getDoc(doc(db, "financial_records", id));
-        const cur = snap.data() || {};
-        if(cur.status !== "pending" || cur.createdBy !== UID){
-          showToast("Tidak bisa hapus transaksi ini", "error");
-          toggleLoader(false);
-          return;
-        }
-        await deleteDoc(doc(db, "financial_records", id));
-        await writeAudit("delete_finance", "financial_records", id, {});
-        showToast("Transaksi dihapus");
-        await reloadFinanceCache();
-        await Promise.all([loadHome(), loadTransactions()]);
-      } catch(e){
-        console.error(e);
-        showToast("Gagal hapus", "error");
-      } finally { toggleLoader(false); }
-    };
-
-    // EXPORT FINANCE CSV
-    window.exportFinanceCSV = async () => {
-      if(!financeCache.length) await reloadFinanceCache();
-      let csv = "Tanggal,Status,Tipe,Nominal,Kategori,Catatan,CreatedBy\n";
-      financeCache.forEach(f => {
-        const date = f.createdAt?.seconds ? new Date(f.createdAt.seconds*1000).toLocaleString('id-ID') : "-";
-        csv += `"${date}","${f.status||''}","${f.type||''}","${Number(f.amount||0)}","${(f.category||'').replaceAll('"','""')}","${(f.note||'').replaceAll('"','""')}","${f.createdBy||''}"\n`;
-      });
-      downloadText(csv, `Kas_KARTEJI_${new Date().toISOString().slice(0,10)}.csv`, "text/csv;charset=utf-8");
-      await writeAudit("export_finance_csv", "financial_records", "-", { total: financeCache.length });
-      showToast("CSV diunduh");
-    };
-
-    // BUDGETS
-    async function loadBudgets(){
-      const list = $("budgetList");
-      list.innerHTML = "";
-      try {
-        const snap = await getDocs(query(collection(db, "budgets"), orderBy("createdAt","desc"), limit(200)));
-        budgetsCache = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-
-        if(!budgetsCache.length){
-          list.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Belum ada anggaran.</p>`;
-          return;
-        }
-
-        // compute realization this month (approved) by category
-        const now = new Date();
-        const y = now.getFullYear(), m = now.getMonth();
-        const real = {};
-        financeCache.forEach(f => {
-          if(f.status !== "approved") return;
-          const dt = f.createdAt?.seconds ? new Date(f.createdAt.seconds*1000) : null;
-          if(!dt || dt.getFullYear() !== y || dt.getMonth() !== m) return;
-          const cat = (f.category || "lainnya").toLowerCase();
-          const amt = Number(f.amount||0);
-          if(f.type === "expense"){
-            real[cat] = (real[cat]||0) + amt;
-          }
-        });
-
-        budgetsCache.forEach(b => {
-          const cat = (b.category || "lainnya").toLowerCase();
-          const target = Number(b.amount||0);
-          const used = Number(real[cat] || 0);
-          const pct = target > 0 ? Math.min(100, Math.round((used/target)*100)) : 0;
-
-          list.innerHTML += `
-            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-              <div class="flex items-start justify-between gap-3">
-                <div class="min-w-0">
-                  <p class="text-sm font-black text-brand-primary truncate">${(b.category||'-').toUpperCase()}</p>
-                  <p class="text-[10px] text-slate-400 mt-1">Target: <b>Rp ${target.toLocaleString('id-ID')}</b> • Realisasi bulan ini: <b>Rp ${used.toLocaleString('id-ID')}</b></p>
-                </div>
-                <div class="text-right">
-                  <p class="text-xs font-black ${pct>=90?'text-rose-500':pct>=70?'text-amber-700':'text-emerald-600'}">${pct}%</p>
-                  <p class="text-[10px] text-slate-400">terpakai</p>
-                </div>
-              </div>
-              <div class="mt-3 w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                <div class="h-2 rounded-full" style="width:${pct}%; background:${pct>=90?'#F43F5E':pct>=70?'#F59E0B':'#10B981'}"></div>
-              </div>
-
-              <div class="mt-3 flex items-center gap-2 no-print">
-                <button onclick="openBudgetForm('${b.id}')" class="text-xs font-black bg-slate-100 text-slate-700 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
-                  <span class="material-symbols-rounded text-sm">edit</span> Edit
-                </button>
-                <button onclick="deleteBudget('${b.id}')" class="text-xs font-black bg-red-50 text-red-600 px-3 py-2 rounded-xl active:scale-95 flex items-center gap-1">
-                  <span class="material-symbols-rounded text-sm">delete</span> Hapus
-                </button>
-              </div>
-            </div>
-          `;
-        });
-
-      } catch(e){
-        console.error(e);
-        showToast("Gagal memuat anggaran", "error");
-      }
-    }
-
-    window.openBudgetForm = async (editId=null) => {
-      let data = { category:"", amount:"" };
-      if(editId){
-        const snap = await getDoc(doc(db, "budgets", editId));
-        if(snap.exists()) data = { ...data, ...snap.data() };
-      }
-
-      const html = `
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-          <p class="text-xs font-black text-brand-primary">Anggaran Bulanan</p>
-          <p class="text-[10px] text-slate-500 mt-1">Untuk perhitungan realisasi, sistem membaca <b>pengeluaran approved</b> di bulan berjalan berdasarkan kategori.</p>
-        </div>
-
-        <input id="bCat" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-black outline-none" placeholder="Kategori (contoh: kegiatan, konsumsi)" value="${(data.category||'').replaceAll('"','&quot;')}">
-        <input id="bAmt" inputmode="numeric" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-black outline-none" placeholder="Target (angka)" value="${Number(data.amount||0) ? String(data.amount) : ""}">
-      `;
-
-      showModal(editId ? "EDIT ANGGARAN" : "TAMBAH ANGGARAN", html, async () => {
-        const category = $("bCat").value.trim();
-        const amount = Number(String($("bAmt").value||"").replace(/[^\d]/g,""));
-        if(!category) return showToast("Kategori wajib diisi", "error");
-        if(!amount || amount <= 0) return showToast("Target wajib angka > 0", "error");
-
-        toggleLoader(true);
-        try {
-          if(editId){
-            await updateDoc(doc(db, "budgets", editId), { category, amount, updatedAt: serverTimestamp() });
-            await writeAudit("update_budget", "budgets", editId, { category, amount });
-            showToast("Anggaran diupdate");
-          } else {
-            const ref = await addDoc(collection(db, "budgets"), { category, amount, createdBy: UID, createdAt: serverTimestamp() });
-            await writeAudit("create_budget", "budgets", ref.id, { category, amount });
-            showToast("Anggaran ditambah");
-          }
-          closeModal();
-          await loadBudgets();
-        } catch(e){
-          console.error(e);
-          showToast("Gagal simpan anggaran", "error");
-        } finally { toggleLoader(false); }
-      });
-    };
-
-    window.deleteBudget = async (id) => {
-      if(!confirm("Hapus anggaran ini?")) return;
-      toggleLoader(true);
-      try {
-        await deleteDoc(doc(db, "budgets", id));
-        await writeAudit("delete_budget", "budgets", id, {});
-        showToast("Anggaran dihapus");
-        await loadBudgets();
-      } catch(e){
-        console.error(e);
-        showToast("Gagal hapus anggaran", "error");
-      } finally { toggleLoader(false); }
-    };
-
-    // REPORT
-    window.openReportModal = () => {
-      const now = new Date();
-      const ym = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-      const html = `
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-          <p class="text-xs font-black text-brand-primary">Cetak Laporan</p>
-          <p class="text-[10px] text-slate-500 mt-1">Pilih periode, lalu sistem tampilkan transaksi bulan tersebut.</p>
-        </div>
-        <input id="mPick" type="month" value="${ym}" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm outline-none">
-        <button onclick="applyReportFromModal()" class="w-full bg-brand-primary text-white py-4 rounded-xl font-black active:scale-95">Terapkan & Buka Report</button>
-      `;
-      showModal("LAPORAN", html, null);
-    };
-
-    window.applyReportFromModal = () => {
-      const v = $("mPick").value;
-      closeModal();
-      switchView("report");
-      $("repMonth").value = v;
-      loadReport();
-    };
-
-    window.printReport = () => {
-      $("printDate").innerText = new Date().toLocaleString('id-ID');
-      window.print();
-      writeAudit("print_report", "report", "-", {});
-    };
-
-    async function loadReport(){
-      try {
-        if(!financeCache.length) await reloadFinanceCache();
-
-        // set default month if empty
-        const now = new Date();
-        if(!$("repMonth").value){
-          $("repMonth").value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-        }
-        const [yy, mm] = ($("repMonth").value || "").split("-").map(x=>Number(x));
-        const monthName = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"][mm-1] || "-";
-        $("printPeriod").innerText = `${monthName} ${yy}`;
-
-        // compute saldo approved overall
-        let bal = 0;
-        financeCache.forEach(f=>{
-          if(f.status !== "approved") return;
-          const amt = Number(f.amount||0);
-          bal += (f.type==="income") ? amt : -amt;
-        });
-        $("repBalance").textContent = "Rp " + bal.toLocaleString('id-ID');
-
-        // list transactions in that month (approved+pending)
-        const rows = financeCache.filter(f=>{
-          const dt = f.createdAt?.seconds ? new Date(f.createdAt.seconds*1000) : null;
-          if(!dt) return false;
-          return dt.getFullYear()===yy && (dt.getMonth()+1)===mm;
-        });
-
-        let inc=0, exp=0, pend=0;
-        rows.forEach(f=>{
-          const amt = Number(f.amount||0);
-          if(f.status==="pending") pend++;
-          if(f.type==="income") inc+=amt; else exp+=amt;
-        });
-
-        const net = inc - exp;
-        $("repSummary").textContent = `Pemasukan Rp ${inc.toLocaleString('id-ID')} • Pengeluaran Rp ${exp.toLocaleString('id-ID')} • Netto Rp ${net.toLocaleString('id-ID')} • Pending ${pend}`;
-
-        const list = $("repList");
-        list.innerHTML = rows.length ? "" : `<p class="text-xs text-slate-400 italic">Tidak ada transaksi di periode ini.</p>`;
-
-        rows.slice(0, 200).forEach(f=>{
-          const dt = f.createdAt?.seconds ? new Date(f.createdAt.seconds*1000).toLocaleDateString("id-ID") : "-";
-          const isInc = f.type==="income";
-          const st = (f.status||"-").toUpperCase();
-          list.innerHTML += `
-            <div class="flex items-center justify-between gap-3 border border-slate-200 rounded-xl p-3">
-              <div class="min-w-0">
-                <p class="text-xs font-black text-brand-primary line-clamp-1">${(f.note||'-')}</p>
-                <p class="text-[10px] text-slate-500 mt-1">${dt} • ${String(f.category||'lainnya').toUpperCase()} • ${st}</p>
-              </div>
-              <p class="text-xs font-black ${isInc?'text-emerald-700':'text-rose-600'} whitespace-nowrap">${isInc?'+':'-'} Rp ${Number(f.amount||0).toLocaleString('id-ID')}</p>
-            </div>
-          `;
-        });
-
-      } catch(e){
-        console.error(e);
-        showToast("Gagal memuat laporan", "error");
-      }
-    }
-    window.loadReport = loadReport;
-
-    // EXPORT REPORT CSV (month)
-    window.exportReportCSV = async () => {
-      if(!financeCache.length) await reloadFinanceCache();
-      const v = $("repMonth").value;
-      if(!v) return showToast("Pilih bulan dulu", "error");
-      const [yy, mm] = v.split("-").map(x=>Number(x));
-
-      const rows = financeCache.filter(f=>{
-        const dt = f.createdAt?.seconds ? new Date(f.createdAt.seconds*1000) : null;
-        if(!dt) return false;
-        return dt.getFullYear()===yy && (dt.getMonth()+1)===mm;
-      });
-
-      let csv = "Tanggal,Status,Tipe,Nominal,Kategori,Catatan\n";
-      rows.forEach(f=>{
-        const dt = f.createdAt?.seconds ? new Date(f.createdAt.seconds*1000).toLocaleString("id-ID") : "-";
-        csv += `"${dt}","${f.status||''}","${f.type||''}","${Number(f.amount||0)}","${(f.category||'').replaceAll('"','""')}","${(f.note||'').replaceAll('"','""')}"\n`;
-      });
-
-      downloadText(csv, `Report_${v}.csv`, "text/csv;charset=utf-8");
-      await writeAudit("export_report_csv", "report", "-", { month: v, total: rows.length });
-      showToast("CSV laporan diunduh");
-    };
-
-    // DOWNLOAD HELPER
-    function downloadText(content, filename, mime){
-      const blob = new Blob([content], { type: mime || "text/plain" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    }
-
     // LOGOUT
     $("logoutBtn").onclick = async () => {
-      try { await writeAudit("logout", "auth", UID, {}); } catch(e){}
+      try { await updateOnlineStatus(false); await writeAudit("logout", "auth", UID, {}); } catch(e){}
+      if(heartbeatTimer) clearInterval(heartbeatTimer);
       await signOut(auth);
       location.href = "../login.html";
     };
-
-    // default report month
-    const now = new Date();
-    const ym = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-    if($("repMonth")) $("repMonth").value = ym;
   </script>
 </body>
 </html>
